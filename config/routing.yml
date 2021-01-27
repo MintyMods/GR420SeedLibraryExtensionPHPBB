@@ -1,0 +1,3 @@
+minty_seeds_controller:
+    path: /seeds/{name}
+    defaults: { _controller: minty.seeds.controller.main:handle }

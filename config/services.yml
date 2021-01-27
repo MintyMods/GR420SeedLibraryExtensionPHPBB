@@ -1,0 +1,51 @@
+imports:
+    - { resource: parameters.yml }
+
+services:
+    minty.seeds.controller.main:
+        class: minty\seeds\controller\main_controller
+        arguments:
+            - '@request'        
+            - '@config'
+            - '@controller.helper'
+            - '@template'
+            - '@language'
+            - '@dbal.conn'
+            - '@log'
+            - '%core.root_path%'
+            - .%core.php_ext%               
+
+    minty.seeds.controller.acp:
+        class: minty\seeds\controller\acp_controller
+        arguments:
+            - '@config'
+            - '@language'
+            - '@log'
+            - '@request'
+            - '@template'
+            - '@user'
+
+    minty.seeds.controller.ucp:
+        class: minty\seeds\controller\ucp_controller
+        arguments:
+            - '@dbal.conn'
+            - '@language'
+            - '@request'
+            - '@template'
+            - '@user'
+
+    minty.seeds.service:
+        class: minty\seeds\service
+        arguments:
+            - '@user'
+            - '%minty.seeds.tables.seeds_table%'
+
+    minty.seeds.listener:
+        class: minty\seeds\event\main_listener
+        arguments:
+            - '@language'
+            - '@controller.helper'
+            - '@template'
+            - '%core.php_ext%'
+        tags:
+            - { name: event.listener }

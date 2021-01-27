@@ -1,0 +1,2 @@
+parameters:
+    minty.seeds.tables.seeds_table: '%core.table_prefix%minty_seeds_table'
