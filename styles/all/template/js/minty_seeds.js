@@ -125,36 +125,35 @@ var month_options = [
 
 var grid = new dhx.Grid("grid", {
     columns: [
-      { width: 50, id: "seed_id", header: [{ text: "ID" }]  },
+      { width: 50,  id: "id", header: [{ text: "ID" }]  },
       { width: 150, id: "seed_name", type:"string", header: [{ text: "Name" }, { content: "inputFilter" }], type: "string", editorType: "input" },
-      // { width: 150, id: "breeder_name", header: [{ text: "Breeder" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: breeders_options },
-      // { width: 100, id: "flowering_type", header: [{ text: "Type" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: [' ','Regular','Feminised','Auto'] },
-      // { width: 80, id: "sex", header: [{ text: "Sex" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: [' ','Male','Female'] },
-      // { width: 50, id: "indoor_yn", type:"boolean", editorType: "checkbox", header: [{ text: "Indoor" } ] }, 
-      // { width: 50, id: "outdoor_yn", type:"boolean", editorType: "checkbox", header: [{ text: "Outdoor" }] },
-      // { width: 110, id: "flowering_time_days", header: [{ text: "Flowering Time" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "harvest_outdoors", type: "date", dateFormat: "%M", header: [{ text: "Harvest Month" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "thc_percentage", type:"number", header: [{ text: "THC %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "cbd_percentage", type:"number", header: [{ text: "CBD %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "indica_percentage", type:"number", header: [{ text: "Indica %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "sativa_percentage", type:"number", header: [{ text: "Sativa %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "ruderalis_percentage", type:"number", header: [{ text: "Ruderalis %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "yeild_indoors_grams", type:"number", header: [{ text: "Indoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "yeild_outdoors_grams", type:"number", header: [{ text: "Outdoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "height_indoors_mm", type:"number", header: [{ text: "Indoor Height" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 110, id: "height_outdoors_mm", type:"number", header: [{ text: "Outdoor Height" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      // { width: 200, id: "minty_sl_genetics", header: [{ text: "Genetics" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
-      // { width: 200, id: "minty_sl_smells", header: [{ text: "Smells" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
-      // { width: 200, id: "minty_sl_tastes", header: [{ text: "Tastes" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
-      // { width: 200, id: "minty_sl_effects", header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
-      // { width: 200, id: "minty_sl_meta_tag", header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
-      // { width: 200, id: "seed_desc", header: [{ text: "Desc" }, { content: "inputFilter" }] },
-      // { width: 200, id: "forum_url", header: [{ text: "Forum Link" }] },
+      { width: 150, id: "breeder_name", header: [{ text: "Breeder" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: breeders_options },
+      { width: 100, id: "flowering_type", header: [{ text: "Type" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: [' ','Regular','Feminised','Auto'] },
+      { width: 80, id: "sex", header: [{ text: "Sex" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: [' ','Male','Female'] },
+      { width: 50, id: "indoor_yn", type:"boolean", editorType: "checkbox", header: [{ text: "Indoor" } ] }, 
+      { width: 50, id: "outdoor_yn", type:"boolean", editorType: "checkbox", header: [{ text: "Outdoor" }] },
+      { width: 110, id: "flowering_time_days", header: [{ text: "Flowering Time" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "harvest_outdoors", type: "date", dateFormat: "%M", header: [{ text: "Harvest Month" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "thc_percentage", type:"number", header: [{ text: "THC %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "cbd_percentage", type:"number", header: [{ text: "CBD %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "indica_percentage", type:"number", header: [{ text: "Indica %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "sativa_percentage", type:"number", header: [{ text: "Sativa %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "ruderalis_percentage", type:"number", header: [{ text: "Ruderalis %" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "yeild_indoors_grams", type:"number", header: [{ text: "Indoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "yeild_outdoors_grams", type:"number", header: [{ text: "Outdoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "height_indoors_mm", type:"number", header: [{ text: "Indoor Height" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 110, id: "height_outdoors_mm", type:"number", header: [{ text: "Outdoor Height" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 200, id: "minty_sl_genetics", header: [{ text: "Genetics" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
+      { width: 200, id: "minty_sl_smells", header: [{ text: "Smells" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
+      { width: 200, id: "minty_sl_tastes", header: [{ text: "Tastes" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
+      { width: 200, id: "minty_sl_effects", header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
+      { width: 200, id: "minty_sl_meta_tag", header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox"  },
+      { width: 200, id: "seed_desc", header: [{ text: "Desc" }, { content: "inputFilter" }] },
+      { width: 200, id: "forum_url", header: [{ text: "Forum Link" }] },
     ],
     editable: true,
     autoEmptyRow:false,
     height: 620,  
-    // height: 220,  
     // leftSplit:2, 
     multiselection:true,
     selection:"row",    
@@ -162,25 +161,24 @@ var grid = new dhx.Grid("grid", {
   });
 
   var lazyDataProxy = new dhx.LazyDataProxy(GRID_SELECT, {
-    from: 0,
-    limit: 30,
+    limit: 15,
     prepare: 0,
-    delay: 50,
+    delay: 10,
+    from: 0
   });
+
   grid.data.events.on("AfterLazyLoad", function (from, count) {
-    debugger;
+    console.log("AfterLazyLoad");
   });
   grid.data.events.on("AfterAdd", function(newItem){
-    debugger;
     console.log("A new item is added");
   });
   grid.data.events.on("LoadError", function(error){
-   debugger;
+    console.log("LoadError");
   });
 
   grid.data.load(lazyDataProxy);
-  // grid.data.load(GRID_SELECT + "?from=0&limit=30");
-
+  
   
   var buttons = new dhx.Form("button_container", {
     css: "dhx_widget--bordered",

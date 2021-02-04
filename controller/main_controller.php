@@ -103,45 +103,47 @@ class main_controller
 					'S.vote_dislikes, S.seed_desc, S.forum_url' . 
 				' FROM phpbb_minty_sl_seeds S, phpbb_minty_sl_breeder B' .
 				' WHERE S.breeder_id = B.breeder_id'  . 
-				' AND S.seed_id > ' . $from . ' AND S.seed_id < ' . ($from + $limit);
-			
+				' AND S.seed_id >= ' . $from . ' AND S.seed_id <= ' . ($from + $limit);
+			// @todo remove phpbb prefix
+
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$seed_list[] = array(
-				'seed_id'				=> (int) $row['seed_id'],
+				'id'				=> $row['seed_id'],
 				'seed_name'				=> $row['seed_name'],
-				// 'breeder_name'			=> $row['breeder_name'],
-				// 'flowering_type' 		=> $this->convertType($row['flowering_type']),
-				// 'sex' 					=> $this->convertSex($row['sex']),
-				// 'indoor_yn' 			=> boolval($row['indoor_yn']),
-				// 'outdoor_yn' 			=> boolval($row['outdoor_yn']),
-				// 'flowering_time_days' 	=> $row['flowering_time_days'],
-				// 'harvest_outdoors' 		=> $row['harvest_outdoors'],
-				// 'thc_percentage' 		=> $row['thc_percentage'],
-				// 'cbd_percentage' 		=> $row['cbd_percentage'],
-				// 'indica_percentage' 	=> $row['indica_percentage'],
-				// 'sativa_percentage' 	=> $row['sativa_percentage'],
-				// 'ruderalis_percentage' 	=> $row['ruderalis_percentage'],
-				// 'yeild_indoors_grams' 	=> $row['yeild_indoors_grams'],
-				// 'yeild_outdoors_grams' 	=> $row['yeild_outdoors_grams'],
-				// 'height_indoors_mm' 	=> $row['height_indoors_mm'],
-				// 'height_outdoors_mm' 	=> $row['height_outdoors_mm'],
-				// 'vote_likes' 			=> $row['vote_likes'],
-				// 'vote_dislikes' 		=> $row['vote_dislikes'],
-				// 'seed_desc' 			=> $row['seed_desc'],
-				// 'forum_url' 			=> $row['forum_url']
+				'breeder_name'			=> $row['breeder_name'],
+				'flowering_type' 		=> $this->convertType($row['flowering_type']),
+				'sex' 					=> $this->convertSex($row['sex']),
+				'indoor_yn' 			=> boolval($row['indoor_yn']),
+				'outdoor_yn' 			=> boolval($row['outdoor_yn']),
+				'flowering_time_days' 	=> $row['flowering_time_days'],
+				'harvest_outdoors' 		=> $row['harvest_outdoors'],
+				'thc_percentage' 		=> $row['thc_percentage'],
+				'cbd_percentage' 		=> $row['cbd_percentage'],
+				'indica_percentage' 	=> $row['indica_percentage'],
+				'sativa_percentage' 	=> $row['sativa_percentage'],
+				'ruderalis_percentage' 	=> $row['ruderalis_percentage'],
+				'yeild_indoors_grams' 	=> $row['yeild_indoors_grams'],
+				'yeild_outdoors_grams' 	=> $row['yeild_outdoors_grams'],
+				'height_indoors_mm' 	=> $row['height_indoors_mm'],
+				'height_outdoors_mm' 	=> $row['height_outdoors_mm'],
+				'vote_likes' 			=> $row['vote_likes'],
+				'vote_dislikes' 		=> $row['vote_dislikes'],
+				'seed_desc' 			=> $row['seed_desc'],
+				'forum_url' 			=> $row['forum_url']
 			);
 		}
 
 		$json = (object) [
 			'data' => $seed_list,
-			// 'total_count' => $this->getTotalRecordCount(),
-			// 'from' => $from
+			'total_count' => $this->getTotalRecordCount(),
+			'from' => $from
 		];
 
 		$this->db->sql_freeresult($result);
 		$json_response = new \phpbb\json_response();
-		$json_response->send($seed_list);
+		$json_response->send($json);
+
 
 		// @todo
 		// { width: 200, id: "minty_sl_genetics", header: [{ text: "Genetics" }] },
@@ -155,7 +157,7 @@ class main_controller
 
 	function getTotalRecordCount() {
 		//@todo 
-		return 30;
+		return 29;
 	}
 
 	function convertSex($sex) {
