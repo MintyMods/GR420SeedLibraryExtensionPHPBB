@@ -68,8 +68,10 @@ class main_controller
 		if ($name == 'json') {
 			$json_response = new \phpbb\json_response();
 			return $json_response->send($this->getJson());
-		} else if ($name == 'FORM_POST') {
-			return $this->processFormPost($this->$request);		
+		} else if ($name == 'SEED_POST') {
+			return $this->processSeedFormPost($this->$request);		
+		} else if ($name == 'BREEDER_POST') {
+			return $this->processBreederFormPost($this->$request);		
 		} else if ($name == 'GRID_SELECT') {
 			return $this->getGridSelectJson();		
 		} else if ($name == 'world') {
@@ -80,10 +82,19 @@ class main_controller
 
 	}
 
-	function processFormPost($request) {
-		$seed_id = $request->variable('seed_id', 0);// 0 for int ' '  for string	
-		$seed_name = $request->variable('seed_name', '');// 0 for int ' '  for string
+	function processSeedFormPost($request) {
+		$seed_id = $this->request->variable('seed_id', 0);// 0 for int ' '  for string	
+		$seed_name = $this->request->variable('seed_name', '');// 0 for int ' '  for string
 		// var_dump($this->request); 
+		// echo "Hello world!";		
+	}
+	function processBreederFormPost($request) {
+		$breeder_id = $this->request->variable('breeder_id', 0);// 0 for int ' '  for string	
+		$breeder_name = $this->request->variable('breeder_name', '');// 0 for int ' '  for string
+		$breeder_desc = $this->request->variable('breeder_desc', '');// 0 for int ' '  for string
+		$breeder_url = $this->request->variable('breeder_url', '');// 0 for int ' '  for string
+		$sponsor_yn = $this->request->variable('sponsor_yn', '');// 0 for int ' '  for string
+		 var_dump($this->request); 
 		// echo "Hello world!";		
 	}
 
@@ -96,10 +107,9 @@ class main_controller
 		$seed_list = array();
 		$sql = ' SELECT S.seed_id, S.seed_name, B.breeder_name,' . 
 				    'S.flowering_type, S.sex, S.indoor_yn, S.outdoor_yn,' . 
-					'S.flowering_time_days,	S.harvest_outdoors, S.thc_percentage,' .
-					'S.cbd_percentage, S.indica_percentage, S.sativa_percentage, ' .
-					'S.ruderalis_percentage, S.yeild_indoors_grams, S.yeild_outdoors_grams,' .
-					'S.height_indoors_mm, S.height_outdoors_mm, S.vote_likes,' .
+					'S.flowering_time,	S.harvest_month, S.thc, S.cbd, ' .
+					'S.indica, S.sativa, S.ruderalis, S.yeild_indoors, S.yeild_outdoors,' .
+					'S.height_indoors, S.height_outdoors, S.vote_likes,' .
 					'S.vote_dislikes, S.seed_desc, S.forum_url' . 
 				' FROM phpbb_minty_sl_seeds S, phpbb_minty_sl_breeder B' .
 				' WHERE S.breeder_id = B.breeder_id'  . 
@@ -109,24 +119,24 @@ class main_controller
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$seed_list[] = array(
-				'id'				=> $row['seed_id'],
+				'id'					=> $row['seed_id'],
 				'seed_name'				=> $row['seed_name'],
 				'breeder_name'			=> $row['breeder_name'],
 				'flowering_type' 		=> $this->convertType($row['flowering_type']),
 				'sex' 					=> $this->convertSex($row['sex']),
 				'indoor_yn' 			=> boolval($row['indoor_yn']),
 				'outdoor_yn' 			=> boolval($row['outdoor_yn']),
-				'flowering_time_days' 	=> $row['flowering_time_days'],
-				'harvest_outdoors' 		=> $row['harvest_outdoors'],
-				'thc_percentage' 		=> $row['thc_percentage'],
-				'cbd_percentage' 		=> $row['cbd_percentage'],
-				'indica_percentage' 	=> $row['indica_percentage'],
-				'sativa_percentage' 	=> $row['sativa_percentage'],
-				'ruderalis_percentage' 	=> $row['ruderalis_percentage'],
-				'yeild_indoors_grams' 	=> $row['yeild_indoors_grams'],
-				'yeild_outdoors_grams' 	=> $row['yeild_outdoors_grams'],
-				'height_indoors_mm' 	=> $row['height_indoors_mm'],
-				'height_outdoors_mm' 	=> $row['height_outdoors_mm'],
+				'flowering_time'	 	=> $row['flowering_time'],
+				'harvest_month'			=> $row['harvest_month'],
+				'thc'			 		=> $row['thc'],
+				'cbd'			 		=> $row['cbd'],
+				'indica'			 	=> $row['indica'],
+				'sativa'			 	=> $row['sativa'],
+				'ruderalis'			 	=> $row['ruderalis'],
+				'yeild_indoors'		 	=> $row['yeild_indoors'],
+				'yeild_outdoors'	 	=> $row['yeild_outdoors'],
+				'height_indoors'	 	=> $row['height_indoors'],
+				'height_outdoors'	 	=> $row['height_outdoors'],
 				'vote_likes' 			=> $row['vote_likes'],
 				'vote_dislikes' 		=> $row['vote_dislikes'],
 				'seed_desc' 			=> $row['seed_desc'],
