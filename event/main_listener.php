@@ -78,7 +78,7 @@ class main_listener implements EventSubscriberInterface
 	public function add_page_header_link()
 	{
 		$this->template->assign_vars(array(
-			'U_SEEDS_PAGE'	=> $this->helper->route('minty_seeds_controller', array('name' => 'world')),
+			'U_SEEDS_PAGE'	=> $this->helper->route('minty_seeds_controller', array('name' => 'main')),
 		));
 	}
 

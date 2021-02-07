@@ -68,7 +68,7 @@ class install_sample_schema extends \phpbb\db\migration\migration
 						'vote_likes'			=> array('VCHAR_UNI:255'),
 						'vote_dislikes'			=> array('VCHAR_UNI:255'),						
 						'seed_desc'				=> array('TEXT_UNI'),
-						'forum_url'				=> array('VCHAR_UNI:255'),
+						'url'					=> array('VCHAR_UNI:255'),
 					),
 					'PRIMARY_KEY'	=> 'seed_id',
 				),
