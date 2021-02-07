@@ -90,10 +90,10 @@ function buildSeedGrid() {
       { width: 200, id: "seed_desc", header: [{ text: "Desc" }, { content: "inputFilter" }] },
       { width: 200, id: "forum_url", header: [{ text: "Forum Link" }] },
     ],
-    editable: true,
+    editable: false,
     autoEmptyRow: false,
     height: 620,
-    multiselection: true,
+    multiselection: false,
     selection: "row",
     resizable: true,
   });
@@ -208,7 +208,7 @@ function buildBreederWindow() {
     { type: "spacer" },
     { id: "breeder_save", type: "button", value: "Save", view: "flat", color: "primary", icon: "dxi dxi-checkbox-marked-circle", },
     { id: "breeder_cancel", type: "button", value: "Cancel", view: "flat", color: "secondary", icon: "dxi dxi-close-circle", },
-    { id: "breeder_delete", type: "button", disabled: true, value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-alert-circle", },
+    // { id: "breeder_delete", type: "button", disabled: true, value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-alert-circle", },
   ], 0);
 
   breederWindow.footer.events.on("click", function (id) {
@@ -220,9 +220,7 @@ function buildBreederWindow() {
       }
       case 'breeder_save': {
         if (breederForm.validate()) {
-          breederForm.send(BREEDER_POST_URL, "POST", true).then(function (result) {
-            breederFormSaved(result);
-          }).catch(function (e) {
+          breederForm.send(BREEDER_POST_URL, "POST", true).then(breederFormSaved).catch(function (e) {
             err(e.statusText);
           });
         } else {
@@ -249,7 +247,10 @@ function buildBreederForm() {
 }
 
 function breederFormSaved(response) {
-  if (response.saved) {
+  var json = JSON.parse(response);
+  if (json.saved) {
+    debugger;
+    seedForm.setValue(json.data);
     msg("Breeder Details Saved");
     breederForm.clear();
     breederWindow.hide();

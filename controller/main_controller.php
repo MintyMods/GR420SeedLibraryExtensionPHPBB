@@ -181,12 +181,12 @@ class main_controller {
 
 	function getBreederOptionsJson() {
 		$result_list = array();
-		$sql = 'SELECT * FROM ' . TABLE_BREEDER;
+		$sql = 'SELECT breeder_id AS id, breeder_name AS value FROM ' . TABLE_BREEDER;
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$result_list[] = array(
-				'id'	=> $row['breeder_id'],
-				'value'	=> $row['breeder_name'],
+				'id'	=> $row['id'],
+				'value'	=> $row['value'],
 			);
 		}
 		$this->db->sql_freeresult($result);
@@ -195,12 +195,14 @@ class main_controller {
 
 	function getGeneticOptionsJson() {
 		$result_list = array();
-		$sql = 'SELECT *  FROM ' . TABLE_SEEDS;
+		$sql = 'SELECT S.seed_id AS id, CONCAT(S.seed_name, " - ", B.breeder_name)  AS value' .
+			   ' FROM ' . TABLE_SEEDS . ' S, ' . TABLE_BREEDER . ' B' .
+			   ' WHERE S.breeder_id = B.breeder_id';
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$result_list[] = array(
-				'id'	=> $row['seed_id'],
-				'value'	=> $row['seed_name'],
+				'id'	=> $row['id'],
+				'value'	=> $row['value'],
 			);
 		}
 		$this->db->sql_freeresult($result);
@@ -259,21 +261,37 @@ class main_controller {
 		return $json;			
 	}
 
-	function processBreederFormPost($request) {
+	function processBreederFormPost() {
+		$name = request_var('breeder_name', '');
+		$desc = request_var('breeder_desc', '');
+		$url = request_var('breeder_url', '');
+		$sponsor = request_var('sponsor_yn', 'false') == 'true';
 		$sql_ary = array(
-			'breeder_name'	=> request_var('breeder_name', ''),
-			'breeder_desc'	=> request_var('breeder_desc', ''),
-			'breeder_url'	=> request_var('breeder_url', ''),
-			'sponsor_yn'	=> (bool) request_var('sponsor_yn', ''),
+			'breeder_name'	=> $this->db->sql_escape($name),
+			'breeder_desc'	=> $this->db->sql_escape($desc),
+			'breeder_url'	=> $this->db->sql_escape($url),
+			'sponsor_yn'	=> $sponsor,
 		);
 		$sql = 'INSERT INTO ' . TABLE_BREEDER . $this->db->sql_build_array('INSERT', $sql_ary);
 		$result = $this->db->sql_query($sql);
 		$json = (object) [
 			'saved' => $result,
+			'id' => $this->getBreederId($name),
 			'data' => $sql_ary
 		];
 		$this->db->sql_freeresult($result);
 		return $json;
+	}
+
+
+	function getBreederId($name) {
+		$sql = 'SELECT breeder_id AS id FROM ' . TABLE_BREEDER . 
+		' WHERE breeder_name ="' . $this->db->sql_escape($name) . '"';
+		$result = $this->db->sql_query($sql);
+		$row = $this->db->sql_fetchrow($result);
+		$id = $row['id'];
+		$this->db->sql_freeresult($result);
+		return $id;	
 	}
 
 	function getTotalRecordCount() {
@@ -294,7 +312,7 @@ class main_controller {
 			return '';
 		}
 	}
-	
+
 	function convertType($sex) {
 		if ($sex == 'R') {
 			return 'Regular';
