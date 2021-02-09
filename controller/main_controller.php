@@ -27,6 +27,7 @@ class main_controller {
 	protected $template;
 	protected $language;
 	protected $db;
+	protected $file_factory;
 	protected $log;
 	protected $php_ext;
 	protected $phpbb_root_path;
@@ -37,6 +38,7 @@ class main_controller {
 								\phpbb\template\template $template, 
 								\phpbb\language\language $language,
 								\phpbb\db\driver\factory $dbal,
+								\phpbb\files\factory $file_factory,
 								\phpbb\log\log $log,
 								$phpbb_root_path, 
 								$phpEx
@@ -47,36 +49,40 @@ class main_controller {
 		$this->template	= $template;
 		$this->language	= $language;
 		$this->db = $dbal;
+		$this->file_factory = $file_factory;		
 		$this->log	= $log;
 		$this->php_ext = $phpEx;
-		$this->phpbb_root_path = $phpbb_root_path;			
+		$this->phpbb_root_path = $phpbb_root_path;	
 	}
 
 	public function handle($name) {
-		require("./config.php"); 
+		require_once("./config" . $this->php_ext); 
+
 		$this->request->enable_super_globals();
 		$json = null;
 		if ($name == 'SEED_POST') {
 			return $this->processSeedFormPost();		
+		} else if ($name == 'BREEDER_UPLOAD') {
+			$json = $this->processFileUpload();		
 		} else if ($name == 'BREEDER_POST') {
 			$json = $this->processBreederFormPost();		
-		} else if ($name == 'BREEDER_OPTIONS') {
+		} else if ($name == 'breeder_id') {
 			$json = $this->getBreederOptionsJson();	
 		} else if ($name == 'BREEDER_SELECT_RECORD') {
 			$json = $this->getBreedersRecordJson();	
 		} else if ($name == 'GRID_SELECT_RECORDS') {
 			$json = $this->getGridSelectJson();		
-		} else if ($name == 'GENETICS_OPTIONS') {
+		} else if ($name == 'minty_sl_genetics') {
 			$json = $this->getGeneticOptionsJson();	
-		} else if ($name == 'SMELLS_OPTIONS') {
+		} else if ($name == 'minty_sl_smells') {
 			$json = $this->getSmellsOptionsJson();	
-		} else if ($name == 'EFFECTS_OPTIONS') {
+		} else if ($name == 'minty_sl_effects') {
 			$json = $this->geEffectsOptionsJson();	
-		} else if ($name == 'TASTES_OPTIONS') {
+		} else if ($name == 'minty_sl_tastes') {
 			$json = $this->getTastesOptionsJson();	
-		} else if ($name == 'META_TAGS_OPTIONS') {
+		} else if ($name == 'minty_sl_meta_tags') {
 			$json = $this->getMetaTagsOptionsJson();	
-		} else if ($name == 'AWARDS_OPTIONS') {
+		} else if ($name == 'minty_sl_awards') {
 			$json = $this->getAwardsOptionsJson();	
 		} else  {
 			$this->template->assign_var('SEEDS_MESSAGE', $this->language->lang($l_message, $name));
@@ -88,7 +94,7 @@ class main_controller {
 
 	function getBreedersRecordJson() {
 		$result_list = array();
-		$sql = 'SELECT *  FROM ' . TABLE_BREEDER;
+		$sql = 'SELECT * FROM ' . TABLE_BREEDER;
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$result_list[] = array(
@@ -261,10 +267,23 @@ class main_controller {
 		return $json;			
 	}
 
+	function processFileUpload() {
+		// $filespec = $this->file_factory->get('files.filespec');
+		// $upload = $this->file_factory->get('files.upload')->set_allowed_extensions(array('jpg', 'jpeg', 'gif', 'png'));
+		// $upload_dir = $this->phpbb_root_path . 'minty_uploads';
+		// $files = $upload->handle_upload('files.types.form', 'file_upload');
+		$upload_file = $this->request->file('breeder_logo');
+		if (!empty($upload_file['breeder_logo'])) {
+			$file = $upload->handle_upload('files.types.form', 'breeder_logo');
+		}
+
+	}
+
 	function processBreederFormPost() {
 		$name = request_var('breeder_name', '');
 		$desc = request_var('breeder_desc', '');
 		$url = request_var('breeder_url', '');
+		$logo = request_var('breeder_logo', array());
 		$sponsor = request_var('sponsor_yn', 'false') == 'true';
 		$sql_ary = array(
 			'breeder_name'	=> $this->db->sql_escape($name),
