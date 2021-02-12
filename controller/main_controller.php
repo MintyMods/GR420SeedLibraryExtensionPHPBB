@@ -60,11 +60,11 @@ class main_controller {
 
 		$this->request->enable_super_globals();
 		$json = null;
-		if ($name == 'SEED_POST') {
+		if ($name == 'minty_sl_seeds') {
 			return $this->processSeedFormPost();		
 		} else if ($name == 'BREEDER_UPLOAD') {
-			$json = $this->processFileUpload();		
-		} else if ($name == 'BREEDER_POST') {
+			// $json = $this->processFileUpload();		
+		} else if ($name == 'minty_sl_breeder') {
 			$json = $this->processBreederFormPost();		
 		} else if ($name == 'breeder_id') {
 			$json = $this->getBreederOptionsJson();	
@@ -92,6 +92,79 @@ class main_controller {
 		$json_response->send($json);
 	}
 
+	function processSeedFormPost() {
+		$seed_id = $this->request->variable('seed_id', 0);
+		if ($seed_id == 0) {
+			$seed_id = $this->insertNewSeedRecord();
+		}
+		if ($seed_id > 0) {
+			// $this->processComboOptions('minty_sl_genetics', $seed_id);
+			// $this->processComboOptions('minty_sl_awards', $seed_id);
+			// $this->processComboOptions('minty_sl_smells', $seed_id);
+			// $this->processComboOptions('minty_sl_tastes', $seed_id);
+			// $this->processComboOptions('minty_sl_effects', $seed_id);
+			$this->processComboOptions('minty_sl_meta_tags', $seed_id);
+		}
+	}
+
+	function getTablePrefixFromComboName($name) {
+		$prefix = str_replace('minty_sl_', '', $name); 
+		$prefix = substr ($prefix, 0, strlen($prefix) - 1);
+		return $prefix;
+	}
+
+	function processComboOptions($name, $seed_id) {
+		$values = $this->request->variable($name, array('' => ''), true);
+		$prefix = $this->getTablePrefixFromComboName($name);
+		$new_ary = array();
+
+		foreach ($values as $value) {
+			array_push($new_ary, [
+				'seed_id'		=> $seed_id,
+				$prefix . '_id'	=> $this->parseComboValue($name, $seed_id, $value, $prefix)
+			]);
+		}
+
+		$sql = 'INSERT INTO ' . $name . $this->db->sql_build_array('INSERT', $new_ary);
+		$result = $this->db->sql_query($sql);
+		// $json = (object) [
+		// 	'saved' => $result,
+		// 	'data' => $sql_ary
+		// ];	
+		$this->db->sql_freeresult($result);	
+	}
+
+	function parseComboValue($name, $seed_id, $value, $prefix) {
+		if (substr($value, 0, 2) === 'U:') {
+			//@todo determine name from U:xxx value submitted by form...
+			$tag = $value;
+			return $this->addNewUserTag($name, $seed_id, $tag, $prefix);
+		}
+		return $value;	
+	}
+
+	function addNewUserTag($table, $seed_id, $tag, $prefix) {
+		$sql_ary = array(
+			$prefix . '_name'	=> $this->db->sql_escape($tag),
+			$prefix . '_desc'	=> '** added dynamically by seed id ' . $seed_id . ' **',
+		);
+		$sql = 'INSERT INTO ' . TABLE_PREFIX . 'minty_sl_'.$prefix . $this->db->sql_build_array('INSERT', $sql_ary);
+		$result = $this->db->sql_query($sql);
+		$this->db->sql_freeresult($result);
+		return $this->getComboTagId($table, $seed_id, $tag, $prefix);
+	}
+
+	function getComboTagId($table, $seed_id, $value, $prefix) {
+		$sql = 'SELECT ' . $prefix . '_id FROM ' . TABLE_PREFIX . $table . ' WHERE ' . $prefix . '_name = ' . $value . '';
+		$result = $this->db->sql_query($sql);
+		$id = 0;
+		if ($row = $this->db->sql_fetchrow($result))	{
+			$id	= $row[$prefix . '_id'];
+		}		
+		$this->db->sql_freeresult($result);
+		return $id;
+	}
+
 	function getBreedersRecordJson() {
 		$result_list = array();
 		$sql = 'SELECT * FROM ' . TABLE_BREEDER;
@@ -109,10 +182,47 @@ class main_controller {
 		return (object) ['data' => $result_list];
 	}
 
-	function processSeedFormPost() {
-		$seed_id = request_var('seed_id', 0);
-		$seed_name = request_var('seed_name', '');
-		// var_dump($this->request); 
+	function insertNewSeedRecord() {
+		$name = $this->db->sql_escape($this->request->variable('seed_name', ''));
+		$breeder = $this->request->variable('breeder_id', 0);
+		$sql_ary = array(
+			'seed_name'			=> $name,
+			'breeder_id'		=> $breeder,
+			'flowering_type'	=> $this->db->sql_escape($this->request->variable('flowering_type', '')),
+			'sex'				=> $this->db->sql_escape($this->request->variable('sex', '')),
+			'indoor_yn'			=> boolval($this->db->sql_escape($this->request->variable('indoor_yn', false))),
+			'outdoor_yn'		=> boolval($this->db->sql_escape($this->request->variable('outdoor_yn', false))),
+			'thc'				=> $this->db->sql_escape($this->request->variable('thc', '')),
+			'cbd'				=> $this->db->sql_escape($this->request->variable('cbd', '')),
+			'indica'			=> $this->db->sql_escape($this->request->variable('indica', '')),
+			'sativa'			=> $this->db->sql_escape($this->request->variable('sativa', '')),
+			'ruderalis'			=> $this->db->sql_escape($this->request->variable('ruderalis', '')),
+			'yeild_indoors'		=> $this->db->sql_escape($this->request->variable('yeild_indoors', '')),
+			'yeild_outdoors'	=> $this->db->sql_escape($this->request->variable('yeild_outdoors', '')),
+			'height_indoors'	=> $this->db->sql_escape($this->request->variable('height_indoors', '')),
+			'height_outdoors'	=> $this->db->sql_escape($this->request->variable('height_outdoors', '')),
+			'flowering_time'	=> $this->db->sql_escape($this->request->variable('flowering_time', '')),
+			'harvest_month'		=> $this->db->sql_escape($this->request->variable('harvest_month', '')),
+			'seed_desc'			=> $this->db->sql_escape($this->request->variable('seed_desc', '')),
+		);
+		$sql = 'INSERT INTO ' . TABLE_SEEDS . $this->db->sql_build_array('INSERT', $sql_ary);
+		if ($this->db->sql_query($sql)) {
+			return $this->getSeedIdFromNameAndBreeder($name, $breeder);	
+		}
+		return -1;
+	}
+
+	function getSeedIdFromNameAndBreeder($name, $breeder) {
+		$id = -1;
+		$sql = ' SELECT seed_id FROM ' . TABLE_SEEDS . ' WHERE breeder_id = ' . 
+			   $this->db->sql_escape($breeder) . 
+			   ' AND seed_name = "' . $this->db->sql_escape($name) . '"';
+		$result = $this->db->sql_query($sql);
+		if ($row = $this->db->sql_fetchrow($result)) {
+			$id = $row['seed_id'];
+		}
+		$this->db->sql_freeresult($result);
+		return $id;
 	}
 
 	function getSmellsOptionsJson() {
@@ -200,6 +310,7 @@ class main_controller {
 	}
 
 	function getGeneticOptionsJson() {
+		// @todo sort out paging for this option
 		$result_list = array();
 		$sql = 'SELECT S.seed_id AS id, CONCAT(S.seed_name, " - ", B.breeder_name)  AS value' .
 			   ' FROM ' . TABLE_SEEDS . ' S, ' . TABLE_BREEDER . ' B' .
@@ -216,8 +327,9 @@ class main_controller {
 	}
 
 	function getGridSelectJson() {
-		$from = request_var('from', 0);
-		$limit = request_var('limit', 0);
+		$from = $this->request->variable('from', 0);
+		$limit = $this->request->variable('limit', 0);
+		$total_count = $this->getTotalRecordCount();
 		$result_list = array();
 		$sql = ' SELECT S.seed_id, S.seed_name, B.breeder_name,' . 
 				    'S.flowering_type, S.sex, S.indoor_yn, S.outdoor_yn,' . 
@@ -227,8 +339,8 @@ class main_controller {
 					'S.vote_dislikes, S.seed_desc, S.forum_url' . 
 				' FROM ' . TABLE_SEEDS . ' S, ' . TABLE_BREEDER . ' B' .
 				' WHERE S.breeder_id = B.breeder_id'  . 
-				' AND S.seed_id >= ' . $this->db->sql_escape($from) . 
-				' AND S.seed_id <= ' . $this->db->sql_escape(($from + $limit));
+				' LIMIT ' . $this->db->sql_escape($from) . 
+				' , ' . $this->db->sql_escape($limit);
 
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
@@ -261,7 +373,7 @@ class main_controller {
 
 		$json = (object) [
 			'data' => $result_list,
-			'total_count' => $this->getTotalRecordCount(),
+			'total_count' => $total_count,
 			'from' => $from
 		];
 		return $json;			
@@ -276,15 +388,14 @@ class main_controller {
 		if (!empty($upload_file['breeder_logo'])) {
 			$file = $upload->handle_upload('files.types.form', 'breeder_logo');
 		}
-
 	}
 
 	function processBreederFormPost() {
-		$name = request_var('breeder_name', '');
-		$desc = request_var('breeder_desc', '');
-		$url = request_var('breeder_url', '');
-		$logo = request_var('breeder_logo', array());
-		$sponsor = request_var('sponsor_yn', 'false') == 'true';
+		$name = $this->request->variable('breeder_name', '');
+		$desc = $this->request->variable('breeder_desc', '');
+		$url = $this->request->variable('breeder_url', '');
+		// $logo = $this->request->variable('breeder_logo', array());
+		$sponsor = $this->request->variable('sponsor_yn', 'false') == 'true';
 		$sql_ary = array(
 			'breeder_name'	=> $this->db->sql_escape($name),
 			'breeder_desc'	=> $this->db->sql_escape($desc),
@@ -301,7 +412,6 @@ class main_controller {
 		$this->db->sql_freeresult($result);
 		return $json;
 	}
-
 
 	function getBreederId($name) {
 		$sql = 'SELECT breeder_id AS id FROM ' . TABLE_BREEDER . 

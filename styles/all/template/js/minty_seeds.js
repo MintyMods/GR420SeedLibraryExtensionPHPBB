@@ -11,8 +11,8 @@ const expire = 3000;
 const WINDOW_WIDTH = 600;
 
 const GRID_SELECT_URL = "GRID_SELECT_RECORDS";
-const SEED_POST_URL = "SEED_POST";
-const BREEDER_POST_URL = "BREEDER_POST";
+const SEED_POST_URL = "minty_sl_seeds";
+const BREEDER_POST_URL = "minty_sl_breeder";
 const BREEDER_UPLOAD_URL = "BREEDER_UPLOAD";
 const BREEDER_SELECT_URL = "BREEDER_SELECT_RECORD";
 
@@ -276,35 +276,45 @@ function buildSeedForm() {
     ]
   });
   seedForm.getItem("add_breeder_button").events.on("Click", showAddBreederWindow);
-  processComboControls(COMBO_CONTROLS);
+  processComboControls(COMBO_CONTROLS, seedForm);
   seedForm.getItem(BREEDER_ID).getWidget().data.load(BREEDER_ID);
 }
 
 function processComboControls(controls) {
-  controls.forEach(function (control){
-    let widget = seedForm.getItem(control).getWidget();
-    processComboControlWidget(widget); 
-    widget.data.load(control);
+  controls.forEach(function (name){
+    processComboControl(name); 
   });
 }
 
-function processComboControlWidget(combobox) {
+function processComboControl(name) {
+  let control = seedForm.getItem(name);
+  let widget = control.getWidget();
+  widget.data.load(name);
+  addComboEvents(widget);
+
+}
+
+function addComboEvents(combobox) {
   combobox.events.on("Input", function (value) { 
-      this._input_value = value;
+    this._input_value = value;
   });  
   combobox.events.on("BeforeClose", function () {
-    const id = "u" + Math.floor(Math.random() * 10000);
+    const id = "U:" + Math.floor(Math.random() * 10000);
     const value = this._input_value;
-    if (value && !this.getValue(true).includes(value)) {
-        this.data.add({ id, value });
-        dhx.awaitRedraw().then(function () {
-          this.setValue(this.getValue(true).push(id));
-          this.paint();
-          dhx.awaitRedraw().then(function () { this.focus(); }.bind(this));
-        }.bind(this));
+    if (value && !this.getValue(getValueAsArray()).includes(value)) {
+      this.data.add({ id, value },0);
+      dhx.awaitRedraw().then(function () {
+        this.setValue(this.getValue(getValueAsArray()).push(id));
+        this.paint();
+        dhx.awaitRedraw().then(function () { this.focus(); }.bind(this));
+      }.bind(this));
     }
     this._input_value = undefined;
   });
+}
+
+function getValueAsArray() {
+  return true;
 }
 
 function clean(text) {
