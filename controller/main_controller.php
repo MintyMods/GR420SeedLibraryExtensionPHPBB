@@ -371,11 +371,11 @@ class main_controller {
 				'seed_desc' 			=> $row['seed_desc'],
 				'forum_url' 			=> $row['forum_url'],
 				TABLE_GENETICS			=> $this->getComboGeneticOptions($seed_id),
-				TABLE_SMELLS			=> $this->getComboOptions(TABLE_SMELLS, $seed_id),
-				TABLE_EFFECTS			=> $this->getComboOptions(TABLE_EFFECTS, $seed_id),
-				TABLE_TASTES			=> $this->getComboOptions(TABLE_TASTES, $seed_id),
-				TABLE_META_TAGS			=> $this->getComboOptions(TABLE_META_TAGS, $seed_id),
-				TABLE_AWARDS			=> $this->getComboOptions(TABLE_AWARDS, $seed_id),
+				// TABLE_SMELLS			=> $this->getComboOptions(TABLE_SMELLS, $seed_id),
+				// TABLE_EFFECTS			=> $this->getComboOptions(TABLE_EFFECTS, $seed_id),
+				// TABLE_TASTES			=> $this->getComboOptions(TABLE_TASTES, $seed_id),
+				// TABLE_META_TAGS			=> $this->getComboOptions(TABLE_META_TAGS, $seed_id),
+				// TABLE_AWARDS			=> $this->getComboOptions(TABLE_AWARDS, $seed_id),
 			);
 		}
 		$this->db->sql_freeresult($result);
@@ -414,8 +414,7 @@ class main_controller {
 			$descriptions[] = $row['parent_seed_id'];
 		}
 		$this->db->sql_freeresult($result);
-		// return $descriptions;
-		return '1';
+		return $descriptions;
 	}
 
 	function getGeneticOptions() {
