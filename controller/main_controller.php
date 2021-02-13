@@ -104,15 +104,27 @@ class main_controller {
 		$seed_id = $this->request->variable('seed_id', 0);
 		if ($seed_id == 0) {
 			$seed_id = $this->insertNewSeedRecord();
+		} else {
+			$seed_id = $this->updateExistingSeedRecord($seed_id);
 		}
 		if ($seed_id > 0) {
-			// $this->processComboOptions('minty_sl_genetics', $seed_id);
-			// $this->processComboOptions('minty_sl_awards', $seed_id);
-			// $this->processComboOptions('minty_sl_smells', $seed_id);
-			// $this->processComboOptions('minty_sl_tastes', $seed_id);
-			// $this->processComboOptions('minty_sl_effects', $seed_id);
+			$this->processComboOptions('minty_sl_genetics', $seed_id);
+			$this->processComboOptions('minty_sl_awards', $seed_id);
+			$this->processComboOptions('minty_sl_smells', $seed_id);
+			$this->processComboOptions('minty_sl_tastes', $seed_id);
+			$this->processComboOptions('minty_sl_effects', $seed_id);
 			$this->processComboOptions('minty_sl_meta_tags', $seed_id);
 		}
+		return (object) ['seed_id' => $seed_id];
+	}
+
+	function updateExistingSeedRecord($seed_id) {
+		$seed_name = $this->request->variable('seed_name', '');
+		$breeder_id = $this->request->variable('breeder_id', 0);
+		$sql_ary = $this->buildSqlArrayFromSeedFormRequest($seed_name, $breeder_id);
+		$sql = ' UPDATE ' . TABLE_SEEDS . ' SET ' . $this->db->sql_build_array('UPDATE', $sql_ary) . ' WHERE seed_id =' . $seed_id;
+		$this->db->sql_query($sql);
+		return $seed_id;
 	}
 
 	function getTablePrefixFromComboName($name) {
@@ -121,34 +133,36 @@ class main_controller {
 		return $prefix;
 	}
 
+	function deleteExistingComboRecords($name, $seed_id) {
+		$sql = 'DELETE FROM ' . TABLE_PREFIX . $name . ' WHERE seed_id = ' . $seed_id;
+		return $this->db->sql_query($sql);
+	}
+
+	function insertNewComboRecord($name, $seed_id, $value) {
+		$prefix = $this->getTablePrefixFromComboName($name);
+		$sql_ary = array(
+			'seed_id'		=> $seed_id,
+			$prefix . '_id'	=> $this->parseComboValue($name, $seed_id, $value, $prefix)
+		);
+		$sql = 'INSERT INTO ' . TABLE_PREFIX . $name . $this->db->sql_build_array('INSERT', $sql_ary);
+		$this->db->sql_query($sql);
+	}
+
 	function processComboOptions($name, $seed_id) {
 		$values = $this->request->variable($name, array('' => ''), true);
-		$prefix = $this->getTablePrefixFromComboName($name);
-		$new_ary = array();
-
+		$this->deleteExistingComboRecords($name, $seed_id);
 		foreach ($values as $value) {
-			array_push($new_ary, [
-				'seed_id'		=> $seed_id,
-				$prefix . '_id'	=> $this->parseComboValue($name, $seed_id, $value, $prefix)
-			]);
+			$this->insertNewComboRecord($name, $seed_id, $value);
 		}
-
-		$sql = 'INSERT INTO ' . $name . $this->db->sql_build_array('INSERT', $new_ary);
-		$result = $this->db->sql_query($sql);
-		// $json = (object) [
-		// 	'saved' => $result,
-		// 	'data' => $sql_ary
-		// ];	
-		$this->db->sql_freeresult($result);	
 	}
 
 	function parseComboValue($name, $seed_id, $value, $prefix) {
-		if (substr($value, 0, 2) === 'U:') {
+		if (strlen($value) > 1 && substr($value, 0, 2) === 'U:') {
 			//@todo determine name from U:xxx value submitted by form...
 			$tag = $value;
-			return $this->addNewUserTag($name, $seed_id, $tag, $prefix);
+			return intval ($this->addNewUserTag($name, $seed_id, $tag, $prefix));
 		}
-		return $value;	
+		return intval ($value);	
 	}
 
 	function addNewUserTag($table, $seed_id, $tag, $prefix) {
@@ -191,11 +205,20 @@ class main_controller {
 	}
 
 	function insertNewSeedRecord() {
-		$name = $this->db->sql_escape($this->request->variable('seed_name', ''));
-		$breeder = $this->request->variable('breeder_id', 0);
+		$seed_name = $this->request->variable('seed_name', '');
+		$breeder_id = $this->request->variable('breeder_id', 0);
+		$sql_ary = $this->buildSqlArrayFromSeedFormRequest($seed_name, $breeder_id);
+		$sql = 'INSERT INTO ' . TABLE_SEEDS . $this->db->sql_build_array('INSERT', $sql_ary);
+		if ($this->db->sql_query($sql)) {
+			return $this->getSeedIdFromNameAndBreeder($seed_name, $breeder_id);	
+		}
+		return -1;
+	}
+
+	function buildSqlArrayFromSeedFormRequest($seed_name, $breeder_id) {
 		$sql_ary = array(
-			'seed_name'			=> $name,
-			'breeder_id'		=> $breeder,
+			'seed_name'			=> $seed_name,
+			'breeder_id'		=> $breeder_id,
 			'flowering_type'	=> $this->db->sql_escape($this->request->variable('flowering_type', '')),
 			'sex'				=> $this->db->sql_escape($this->request->variable('sex', '')),
 			'indoor_yn'			=> boolval($this->db->sql_escape($this->request->variable('indoor_yn', false))),
@@ -212,12 +235,8 @@ class main_controller {
 			'flowering_time'	=> $this->db->sql_escape($this->request->variable('flowering_time', '')),
 			'harvest_month'		=> $this->db->sql_escape($this->request->variable('harvest_month', '')),
 			'seed_desc'			=> $this->db->sql_escape($this->request->variable('seed_desc', '')),
-		);
-		$sql = 'INSERT INTO ' . TABLE_SEEDS . $this->db->sql_build_array('INSERT', $sql_ary);
-		if ($this->db->sql_query($sql)) {
-			return $this->getSeedIdFromNameAndBreeder($name, $breeder);	
-		}
-		return -1;
+		);	
+		return $sql_ary;	
 	}
 
 	function getSeedIdFromNameAndBreeder($name, $breeder) {
@@ -339,7 +358,7 @@ class main_controller {
 		$limit = $this->request->variable('limit', 0);
 		$total_count = $this->getTotalRecordCount();
 		$result_list = array();
-		$sql = ' SELECT S.seed_id, S.seed_name, B.breeder_name,' . 
+		$sql = ' SELECT S.seed_id, S.seed_name, B.breeder_id, B.breeder_name,' . 
 				    'S.flowering_type, S.sex, S.indoor_yn, S.outdoor_yn,' . 
 					'S.flowering_time,	S.harvest_month, S.thc, S.cbd, ' .
 					'S.indica, S.sativa, S.ruderalis, S.yeild_indoors, S.yeild_outdoors,' .
@@ -355,6 +374,7 @@ class main_controller {
 			$result_list[] = array(
 				'id'					=> $row['seed_id'],
 				'seed_name'				=> $row['seed_name'],
+				'breeder_id'			=> $row['breeder_id'],
 				'breeder_name'			=> $row['breeder_name'],
 				'flowering_type' 		=> $this->convertType($row['flowering_type']),
 				'sex' 					=> $this->convertSex($row['sex']),

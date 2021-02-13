@@ -50,8 +50,8 @@ class install_sample_schema extends \phpbb\db\migration\migration
 						'seed_id'				=> array('UINT', null, 'auto_increment'),
 						'seed_name'				=> array('VCHAR_UNI:255', ''),
 						'breeder_id'			=> array('UINT', 0), /* minty_sl_breeder */
-						'flowering_type'		=> array('VCHAR_UNI:1', ''), /* A=Auto, F=Female, P=Photo */
-						'sex'					=> array('VCHAR_UNI:1', ''), /* M=Male, F=Female */
+						'flowering_type'		=> array('VCHAR_UNI:1', ''), /* A=Auto, P=Photo */
+						'sex'					=> array('VCHAR_UNI:1', ''), /* R=Regular, F=Female */
 						'indoor_yn'				=> array('BOOL', 0), 
 						'outdoor_yn'			=> array('BOOL', 0),
 						'flowering_time'		=> array('VCHAR_UNI:255'),

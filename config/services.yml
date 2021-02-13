@@ -11,6 +11,7 @@ services:
             - '@template'
             - '@language'
             - '@dbal.conn'
+            - '@files.factory'
             - '@log'
             - '%core.root_path%'
             - .%core.php_ext%               
