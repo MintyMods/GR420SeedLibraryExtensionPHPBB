@@ -228,11 +228,13 @@ function editSeedGridRecord(row) {
     seed_id: row.id,
     harvest_month: parseHarvestMonth(row.harvest_month),
   }
-  if (!seedForm) {
-    buildSeedForm();
+  if (!seedWindow) {
+    buildSeedWindow();
   }
   seedForm.setValue(Object.assign(row, parsed));
-  showSeedWindow();
+  dhx.awaitRedraw().then(function () {
+    showSeedWindow();
+  });
 }
 
 function buildSeedForm() {
@@ -280,7 +282,12 @@ function buildSeedFormEvents() {
      if (!isValid && !focusedControl) {
         focusedControl = name;
       }
-  });  
+  }); 
+  
+  seedForm.events.on("beforeChangeProperties", function(name, properties) {
+    console.log(name, properties);
+  });
+
 }
 
 function buildSeedGridContextMenu() {
@@ -314,15 +321,17 @@ function buildSeedGridContextMenu() {
 }
 
 function addNewSeedGridRecord() {
-  showSeedWindow();
   seedForm.clear();
-  seedForm.setFocus(BREEDER_ID);
+  showSeedWindow();
+  dhx.awaitRedraw().then(function () {
+    seedForm.setFocus(BREEDER_ID);
+  });
 }
 
 function deleteSeedGridRecord(row) {
   dhx.confirm({
-    header: "Delete Row - Are you sure?",
-    text: "Are you sure you want to remove the row '" + row.seed_name + "'",
+    header: "Permanently Delete Record - Are you sure?",
+    text: "Are you sure you want to delete the database entry for '" + row.seed_name + "' by " + row.breeder_name,
   }).then(function (confirmed) {
     if (confirmed) {
       const url = GRID_DELETE_URL + '?seed_id=' + row.id;
@@ -342,7 +351,7 @@ function deleteSeedGridRecord(row) {
 
 function reloadSeedGridRows() {
   seedGrid.data.removeAll();
-  seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
+  seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 25, from: 0 }));
   seedGrid.paint();
   dhx.awaitRedraw().then(function () {
     seedGrid.scrollTo("0", "seed_name");
@@ -416,11 +425,15 @@ function buildSeedWindowToolbar() {
         seedFormSaveNew();
         break;
       case 'fullscreen' :
-        fullScreenWindow = !fullScreenWindow;
-        seedWindowDisplayFullScreen(fullScreenWindow);
+        seedWindowToggleFullScreen();
         break;
     }
   });
+}
+
+function seedWindowToggleFullScreen() {
+  fullScreenWindow = !fullScreenWindow;
+  seedWindowDisplayFullScreen(fullScreenWindow);
 }
 
 function seedWindowDisplayFullScreen(full) {

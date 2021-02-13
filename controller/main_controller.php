@@ -340,10 +340,9 @@ class main_controller {
 					'S.height_indoors, S.height_outdoors, S.vote_likes,' .
 					'S.vote_dislikes, S.seed_desc, S.forum_url' . 
 				' FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' S, ' . TABLE_PREFIX.TABLE_BREEDER . ' B' .
-				' WHERE S.breeder_id = B.breeder_id'  . 
-				' LIMIT ' . $this->db->sql_escape($from) . ' , ' . $this->db->sql_escape($limit);
+				' WHERE S.breeder_id = B.breeder_id';
 
-		$result = $this->db->sql_query($sql);
+		$result = $this->db->sql_query_limit($sql, $limit, $from);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$seed_id = $row['seed_id'];
 			$result_list[] = array(
@@ -408,13 +407,19 @@ class main_controller {
 	function getComboGeneticOptions($seed_id) {
 		$descriptions = array();
 		$sql = ' SELECT parent_seed_id FROM ' . TABLE_PREFIX.TABLE_GENETICS . ' WHERE seed_id = ' . $seed_id;
+		// $result = $this->db->sql_query($sql);
+		// $weblinks = $this->db->sql_fetchrowset($result);
+		// $this->db->sql_freeresult($result); 
+		// return $weblinks;
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
-			// $descriptions[] = $this->getGeneticDescription($row['parent_seed_id']);
 			$descriptions[] = $row['parent_seed_id'];
+			// $descriptions[] = $this->getGeneticDescription($row['parent_seed_id']);
+			//$descriptions = $row['parent_seed_id'];
 		}
 		$this->db->sql_freeresult($result);
-		return $descriptions;
+  		return $descriptions;
+		//return [1,2,3];
 	}
 
 	function getGeneticOptions() {
