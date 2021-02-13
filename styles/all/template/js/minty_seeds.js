@@ -6,10 +6,10 @@ $(document).ready(function () {
   }
 });
 
-const label_width = 120;
 const expire = 3000;
+const labelPosition = "left";
+const labelWidth = 120;
 const WINDOW_WIDTH = 600;
-
 const GRID_SELECT_URL = "GRID_SELECT_RECORDS";
 const GRID_DELETE_URL = "GRID_DELETE_RECORD";
 const SEED_POST_URL = "minty_sl_seeds";
@@ -23,7 +23,6 @@ const EFFECTS = "minty_sl_effects";
 const TASTES = "minty_sl_tastes";
 const METATAGS = "minty_sl_meta_tags";
 const AWARDS = "minty_sl_awards";
-
 const COMBO_CONTROLS = [GENETICS, SMELLS, EFFECTS, TASTES, METATAGS, AWARDS];
 
 const flowering_type_options = {
@@ -64,6 +63,7 @@ const month_options = [
 ];
 
 var seedGrid, seedForm, seedWindow, breederForm, breederWindow;
+var focusedControl = null;
 
 function showAddBreederWindow() {
   if (!breederWindow) {
@@ -77,7 +77,7 @@ function buildBreederWindow() {
   if (!breederForm) {
     buildBreederForm();
   }
-  breederWindow = new dhx.Window({ width: WINDOW_WIDTH, height: 380, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: true, header: true, footer: true, });
+  breederWindow = new dhx.Window({ width: WINDOW_WIDTH, height: 380, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
   breederWindow.footer.data.add([
     { type: "spacer" },
     { id: "breeder_save", type: "button", value: "Save", view: "flat", color: "primary", icon: "dxi dxi-checkbox-marked-circle", },
@@ -110,12 +110,12 @@ function buildBreederWindow() {
 function buildBreederForm() {
   breederForm = new dhx.Form(null, {
     rows: [
-      { type: "input", hidden: true, id: BREEDER_ID },
-      { type: "input", label: "Name", required: true, id: "breeder_name", labelPosition: "left", labelWidth: label_width, errorMessage: "Breeder name is a required field", validation: validateBreeder },
-      { type: "textarea", label: "Description", id: "breeder_desc", labelPosition: "left", labelWidth: label_width, },
-      { type: "input", label: "URL", id: "breeder_url", labelPosition: "left", labelWidth: label_width, },
-      // { type: "simpleVault", singleRequest:true, target: BREEDER_UPLOAD_URL, fieldName: "breeder_logo", label: "Logo", id: "breeder_logo", labelInline: true, labelPosition: "left", labelWidth: label_width, },
-      { type: "checkbox", label: "Sponsor", id: "sponsor_yn", labelInline: true, labelPosition: "left", labelWidth: label_width, },
+      { id: BREEDER_ID, type: "input", hidden: true, },
+      { id: "breeder_name", type: "input", validation: validateBreeder, required: true, label: "Name", labelPosition, labelWidth, errorMessage: "Breeder name is a required field",  },
+      { id: "breeder_desc", type: "textarea", label: "Description", labelPosition, labelWidth, },
+      { id: "breeder_url", type: "input", label: "URL", labelPosition, labelWidth, },
+      // { id: "breeder_logo", type: "simpleVault", singleRequest:true, target: BREEDER_UPLOAD_URL, fieldName: "breeder_logo", label: "Logo", labelInline: true, labelPosition, labelWidth, },
+      {  id: "sponsor_yn", type: "checkbox", label: "Sponsor",labelInline: true, labelPosition, labelWidth, },
     ]
   })
 }
@@ -135,19 +135,18 @@ function breederFormSaved(response) {
 function validateBreeder(value) {
   var data = seedForm.getItem(BREEDER_ID).combobox.data;
   var control = breederForm.getItem("breeder_name");
-  var valid = true;
   if (value == "") {
     control.config.errorMessage = "Breeder Name is a required field!";
-    valid = false;
+    return false;
   } else {
     data.forEach(function (option) {
       if (clean(option.value) == clean(value)) {
         control.config.errorMessage = "Breeder '" + option.value + "' already exists!";
-        valid = false;
+        return false;
       }
     });
   }
-  return valid;
+  return true;
 }
 
 function buildAddSeedButton() {
@@ -159,7 +158,7 @@ function buildAddSeedButton() {
     }]
   });
   buttons.getItem("add_button").events.on("Click", function (events) {
-    showSeedWindow();
+    addNewSeedGridRecord();
   });
 }
 
@@ -173,8 +172,8 @@ function showSeedWindow() {
 function buildSeedGrid() {
   seedGrid = new dhx.Grid("minty_seed_grid", {
     columns: [
-      { width: 50, id: "id", hidden:true, header: [{ text: "ID" }] },
-      { width: 50, id: "breeder_id",  hidden:true, header: [{ text: "Breeder ID" }] },
+      { width: 50, id: "id", hidden: true, header: [{ text: "ID" }] },
+      { width: 50, id: "breeder_id", hidden: true, header: [{ text: "Breeder ID" }] },
       { width: 150, id: "breeder_name", header: [{ text: "Breeder" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
       { width: 150, id: "seed_name", type: "string", header: [{ text: "Name" }, { content: "inputFilter" }], type: "string", editorType: "input" },
       { width: 100, id: "flowering_type", header: [{ text: "Type" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: [' ', 'Regular', 'Feminised', 'Auto'] },
@@ -196,7 +195,8 @@ function buildSeedGrid() {
       { width: 200, id: SMELLS, header: [{ text: "Smells" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
       { width: 200, id: TASTES, header: [{ text: "Tastes" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
       { width: 200, id: EFFECTS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 200, id: "minty_sl_meta_tag", header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 200, id: AWARDS, header: [{ text: "Awards" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 200, id: METATAGS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
       { width: 200, id: "seed_desc", header: [{ text: "Desc" }, { content: "inputFilter" }] },
       { width: 200, id: "forum_url", header: [{ text: "Forum Link" }] },
     ],
@@ -216,16 +216,16 @@ function buildSeedGrid() {
 
 function buildGridDoubleClickAction() {
   seedGrid.events.on("cellDblClick", function (row, column, e) {
-    seedGrid.selection.setCell(row.id);
     editSeedGridRecord(row);
     e.preventDefault();
   });
 }
 
 function editSeedGridRecord(row) {
-  let parsed = { 
-    seed_id : row.id,
-    harvest_month : parseHarvestMonth(row.harvest_month),
+  seedGrid.selection.setCell(row.id);
+  let parsed = {
+    seed_id: row.id,
+    harvest_month: parseHarvestMonth(row.harvest_month),
   }
   if (!seedForm) {
     buildSeedForm();
@@ -241,36 +241,45 @@ function buildSeedForm() {
       { name: "seed_id", type: "text", label: "ID", hidden: true, },
       {
         cols: [
-          { name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", labelPosition: "left", required: true, labelWidth: label_width, errorMessage: "You must select a valid breeder from the list" },
+          { name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", labelPosition, required: true, labelWidth, errorMessage: "You must select a valid breeder from the list" },
           { name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", },]
       },
-      { name: "seed_name", type: "input", label: "Name", labelPosition: "left", labelWidth: label_width, required: true, placeholder: "Name of the Plant?", errorMessage: "Plant name is mandatory to save a new record" },
-      { name: "flowering_type", type: "radioGroup", required: true, label: "Type", labelWidth: label_width, labelPosition: "left", errorMessage: "Flowering type is a required field", options: flowering_type_options, },
-      { name: "sex", type: "radioGroup", required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth: label_width, labelPosition: "left", options: sex_options, },
-      { name: "indoor_outdoor", type: "checkboxGroup", label: "Environment", labelWidth: label_width, labelPosition: "left", labelInline: true, options: indoor_outdoor_options, },
-      { name: "thc", type: "input", label: "THC", labelPosition: "left", labelWidth: label_width, },
-      { name: "cbd", type: "input", label: "CBD", labelPosition: "left", labelWidth: label_width, },
-      { name: "indica", type: "input", label: "Indica", labelPosition: "left", labelWidth: label_width, },
-      { name: "sativa", type: "input", label: "Sativa", labelPosition: "left", labelWidth: label_width, },
-      { name: "ruderalis", type: "input", label: "Ruderalis", labelPosition: "left", labelWidth: label_width, },
-      { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition: "left", labelWidth: label_width, },
-      { name: "yeild_outdoors", type: "input", label: "Outdoor Yeild", labelPosition: "left", labelWidth: label_width, },
-      { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition: "left", labelWidth: label_width, },
-      { name: "height_outdoors", type: "input", label: "Outdoor Height", labelPosition: "left", labelWidth: label_width, },
-      { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition: "left", labelWidth: label_width, },
-      { name: "harvest_month", type: "select", label: "Harvest Month", labelPosition: "left", labelWidth: label_width, options: month_options },
-      { name: "seed_desc", type: "textarea", label: "Description", labelPosition: "left", labelWidth: label_width },
-      { name: GENETICS, filter: fuzzySearch, type: "combo", label: "Genetics", labelPosition: "left", labelWidth: label_width, multiselection: true },
-      { name: AWARDS, filter: fuzzySearch, type: "combo", label: "Awards", labelPosition: "left", labelWidth: label_width, multiselection: true },
-      { name: SMELLS, filter: fuzzySearch, type: "combo", label: "Smell", labelPosition: "left", labelWidth: label_width, multiselection: true },
-      { name: TASTES, filter: fuzzySearch, type: "combo", label: "Taste", labelPosition: "left", labelWidth: label_width, multiselection: true },
-      { name: EFFECTS, filter: fuzzySearch, type: "combo", label: "Effect", labelPosition: "left", labelWidth: label_width, multiselection: true },
-      { name: METATAGS, filter: fuzzySearch, type: "combo", label: "Tags", labelPosition: "left", labelWidth: label_width, multiselection: true },
+      { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Name of the Plant?", errorMessage: "Plant name is mandatory to save a new record" },
+      { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", },
+      { name: "sex", type: "radioGroup", options: sex_options, required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth, labelPosition, },
+      { name: "indoor_outdoor", type: "checkboxGroup", options: indoor_outdoor_options, label: "Environment", labelWidth, labelPosition, labelInline: true, },
+      { name: "thc", type: "input", label: "THC", labelPosition, labelWidth, },
+      { name: "cbd", type: "input", label: "CBD", labelPosition, labelWidth, },
+      { name: "indica", type: "input", label: "Indica", labelPosition, labelWidth, },
+      { name: "sativa", type: "input", label: "Sativa", labelPosition, labelWidth, },
+      { name: "ruderalis", type: "input", label: "Ruderalis", labelPosition, labelWidth, },
+      { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition, labelWidth, },
+      { name: "yeild_outdoors", type: "input", label: "Outdoor Yeild", labelPosition, labelWidth, },
+      { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition, labelWidth, },
+      { name: "height_outdoors", type: "input", label: "Outdoor Height", labelPosition, labelWidth, },
+      { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition, labelWidth, },
+      { name: "harvest_month", type: "select", options: month_options, label: "Harvest Month", labelPosition, labelWidth, },
+      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, },
+      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, },
+      { name: AWARDS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Awards", labelPosition, labelWidth, },
+      { name: SMELLS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Smell", labelPosition, labelWidth, },
+      { name: TASTES, filter: fuzzySearch, type: "combo", multiselection: true, label: "Taste", labelPosition, labelWidth, },
+      { name: EFFECTS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Effect", labelPosition, labelWidth, },
+      { name: METATAGS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Tags", labelPosition, labelWidth, },
     ]
   });
-  seedForm.getItem("add_breeder_button").events.on("Click", showAddBreederWindow);
+  buildSeedFormEvents();
   processComboControls(COMBO_CONTROLS, seedForm);
   seedForm.getItem(BREEDER_ID).getWidget().data.load(BREEDER_ID);
+}
+
+function buildSeedFormEvents() {
+  seedForm.getItem("add_breeder_button").events.on("Click", showAddBreederWindow);
+  seedForm.events.on("AfterValidate", function(name, value, isValid) {
+     if (!isValid && !focusedControl) {
+        focusedControl = name;
+      }
+  });  
 }
 
 function buildSeedGridContextMenu() {
@@ -291,7 +300,7 @@ function buildSeedGridContextMenu() {
     var cell = seedGrid.selection.getCell();
     switch (option) {
       case 'grid_row_add':
-        showSeedWindow();
+        addNewSeedGridRecord();
         break;
       case 'grid_row_edit':
         editSeedGridRecord(cell.row);
@@ -301,6 +310,12 @@ function buildSeedGridContextMenu() {
         break;
     }
   });
+}
+
+function addNewSeedGridRecord() {
+  showSeedWindow();
+  seedForm.clear();
+  seedForm.setFocus(BREEDER_ID);
 }
 
 function deleteSeedGridRecord(row) {
@@ -337,7 +352,13 @@ function buildSeedWindow() {
   if (!seedForm) {
     buildSeedForm();
   }
-  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Add New Seed Entry", modal: true, resizable: true, movable: true, closable: true, header: true, footer: true, });
+  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Add New Seed Entry", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
+  buildSeedWindowToolbar();
+  buildSeedWindowFooter();
+  seedWindow.attach(seedForm);
+}
+
+function buildSeedWindowFooter() {
   seedWindow.footer.data.add([
     { type: "spacer" },
     { id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, },
@@ -346,20 +367,76 @@ function buildSeedWindow() {
   ], 0);
   seedWindow.footer.events.on("click", function (id) {
     if (id === "cancel_button") {
-      seedWindow.hide()
+      seedWindowClose();
     } else if (id === "save_new_button") {
-      //@todo
+      seedFormSaveNew();
     } else if (id === "save_button") {
-      if (seedForm.validate()) {
-        seedForm.send(SEED_POST_URL, "POST", true).then(function () {
-          seedWindow.hide();
-        });
-      } else {
-        err("Failed to validate form");
-      }
+      seedFormSave();
     }
   });
-  seedWindow.attach(seedForm);
+}
+
+function seedFormSave() {
+  saveSeedFormRecord(function(){
+    seedWindowClose();
+  });
+}
+
+function seedFormSaveNew() {
+  saveSeedFormRecord(function(){
+    var breeder_id = seedForm.getValue(BREEDER_ID);
+    seedForm.clear();
+    seedForm.setValue(BREEDER_ID, breeder_id);     
+    seedForm.setFocus("seed_name");
+  });  
+}
+
+function seedWindowClose() {
+  seedWindow.hide();
+}
+
+function buildSeedWindowToolbar() {
+  seedWindow.header.data.add([
+    { type: "spacer" },
+    { id: "close", icon: "dxi dxi-close" },
+    { id: "save", icon: "dxi dxi-check" },
+    { id: "save_new", icon: "dxi dxi-plus" },
+    { id: "fullscreen", icon: "dxi dxi-arrow-expand" },
+  ], 1);
+  seedWindow.header.events.on('click', function(id) {
+    switch (id) {
+      case 'close' :
+        seedWindowClose();
+        break;
+      case 'save' :
+        seedFormSave();
+        break;
+      case 'save_new' :
+        seedFormSaveNew();
+        break;
+      case 'fullscreen' :
+        seedFormToggleFullScreen();
+        break;
+    }
+  });
+}
+
+function seedFormToggleFullScreen() {
+  msg('fulllscreen');
+}
+
+function saveSeedFormRecord(callback) {
+  if (seedForm.validate()) {
+    seedForm.send(SEED_POST_URL, "POST", true).then(function (result) {
+        focusedControl = null;  
+        if (callback) callback(result);
+    }).catch(function(e){
+      err(e.statusText, e);
+    });
+  } else {
+    err("Failed to validate form");
+    seedForm.setFocus(focusedControl);  
+  }
 }
 
 function processComboControls(controls) {
@@ -403,12 +480,12 @@ function clean(text) {
 }
 
 function msg(text, debug) {
-  console.log(text, debug);
+  console.log(text,  debug ? debug : '');
   dhx.message({ text, css: "dhx_message--success", icon: "dxi-checkbox-marked-circle", expire });
 }
 
 function err(text, debug) {
-  console.error(text, debug);
+  console.log(text, debug ? debug : '');
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
 }
 
