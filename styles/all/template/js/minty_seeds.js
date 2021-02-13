@@ -11,6 +11,7 @@ const expire = 3000;
 const WINDOW_WIDTH = 600;
 
 const GRID_SELECT_URL = "GRID_SELECT_RECORDS";
+const GRID_DELETE_URL = "GRID_DELETE_RECORD";
 const SEED_POST_URL = "minty_sl_seeds";
 const BREEDER_POST_URL = "minty_sl_breeder";
 const BREEDER_UPLOAD_URL = "BREEDER_UPLOAD";
@@ -24,7 +25,7 @@ const TASTES = "minty_sl_tastes";
 const METATAGS = "minty_sl_meta_tags";
 const AWARDS = "minty_sl_awards";
 
-const COMBO_CONTROLS = [ GENETICS, SMELLS, EFFECTS, TASTES, METATAGS, AWARDS ];
+const COMBO_CONTROLS = [GENETICS, SMELLS, EFFECTS, TASTES, METATAGS, AWARDS];
 
 const flowering_type_options = {
   cols: [
@@ -79,12 +80,12 @@ function buildBreederWindow() {
   if (!breederForm) {
     buildBreederForm();
   }
-  breederWindow = new dhx.Window({  width: WINDOW_WIDTH, height: 380, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: true, header: true, footer: true,  });
+  breederWindow = new dhx.Window({ width: WINDOW_WIDTH, height: 380, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: true, header: true, footer: true, });
   breederWindow.footer.data.add([
     { type: "spacer" },
     { id: "breeder_save", type: "button", value: "Save", view: "flat", color: "primary", icon: "dxi dxi-checkbox-marked-circle", },
     { id: "breeder_cancel", type: "button", value: "Cancel", view: "flat", color: "secondary", icon: "dxi dxi-close-circle", },
-     { id: "breeder_delete", type: "button", disabled: true, value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-alert-circle", },
+    { id: "breeder_delete", type: "button", disabled: true, value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-alert-circle", },
   ], 0);
 
   breederWindow.footer.events.on("click", function (id) {
@@ -117,7 +118,7 @@ function buildBreederForm() {
       { type: "input", label: "Name", required: true, id: "breeder_name", labelPosition: "left", labelWidth: label_width, errorMessage: "Breeder name is a required field", validation: validateBreeder },
       { type: "textarea", label: "Description", id: "breeder_desc", labelPosition: "left", labelWidth: label_width, },
       { type: "input", label: "URL", id: "breeder_url", labelPosition: "left", labelWidth: label_width, },
-     // { type: "simpleVault", singleRequest:true, target: BREEDER_UPLOAD_URL, fieldName: "breeder_logo", label: "Logo", id: "breeder_logo", labelInline: true, labelPosition: "left", labelWidth: label_width, },
+      // { type: "simpleVault", singleRequest:true, target: BREEDER_UPLOAD_URL, fieldName: "breeder_logo", label: "Logo", id: "breeder_logo", labelInline: true, labelPosition: "left", labelWidth: label_width, },
       { type: "checkbox", label: "Sponsor", id: "sponsor_yn", labelInline: true, labelPosition: "left", labelWidth: label_width, },
     ]
   })
@@ -162,11 +163,15 @@ function buildAddSeedButton() {
     }]
   });
   buttons.getItem("add_button").events.on("Click", function (events) {
-    if (!seedWindow) {
-      buildSeedWindow();
-    }
-    seedWindow.show();
+    showSeedWindow();
   });
+}
+
+function showSeedWindow() {
+  if (!seedWindow) {
+    buildSeedWindow();
+  }
+  seedWindow.show();
 }
 
 function buildSeedGrid() {
@@ -202,20 +207,85 @@ function buildSeedGrid() {
     autoEmptyRow: false,
     height: 620,
     multiselection: false,
-    sortable:true,
+    sortable: true,
     selection: "row",
     resizable: true,
   });
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
   buildAddSeedButton();
+  buildSeedGridContextMenu();
 }
 
+function buildSeedGridContextMenu() {
+  var seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
+  var contextmenu_data = [
+    { "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
+    { "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
+    { "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" }
+  ];
+  seedGridContextMenu.data.parse(contextmenu_data);
+  seedGrid.events.on("CellRightClick", function (row, column, e) {
+    seedGrid.selection.setCell(row.id);
+    e.preventDefault();
+    seedGridContextMenu.showAt(e);
+  });
+
+  seedGridContextMenu.events.on("Click", function (option, e) {
+    var cell = seedGrid.selection.getCell();
+    switch (option) {
+      case 'grid_row_add':
+        showSeedWindow();
+        break;
+      case 'grid_row_edit':
+        editSeedGridRecord(cell);
+        break;
+      case 'grid_row_delete':
+        deleteSeedGridRecord(cell);
+        break;
+    }
+  });
+}
+
+function editSeedGridRecord(cell) {
+  showSeedWindow();
+  seedForm.setValue(cell.row); // @todo sort out combo values etc.
+}
+
+function deleteSeedGridRecord(cell) {
+  dhx.confirm({
+    header: "Delete Row - Are you sure?",
+    text: "Are you sure you want to remove the row '" + cell.row.seed_name + "'",
+  }).then(function (confirmed) {
+    if (confirmed) {
+      const url = GRID_DELETE_URL + '?seed_id=' + cell.row.id;
+      dhx.ajax.get(url).then(function (result) {
+        if (result) {
+          reloadSeedGridRows();
+          msg('deleted record id ' + cell.row.id);
+        } else {
+          err('Failed to delete record id ' + cell.row.id);
+        }
+      }).catch(function (e) {
+        err('Grid Delete Error : ' + e.statusText, e);
+      });
+    }
+  });
+}
+
+function reloadSeedGridRows() {
+  seedGrid.data.removeAll();
+  seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
+  seedGrid.paint();
+  dhx.awaitRedraw().then(function () {
+    seedGrid.scrollTo("0", "seed_name");
+  });
+}
 
 function buildSeedWindow() {
   if (!seedForm) {
     buildSeedForm();
   }
-  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Add New Seed Entry", modal: true, resizable: true, movable: true, closable: true, header: true, footer: true,  });
+  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Add New Seed Entry", modal: true, resizable: true, movable: true, closable: true, header: true, footer: true, });
   seedWindow.footer.data.add([
     { type: "spacer" },
     { id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, },
@@ -240,9 +310,8 @@ function buildSeedWindow() {
   seedWindow.attach(seedForm);
 }
 
-
 function buildSeedForm() {
-  seedForm = new dhx.Form('seedForm', {
+  seedForm = new dhx.Form(null, {
     css: "dhx_widget--bordered",
     rows: [
       { name: "seed_id", type: "text", label: "ID", hidden: true, },
@@ -281,8 +350,8 @@ function buildSeedForm() {
 }
 
 function processComboControls(controls) {
-  controls.forEach(function (name){
-    processComboControl(name); 
+  controls.forEach(function (name) {
+    processComboControl(name);
   });
 }
 
@@ -291,20 +360,19 @@ function processComboControl(name) {
   let widget = control.getWidget();
   widget.data.load(name);
   addComboEvents(widget);
-
 }
 
 function addComboEvents(combobox) {
-  combobox.events.on("Input", function (value) { 
+  combobox.events.on("Input", function (value) {
     this._input_value = value;
-  });  
+  });
   combobox.events.on("BeforeClose", function () {
     const id = "U:" + Math.floor(Math.random() * 10000);
     const value = this._input_value;
-    if (value && !this.getValue(getValueAsArray()).includes(value)) {
-      this.data.add({ id, value },0);
+    if (value && !this.getValue(true).includes(value)) {
+      this.data.add({ id, value }, 0);
       dhx.awaitRedraw().then(function () {
-        this.setValue(this.getValue(getValueAsArray()).push(id));
+        this.setValue(this.getValue(true).push(id));
         this.paint();
         dhx.awaitRedraw().then(function () { this.focus(); }.bind(this));
       }.bind(this));
@@ -313,40 +381,35 @@ function addComboEvents(combobox) {
   });
 }
 
-function getValueAsArray() {
-  return true;
-}
-
 function clean(text) {
   return text ? text.trim().toLowerCase() : "";
 }
 
-function msg(text) {
-  console.log(text);
+function msg(text, debug) {
+  console.log(text, debug);
   dhx.message({ text, css: "dhx_message--success", icon: "dxi-checkbox-marked-circle", expire });
 }
 
-function err(text) {
-  console.log(text);
+function err(text, debug) {
+  console.error(text, debug);
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
 }
 
 function fuzzySearch(item, target) {
-  console.log("Fuzzy Search " + target);
   var source = item.value.toLowerCase();
   target = target.toLowerCase();
   var sourceLen = source.length;
   var targetLen = target.length;
   if (targetLen > sourceLen) {
-      return false;
+    return false;
   }
   var sourceIndex = 0;
   var targetIndex = 0;
   while (sourceIndex < sourceLen && targetIndex < targetLen) {
-      if (source[sourceIndex] === target[targetIndex]) {
-          targetIndex++;
-      }
-      sourceIndex++;
+    if (source[sourceIndex] === target[targetIndex]) {
+      targetIndex++;
+    }
+    sourceIndex++;
   }
   return targetIndex === targetLen;
 }

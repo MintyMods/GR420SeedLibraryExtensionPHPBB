@@ -71,7 +71,9 @@ class main_controller {
 		} else if ($name == 'BREEDER_SELECT_RECORD') {
 			$json = $this->getBreedersRecordJson();	
 		} else if ($name == 'GRID_SELECT_RECORDS') {
-			$json = $this->getGridSelectJson();		
+			$json = $this->getGridSelectJson();	
+		} else if ($name == 'GRID_DELETE_RECORD') {
+			$json = $this->processGridDelete();	
 		} else if ($name == 'minty_sl_genetics') {
 			$json = $this->getGeneticOptionsJson();	
 		} else if ($name == 'minty_sl_smells') {
@@ -90,6 +92,12 @@ class main_controller {
 		} 
 		$json_response = new \phpbb\json_response();
 		$json_response->send($json);
+	}
+
+	function processGridDelete() {
+		$seed_id = $this->request->variable('seed_id', 0);
+		$sql = 'DELETE FROM ' . TABLE_SEEDS . " WHERE seed_id = " . $seed_id;
+		return $this->db->sql_query($sql);
 	}
 
 	function processSeedFormPost() {
