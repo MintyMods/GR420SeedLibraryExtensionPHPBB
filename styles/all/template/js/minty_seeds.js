@@ -63,7 +63,8 @@ const month_options = [
 ];
 
 var seedGrid, seedForm, seedWindow, breederForm, breederWindow;
-var focusedControl = null;
+var focusedControl, oldSeedWindowSize, oldSeedWindowPosition = null;
+var fullScreenWindow = false;
 
 function showAddBreederWindow() {
   if (!breederWindow) {
@@ -415,14 +416,24 @@ function buildSeedWindowToolbar() {
         seedFormSaveNew();
         break;
       case 'fullscreen' :
-        seedFormToggleFullScreen();
+        fullScreenWindow = !fullScreenWindow;
+        seedWindowDisplayFullScreen(fullScreenWindow);
         break;
     }
   });
 }
 
-function seedFormToggleFullScreen() {
-  msg('fulllscreen');
+function seedWindowDisplayFullScreen(full) {
+  if (full) {
+    seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-collapse" });
+    oldSeedWindowSize = seedWindow.getSize();
+    oldSeedWindowPosition = seedWindow.getPosition();
+    seedWindow.setFullScreen();
+  } else {
+    seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-expand" });
+    seedWindow.setSize(oldSeedWindowSize.width, oldSeedWindowSize.height);
+    seedWindow.setPosition(oldSeedWindowPosition.left,oldSeedWindowPosition.top);
+  }
 }
 
 function saveSeedFormRecord(callback) {
@@ -435,7 +446,7 @@ function saveSeedFormRecord(callback) {
     });
   } else {
     err("Failed to validate form");
-    seedForm.setFocus(focusedControl);  
+    seedForm.setFocus(focusedControl ? focusedControl : BREEDER_ID); 
   }
 }
 
