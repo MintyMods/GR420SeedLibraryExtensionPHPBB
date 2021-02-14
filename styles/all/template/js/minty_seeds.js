@@ -105,14 +105,6 @@ function buildBreederForm() {
   capitalizeControlValue(breederForm, 'breeder_name');
 }
 
-function capitalizeControlValue(form, control_name) {
-  form.events.on("Change", function(name, value) {
-    if (name == control_name) {
-      form.getItem(control_name).setValue(value.capitalize(true));
-    }
-  }); 
-}
-
 function breederFormSaved(response) {
   var json = JSON.parse(response);
   if (json.saved) {
@@ -212,6 +204,7 @@ function buildGridDoubleClickAction() {
 }
 
 function editSeedGridRecord(row) {
+  seedForm.clear();
   seedGrid.selection.setCell(row.id);
   let parsed = {
     seed_id: row.id,
@@ -331,6 +324,8 @@ function saveSeedFormRecord(callback) {
   if (seedForm.validate()) {
     seedForm.send(SEED_POST_URL, "POST", true).then(function (result) {
         focusedControl = null;  
+        reloadSeedGridRows();
+        msg("Seed Record " + result.seed_id + " Saved ");
         if (callback) callback(result);
     }).catch(function(e){
       err(e.statusText, e);
@@ -515,6 +510,14 @@ function fuzzySearch(item, target) {
     sourceIndex++;
   }
   return targetIndex === targetLen;
+}
+
+function capitalizeControlValue(form, control_name) {
+  form.events.on("Change", function(name, value) {
+    if (name == control_name) {
+      form.getItem(control_name).setValue(value.capitalize(true));
+    }
+  }); 
 }
 
 String.prototype.capitalize = function (lower) {

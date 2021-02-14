@@ -61,7 +61,7 @@ class main_controller {
 		$this->request->enable_super_globals();
 		$json = null;
 		if ($name == 'minty_sl_seeds') {
-			return $this->processSeedFormPost();		
+			$json = $this->processSeedFormPost();		
 		} else if ($name == 'BREEDER_UPLOAD') {
 			// $json = $this->processFileUpload();		
 		} else if ($name == 'minty_sl_breeder') {
@@ -107,13 +107,14 @@ class main_controller {
 		} else {
 			$seed_id = $this->insertNewSeedRecord();
 		}
-		$this->processComboOptions('minty_sl_genetics', $seed_id);
-		$this->processComboOptions('minty_sl_awards', $seed_id);
-		$this->processComboOptions('minty_sl_smells', $seed_id);
-		$this->processComboOptions('minty_sl_tastes', $seed_id);
-		$this->processComboOptions('minty_sl_effects', $seed_id);
-		$this->processComboOptions('minty_sl_meta_tags', $seed_id);
-		return (object) ['seed_id' => $seed_id];
+		// @todo sort out these combo saves
+		// $this->processComboOptions('minty_sl_genetics', $seed_id);
+		// $this->processComboOptions('minty_sl_awards', $seed_id);
+		// $this->processComboOptions('minty_sl_smells', $seed_id);
+		// $this->processComboOptions('minty_sl_tastes', $seed_id);
+		// $this->processComboOptions('minty_sl_effects', $seed_id);
+		// $this->processComboOptions('minty_sl_meta_tags', $seed_id);
+		return ['seed_id' => $seed_id];
 	}
 
 	function updateExistingSeedRecord($seed_id) {
