@@ -350,8 +350,8 @@ class main_controller {
 				'seed_name'				=> $row['seed_name'],
 				'breeder_id'			=> $row['breeder_id'],
 				'breeder_name'			=> $row['breeder_name'],
-				'flowering_type' 		=> $this->convertType($row['flowering_type']),
-				'sex' 					=> $this->convertSex($row['sex']),
+				'flowering_type' 		=> $this->getUpperCaseCharOption($row['flowering_type']),
+				'sex' 					=> $this->getUpperCaseCharOption($row['sex']),
 				'indoor_yn' 			=> boolval($row['indoor_yn']),
 				'outdoor_yn' 			=> boolval($row['outdoor_yn']),
 				'flowering_time'	 	=> $row['flowering_time'],
@@ -373,7 +373,7 @@ class main_controller {
 				// TABLE_SMELLS			=> $this->getComboOptions(TABLE_SMELLS, $seed_id),
 				// TABLE_EFFECTS			=> $this->getComboOptions(TABLE_EFFECTS, $seed_id),
 				// TABLE_TASTES			=> $this->getComboOptions(TABLE_TASTES, $seed_id),
-				// TABLE_META_TAGS			=> $this->getComboOptions(TABLE_META_TAGS, $seed_id),
+				TABLE_META_TAGS			=> $this->getComboOptions(TABLE_META_TAGS, $seed_id),
 				// TABLE_AWARDS			=> $this->getComboOptions(TABLE_AWARDS, $seed_id),
 			);
 		}
@@ -390,6 +390,7 @@ class main_controller {
 	function getComboOptions($seed_id) {
 		// $sql = ' SELECT parent_id FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' WHERE seed_id = ' . $seed_id;
 		// $result = $this->db->sql_query($sql);
+
 	}
 
 	function getGeneticDescription($seed_id) {
@@ -485,23 +486,10 @@ class main_controller {
 		return $count;
 	}
 
-	function convertSex($sex) {
-		if ($sex == 'R') {
-			return 'Regular';
-		} else if ($sex == 'F') {
-			return 'Female';
-		} else {
-			return '';
+	function getUpperCaseCharOption($value) {
+		if (strlen($value) >= 1) {
+			return strtoupper(substr($value, 0, 1));
 		}
 	}
 
-	function convertType($sex) {
-		if ($sex == 'P') {
-			return 'Photo';
-		} else if ($sex == 'A') {
-			return 'Auto';
-		} else {
-			return '';
-		}
-	}
 }

@@ -108,7 +108,7 @@ function buildBreederForm() {
 function capitalizeControlValue(form, control_name) {
   form.events.on("Change", function(name, value) {
     if (name == control_name) {
-      form.getItem(control_name).setValue(capitalizeName(value));
+      form.getItem(control_name).setValue(value.capitalize(true));
     }
   }); 
 }
@@ -182,13 +182,13 @@ function buildSeedGrid() {
       { width: 110, id: "indica", type: "string", header: [{ text: "Indica" }, { content: "comboFilter" }], type: "string", editorType: "input" },
       { width: 110, id: "sativa", type: "string", header: [{ text: "Sativa" }, { content: "comboFilter" }], type: "string", editorType: "input" },
       { width: 110, id: "ruderalis", type: "nstring", header: [{ text: "Ruderalis" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 20, id: GENETICS, header: [{ text: "Genetics" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 20, id: SMELLS, header: [{ text: "Smells" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 20, id: TASTES, header: [{ text: "Tastes" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 20, id: EFFECTS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 20, id: AWARDS, header: [{ text: "Awards" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 20, id: METATAGS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 20, id: "forum_url", header: [{ text: "Forum Link" }] },
+      { width: 120, id: GENETICS, header: [{ text: "Genetics" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 120, id: SMELLS, header: [{ text: "Smells" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 120, id: TASTES, header: [{ text: "Tastes" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 120, id: EFFECTS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 120, id: AWARDS, header: [{ text: "Awards" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 120, id: METATAGS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 120, id: "forum_url", header: [{ text: "Forum Link" }] },
     ],
     editable: false,
     autoEmptyRow: false,
@@ -216,6 +216,10 @@ function editSeedGridRecord(row) {
   let parsed = {
     seed_id: row.id,
     harvest_month: parseHarvestMonth(row.harvest_month),
+    indoor_outdoor: {
+      indoor_yn : row.indoor_yn,
+      outdoor_yn : row.outdoor_yn,
+    }
   }
   seedForm.setValue(Object.assign(row, parsed));
   dhx.awaitRedraw().then(function () {
@@ -263,10 +267,10 @@ function buildSeedForm() {
 }
 
 function loadComboSuggestions(name, form) {
+  form.getItem(name).getWidget().data.load(name);
   // @todo can we proxy these two combo options...
   //var proxy = new dhx.LazyDataProxy(name, { limit: 15, prepare: 0, delay: 10, from: 0 });
   // form.getItem(name).getWidget().data.load(proxy);
-  form.getItem(name).getWidget().data.load(name);
 }
 
 function buildSeedFormEvents() {
@@ -494,17 +498,6 @@ function err(text, debug) {
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
 }
 
-String.prototype.capitalize = function (lower) {
-  return (lower ? this.toLowerCase() : this).replace(/(?:^|\s|['`‘’.-])[^\x00-\x60^\x7B-\xDF](?!(\s|$))/g, function (a) {
-    return a.toUpperCase();
-  });
-};
-
-function capitalizeName(name) {
-   return name.capitalize(true);
-  //  return name.replace(/\b(\w)/g, s => s.toUpperCase());
-}
-
 function fuzzySearch(item, target) {
   var source = item.value.toLowerCase();
   target = target.toLowerCase();
@@ -523,3 +516,9 @@ function fuzzySearch(item, target) {
   }
   return targetIndex === targetLen;
 }
+
+String.prototype.capitalize = function (lower) {
+  return (lower ? this.toLowerCase() : this).replace(/(?:^|\s|['`‘’.-])[^\x00-\x60^\x7B-\xDF](?!(\s|$))/g, function (a) {
+    return a.toUpperCase();
+  });
+};
