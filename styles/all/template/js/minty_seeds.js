@@ -102,6 +102,15 @@ function buildBreederForm() {
       {  id: "sponsor_yn", type: "checkbox", label: "Sponsor",labelInline: true, labelPosition, labelWidth, },
     ]
   })
+  capitalizeControlValue(breederForm, 'breeder_name');
+}
+
+function capitalizeControlValue(form, control_name) {
+  form.events.on("Change", function(name, value) {
+    if (name == control_name) {
+      form.getItem(control_name).setValue(capitalizeName(value));
+    }
+  }); 
 }
 
 function breederFormSaved(response) {
@@ -220,26 +229,26 @@ function buildSeedForm() {
     rows: [
       { name: "seed_id", type: "text", label: "ID", hidden: true, },
       { cols: [
-          { name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", labelPosition, required: true, labelWidth, errorMessage: "You must select a valid breeder from the list" },
+          { name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", required: true, placeholder: "Select or Add New", errorMessage: "You must select a valid breeder from the list", labelWidth, labelPosition,  },
           { name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", },]
       },
-      { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Name of the Plant?", errorMessage: "Plant name is mandatory to save a new record" },
+      { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Enter the full name of the plant", errorMessage: "Plant name is mandatory to save a new record" },
       { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", },
       { name: "sex", type: "radioGroup", options: sex_options, required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth, labelPosition, },
       { name: "indoor_outdoor", type: "checkboxGroup", options: indoor_outdoor_options, label: "Environment", labelWidth, labelPosition, labelInline: true, },
+      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, },
+      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, },
+      { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition, labelWidth, },
+      { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition, labelWidth, },
+      { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition, labelWidth, },
+      { name: "height_outdoors", type: "input", label: "Outdoor Height", labelPosition, labelWidth, },
+      { name: "yeild_outdoors", type: "input", label: "Outdoor Yeild", labelPosition, labelWidth, },
+      { name: "harvest_month", type: "select", options: month_options, label: "Harvest Month", labelPosition, labelWidth, },
       { name: "thc", type: "input", label: "THC", labelPosition, labelWidth, },
       { name: "cbd", type: "input", label: "CBD", labelPosition, labelWidth, },
       { name: "indica", type: "input", label: "Indica", labelPosition, labelWidth, },
       { name: "sativa", type: "input", label: "Sativa", labelPosition, labelWidth, },
       { name: "ruderalis", type: "input", label: "Ruderalis", labelPosition, labelWidth, },
-      { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition, labelWidth, },
-      { name: "yeild_outdoors", type: "input", label: "Outdoor Yeild", labelPosition, labelWidth, },
-      { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition, labelWidth, },
-      { name: "height_outdoors", type: "input", label: "Outdoor Height", labelPosition, labelWidth, },
-      { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition, labelWidth, },
-      { name: "harvest_month", type: "select", options: month_options, label: "Harvest Month", labelPosition, labelWidth, },
-      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, },
-      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, },
       { name: AWARDS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Awards", labelPosition, labelWidth, },
       { name: SMELLS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Smell", labelPosition, labelWidth, },
       { name: TASTES, filter: fuzzySearch, type: "combo", multiselection: true, label: "Taste", labelPosition, labelWidth, },
@@ -267,6 +276,7 @@ function buildSeedFormEvents() {
         focusedControl = name;
       }
   }); 
+  capitalizeControlValue(seedForm, 'seed_name'); 
 }
 
 function buildSeedWindowToolbar() {
@@ -482,6 +492,10 @@ function msg(text, debug) {
 function err(text, debug) {
   console.log(text, debug ? debug : '');
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
+}
+
+function capitalizeName(name) {
+  return name.replace(/\b(\w)/g, s => s.toUpperCase());
 }
 
 function fuzzySearch(item, target) {
