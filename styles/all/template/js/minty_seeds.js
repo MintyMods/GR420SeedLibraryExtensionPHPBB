@@ -171,17 +171,17 @@ function buildSeedGrid() {
       { width: 50, id: "indoor_yn", type: "boolean", editorType: "checkbox", header: [{ text: "Indoor" }] },
       { width: 50, id: "outdoor_yn", type: "boolean", editorType: "checkbox", header: [{ text: "Outdoor" }] },
       { width: 110, id: "flowering_time", header: [{ text: "Flowering Time" }, { content: "comboFilter" }], type: "string", editorType: "input" },
+      { width: 110, id: "height_indoors", type: "string", header: [{ text: "Indoor Height" }, { content: "comboFilter" }], type: "string", editorType: "input" },
+      { width: 110, id: "yeild_indoors", type: "string", header: [{ text: "Indoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "input" },
+      { width: 110, id: "height_outdoors", type: "string", header: [{ text: "Outdoor Height" }, { content: "comboFilter" }], type: "string", editorType: "input" },
+      { width: 110, id: "yeild_outdoors", type: "string", header: [{ text: "Outdoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "input" },
       { width: 110, id: "harvest_month", type: "date", dateFormat: "%M", header: [{ text: "Harvest Month" }, { content: "comboFilter" }], type: "string", editorType: "input" },
+      { width: 200, id: "seed_desc", header: [{ text: "Desc" }, { content: "inputFilter" }] },
       { width: 110, id: "thc", type: "string", header: [{ text: "THC" }, { content: "comboFilter" }], type: "string", editorType: "input" },
       { width: 110, id: "cbd", type: "string", header: [{ text: "CBD" }, { content: "comboFilter" }], type: "string", editorType: "input" },
       { width: 110, id: "indica", type: "string", header: [{ text: "Indica" }, { content: "comboFilter" }], type: "string", editorType: "input" },
       { width: 110, id: "sativa", type: "string", header: [{ text: "Sativa" }, { content: "comboFilter" }], type: "string", editorType: "input" },
       { width: 110, id: "ruderalis", type: "nstring", header: [{ text: "Ruderalis" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "yeild_indoors", type: "string", header: [{ text: "Indoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "yeild_outdoors", type: "string", header: [{ text: "Outdoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "height_indoors", type: "string", header: [{ text: "Indoor Height" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "height_outdoors", type: "string", header: [{ text: "Outdoor Height" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 200, id: "seed_desc", header: [{ text: "Desc" }, { content: "inputFilter" }] },
       { width: 20, id: GENETICS, header: [{ text: "Genetics" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
       { width: 20, id: SMELLS, header: [{ text: "Smells" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
       { width: 20, id: TASTES, header: [{ text: "Tastes" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
@@ -494,8 +494,15 @@ function err(text, debug) {
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
 }
 
+String.prototype.capitalize = function (lower) {
+  return (lower ? this.toLowerCase() : this).replace(/(?:^|\s|['`‘’.-])[^\x00-\x60^\x7B-\xDF](?!(\s|$))/g, function (a) {
+    return a.toUpperCase();
+  });
+};
+
 function capitalizeName(name) {
-  return name.replace(/\b(\w)/g, s => s.toUpperCase());
+   return name.capitalize(true);
+  //  return name.replace(/\b(\w)/g, s => s.toUpperCase());
 }
 
 function fuzzySearch(item, target) {
