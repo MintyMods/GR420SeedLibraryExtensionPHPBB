@@ -407,19 +407,12 @@ class main_controller {
 	function getComboGeneticOptions($seed_id) {
 		$descriptions = array();
 		$sql = ' SELECT parent_seed_id FROM ' . TABLE_PREFIX.TABLE_GENETICS . ' WHERE seed_id = ' . $seed_id;
-		// $result = $this->db->sql_query($sql);
-		// $weblinks = $this->db->sql_fetchrowset($result);
-		// $this->db->sql_freeresult($result); 
-		// return $weblinks;
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$descriptions[] = $row['parent_seed_id'];
-			// $descriptions[] = $this->getGeneticDescription($row['parent_seed_id']);
-			//$descriptions = $row['parent_seed_id'];
 		}
 		$this->db->sql_freeresult($result);
   		return $descriptions;
-		//return [1,2,3];
 	}
 
 	function getGeneticOptions() {
