@@ -25,7 +25,9 @@ export declare enum ChartEvents {
     chartMouseMove = "chartMouseMove",
     chartMouseLeave = "chartMouseLeave",
     resize = "resize",
-    serieClick = "serieClick"
+    serieClick = "serieClick",
+    seriaMouseMove = "seriaMouseMove",
+    seriaMouseLeave = "seriaMouseLeave"
 }
 export interface IChartSeries {
     [id: string]: ISeria;
@@ -39,6 +41,7 @@ export interface ISeria extends ILikeSeria {
     getTooltipText(id: string): string;
     getTooltipType(id: string, x?: number, y?: number): TooltipType;
     getClosest(x: number, y: number): [number, number, number, string];
+    getClosestVertical(x: number): [number, number, number, string, number];
 }
 export interface ISeriaConfig {
     id?: string;
@@ -142,7 +145,7 @@ export interface IComposeLayer {
     add(obj: any): void;
     clear(): void;
     getSizes(): IFitPosition;
-    toVDOM(width: number, height: number): void;
+    toVDOM(width: number, height: number, events: IEventSystem<DataEvents | ChartEvents>): void;
 }
 export interface IRadarConfig extends ISeriaConfig {
     radius?: number;
@@ -159,6 +162,7 @@ export interface IRadarScaleDrawData {
     axis: number[];
     realAxis: number[];
     zebra: boolean;
+    attribute: string;
 }
 export interface IAxisCreatorConfig {
     max?: number;

@@ -28,6 +28,7 @@ export declare abstract class Navbar<T extends IItem = IItem> extends View {
     private _documentHaveListener;
     private _rootItem;
     private _activeParents;
+    private _keyManager;
     constructor(element?: string | HTMLElement, config?: any);
     paint(): void;
     disable(ids: string | string[]): void;

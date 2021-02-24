@@ -12,9 +12,15 @@ export declare class Window implements IWindow {
     private _layout;
     private _isActive;
     private _blocker;
+    private _keyManager;
+    private _fullScreen;
+    private _oldSizes;
+    private _oldPosition;
     constructor(config: IWindowConfig);
     paint(): void;
+    isFullScreen(): boolean;
     setFullScreen(): void;
+    unsetFullScreen(): void;
     setSize(width: number, height: number): void;
     getSize(): ISize;
     setPosition(left: number, top: number): void;

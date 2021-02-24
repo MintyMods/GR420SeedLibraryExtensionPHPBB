@@ -25,10 +25,10 @@ export declare class TreeCollection<T extends IDataItem = IDataItem> extends Dat
     sort(by?: ISortMode): void;
     filter(rule?: IFilterMode | IFilterCallback, config?: ITreeFilterConfig): void;
     restoreOrder(): void;
-    copy(id: Id, index: number, target: IDataCollection | ITreeCollection, targetId: Id): Id;
-    copy(id: Id[], index: number, target: IDataCollection | ITreeCollection, targetId: Id): Id[];
-    move(id: Id, index: number, target: ITreeCollection | IDataCollection, targetId: Id): Id;
-    move(id: Id[], index: number, target: ITreeCollection | IDataCollection, targetId: Id): Id[];
+    copy(id: Id, index: number, target?: IDataCollection | ITreeCollection, targetId?: Id): Id;
+    copy(id: Id[], index: number, target?: IDataCollection | ITreeCollection, targetId?: Id): Id[];
+    move(id: Id, index: number, target?: ITreeCollection | IDataCollection, targetId?: Id): Id;
+    move(id: Id[], index: number, target?: ITreeCollection | IDataCollection, targetId?: Id): Id[];
     forEach(cb: DataCallback<any>, parent?: Id, level?: number): void;
     eachChild(id: Id, cb: DataCallback<T>, direct?: boolean, checkItem?: (item: IDataItem) => boolean): void;
     getNearId(id: Id): Id;

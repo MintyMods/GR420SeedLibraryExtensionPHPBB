@@ -23,6 +23,7 @@ export interface ITooltipConfig extends IScreenPosition {
     force?: boolean;
     showDelay?: number;
     hideDelay?: number;
+    htmlEnable?: boolean;
 }
 export interface IPosition {
     left: number;

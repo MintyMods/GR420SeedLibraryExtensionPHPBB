@@ -23,7 +23,7 @@ export declare class Toolbar extends Navbar<IToolbarElement> implements IToolbar
         tooltip: (e: MouseEvent) => void;
     };
     protected _getFactory(): any;
-    protected _draw(): any;
+    protected _draw(element: any): any;
     protected _getMode(item: any, root: any): "right" | "bottom";
     protected _close(e: MouseEvent): void;
     protected _setRoot(id: string): void;

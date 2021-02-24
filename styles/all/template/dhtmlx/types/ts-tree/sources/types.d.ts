@@ -86,6 +86,8 @@ export declare enum TreeEvents {
     beforeEditEnd = "beforeEditEnd",
     afterEditEnd = "afterEditEnd",
     focusChange = "focusChange",
+    beforeCheck = "beforeCheck",
+    afterCheck = "afterCheck",
     /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
     itemContextMenu = "itemcontextmenu"
 }
@@ -103,5 +105,7 @@ export interface ITreeEventHandlersMap extends IDragEventsHandlersMap {
     [TreeEvents.beforeEditEnd]: (value: string, id: Id) => boolean | void;
     [TreeEvents.afterEditEnd]: (value: string, id: Id) => void;
     [TreeEvents.focusChange]: (index: number, id: Id) => void;
+    [TreeEvents.beforeCheck]: (index: number, id: Id) => boolean | void;
+    [TreeEvents.afterCheck]: (index: number, id: Id, value: boolean) => void;
     [TreeEvents.itemContextMenu]: (id: string, e: Event) => any;
 }

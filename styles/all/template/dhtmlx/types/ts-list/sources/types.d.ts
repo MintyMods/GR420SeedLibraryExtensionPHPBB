@@ -1,6 +1,7 @@
 import { IDataItem, DataCollection, DataEvents, DragEvents, IDataEventsHandlersMap, IDragEventsHandlersMap, IDragConfig } from "../../ts-data";
 import { IEventSystem } from "../../ts-common/events";
 import { IHandlers, SelectionEvents, ISelectionEventsHandlersMap } from "../../ts-common/types";
+import { IKeyManager } from "../../ts-common/KeyManager";
 export declare type MultiselectionMode = "click" | "ctrlClick";
 export interface IListConfig extends IDragConfig {
     template?: (obj: IDataItem) => string;
@@ -57,6 +58,7 @@ export interface IList<T = any> {
     data: DataCollection<T>;
     events: IEventSystem<DataEvents | ListEvents | DragEvents, IListEventHandlersMap & IDataEventsHandlersMap & IDragEventsHandlersMap>;
     selection: ISelection;
+    keyManager: IKeyManager;
     paint(): void;
     destructor(): void;
     editItem(id: string): void;

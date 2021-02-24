@@ -1,7 +1,7 @@
 /*
 @license
 
-dhtmlxSuite v.7.0.2 Professional
+dhtmlxSuite v.7.1.0 Professional
 
 This software is covered by DHTMLX Enterprise License.
 Usage without proper license is prohibited.
@@ -102,7 +102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 90);
+/******/ 	return __webpack_require__(__webpack_require__.s = 92);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -112,7 +112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Promise) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var dom = __webpack_require__(101);
+var dom = __webpack_require__(104);
 exports.el = dom.defineElement;
 exports.sv = dom.defineSvgElement;
 exports.view = dom.defineView;
@@ -177,8 +177,19 @@ exports.awaitRedraw = awaitRedraw;
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
 var counter = new Date().valueOf();
 function uid() {
     return "u" + counter++;
@@ -382,17 +393,102 @@ exports.isEmptyObj = function (obj) {
     }
     return true;
 };
-exports.sign = function (x) {
-    x = +x;
-    if (x === 0 || isNaN(x)) {
-        return x;
+exports.getMaxArrayNymber = function (array) {
+    if (!array.length)
+        return;
+    var maxNumber = -Infinity;
+    var index = 0;
+    var length = array.length;
+    for (index; index < length; index++) {
+        if (array[index] > maxNumber)
+            maxNumber = array[index];
     }
-    return x > 0 ? 1 : -1;
+    return maxNumber;
+};
+exports.getMinArrayNymber = function (array) {
+    if (!array.length)
+        return;
+    var minNumber = +Infinity;
+    var index = 0;
+    var length = array.length;
+    for (index; index < length; index++) {
+        if (array[index] < minNumber)
+            minNumber = array[index];
+    }
+    return minNumber;
+};
+exports.getStringWidth = function (value, config) {
+    config = __assign({ font: "normal 14px Roboto", lineHeight: 20 }, config);
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d");
+    if (config.font)
+        ctx.font = config.font;
+    var width = ctx.measureText(value).width;
+    canvas.remove();
+    return width;
 };
 
 
 /***/ }),
 /* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var EventSystem = /** @class */ (function () {
+    function EventSystem(context) {
+        this.events = {};
+        this.context = context || this;
+    }
+    EventSystem.prototype.on = function (name, callback, context) {
+        var event = name.toLowerCase();
+        this.events[event] = this.events[event] || [];
+        this.events[event].push({ callback: callback, context: context || this.context });
+    };
+    EventSystem.prototype.detach = function (name, context) {
+        var event = name.toLowerCase();
+        var eStack = this.events[event];
+        if (context && eStack && eStack.length) {
+            for (var i = eStack.length - 1; i >= 0; i--) {
+                if (eStack[i].context === context) {
+                    eStack.splice(i, 1);
+                }
+            }
+        }
+        else {
+            this.events[event] = [];
+        }
+    };
+    EventSystem.prototype.fire = function (name, args) {
+        if (typeof args === "undefined") {
+            args = [];
+        }
+        var event = name.toLowerCase();
+        if (this.events[event]) {
+            var res = this.events[event].map(function (e) { return e.callback.apply(e.context, args); });
+            return !res.includes(false);
+        }
+        return true;
+    };
+    EventSystem.prototype.clear = function () {
+        this.events = {};
+    };
+    return EventSystem;
+}());
+exports.EventSystem = EventSystem;
+function EventsMixin(obj) {
+    obj = obj || {};
+    var eventSystem = new EventSystem(obj);
+    obj.detachEvent = eventSystem.detach.bind(eventSystem);
+    obj.attachEvent = eventSystem.on.bind(eventSystem);
+    obj.callEvent = eventSystem.fire.bind(eventSystem);
+}
+exports.EventsMixin = EventsMixin;
+
+
+/***/ }),
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -419,7 +515,7 @@ function eventHandler(prepare, hash, afterCall) {
     var keys = Object.keys(hash);
     return function (ev) {
         var data = prepare(ev);
-        if (data) {
+        if (data !== undefined) {
             var node = ev.target;
             outer_block: while (node) {
                 var cssstring = node.getAttribute ? node.getAttribute("class") || "" : "";
@@ -701,72 +797,38 @@ exports.getPageCss = getPageCss;
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var EventSystem = /** @class */ (function () {
-    function EventSystem(context) {
-        this.events = {};
-        this.context = context || this;
-    }
-    EventSystem.prototype.on = function (name, callback, context) {
-        var event = name.toLowerCase();
-        this.events[event] = this.events[event] || [];
-        this.events[event].push({ callback: callback, context: context || this.context });
-    };
-    EventSystem.prototype.detach = function (name, context) {
-        var event = name.toLowerCase();
-        var eStack = this.events[event];
-        if (context && eStack && eStack.length) {
-            for (var i = eStack.length - 1; i >= 0; i--) {
-                if (eStack[i].context === context) {
-                    eStack.splice(i, 1);
-                }
-            }
-        }
-        else {
-            this.events[event] = [];
-        }
-    };
-    EventSystem.prototype.fire = function (name, args) {
-        if (typeof args === "undefined") {
-            args = [];
-        }
-        var event = name.toLowerCase();
-        if (this.events[event]) {
-            var res = this.events[event].map(function (e) { return e.callback.apply(e.context, args); });
-            return !res.includes(false);
-        }
-        return true;
-    };
-    EventSystem.prototype.clear = function () {
-        this.events = {};
-    };
-    return EventSystem;
-}());
-exports.EventSystem = EventSystem;
-function EventsMixin(obj) {
-    obj = obj || {};
-    var eventSystem = new EventSystem(obj);
-    obj.detachEvent = eventSystem.detach.bind(eventSystem);
-    obj.attachEvent = eventSystem.on.bind(eventSystem);
-    obj.callEvent = eventSystem.fire.bind(eventSystem);
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
-exports.EventsMixin = EventsMixin;
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(16));
+__export(__webpack_require__(59));
+__export(__webpack_require__(109));
+__export(__webpack_require__(110));
+__export(__webpack_require__(23));
+__export(__webpack_require__(112));
+__export(__webpack_require__(17));
+__export(__webpack_require__(62));
+__export(__webpack_require__(61));
+__export(__webpack_require__(113));
+__export(__webpack_require__(60));
+__export(__webpack_require__(34));
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
-var html_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
 var View = /** @class */ (function () {
     function View(_container, config) {
         this.config = config || {};
@@ -820,30 +882,6 @@ function toViewLike(view) {
     };
 }
 exports.toViewLike = toViewLike;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(15));
-__export(__webpack_require__(59));
-__export(__webpack_require__(106));
-__export(__webpack_require__(107));
-__export(__webpack_require__(20));
-__export(__webpack_require__(109));
-__export(__webpack_require__(16));
-__export(__webpack_require__(62));
-__export(__webpack_require__(61));
-__export(__webpack_require__(110));
-__export(__webpack_require__(60));
-__export(__webpack_require__(32));
 
 
 /***/ }),
@@ -1247,6 +1285,9 @@ exports.euclideanDistance = euclideanDistance;
 function verticalCenteredText(text) {
     return dom_1.sv("tspan", {
         dy: "0.5ex",
+        style: {
+            pointerEvents: "none",
+        },
     }, text);
 }
 exports.verticalCenteredText = verticalCenteredText;
@@ -1370,7 +1411,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var GridEvents;
 (function (GridEvents) {
     GridEvents["scroll"] = "scroll";
-    GridEvents["sort"] = "sort";
     GridEvents["expand"] = "expand";
     GridEvents["filterChange"] = "filterChange";
     GridEvents["beforeResizeStart"] = "beforeResizeStart";
@@ -1423,6 +1463,10 @@ var GridEvents;
     GridEvents["beforeColumnDrop"] = "beforeColumnDrop";
     GridEvents["afterColumnDrop"] = "afterColumnDrop";
     GridEvents["afterColumnDrag"] = "afterColumnDrag";
+    GridEvents["beforeRowResize"] = "beforeRowResize";
+    GridEvents["afterRowResize"] = "afterRowResize";
+    GridEvents["beforeSort"] = "beforeSort";
+    GridEvents["afterSort"] = "afterSort";
     /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
     GridEvents["headerInput"] = "headerInput";
 })(GridEvents = exports.GridEvents || (exports.GridEvents = {}));
@@ -1452,7 +1496,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(142));
+__export(__webpack_require__(144));
 __export(__webpack_require__(66));
 
 
@@ -1488,7 +1532,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var view_1 = __webpack_require__(4);
+var view_1 = __webpack_require__(5);
 var ts_popup_1 = __webpack_require__(10);
 var helper_1 = __webpack_require__(6);
 var Label = /** @class */ (function (_super) {
@@ -1500,7 +1544,7 @@ var Label = /** @class */ (function (_super) {
                 e.preventDefault();
                 e.stopPropagation();
                 _this._helper.show(e.target, {
-                    mode: _this.config.labelPosition === "left" ? "right" : "bottom",
+                    mode: _this.config.labelPosition === "left" ? "bottom" : "right",
                 });
             } }, _this._getHandlers());
         var render = function () { return _this._draw(); };
@@ -1542,6 +1586,7 @@ var Label = /** @class */ (function (_super) {
                         tabindex: "0",
                         role: "button",
                         onclick: this._handlers.showHelper,
+                        id: "dhx_label__help_" + (id || this._uid),
                     }),
                 ]
                 : labelStyle.label));
@@ -1872,7 +1917,7 @@ exports.Label = Label;
   } else {}
 })()
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(98).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33), __webpack_require__(101).setImmediate))
 
 /***/ }),
 /* 13 */
@@ -1884,8 +1929,8 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(113));
-__export(__webpack_require__(26));
+__export(__webpack_require__(116));
+__export(__webpack_require__(29));
 
 
 /***/ }),
@@ -1895,8 +1940,8 @@ __export(__webpack_require__(26));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
-var focus_1 = __webpack_require__(121);
+var FocusManager_1 = __webpack_require__(20);
+var html_1 = __webpack_require__(3);
 function getHotKeyCode(code) {
     var matches = code.toLowerCase().match(/\w+/g);
     var comp = 0;
@@ -1927,63 +1972,72 @@ var ie_key_map = {
     Spacebar: "space",
 };
 var KeyManager = /** @class */ (function () {
-    function KeyManager() {
+    function KeyManager(beforeCall) {
         var _this = this;
         this._keysStorage = {};
-        document.addEventListener("keydown", function (e) {
-            var comp = (e.ctrlKey || e.metaKey ? 4 : 0) + (e.shiftKey ? 2 : 0) + (e.altKey ? 1 : 0);
+        this._initHandler = function (e) {
             var key;
             if ((e.which >= 48 && e.which <= 57) || (e.which >= 65 && e.which <= 90)) {
-                // A-Z 0-9
                 key = String.fromCharCode(e.which);
             }
             else {
                 var keyName = e.which === 32 ? e.code : e.key;
                 key = html_1.isIE() ? ie_key_map[keyName] || keyName : keyName;
             }
-            var code = comp + (key && key.toLowerCase());
-            var actions = _this._keysStorage[code];
+            var actions = _this._keysStorage[(e.ctrlKey || e.metaKey ? 4 : 0) +
+                (e.shiftKey ? 2 : 0) +
+                (e.altKey ? 1 : 0) +
+                (key && key.toLowerCase())];
             if (actions) {
                 for (var i = 0; i < actions.length; i++) {
+                    if (_this._beforeCall && _this._beforeCall(e, FocusManager_1.focusManager.getFocusId()) === false) {
+                        return;
+                    }
                     actions[i].handler(e);
                 }
             }
-        });
+        };
+        if (beforeCall) {
+            this._beforeCall = beforeCall;
+        }
+        document.addEventListener("keydown", this._initHandler);
     }
-    KeyManager.prototype.addHotKey = function (key, handler, scope) {
+    KeyManager.prototype.destructor = function () {
+        document.removeEventListener("keydown", this._initHandler);
+        this.removeHotKey();
+    };
+    KeyManager.prototype.addHotKey = function (key, handler) {
         var code = getHotKeyCode(key);
         if (!this._keysStorage[code]) {
             this._keysStorage[code] = [];
         }
-        this._keysStorage[code].push({
-            handler: handler,
-            scope: scope,
-        });
+        this._keysStorage[code].push({ handler: handler });
     };
-    KeyManager.prototype.removeHotKey = function (key, scope) {
-        var keyStorage = this._keysStorage;
+    KeyManager.prototype.removeHotKey = function (key, handler) {
+        var _this = this;
         if (key) {
-            var code = getHotKeyCode(key);
-            delete keyStorage[code];
-        }
-        if (scope) {
-            for (var code in keyStorage) {
-                var toDelete = []; // items index to delete
-                for (var i = 0; i < keyStorage[code].length; i++) {
-                    if (keyStorage[code][i].scope === scope) {
-                        toDelete.push(i);
+            if (key && handler) {
+                var code_1 = getHotKeyCode(key);
+                var functionToString_1 = function (fun) {
+                    return fun
+                        .toString()
+                        .replace(/\n/g, "")
+                        .replace(/\s/g, "");
+                };
+                this._keysStorage[code_1].forEach(function (existHotKey, i) {
+                    if (functionToString_1(existHotKey.handler) === functionToString_1(handler)) {
+                        delete _this._keysStorage[code_1][i];
+                        _this._keysStorage[code_1] = _this._keysStorage[code_1].filter(function (el) { return el; });
                     }
-                }
-                if (keyStorage[code].length === toDelete.length) {
-                    delete keyStorage[code];
-                }
-                else {
-                    for (var i = toDelete.length - 1; i >= 0; i--) {
-                        // begin from last coz splice change other index
-                        keyStorage[code].splice(toDelete[i], 1);
-                    }
-                }
+                });
             }
+            else {
+                var code = getHotKeyCode(key);
+                delete this._keysStorage[code];
+            }
+        }
+        else {
+            this._keysStorage = {};
         }
     };
     KeyManager.prototype.exist = function (key) {
@@ -1992,25 +2046,149 @@ var KeyManager = /** @class */ (function () {
     };
     return KeyManager;
 }());
-exports.keyManager = new KeyManager();
-function addHotkeys(handlers, beforeCall, context) {
-    context = context || new Date();
-    var wrapHandler = function (handler) { return function (e) {
-        if (beforeCall(e, focus_1.getFocus()) === false) {
-            return;
-        }
-        handler(e);
-    }; };
-    for (var key in handlers) {
-        exports.keyManager.addHotKey(key, wrapHandler(handlers[key]), context);
-    }
-    return function () { return exports.keyManager.removeHotKey(undefined, context); };
-}
-exports.addHotkeys = addHotkeys;
+exports.KeyManager = KeyManager;
 
 
 /***/ }),
 /* 15 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function rgbToHex(color) {
+    if (color.substr(0, 1) === "#") {
+        return color;
+    }
+    var digits = /(.*?)rgb[a]?\((\d+), *(\d+), *(\d+),* *([\d+.]*)\)/.exec(color);
+    var red = parseInt(digits[2], 10)
+        .toString(16)
+        .padStart(2, "0");
+    var green = parseInt(digits[3], 10)
+        .toString(16)
+        .padStart(2, "0");
+    var blue = parseInt(digits[4], 10)
+        .toString(16)
+        .padStart(2, "0");
+    return "#" + red + green + blue;
+}
+exports.rgbToHex = rgbToHex;
+function transpose(arr, transform) {
+    var columns = [];
+    for (var i = 0; i < arr.length; i++) {
+        var row = arr[i];
+        for (var cellInd = 0; cellInd < row.length; cellInd++) {
+            columns[cellInd] = columns[cellInd] || [];
+            var cell = transform ? transform(row[cellInd]) : row[cellInd];
+            columns[cellInd].push(cell);
+        }
+    }
+    return columns;
+}
+exports.transpose = transpose;
+function insert(node, newone) {
+    if (typeof newone === "string") {
+        node.insertAdjacentHTML("beforeend", newone);
+        return node.lastChild;
+    }
+    else {
+        node.appendChild(newone);
+        return newone;
+    }
+}
+function getStyleByClass(cssClass, container, targetClass, def) {
+    var cont = container.querySelector("." + targetClass);
+    var testDiv = insert(cont, "<div class=\"" + cssClass + "\"></div>");
+    var styles = window.getComputedStyle(testDiv);
+    var result = {
+        color: styles.color === "rgb(0, 0, 0)" ? def.color : rgbToHex(styles.color),
+        background: styles.backgroundColor === "rgba(0, 0, 0, 0)" ? def.background : rgbToHex(styles.backgroundColor),
+        fontSize: parseFloat(styles.fontSize),
+    };
+    cont.removeChild(testDiv);
+    // [dirty]
+    if (result.color === def.color &&
+        result.background === def.background &&
+        result.fontSize === def.fontSize) {
+        return null;
+    }
+    return result;
+}
+exports.getStyleByClass = getStyleByClass;
+function removeHTMLTags(str) {
+    if (typeof str !== "string" && typeof str !== "number" && typeof str !== "boolean") {
+        return "";
+    }
+    return ("" + (str === undefined || str === null ? "" : str))
+        .replace(/<[^>]*>/g, "")
+        .replace(/["]/g, "&quot;")
+        .trim();
+}
+exports.removeHTMLTags = removeHTMLTags;
+function isCssSupport(property, value) {
+    try {
+        return CSS.supports(property, value);
+    }
+    catch (err) {
+        var el = document.createElement("div");
+        el.style[property] = value;
+        return el.style[property] === value;
+    }
+}
+exports.isCssSupport = isCssSupport;
+function isRowEmpty(row) {
+    if (!row) {
+        return;
+    }
+    return Object.keys(row).reduce(function (acc, col) {
+        if (col === "id" || col.startsWith("$")) {
+            return acc;
+        }
+        if (acc && row[col] !== undefined && row[col] !== "") {
+            return;
+        }
+        return acc;
+    }, true);
+}
+exports.isRowEmpty = isRowEmpty;
+function isSortable(config, col) {
+    return (col.sortable !== false && config.sortable) || col.sortable;
+}
+exports.isSortable = isSortable;
+function isAutoWidth(config, col) {
+    if (col) {
+        return (col.autoWidth !== false && config.autoWidth) || col.autoWidth;
+    }
+    var check = false;
+    config.columns.map(function (col) {
+        if ((col.autoWidth !== false && config.autoWidth) || col.autoWidth) {
+            check = true;
+            return;
+        }
+    });
+    return check;
+}
+exports.isAutoWidth = isAutoWidth;
+function isTooltip(config, element) {
+    return (element.tooltip !== false && config.tooltip) || element.tooltip;
+}
+exports.isTooltip = isTooltip;
+function isHtmlEnable(config, col) {
+    return (col.htmlEnable !== false && config.htmlEnable) || col.htmlEnable;
+}
+exports.isHtmlEnable = isHtmlEnable;
+function getTotalWidth(columns) {
+    return columns.reduce(function (total, col) { return !col.hidden && total + (col.$width || 0); }, 0);
+}
+exports.getTotalWidth = getTotalWidth;
+function getTotalHeight(rows) {
+    return rows.reduce(function (total, row) { return !row.hidden && total + (row.$height || 0); }, 0);
+}
+exports.getTotalHeight = getTotalHeight;
+
+
+/***/ }),
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2056,13 +2234,13 @@ var DataDriver;
 
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var dataproxy_1 = __webpack_require__(20);
+var dataproxy_1 = __webpack_require__(23);
 var drivers_1 = __webpack_require__(60);
 function isEqualObj(a, b) {
     for (var key in a) {
@@ -2189,7 +2367,7 @@ exports.hasJsonOrArrayStructure = hasJsonOrArrayStructure;
 
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2198,135 +2376,11 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(119));
 __export(__webpack_require__(120));
-__export(__webpack_require__(122));
+__export(__webpack_require__(121));
+__export(__webpack_require__(64));
 __export(__webpack_require__(35));
-
-
-/***/ }),
-/* 18 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function rgbToHex(color) {
-    if (color.substr(0, 1) === "#") {
-        return color;
-    }
-    var digits = /(.*?)rgb[a]?\((\d+), *(\d+), *(\d+),* *([\d+.]*)\)/.exec(color);
-    var red = parseInt(digits[2], 10)
-        .toString(16)
-        .padStart(2, "0");
-    var green = parseInt(digits[3], 10)
-        .toString(16)
-        .padStart(2, "0");
-    var blue = parseInt(digits[4], 10)
-        .toString(16)
-        .padStart(2, "0");
-    return "#" + red + green + blue;
-}
-exports.rgbToHex = rgbToHex;
-function transpose(arr, transform) {
-    var columns = [];
-    for (var i = 0; i < arr.length; i++) {
-        var row = arr[i];
-        for (var cellInd = 0; cellInd < row.length; cellInd++) {
-            columns[cellInd] = columns[cellInd] || [];
-            var cell = transform ? transform(row[cellInd]) : row[cellInd];
-            columns[cellInd].push(cell);
-        }
-    }
-    return columns;
-}
-exports.transpose = transpose;
-function insert(node, newone) {
-    if (typeof newone === "string") {
-        node.insertAdjacentHTML("beforeend", newone);
-        return node.lastChild;
-    }
-    else {
-        node.appendChild(newone);
-        return newone;
-    }
-}
-function getStyleByClass(cssClass, container, targetClass, def) {
-    var cont = container.querySelector("." + targetClass);
-    var testDiv = insert(cont, "<div class=\"" + cssClass + "\"></div>");
-    var styles = window.getComputedStyle(testDiv);
-    var result = {
-        color: styles.color === "rgb(0, 0, 0)" ? def.color : rgbToHex(styles.color),
-        background: styles.backgroundColor === "rgba(0, 0, 0, 0)" ? def.background : rgbToHex(styles.backgroundColor),
-        fontSize: parseFloat(styles.fontSize),
-    };
-    cont.removeChild(testDiv);
-    // [dirty]
-    if (result.color === def.color &&
-        result.background === def.background &&
-        result.fontSize === def.fontSize) {
-        return null;
-    }
-    return result;
-}
-exports.getStyleByClass = getStyleByClass;
-function removeHTMLTags(str) {
-    if (typeof str !== "string" && typeof str !== "number" && typeof str !== "boolean") {
-        return "";
-    }
-    return ("" + (str === undefined || str === null ? "" : str))
-        .replace(/<[^>]*>/g, "")
-        .replace(/["]/g, "&quot;")
-        .trim();
-}
-exports.removeHTMLTags = removeHTMLTags;
-function isCssSupport(property, value) {
-    try {
-        return CSS.supports(property, value);
-    }
-    catch (err) {
-        var el = document.createElement("div");
-        el.style[property] = value;
-        return el.style[property] === value;
-    }
-}
-exports.isCssSupport = isCssSupport;
-function isRowEmpty(row) {
-    if (!row) {
-        return;
-    }
-    return Object.keys(row).reduce(function (acc, col) {
-        if (col === "id" || col.startsWith("$")) {
-            return acc;
-        }
-        if (acc && row[col] !== undefined && row[col] !== "") {
-            return false;
-        }
-        return acc;
-    }, true);
-}
-exports.isRowEmpty = isRowEmpty;
-function isSortable(config, col) {
-    return (col.sortable !== false && config.sortable) || col.sortable;
-}
-exports.isSortable = isSortable;
-function isAutoWidth(config, col) {
-    if (col) {
-        return (col.autoWidth !== false && config.autoWidth) || col.autoWidth;
-    }
-    var check = false;
-    config.columns.map(function (col) {
-        if ((col.autoWidth !== false && config.autoWidth) || col.autoWidth) {
-            check = true;
-            return;
-        }
-    });
-    return check;
-}
-exports.isAutoWidth = isAutoWidth;
-function getTotalWidth(columns) {
-    return columns.reduce(function (total, col) { return total + (col.$width || 0); }, 0);
-}
-exports.getTotalWidth = getTotalWidth;
 
 
 /***/ }),
@@ -2339,11 +2393,9 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(116));
-__export(__webpack_require__(117));
-__export(__webpack_require__(118));
-__export(__webpack_require__(64));
-__export(__webpack_require__(33));
+__export(__webpack_require__(123));
+__export(__webpack_require__(124));
+__export(__webpack_require__(37));
 
 
 /***/ }),
@@ -2353,7 +2405,744 @@ __export(__webpack_require__(33));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ajax_1 = __webpack_require__(32);
+var html_1 = __webpack_require__(3);
+var FocusManager = /** @class */ (function () {
+    function FocusManager() {
+        var _this = this;
+        this._initHandler = function (e) { return (_this._activeWidgetId = html_1.locate(e, "dhx_widget_id")); };
+        document.addEventListener("click", this._initHandler);
+    }
+    FocusManager.prototype.getFocusId = function () {
+        return this._activeWidgetId;
+    };
+    FocusManager.prototype.setFocusId = function (id) {
+        this._activeWidgetId = id;
+    };
+    return FocusManager;
+}());
+exports.focusManager = new FocusManager();
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var main_1 = __webpack_require__(15);
+var date_1 = __webpack_require__(22);
+function normalizeArray(obj, name) {
+    if (!obj[name]) {
+        return;
+    }
+    if (typeof obj[name] === "string") {
+        obj[name] = [
+            {
+                text: "" + obj[name],
+            },
+        ];
+    }
+    else {
+        obj[name] = obj[name].map(function (el) {
+            if (typeof el === "string") {
+                el = { text: el };
+            }
+            return el;
+        });
+    }
+}
+function normalizeColumns(columns) {
+    for (var _i = 0, columns_1 = columns; _i < columns_1.length; _i++) {
+        var col = columns_1[_i];
+        col.$cellCss = col.$cellCss || {};
+        normalizeArray(col, "header");
+        normalizeArray(col, "footer");
+        var isContent = col.header.reduce(function (acc, item) { return (acc = acc || !!item.content); }, false);
+        if (isContent) {
+            col.$uniqueData = [];
+        }
+        var width = col.minWidth || 100;
+        if (col.width) {
+            if (col.maxWidth && col.minWidth) {
+                width = col.width >= col.minWidth && col.width <= col.maxWidth ? col.width : col.minWidth;
+            }
+            else if (col.maxWidth) {
+                width = col.width <= col.maxWidth ? col.width : col.maxWidth > 100 ? 100 : col.maxWidth;
+            }
+            else if (col.minWidth) {
+                width = col.width >= col.minWidth ? col.width : col.minWidth;
+            }
+            else {
+                width = col.width;
+            }
+        }
+        col.$width = col.$width || width;
+        if (col.$width > col.maxWidth) {
+            col.$width = col.maxWidth;
+        }
+        if (col.$width < col.minWidth) {
+            col.$width = col.minWidth;
+        }
+    }
+}
+exports.normalizeColumns = normalizeColumns;
+function countColumns(config, columns) {
+    var headerRowsCount = 0;
+    var footerRowsCount = 0;
+    var totalWidth = 0;
+    var colspans = false;
+    var rowsHeadersCount = 0;
+    var footer = false;
+    columns.forEach(function (col) {
+        headerRowsCount = Math.max(headerRowsCount, col.header.length);
+        totalWidth += col.$width;
+        if (col.footer) {
+            footerRowsCount = Math.max(footerRowsCount, col.footer.length);
+            if (!footer) {
+                footer = true;
+            }
+        }
+        if (!colspans) {
+            for (var _i = 0, _a = col.header; _i < _a.length; _i++) {
+                var head = _a[_i];
+                if (head.colspan) {
+                    colspans = true;
+                    return;
+                }
+            }
+        }
+    });
+    // fill missing cells
+    columns.forEach(function (col) {
+        if (col.header.length < headerRowsCount) {
+            for (var i = 0; i < headerRowsCount; i++) {
+                col.header[i] = col.header[i] || { text: "" };
+            }
+        }
+        if (footer) {
+            col.footer = col.footer || [];
+        }
+        if (col.footer && col.footer.length < footerRowsCount) {
+            for (var i = 0; i < footerRowsCount; i++) {
+                col.footer[i] = col.footer[i] || { text: "" };
+            }
+        }
+        col.header.forEach(function (head) {
+            head.css = head.css || "";
+            if (!head.text && !head.css.includes("dhx_cell-empty")) {
+                head.css += " dhx_cell-empty";
+            }
+        });
+        // find header columns indexes
+        if (col.header[0].text === "") {
+            rowsHeadersCount++;
+        }
+    });
+    config.$totalWidth = totalWidth;
+    config.$headerLevel = headerRowsCount;
+    config.$footerLevel = footerRowsCount;
+    config.$colspans = colspans;
+    config.$footer = footer;
+    return rowsHeadersCount;
+}
+exports.countColumns = countColumns;
+function calculatePositions(width, height, scroll, conf) {
+    var columns = conf.columns;
+    var columnsLength = columns.length;
+    var rows = conf.data;
+    var rowsLength = rows.length;
+    var maxWidth = -Infinity;
+    for (var index = 0; index < columnsLength; index++) {
+        if (columns[index].$width > maxWidth)
+            maxWidth = columns[index].$width;
+    }
+    var minWidth = +Infinity;
+    for (var index = 0; index < columnsLength; index++) {
+        if (columns[index].$width < minWidth)
+            minWidth = columns[index].$width;
+    }
+    var maxHeight = -Infinity;
+    for (var index = 0; index < rowsLength; index++) {
+        if (rows[index].$height > maxHeight)
+            maxHeight = rows[index].$height;
+    }
+    var minHeight = conf.rowHeight;
+    var xReserve = Math.round(maxWidth / minWidth);
+    var yReserve = Math.round(maxHeight / minHeight);
+    var avrColWidth = conf.$totalWidth / columnsLength;
+    var colPerPage = Math.round(width / avrColWidth);
+    var avrRowHeight = conf.$totalHeight / rowsLength;
+    var rowPerPage = Math.round(height / avrRowHeight);
+    var x = 0;
+    var scrollLeft = scroll.left;
+    for (var i = 0; i < columns.length; i++) {
+        var col = columns[i];
+        scrollLeft = scrollLeft - col.$width;
+        if (scrollLeft + avrColWidth / 2 > 0) {
+            x++;
+        }
+        else {
+            break;
+        }
+    }
+    var y = 0;
+    var scrollTop = scroll.top;
+    for (var i = 0; i < rows.length; i++) {
+        var row = rows[i];
+        scrollTop = scrollTop - row.$height;
+        if (scrollTop + avrRowHeight / 2 > 0) {
+            y++;
+        }
+        else {
+            break;
+        }
+    }
+    var xStart = x - xReserve >= 0 ? x - xReserve : 0;
+    var xEnd = x + colPerPage + xReserve;
+    var yStart = y - yReserve >= 0 ? y - yReserve : 0;
+    var yEnd = y + rowPerPage + yReserve;
+    return {
+        xStart: xStart,
+        xEnd: xEnd,
+        yStart: yStart,
+        yEnd: yEnd,
+    };
+}
+exports.calculatePositions = calculatePositions;
+function getUnique(arr, name) {
+    return arr
+        .map(function (item) { return item[name]; })
+        .filter(function (item, i, array) { return array.indexOf(item) === i; })
+        .sort();
+}
+exports.getUnique = getUnique;
+exports.getMaxRowHeight = function (row, cols, config) {
+    if (config === void 0) { config = { font: "20px Roboto", lineHeight: 20 }; }
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d", {
+        alpha: false,
+    });
+    ctx.font = config.font;
+    var definedColumns = {};
+    var colLength = cols.length;
+    for (var index = 0; index < colLength; index++) {
+        if (!cols[index].htmlEnable) {
+            definedColumns[cols[index].id] = cols[index].$width;
+        }
+    }
+    var defaultLineBreak = [];
+    var mathLineBreak = [];
+    for (var _i = 0, _a = Object.entries(row); _i < _a.length; _i++) {
+        var _b = _a[_i], key = _b[0], value = _b[1];
+        if (key !== "id" &&
+            !key.startsWith("$") &&
+            key !== "height" &&
+            (typeof value === "string" || typeof value === "number") &&
+            typeof ("" + definedColumns[key]) !== "undefined") {
+            var currentValue = typeof value === "number" ? value.toString() : value;
+            defaultLineBreak.push(currentValue.split("\n").length);
+            mathLineBreak.push(Math.round(ctx.measureText(currentValue).width / definedColumns[key]));
+        }
+    }
+    var maxRows = Math.max(core_1.getMaxArrayNymber(defaultLineBreak), core_1.getMaxArrayNymber(mathLineBreak));
+    canvas.remove();
+    return maxRows * config.lineHeight;
+};
+exports.getCalculatedRowHeight = function (height, config) {
+    if (config === void 0) { config = {
+        rowHeight: 40,
+        padding: 8,
+    }; }
+    var calculateHeight = config.rowHeight < 40 ? height : height + config.padding * 2;
+    return height < config.rowHeight ? config.rowHeight : calculateHeight;
+};
+exports.getTreeCellWidthOffset = function (row) {
+    return 20 + row.$level * 20 - (row.$items ? 20 : 0);
+};
+exports.getMaxColsWidth = function (rows, cols, config) {
+    if (config === void 0) { config = {
+        font: "normal 14.4px Arial",
+        lineHeight: 20,
+    }; }
+    var _a, _b, _c;
+    if (!rows.length || !cols.length)
+        return;
+    var canvas = document.createElement("canvas");
+    var ctx = canvas.getContext("2d", {
+        alpha: false,
+    });
+    ctx.font = config.font;
+    var definedColumns = {};
+    var colLength = cols.length;
+    for (var index = 0; index < colLength; index++) {
+        definedColumns[cols[index].id] = {
+            width: 20,
+            html: !!cols[index].htmlEnable,
+        };
+    }
+    var rowsLength = rows.length;
+    for (var index = 0; index < rowsLength; index++) {
+        for (var _i = 0, _d = Object.entries(rows[index]); _i < _d.length; _i++) {
+            var _e = _d[_i], key = _e[0], value = _e[1];
+            if (key !== "id" &&
+                !key.startsWith("$") &&
+                key !== "height" &&
+                (typeof value === "string" || typeof value === "number") &&
+                typeof ("" + ((_a = definedColumns[key]) === null || _a === void 0 ? void 0 : _a.width)) !== "undefined") {
+                var width = ctx.measureText(((_b = definedColumns[key]) === null || _b === void 0 ? void 0 : _b.html) ? main_1.removeHTMLTags(value) : "" + value).width;
+                if (width > ((_c = definedColumns[key]) === null || _c === void 0 ? void 0 : _c.width))
+                    definedColumns[key].width = width;
+            }
+        }
+    }
+    canvas.remove();
+    var totalColumns = {};
+    for (var _f = 0, _g = Object.entries(definedColumns); _f < _g.length; _f++) {
+        var _h = _g[_f], key = _h[0], value = _h[1];
+        totalColumns[key] = Math.ceil(value.width);
+    }
+    return totalColumns;
+};
+function toFormat(value, type, format) {
+    if (!value) {
+        return value;
+    }
+    var formatTemplate = function (type) {
+        value = value.toString();
+        var result;
+        var template = format
+            .replace(/#+/g, "#")
+            .split("#")
+            .filter(function (i) { return i; });
+        value = type === "percent" ? (Number(value) * 100).toString() : value;
+        var isPositive = Number(value) >= 0;
+        var trunc = Math.trunc(Number(value)).toString();
+        var formatFractionLength = format.match(/0/g) && format.match(/0/g).length;
+        var truncTemplate = template.find(function (i) { return !i.includes("0"); });
+        result = truncTemplate ? trunc.replace(/(\d)(?=(\d{3})+(\D|$))/g, "$1" + truncTemplate) : trunc;
+        result = isPositive ? result : "-" + result;
+        if (formatFractionLength) {
+            var delimiter = template.find(function (i) { return i.includes("0"); }).replace(/0+/g, "");
+            var truncFractional = value.split(".")[1] || "0";
+            var fractional = Number("0." + truncFractional)
+                .toFixed(formatFractionLength)
+                .toString()
+                .split(".")[1]
+                .padEnd(formatFractionLength, "0");
+            result += delimiter + fractional;
+        }
+        return type === "percent" ? result + "%" : result;
+    };
+    switch (type) {
+        case "number":
+        case "percent":
+            if (!format)
+                format = "#";
+            return core_1.isDefined(value) && !isNaN(Number(value)) ? formatTemplate(type) : value;
+        case "date":
+            if (typeof value === "string") {
+                value = date_1.getFormattedDate(format, date_1.stringToDate(value, format));
+            }
+            else if (typeof value === "object") {
+                value = date_1.getFormattedDate(format, value);
+            }
+            return value;
+        default:
+            return value;
+    }
+}
+exports.toFormat = toFormat;
+
+
+/***/ }),
+/* 22 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var core_2 = __webpack_require__(1);
+exports.locale = {
+    monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+    months: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December",
+    ],
+    daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+    days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Monday"],
+    cancel: "Cancel",
+};
+/*
+    %d	day as a number with leading zero, 01..31
+    %j	day as a number, 1..31
+    %D	short name of the day, Su Mo Tu...
+    %l	full name of the day, Sunday Monday Tuesday...
+    %m	month as a number with leading zero, 01..12
+    %n	month as a number, 1..12
+    %M	short name of the month, Jan Feb Mar...
+    %F	full name of the month, January February March...
+    %y	year as a number, 2 digits
+    %Y	year as a number, 4 digits
+    %h	hours 12-format with leading zero, 01..12)
+    %g	hours 12-format, 1..12)
+    %H	hours 24-format with leading zero, 01..24
+    %G	hours 24-format, 1..24
+    %i	minutes with leading zero, 01..59
+    %s	seconds with leading zero, 01..59
+    %a	am or pm
+    %A	AM or PM
+    %u	milliseconds
+*/
+var formatters = {
+    "%d": function (date) {
+        var day = date.getDate();
+        return day < 10 ? "0" + day : day;
+    },
+    "%j": function (date) { return date.getDate(); },
+    "%l": function (date) {
+        return exports.locale.days[date.getDay()];
+    },
+    "%D": function (date) {
+        return exports.locale.daysShort[date.getDay()];
+    },
+    "%m": function (date) {
+        var month = date.getMonth() + 1;
+        return month < 10 ? "0" + month : month;
+    },
+    "%n": function (date) { return date.getMonth() + 1; },
+    "%M": function (date) { return exports.locale.monthsShort[date.getMonth()]; },
+    "%F": function (date) { return exports.locale.months[date.getMonth()]; },
+    "%y": function (date) {
+        return date
+            .getFullYear()
+            .toString()
+            .slice(2);
+    },
+    "%Y": function (date) { return date.getFullYear(); },
+    "%h": function (date) {
+        var hours = date.getHours() % 12;
+        if (hours === 0) {
+            hours = 12;
+        }
+        return hours < 10 ? "0" + hours : hours;
+    },
+    "%g": function (date) {
+        var hours = date.getHours() % 12;
+        if (hours === 0) {
+            hours = 12;
+        }
+        return hours;
+    },
+    "%H": function (date) {
+        var hours = date.getHours();
+        return hours < 10 ? "0" + hours : hours;
+    },
+    "%G": function (date) { return date.getHours(); },
+    "%i": function (date) {
+        var minutes = date.getMinutes();
+        return minutes < 10 ? "0" + minutes : minutes;
+    },
+    "%s": function (date) {
+        var seconds = date.getSeconds();
+        return seconds < 10 ? "0" + seconds : seconds;
+    },
+    "%a": function (date) {
+        return date.getHours() >= 12 ? "pm" : "am";
+    },
+    "%A": function (date) {
+        return date.getHours() >= 12 ? "PM" : "AM";
+    },
+    "%u": function (date) { return date.getMilliseconds(); },
+};
+var setFormatters = {
+    "%d": function (date, value) {
+        var check = /(^([0-9][0-9])$)/i.test(value);
+        check ? date.setDate(Number(value)) : date.setDate(Number(1));
+    },
+    "%j": function (date, value) {
+        var check = /(^([0-9]?[0-9])$)/i.test(value);
+        check ? date.setDate(Number(value)) : date.setDate(Number(1));
+    },
+    "%m": function (date, value) {
+        var check = /(^([0-9][0-9])$)/i.test(value);
+        check ? date.setMonth(Number(value) - 1) : date.setMonth(Number(0));
+    },
+    "%n": function (date, value) {
+        var check = /(^([0-9]?[0-9])$)/i.test(value);
+        check ? date.setMonth(Number(value) - 1) : date.setMonth(Number(0));
+    },
+    "%M": function (date, value) {
+        var index = core_2.findIndex(exports.locale.monthsShort, function (v) { return v === value; });
+        index === -1 ? date.setMonth(0) : date.setMonth(index);
+    },
+    "%F": function (date, value) {
+        var index = core_2.findIndex(exports.locale.months, function (v) { return v === value; });
+        index === -1 ? date.setMonth(0) : date.setMonth(index);
+    },
+    "%y": function (date, value) {
+        var check = /(^([0-9][0-9])$)/i.test(value);
+        check ? date.setFullYear(Number("20" + value)) : date.setFullYear(Number("2000"));
+    },
+    "%Y": function (date, value) {
+        var check = /(^([0-9][0-9][0-9][0-9])$)/i.test(value);
+        check ? date.setFullYear(Number(value)) : date.setFullYear(Number("2000"));
+    },
+    "%h": function (date, value, dateFormat) {
+        var check = /(^0[1-9]|1[0-2]$)/i.test(value);
+        (check && dateFormat === "pm") || dateFormat === "PM"
+            ? date.setHours(Number(value))
+            : date.setHours(Number(0));
+    },
+    "%g": function (date, value, dateFormat) {
+        var check = /(^[1-9]$)|(^0[1-9]|1[0-2]$)/i.test(value);
+        (check && dateFormat === "pm") || dateFormat === "PM"
+            ? date.setHours(Number(value))
+            : date.setHours(Number(0));
+    },
+    "%H": function (date, value) {
+        var check = /(^[0-2][0-9]$)/i.test(value);
+        check ? date.setHours(Number(value)) : date.setHours(Number(0));
+    },
+    "%G": function (date, value) {
+        var check = /(^[1-9][0-9]?$)/i.test(value);
+        check ? date.setHours(Number(value)) : date.setHours(Number(0));
+    },
+    "%i": function (date, value) {
+        var check = /(^([0-5][0-9])$)/i.test(value);
+        check ? date.setMinutes(Number(value)) : date.setMinutes(Number(0));
+    },
+    "%s": function (date, value) {
+        var check = /(^([0-5][0-9])$)/i.test(value);
+        check ? date.setSeconds(Number(value)) : date.setSeconds(Number(0));
+    },
+    "%a": function (date, value) {
+        if (value === "pm") {
+            date.setHours(date.getHours() + 12);
+        }
+    },
+    "%A": function (date, value) {
+        if (value === "PM") {
+            date.setHours(date.getHours() + 12);
+        }
+    },
+};
+var TokenType;
+(function (TokenType) {
+    TokenType[TokenType["separator"] = 0] = "separator";
+    TokenType[TokenType["datePart"] = 1] = "datePart";
+})(TokenType || (TokenType = {}));
+function tokenizeFormat(format) {
+    var tokens = [];
+    var currentSeparator = "";
+    for (var i = 0; i < format.length; i++) {
+        if (format[i] === "%") {
+            if (currentSeparator.length > 0) {
+                tokens.push({
+                    type: TokenType.separator,
+                    value: currentSeparator,
+                });
+                currentSeparator = "";
+            }
+            tokens.push({
+                type: TokenType.datePart,
+                value: format[i] + format[i + 1],
+            });
+            i++;
+        }
+        else {
+            currentSeparator += format[i];
+        }
+    }
+    if (currentSeparator.length > 0) {
+        tokens.push({
+            type: TokenType.separator,
+            value: currentSeparator,
+        });
+    }
+    return tokens;
+}
+function getFormattedDate(format, date) {
+    return tokenizeFormat(format).reduce(function (res, token) {
+        if (token.type === TokenType.separator) {
+            return res + token.value;
+        }
+        else {
+            if (!formatters[token.value]) {
+                return res;
+            }
+            return res + formatters[token.value](date);
+        }
+    }, "");
+}
+exports.getFormattedDate = getFormattedDate;
+function stringToDate(str, format, validate) {
+    if (typeof str !== "string") {
+        return;
+    }
+    var tokens = tokenizeFormat(format);
+    var dateParts = [];
+    var index = 0;
+    var formatter = null;
+    for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
+        var token = tokens_1[_i];
+        if (token.type === TokenType.separator) {
+            var sepratorIndex = str.indexOf(token.value, index);
+            if (sepratorIndex === -1) {
+                if (validate) {
+                    return false;
+                }
+                throw new Error("Incorrect date, see docs: https://docs.dhtmlx.com/suite/calendar__api__calendar_dateformat_config.html");
+            }
+            if (formatter) {
+                dateParts.push({
+                    formatter: formatter,
+                    value: str.slice(index, sepratorIndex),
+                });
+                formatter = null;
+            }
+            index = sepratorIndex + token.value.length;
+        }
+        else if (token.type === TokenType.datePart) {
+            formatter = token.value;
+        }
+    }
+    if (formatter) {
+        dateParts.push({
+            formatter: formatter,
+            value: str.slice(index),
+        });
+    }
+    dateParts.reverse();
+    var dateFormat;
+    for (var _a = 0, dateParts_1 = dateParts; _a < dateParts_1.length; _a++) {
+        var datePart = dateParts_1[_a];
+        if (datePart.formatter === "%A" || datePart.formatter === "%a") {
+            dateFormat = datePart.value;
+        }
+    }
+    var date = new Date(0);
+    for (var _b = 0, dateParts_2 = dateParts; _b < dateParts_2.length; _b++) {
+        var datePart = dateParts_2[_b];
+        if (setFormatters[datePart.formatter]) {
+            setFormatters[datePart.formatter](date, datePart.value, dateFormat);
+        }
+    }
+    return validate ? true : date;
+}
+exports.stringToDate = stringToDate;
+var DateHelper = /** @class */ (function () {
+    function DateHelper() {
+    }
+    DateHelper.copy = function (d) {
+        return new Date(d);
+    };
+    DateHelper.fromYear = function (year) {
+        return new Date(year, 0, 1);
+    };
+    DateHelper.fromYearAndMonth = function (year, month) {
+        return new Date(year, month, 1);
+    };
+    DateHelper.weekStart = function (d, firstWeekday) {
+        var diff = (d.getDay() + 7 - firstWeekday) % 7;
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate() - diff);
+    };
+    DateHelper.monthStart = function (d) {
+        return new Date(d.getFullYear(), d.getMonth(), 1);
+    };
+    DateHelper.yearStart = function (d) {
+        return new Date(d.getFullYear(), 0, 1);
+    };
+    DateHelper.dayStart = function (d) {
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    };
+    DateHelper.addDay = function (d, count) {
+        if (count === void 0) { count = 1; }
+        return new Date(d.getFullYear(), d.getMonth(), d.getDate() + count);
+    };
+    DateHelper.addMonth = function (d, count) {
+        if (count === void 0) { count = 1; }
+        return new Date(d.getFullYear(), d.getMonth() + count);
+    };
+    DateHelper.addYear = function (d, count) {
+        if (count === void 0) { count = 1; }
+        return new Date(d.getFullYear() + count, d.getMonth());
+    };
+    DateHelper.withHoursAndMinutes = function (d, hours, minutes, dateFormat) {
+        if (dateFormat === undefined || (!dateFormat && hours === 12) || (dateFormat && hours !== 12)) {
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours, minutes);
+        }
+        else if (dateFormat && hours === 12) {
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, minutes);
+        }
+        else {
+            return new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours + 12, minutes);
+        }
+    };
+    DateHelper.setMonth = function (d, month) {
+        d.setMonth(month);
+    };
+    DateHelper.setYear = function (d, year) {
+        d.setFullYear(year);
+    };
+    DateHelper.mergeHoursAndMinutes = function (source, target) {
+        return new Date(source.getFullYear(), source.getMonth(), source.getDate(), target.getHours(), target.getMinutes());
+    };
+    DateHelper.isWeekEnd = function (d) {
+        return d.getDay() === 0 || d.getDay() === 6;
+    };
+    DateHelper.getTwelweYears = function (d) {
+        var y = d.getFullYear();
+        var firstYear = y - (y % 12);
+        return core_1.range(firstYear, firstYear + 11);
+    };
+    DateHelper.getWeekNumber = function (d) {
+        if (d.getDay() !== 6) {
+            d = DateHelper.addDay(d, 6 - d.getDay());
+        }
+        var dayMS = 24 * 60 * 60 * 1000;
+        var ordinal = (d.valueOf() - DateHelper.yearStart(d).valueOf()) / dayMS;
+        return Math.floor((ordinal - d.getDay() + 10) / 7);
+    };
+    DateHelper.isSameDay = function (d1, d2) {
+        return (d1.getFullYear() === d2.getFullYear() &&
+            d1.getMonth() === d2.getMonth() &&
+            d1.getDate() === d2.getDate());
+    };
+    DateHelper.toDateObject = function (date, dateFormat) {
+        if (typeof date === "string") {
+            return stringToDate(date, dateFormat);
+        }
+        else {
+            return new Date(date);
+        }
+    };
+    DateHelper.nullTimestampDate = new Date(0);
+    return DateHelper;
+}());
+exports.DateHelper = DateHelper;
+
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ajax_1 = __webpack_require__(34);
 var DataProxy = /** @class */ (function () {
     function DataProxy(url, config) {
         this.url = this._url = url;
@@ -2388,7 +3177,7 @@ exports.DataProxy = DataProxy;
 
 
 /***/ }),
-/* 21 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2404,11 +3193,22 @@ var SelectionEvents;
 
 
 /***/ }),
-/* 22 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 function getCount(item, widgetClass, isLimited) {
@@ -2432,6 +3232,7 @@ function getIcon(iconName, type) {
     }
     return dom_1.el("span", {
         class: "dhx_" + type + "__icon " + iconName,
+        "aria-hidden": "true",
     });
 }
 exports.getIcon = getIcon;
@@ -2454,17 +3255,22 @@ var getNavbarItemClass = function (widgetName, item, asMenuItem) {
     return resultClassName;
 };
 function navbarComponentMixin(widgetName, item, asMenuItem, body) {
+    var getAriaAttrs = function (type) {
+        var attrs = {
+            role: "none",
+        };
+        if (type === "separator") {
+            attrs.role = "separator";
+            attrs["aria-orientation"] = "vertical";
+        }
+        return attrs;
+    };
     var itemClass = getNavbarItemClass(widgetName, item, asMenuItem);
     var hasRibbonSize = widgetName === "ribbon" && (item.type === "navItem" || item.type === "imageButton");
-    return dom_1.el("li", {
-        _key: item.id,
-        class: itemClass +
+    return dom_1.el("li", __assign({ _key: item.id, class: itemClass +
             (item.icon && !item.value && hasRibbonSize ? " dhx_ribbon__item--icon" : "") +
             (item.src && !item.value && hasRibbonSize ? " dhx_ribbon__item--icon" : "") +
-            (item.size && hasRibbonSize ? " dhx_ribbon__item--" + item.size : ""),
-        ".innerHTML": item.type === "customHTML" ? item.html : undefined,
-        dhx_id: item.type === "customHTML" ? item.id : undefined,
-    }, item.type !== "customHTML" ? [body] : undefined);
+            (item.size && hasRibbonSize ? " dhx_ribbon__item--" + item.size : ""), ".innerHTML": item.type === "customHTML" ? item.html : undefined, dhx_id: item.type === "customHTML" ? item.id : undefined }, getAriaAttrs(item.type)), item.type !== "customHTML" ? [body] : undefined);
 }
 exports.navbarComponentMixin = navbarComponentMixin;
 function getNavbarButtonCSS(_a, widgetName) {
@@ -2494,7 +3300,7 @@ exports.getNavbarButtonCSS = getNavbarButtonCSS;
 
 
 /***/ }),
-/* 23 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2507,15 +3313,29 @@ var ChartEvents;
     ChartEvents["chartMouseLeave"] = "chartMouseLeave";
     ChartEvents["resize"] = "resize";
     ChartEvents["serieClick"] = "serieClick";
+    // private
+    ChartEvents["seriaMouseMove"] = "seriaMouseMove";
+    ChartEvents["seriaMouseLeave"] = "seriaMouseLeave";
 })(ChartEvents = exports.ChartEvents || (exports.ChartEvents = {}));
 
 
 /***/ }),
-/* 24 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(8);
@@ -2557,6 +3377,9 @@ function arc(r, flag) {
     return "M" + -r + ",0A" + r + "," + r + " 0 " + (flag ? 0 : 1) + " 1 " + r + ",0A" + r + "," + r + " 0 " + (flag ? 0 : 1) + " 1 " + -r + ",0";
 }
 function radarScale(data, width, height) {
+    var getScaleAriaAttrs = function (text) { return ({
+        "aria-label": "x-axis" + (text ? ", " + text : ""),
+    }); };
     var radius;
     if (height > width) {
         radius = width / 2;
@@ -2635,19 +3458,19 @@ function radarScale(data, width, height) {
         });
         svg.push(scaleText);
     }
-    return dom_1.sv("g", { transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, svg);
+    return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getScaleAriaAttrs(data.attribute)), svg);
 }
 exports.radarScale = radarScale;
 
 
 /***/ }),
-/* 25 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_data_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 var FileStatus;
 (function (FileStatus) {
     FileStatus["queue"] = "queue";
@@ -2676,7 +3499,7 @@ var VaultMode;
 
 
 /***/ }),
-/* 26 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2713,7 +3536,7 @@ var resizeMode;
 
 
 /***/ }),
-/* 27 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2722,26 +3545,11 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(119));
+__export(__webpack_require__(122));
 
 
 /***/ }),
-/* 28 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(139));
-__export(__webpack_require__(70));
-__export(__webpack_require__(41));
-
-
-/***/ }),
-/* 29 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2751,11 +3559,11 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(171));
-__export(__webpack_require__(77));
+__export(__webpack_require__(78));
 
 
 /***/ }),
-/* 30 */
+/* 32 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2847,7 +3655,7 @@ exports.cssManager = new CssManager();
 
 
 /***/ }),
-/* 31 */
+/* 33 */
 /***/ (function(module, exports) {
 
 "use strict";
@@ -2876,14 +3684,14 @@ try {
 module.exports = g;
 
 /***/ }),
-/* 32 */
+/* 34 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Promise) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(15);
-var helpers_1 = __webpack_require__(16);
+var types_1 = __webpack_require__(16);
+var helpers_1 = __webpack_require__(17);
 function toQueryString(data) {
     return Object.keys(data)
         .reduce(function (entries, key) {
@@ -3075,7 +3883,7 @@ exports.ajax = {
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 33 */
+/* 35 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3105,7 +3913,7 @@ var MessageContainerPosition;
 
 
 /***/ }),
-/* 34 */
+/* 36 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3119,13 +3927,13 @@ exports.default = locale;
 
 
 /***/ }),
-/* 35 */
+/* 37 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_data_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 exports.DataEvents = ts_data_1.DataEvents;
 var NavigationBarEvents;
 (function (NavigationBarEvents) {
@@ -3140,7 +3948,7 @@ var NavigationBarEvents;
 
 
 /***/ }),
-/* 36 */
+/* 38 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3167,7 +3975,7 @@ exports.default = locale;
 
 
 /***/ }),
-/* 37 */
+/* 39 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3176,13 +3984,13 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(136));
+__export(__webpack_require__(138));
 __export(__webpack_require__(65));
-__export(__webpack_require__(38));
+__export(__webpack_require__(40));
 
 
 /***/ }),
-/* 38 */
+/* 40 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3205,21 +4013,7 @@ var ListEvents;
 
 
 /***/ }),
-/* 39 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(140));
-__export(__webpack_require__(69));
-
-
-/***/ }),
-/* 40 */
+/* 41 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3229,277 +4023,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(141));
-__export(__webpack_require__(67));
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var en_1 = __webpack_require__(42);
-var core_1 = __webpack_require__(1);
-/*
-    %d	day as a number with leading zero, 01..31
-    %j	day as a number, 1..31
-    %D	short name of the day, Su Mo Tu...
-    %l	full name of the day, Sunday Monday Tuesday...
-    %m	month as a number with leading zero, 01..12
-    %n	month as a number, 1..12
-    %M	short name of the month, Jan Feb Mar...
-    %F	full name of the month, January February March...
-    %y	year as a number, 2 digits
-    %Y	year as a number, 4 digits
-    %h	hours 12-format with leading zero, 01..12)
-    %g	hours 12-format, 1..12)
-    %H	hours 24-format with leading zero, 01..24
-    %G	hours 24-format, 1..24
-    %i	minutes with leading zero, 01..59
-    %s	seconds with leading zero, 01..59
-    %a	am or pm
-    %A	AM or PM
-    %u	milliseconds
-    %P	timezone offset
-*/
-var formatters = {
-    "%d": function (date) {
-        var day = date.getDate();
-        return day < 10 ? "0" + day : day;
-    },
-    "%j": function (date) { return date.getDate(); },
-    "%l": function (date) {
-        return en_1.default.days[date.getDay()];
-    },
-    "%D": function (date) {
-        return en_1.default.daysShort[date.getDay()];
-    },
-    "%m": function (date) {
-        var month = date.getMonth() + 1;
-        return month < 10 ? "0" + month : month;
-    },
-    "%n": function (date) { return date.getMonth() + 1; },
-    "%M": function (date) { return en_1.default.monthsShort[date.getMonth()]; },
-    "%F": function (date) { return en_1.default.months[date.getMonth()]; },
-    "%y": function (date) {
-        return date
-            .getFullYear()
-            .toString()
-            .slice(2);
-    },
-    "%Y": function (date) { return date.getFullYear(); },
-    "%h": function (date) {
-        var hours = date.getHours() % 12;
-        if (hours === 0) {
-            hours = 12;
-        }
-        return hours < 10 ? "0" + hours : hours;
-    },
-    "%g": function (date) {
-        var hours = date.getHours() % 12;
-        if (hours === 0) {
-            hours = 12;
-        }
-        return hours;
-    },
-    "%H": function (date) {
-        var hours = date.getHours();
-        return hours < 10 ? "0" + hours : hours;
-    },
-    "%G": function (date) { return date.getHours(); },
-    "%i": function (date) {
-        var minutes = date.getMinutes();
-        return minutes < 10 ? "0" + minutes : minutes;
-    },
-    "%s": function (date) {
-        var seconds = date.getSeconds();
-        return seconds < 10 ? "0" + seconds : seconds;
-    },
-    "%a": function (date) {
-        return date.getHours() >= 12 ? "pm" : "am";
-    },
-    "%A": function (date) {
-        return date.getHours() >= 12 ? "PM" : "AM";
-    },
-    "%u": function (date) { return date.getMilliseconds(); },
-};
-var setFormatters = {
-    "%d": function (date, value) {
-        var check = /(^([0-9][0-9])$)/i.test(value);
-        check ? date.setDate(Number(value)) : date.setDate(Number(1));
-    },
-    "%j": function (date, value) {
-        var check = /(^([0-9]?[0-9])$)/i.test(value);
-        check ? date.setDate(Number(value)) : date.setDate(Number(1));
-    },
-    "%m": function (date, value) {
-        var check = /(^([0-9][0-9])$)/i.test(value);
-        check ? date.setMonth(Number(value) - 1) : date.setMonth(Number(0));
-    },
-    "%n": function (date, value) {
-        var check = /(^([0-9]?[0-9])$)/i.test(value);
-        check ? date.setMonth(Number(value) - 1) : date.setMonth(Number(0));
-    },
-    "%M": function (date, value) {
-        var index = core_1.findIndex(en_1.default.monthsShort, function (v) { return v === value; });
-        index === -1 ? date.setMonth(0) : date.setMonth(index);
-    },
-    "%F": function (date, value) {
-        var index = core_1.findIndex(en_1.default.months, function (v) { return v === value; });
-        index === -1 ? date.setMonth(0) : date.setMonth(index);
-    },
-    "%y": function (date, value) {
-        var check = /(^([0-9][0-9])$)/i.test(value);
-        check ? date.setFullYear(Number("20" + value)) : date.setFullYear(Number("2000"));
-    },
-    "%Y": function (date, value) {
-        var check = /(^([0-9][0-9][0-9][0-9])$)/i.test(value);
-        check ? date.setFullYear(Number(value)) : date.setFullYear(Number("2000"));
-    },
-    "%h": function (date, value, dateFormat) {
-        var check = /(^0[1-9]|1[0-2]$)/i.test(value);
-        (check && dateFormat === "pm") || dateFormat === "PM"
-            ? date.setHours(Number(value))
-            : date.setHours(Number(0));
-    },
-    "%g": function (date, value, dateFormat) {
-        var check = /(^[1-9]$)|(^0[1-9]|1[0-2]$)/i.test(value);
-        (check && dateFormat === "pm") || dateFormat === "PM"
-            ? date.setHours(Number(value))
-            : date.setHours(Number(0));
-    },
-    "%H": function (date, value) {
-        var check = /(^[0-2][0-9]$)/i.test(value);
-        check ? date.setHours(Number(value)) : date.setHours(Number(0));
-    },
-    "%G": function (date, value) {
-        var check = /(^[1-9][0-9]?$)/i.test(value);
-        check ? date.setHours(Number(value)) : date.setHours(Number(0));
-    },
-    "%i": function (date, value) {
-        var check = /(^([0-5][0-9])$)/i.test(value);
-        check ? date.setMinutes(Number(value)) : date.setMinutes(Number(0));
-    },
-    "%s": function (date, value) {
-        var check = /(^([0-5][0-9])$)/i.test(value);
-        check ? date.setSeconds(Number(value)) : date.setSeconds(Number(0));
-    },
-    "%a": function (date, value) {
-        if (value === "pm") {
-            date.setHours(date.getHours() + 12);
-        }
-    },
-    "%A": function (date, value) {
-        if (value === "PM") {
-            date.setHours(date.getHours() + 12);
-        }
-    },
-};
-var TokenType;
-(function (TokenType) {
-    TokenType[TokenType["separator"] = 0] = "separator";
-    TokenType[TokenType["datePart"] = 1] = "datePart";
-})(TokenType || (TokenType = {}));
-function tokenizeFormat(format) {
-    var tokens = [];
-    var currentSeparator = "";
-    for (var i = 0; i < format.length; i++) {
-        if (format[i] === "%") {
-            if (currentSeparator.length > 0) {
-                tokens.push({
-                    type: TokenType.separator,
-                    value: currentSeparator,
-                });
-                currentSeparator = "";
-            }
-            tokens.push({
-                type: TokenType.datePart,
-                value: format[i] + format[i + 1],
-            });
-            i++;
-        }
-        else {
-            currentSeparator += format[i];
-        }
-    }
-    if (currentSeparator.length > 0) {
-        tokens.push({
-            type: TokenType.separator,
-            value: currentSeparator,
-        });
-    }
-    return tokens;
-}
-function getFormatedDate(format, date) {
-    return tokenizeFormat(format).reduce(function (res, token) {
-        if (token.type === TokenType.separator) {
-            return res + token.value;
-        }
-        else {
-            if (!formatters[token.value]) {
-                return res;
-            }
-            return res + formatters[token.value](date);
-        }
-    }, "");
-}
-exports.getFormatedDate = getFormatedDate;
-function stringToDate(str, format, validate) {
-    if (typeof str !== "string") {
-        return;
-    }
-    var tokens = tokenizeFormat(format);
-    var dateParts = [];
-    var index = 0;
-    var formatter = null;
-    for (var _i = 0, tokens_1 = tokens; _i < tokens_1.length; _i++) {
-        var token = tokens_1[_i];
-        if (token.type === TokenType.separator) {
-            var sepratorIndex = str.indexOf(token.value, index);
-            if (sepratorIndex === -1) {
-                if (validate) {
-                    return false;
-                }
-                throw new Error("Incorrect date, see docs: https://docs.dhtmlx.com/suite/calendar__api__calendar_dateformat_config.html");
-            }
-            if (formatter) {
-                dateParts.push({
-                    formatter: formatter,
-                    value: str.slice(index, sepratorIndex),
-                });
-                formatter = null;
-            }
-            index = sepratorIndex + token.value.length;
-        }
-        else if (token.type === TokenType.datePart) {
-            formatter = token.value;
-        }
-    }
-    if (formatter) {
-        dateParts.push({
-            formatter: formatter,
-            value: str.slice(index),
-        });
-    }
-    dateParts.reverse();
-    var dateFormat;
-    for (var _a = 0, dateParts_1 = dateParts; _a < dateParts_1.length; _a++) {
-        var datePart = dateParts_1[_a];
-        if (datePart.formatter === "%A" || datePart.formatter === "%a") {
-            dateFormat = datePart.value;
-        }
-    }
-    var date = new Date(0);
-    for (var _b = 0, dateParts_2 = dateParts; _b < dateParts_2.length; _b++) {
-        var datePart = dateParts_2[_b];
-        if (setFormatters[datePart.formatter]) {
-            setFormatters[datePart.formatter](date, datePart.value, dateFormat);
-        }
-    }
-    return validate ? true : date;
-}
-exports.stringToDate = stringToDate;
+__export(__webpack_require__(70));
 
 
 /***/ }),
@@ -3508,28 +4032,12 @@ exports.stringToDate = stringToDate;
 
 "use strict";
 
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
 Object.defineProperty(exports, "__esModule", { value: true });
-var locale = {
-    monthsShort: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-    months: [
-        "January",
-        "February",
-        "March",
-        "April",
-        "May",
-        "June",
-        "July",
-        "August",
-        "September",
-        "October",
-        "November",
-        "December",
-    ],
-    daysShort: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
-    days: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Monday"],
-    cancel: "Cancel",
-};
-exports.default = locale;
+__export(__webpack_require__(142));
+__export(__webpack_require__(69));
 
 
 /***/ }),
@@ -3542,16 +4050,30 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(146));
-__export(__webpack_require__(72));
-__export(__webpack_require__(71));
-__export(__webpack_require__(44));
-var en_1 = __webpack_require__(45);
-exports.locale = en_1.default;
+__export(__webpack_require__(143));
+__export(__webpack_require__(67));
 
 
 /***/ }),
 /* 44 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(147));
+__export(__webpack_require__(72));
+__export(__webpack_require__(71));
+__export(__webpack_require__(45));
+var en_1 = __webpack_require__(46);
+exports.locale = en_1.default;
+
+
+/***/ }),
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3680,7 +4202,7 @@ exports.isHex = isHex;
 
 
 /***/ }),
-/* 45 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3697,7 +4219,7 @@ exports.default = en;
 
 
 /***/ }),
-/* 46 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3856,7 +4378,7 @@ exports.Scale = Scale;
 
 
 /***/ }),
-/* 47 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3876,7 +4398,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = __webpack_require__(8);
-var BaseSeria_1 = __webpack_require__(48);
+var BaseSeria_1 = __webpack_require__(49);
 var ScaleSeria = /** @class */ (function (_super) {
     __extends(ScaleSeria, _super);
     function ScaleSeria() {
@@ -3917,7 +4439,7 @@ var ScaleSeria = /** @class */ (function (_super) {
         this._points.forEach(function (item, index) {
             // scaled values
             item[0] = _this.xScale.point(item[0]) * width || 0;
-            item[1] = _this.yScale.point(item[1]) * height || 0;
+            item[1] = _this.yScale.point(item[1]) * height || (_this.config.type === "xbar" ? 0 : height);
         });
     };
     ScaleSeria.prototype._defaultLocator = function (v) {
@@ -3929,22 +4451,28 @@ exports.default = ScaleSeria;
 
 
 /***/ }),
-/* 48 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
-var types_1 = __webpack_require__(23);
+var types_1 = __webpack_require__(26);
 var common_1 = __webpack_require__(8);
-var line_1 = __webpack_require__(161);
+var line_1 = __webpack_require__(75);
 var BaseSeria = /** @class */ (function () {
     function BaseSeria(_data, config, other) {
         var _this = this;
         this._data = _data;
         this._handlers = {
             onclick: function (id, value) { return _this._events.fire(types_1.ChartEvents.serieClick, [id, value]); },
+            onmousemove: function (id, value, e) {
+                return _this._events.fire(types_1.ChartEvents.seriaMouseMove, [id, value, e]);
+            },
+            onmouseleave: function (id, value) {
+                return _this._events.fire(types_1.ChartEvents.seriaMouseLeave, [id, value]);
+            },
         };
         this.id = config.id = config.id || core_1.uid();
         this._events = other;
@@ -3964,6 +4492,21 @@ var BaseSeria = /** @class */ (function () {
                 res[1] = point[0];
                 res[2] = point[1];
                 res[3] = point[2];
+            }
+        }
+        return res;
+    };
+    BaseSeria.prototype.getClosestVertical = function (x) {
+        var res = [Infinity, null, null, null, null];
+        for (var _i = 0, _a = this._points; _i < _a.length; _i++) {
+            var point = _a[_i];
+            var dist = Math.abs(point[0] - x);
+            if (res[0] > dist) {
+                res[0] = dist;
+                res[1] = point[0];
+                res[2] = point[1];
+                res[3] = point[2];
+                res[4] = point[4];
             }
         }
         return res;
@@ -4021,7 +4564,7 @@ exports.default = BaseSeria;
 
 
 /***/ }),
-/* 49 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4052,7 +4595,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = __webpack_require__(8);
-var BaseSeria_1 = __webpack_require__(48);
+var BaseSeria_1 = __webpack_require__(49);
 var NoScaleSeria = /** @class */ (function (_super) {
     __extends(NoScaleSeria, _super);
     function NoScaleSeria() {
@@ -4143,7 +4686,7 @@ exports.default = NoScaleSeria;
 
 
 /***/ }),
-/* 50 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4175,7 +4718,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(8);
-var ScaleSeria_1 = __webpack_require__(47);
+var ScaleSeria_1 = __webpack_require__(48);
 var Line = /** @class */ (function (_super) {
     __extends(Line, _super);
     function Line() {
@@ -4184,6 +4727,20 @@ var Line = /** @class */ (function (_super) {
     Line.prototype.paint = function (width, height) {
         var _this = this;
         _super.prototype.paint.call(this, width, height);
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.value || ""),
+        }); };
+        var getPointAriaAttrs = function (key, points) {
+            var point;
+            if (key) {
+                point = points.find(function (p) { return key.includes(p[2]); });
+            }
+            return {
+                role: "graphics-symbol",
+                "aria-roledescription": "point",
+                "aria-label": point ? "point x=" + point[3] + " y=" + point[4] : "",
+            };
+        };
         var color = this.config.pointColor || this.config.color;
         var css = "chart " + this.config.type + " " + (this.config.css || "") + " " + (this.config.dashed ? "dash-line" : "");
         var svg = [];
@@ -4192,9 +4749,33 @@ var Line = /** @class */ (function (_super) {
         }
         if (this.config.pointType) {
             var point_1 = this._getPointType(this.config.pointType, color, false);
-            svg = svg.concat(this._points.map(function (p) { return point_1(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); }));
+            svg = svg.concat(this._points
+                .map(function (p) { return point_1(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); })
+                .map(function (node, index) {
+                if (node && node.attrs) {
+                    node.attrs = __assign(__assign({}, node.attrs), getPointAriaAttrs(node.key, _this._points));
+                    if (_this.config.tooltip) {
+                        node.attrs.onmousemove = [
+                            _this._handlers.onmousemove,
+                            _this._points[index][2],
+                            _this.id,
+                        ];
+                        node.attrs.onmouseleave = [
+                            _this._handlers.onmouseleave,
+                            _this._points[index][2],
+                            _this.id,
+                        ];
+                        node.attrs.onclick = [
+                            _this._handlers.onmousemove,
+                            _this._points[index][2],
+                            _this.id,
+                        ];
+                    }
+                }
+                return node;
+            }));
         }
-        return dom_1.sv("g", { class: "seria", _key: this.id }, svg);
+        return dom_1.sv("g", __assign({ class: "seria", _key: this.id }, getChartAriaAttrs(this.config)), svg);
     };
     Line.prototype._getForm = function (points, config, css, width, height) {
         var d = points.map(function (item, index) { return (index ? "L" : "M") + (item[0] + " " + item[1]); }).join(" ");
@@ -4223,7 +4804,7 @@ exports.default = Line;
 
 
 /***/ }),
-/* 51 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4238,7 +4819,7 @@ exports.default = {
 
 
 /***/ }),
-/* 52 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4268,7 +4849,7 @@ var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var helper_1 = __webpack_require__(6);
 var label_1 = __webpack_require__(11);
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 var types_1 = __webpack_require__(7);
 var Input = /** @class */ (function (_super) {
     __extends(Input, _super);
@@ -4495,7 +5076,7 @@ var Input = /** @class */ (function (_super) {
         };
     };
     Input.prototype._draw = function () {
-        var _a = this.config, id = _a.id, value = _a.value, disabled = _a.disabled, name = _a.name, icon = _a.icon, placeholder = _a.placeholder, required = _a.required, inputType = _a.inputType, hidden = _a.hidden, autocomplete = _a.autocomplete, readOnly = _a.readOnly, maxlength = _a.maxlength, minlength = _a.minlength, max = _a.max, min = _a.min;
+        var _a = this.config, id = _a.id, value = _a.value, disabled = _a.disabled, name = _a.name, icon = _a.icon, placeholder = _a.placeholder, required = _a.required, inputType = _a.inputType, hidden = _a.hidden, autocomplete = _a.autocomplete, readOnly = _a.readOnly, maxlength = _a.maxlength, minlength = _a.minlength, max = _a.max, min = _a.min, label = _a.label, helpMessage = _a.helpMessage;
         var visibility = hidden ? " dhx_form-group--hidden" : "";
         return dom_1.el("div.dhx_form-group", {
             class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config)) + visibility,
@@ -4528,6 +5109,8 @@ var Input = /** @class */ (function (_super) {
                         class: icon ? "dhx_input--icon-padding" : "",
                         autocomplete: autocomplete ? "on" : "off",
                         _ref: "input",
+                        "aria-label": label || helpMessage || "type " + (name || inputType || "text"),
+                        "aria-describedby": helpMessage ? "dhx_label__help_" + (id || this._uid) : null,
                     }),
                 ]),
                 helper_1.getValidationMessage(this.config) &&
@@ -4541,7 +5124,7 @@ exports.Input = Input;
 
 
 /***/ }),
-/* 53 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4550,180 +5133,14 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(81));
-__export(__webpack_require__(209));
+__export(__webpack_require__(82));
+__export(__webpack_require__(208));
 __export(__webpack_require__(9));
 __export(__webpack_require__(56));
 var Cells_1 = __webpack_require__(55);
 exports.getTreeCell = Cells_1.getTreeCell;
-__export(__webpack_require__(54));
-__export(__webpack_require__(18));
-
-
-/***/ }),
-/* 54 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function normalizeArray(obj, name) {
-    if (!obj[name]) {
-        return;
-    }
-    if (typeof obj[name] === "string") {
-        obj[name] = [
-            {
-                text: "" + obj[name],
-            },
-        ];
-    }
-    else {
-        obj[name] = obj[name].map(function (el) {
-            if (typeof el === "string") {
-                el = { text: el };
-            }
-            return el;
-        });
-    }
-}
-function normalizeColumns(columns) {
-    for (var _i = 0, columns_1 = columns; _i < columns_1.length; _i++) {
-        var col = columns_1[_i];
-        col.$cellCss = col.$cellCss || {};
-        normalizeArray(col, "header");
-        normalizeArray(col, "footer");
-        var isContent = col.header.reduce(function (acc, item) { return (acc = acc || !!item.content); }, false);
-        if (isContent) {
-            col.$uniqueData = [];
-        }
-        var width = col.minWidth || 100;
-        if (col.width) {
-            if (col.maxWidth && col.minWidth) {
-                width = col.width >= col.minWidth && col.width <= col.maxWidth ? col.width : col.minWidth;
-            }
-            else if (col.maxWidth) {
-                width = col.width <= col.maxWidth ? col.width : col.maxWidth > 100 ? 100 : col.maxWidth;
-            }
-            else if (col.minWidth) {
-                width = col.width >= col.minWidth ? col.width : col.minWidth;
-            }
-            else {
-                width = col.width;
-            }
-        }
-        col.$width = col.$width || width;
-        if (col.$width > col.maxWidth) {
-            col.$width = col.maxWidth;
-        }
-        if (col.$width < col.minWidth) {
-            col.$width = col.minWidth;
-        }
-    }
-}
-exports.normalizeColumns = normalizeColumns;
-function countColumns(config, columns) {
-    var headerRowsCount = 0;
-    var footerRowsCount = 0;
-    var totalWidth = 0;
-    var colspans = false;
-    var rowsHeadersCount = 0;
-    var footer = false;
-    columns.map(function (col) {
-        headerRowsCount = Math.max(headerRowsCount, col.header.length);
-        totalWidth += col.$width;
-        if (col.footer) {
-            footerRowsCount = Math.max(footerRowsCount, col.footer.length);
-            if (!footer) {
-                footer = true;
-            }
-        }
-        if (!colspans) {
-            for (var _i = 0, _a = col.header; _i < _a.length; _i++) {
-                var head = _a[_i];
-                if (head.colspan) {
-                    colspans = true;
-                    return;
-                }
-            }
-        }
-    });
-    // fill missing cells
-    columns.map(function (col) {
-        if (col.header.length < headerRowsCount) {
-            for (var i = 0; i < headerRowsCount; i++) {
-                col.header[i] = col.header[i] || { text: "" };
-            }
-        }
-        if (footer) {
-            col.footer = col.footer || [];
-        }
-        if (col.footer && col.footer.length < footerRowsCount) {
-            for (var i = 0; i < footerRowsCount; i++) {
-                col.footer[i] = col.footer[i] || { text: "" };
-            }
-        }
-        col.header.map(function (head) {
-            head.css = head.css || "";
-            if (!head.text && !head.css.includes("dhx_cell-empty")) {
-                head.css += " dhx_cell-empty";
-            }
-        });
-        // find header columns indexes
-        if (col.header[0].text === "") {
-            rowsHeadersCount++;
-        }
-    });
-    config.$totalWidth = totalWidth;
-    config.$headerLevel = headerRowsCount;
-    config.$footerLevel = footerRowsCount;
-    config.$colspans = colspans;
-    config.$footer = footer;
-    return rowsHeadersCount;
-}
-exports.countColumns = countColumns;
-function calculatePositions(width, height, scroll, conf) {
-    var columns = conf.columns.filter(function (col) { return !col.hidden; });
-    var allWidth = columns.map(function (col) { return col.$width; });
-    var maxWidth = Math.max.apply(Math, allWidth);
-    var minWidth = Math.min.apply(Math, allWidth);
-    var xReserve = Math.round(maxWidth / minWidth);
-    var yReserve = 1;
-    var avrColWidth = conf.$totalWidth / columns.length;
-    var colPerPage = Math.round(width / avrColWidth);
-    var x = 0;
-    var scrollLeft = scroll.left;
-    for (var i = 0; i < columns.length; i++) {
-        var col = columns[i];
-        scrollLeft = scrollLeft - col.$width;
-        if (scrollLeft + avrColWidth / 2 > 0) {
-            x++;
-        }
-        else {
-            break;
-        }
-    }
-    var xStart = x - xReserve >= 0 ? x - xReserve : 0;
-    var xEnd = x + colPerPage + xReserve;
-    var rowPerPage = Math.round(height / conf.rowHeight);
-    var y = Math.round(scroll.top / conf.rowHeight) || 0;
-    var yStart = y - yReserve >= 0 ? y - yReserve : 0;
-    var yEnd = y + rowPerPage + yReserve;
-    return {
-        xStart: xStart,
-        xEnd: xEnd,
-        yStart: yStart,
-        yEnd: yEnd,
-    };
-}
-exports.calculatePositions = calculatePositions;
-function getUnique(arr, name) {
-    return arr
-        .map(function (item) { return item[name]; })
-        .filter(function (item, i, array) { return array.indexOf(item) === i; })
-        .sort();
-}
-exports.getUnique = getUnique;
+__export(__webpack_require__(21));
+__export(__webpack_require__(15));
 
 
 /***/ }),
@@ -4736,10 +5153,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
 var cells_1 = __webpack_require__(56);
-var main_1 = __webpack_require__(18);
+var main_1 = __webpack_require__(15);
 var types_1 = __webpack_require__(9);
-var editors_1 = __webpack_require__(200);
-var html_1 = __webpack_require__(2);
+var editors_1 = __webpack_require__(197);
+var html_1 = __webpack_require__(3);
+var data_1 = __webpack_require__(21);
 function handleMouse(rowStart, colStart, conf, type, e) {
     colStart = html_1.locateNodeByClassName(e.target, "dhx_grid-fixed-cols-wrap") ? 0 : colStart;
     var target = html_1.locateNodeByClassName(e.target, "dhx_grid-cell");
@@ -4774,6 +5192,21 @@ function getHandlers(row, column, conf) {
     };
 }
 exports.getHandlers = getHandlers;
+function getColumnHeaderText(col) {
+    var colHeader = col.id;
+    if (col.header && col.header.length) {
+        var i = col.header.length - 1;
+        while (i >= 0) {
+            var headerConf = col.header[i];
+            if (headerConf && headerConf.text) {
+                colHeader = headerConf.text;
+                break;
+            }
+            i -= 1;
+        }
+    }
+    return colHeader;
+}
 function getTreeCell(content, row, col, conf) {
     var isEditable = conf.$editable && conf.$editable.row === row.id && conf.$editable.col === col.id;
     var css = "";
@@ -4784,34 +5217,34 @@ function getTreeCell(content, row, col, conf) {
                 (row.$dragtarget && !isEditable ? " dhx_grid-cell--dragtarget" : "") +
                 (!isEditable ? " dhx_grid-cell--drag" : "");
     }
-    var hiddenTitle = conf.tooltip ? (typeof col.tooltip === "boolean" ? col.tooltip : true) : col.tooltip;
-    var parentPadding = 20 + row.$level * 20 - (row.$items ? 20 : 0);
+    var parentPadding = data_1.getTreeCellWidthOffset(row);
     return dom_1.el(".dhx_grid-cell", {
         class: "dhx_tree-cell " + (col.$cellCss[row.id] || "") + " " + (row.$items ? "dhx_grid-expand-cell" : "") +
-            (" " + (isEditable ? "dhx_tree-editing-cell" : "") + " " + css),
+            (" " + (isEditable ? "dhx_tree-editing-cell" : "") + " " + css) +
+            cellAlign,
         style: {
             width: col.$width,
-            lineHeight: conf.rowHeight - 1 + "px",
+            height: row.$height,
             padding: !row.$items ? "0 0 0 " + parentPadding + "px" : 0,
         },
         dhx_col_id: col.id,
+        role: "gridcell",
+        "aria-colindex": 1,
+        "aria-label": getColumnHeaderText(col),
     }, [
         row.$items
             ? dom_1.el(".dhx_grid-expand-cell-icon", {
                 class: row.$opened ? "dxi dxi-chevron-up" : "dxi dxi-chevron-down",
                 dhx_id: row.id,
+                role: "button",
+                "aria-label": row.$opened ? "Collapse group" : "Expand group",
                 style: {
                     padding: row.$level ? "0 0 0 " + (4 + parentPadding) + "px" : "0 0 0 4px",
                 },
             })
             : null,
         dom_1.el(".dhx_tree-cell", {
-            class: cellAlign,
-            title: hiddenTitle ? main_1.removeHTMLTags(row[col.id]) : null,
-            style: {
-                width: "100%",
-                height: "100%",
-            },
+            class: cellAlign + ("" + ((conf.autoHeight && " dhx_tree-cell_auto-height") || "")),
         }, [content]),
     ]);
 }
@@ -4825,7 +5258,7 @@ function getCells(conf) {
     }
     var pos = conf.$positions;
     var data = conf.data ? conf.data.slice(pos.yStart, pos.yEnd) : [];
-    var columns = conf.columns.filter(function (col) { return !col.hidden; }).slice(pos.xStart, pos.xEnd);
+    var columns = conf.columns.slice(pos.xStart, pos.xEnd);
     return data.map(function (row, index) {
         var isLastRow = data.length - 1 === index;
         var rowCss = "";
@@ -4836,20 +5269,18 @@ function getCells(conf) {
             rowCss += row.$css;
         }
         return dom_1.el(".dhx_grid-row", {
-            style: { height: isLastRow ? conf.rowHeight + 1 : conf.rowHeight },
+            style: { height: isLastRow ? row.$height + 1 : row.$height },
             dhx_id: row.id,
             class: rowCss,
             _key: row.id,
             _flags: dom_1.KEYED_LIST,
+            role: "row",
+            "aria-rowindex": pos.yStart + index + 1,
         }, row.$customRender
             ? [row.$customRender(row, conf)]
-            : columns.map(function (col) {
+            : columns.map(function (col, colIndex) {
                 if (!col.hidden) {
-                    var hiddenTitle = conf.tooltip
-                        ? typeof col.tooltip === "boolean"
-                            ? col.tooltip
-                            : true
-                        : col.tooltip;
+                    var value = data_1.toFormat(row[col.id], col.type, col.format);
                     var defaultTemplate = function (text) {
                         if (typeof text === "boolean" || col.type === "boolean") {
                             if (typeof text !== "string") {
@@ -4858,14 +5289,20 @@ function getCells(conf) {
                         }
                         return text || text === 0 ? text : "";
                     };
-                    var content = col.template
-                        ? col.template(row[col.id], row, col)
-                        : defaultTemplate(row[col.id]);
+                    var content = core_1.isDefined(value)
+                        ? col.template
+                            ? col.template(value, row, col)
+                            : defaultTemplate(value)
+                        : value;
                     // content can be a domvm node or a string
                     if (typeof content === "string") {
-                        content = dom_1.el("div.dhx_cell-content", (conf.htmlEnable && col.htmlEnable !== false) || col.htmlEnable
-                            ? { ".innerHTML": content }
-                            : content);
+                        content = main_1.isHtmlEnable(conf, col)
+                            ? dom_1.el("div.dhx_grid-cell__content", {
+                                role: "button",
+                                "aria-label": "Edit content",
+                                ".innerHTML": content,
+                            })
+                            : content;
                     }
                     var css = (((col.$cellCss && col.$cellCss[row.id]) || "") + " dhx_" + col.type + "-cell").replace(/\s+/g, " ");
                     var colWidth = col.$width;
@@ -4886,10 +5323,6 @@ function getCells(conf) {
                     if (conf.type === "tree" && conf.firstColId === col.id) {
                         return getTreeCell(content, row, col, conf);
                     }
-                    var colName = void 0;
-                    if (col.type === "boolean") {
-                        colName = core_1.findIndex(col.header, function (item) { return item.text !== undefined; });
-                    }
                     if (conf.dragMode && conf.dragItem === "row") {
                         css +=
                             (row.$drophere && !isEditable ? " dhx_grid-cell--drophere" : "") +
@@ -4899,19 +5332,20 @@ function getCells(conf) {
                     if (col.align) {
                         css += " dhx_align-" + col.align;
                     }
+                    if (conf.autoHeight) {
+                        css += " dhx_grid-cell__content_auto-height";
+                    }
                     return dom_1.el(".dhx_grid-cell", {
                         class: css,
                         style: {
                             width: colWidth,
-                            lineHeight: conf.rowHeight - 1 + "px",
+                            height: row.$height + "px",
                         },
                         _key: col.id,
-                        title: hiddenTitle
-                            ? col.type === "boolean"
-                                ? colName.text
-                                : main_1.removeHTMLTags(typeof content === "string" ? content : row[col.id])
-                            : null,
                         dhx_col_id: col.id,
+                        role: "gridcell",
+                        "aria-colindex": pos.xStart + colIndex + 1,
+                        "aria-label": getColumnHeaderText(col),
                     }, [content]);
                 }
             }));
@@ -4920,36 +5354,26 @@ function getCells(conf) {
 exports.getCells = getCells;
 function getSpans(config, frozen) {
     var spanCells = [];
-    var columns = config.columns.filter(function (col) { return !col.hidden; });
-    if (!columns.length) {
+    var columns = config.columns;
+    var rows = config.data;
+    if (!columns.length || !config.spans)
         return null;
-    }
-    if (!config.spans) {
-        return null;
-    }
     var spans = config.spans.sort(function (a, b) {
         return typeof a.row === "string" && typeof b.row === "string"
             ? a.row.localeCompare(b.row)
             : a.row - b.row;
     });
-    var cellHeight = config.rowHeight;
     var _loop_1 = function (i) {
         var row = spans[i].row;
         var col = spans[i].column;
         var spanHeight = spans[i].rowspan;
         var spanWidth = spans[i].colspan;
         var spanCss = spans[i].css;
-        var hiddenTitle = config.tooltip
-            ? typeof spans[i].tooltip === "boolean"
-                ? spans[i].tooltip
-                : true
-            : spans[i].tooltip;
-        // [todo]
         if (spanHeight === 1) {
             return "continue";
         }
         var colIndex = core_1.findIndex(columns, function (item) { return "" + item.id === "" + col; });
-        var rowIndex = core_1.findIndex(config.data, function (item) { return "" + item.id === "" + row; });
+        var rowIndex = core_1.findIndex(rows, function (item) { return "" + item.id === "" + row; });
         if (colIndex < 0 || rowIndex < 0) {
             return "continue";
         }
@@ -4958,12 +5382,11 @@ function getSpans(config, frozen) {
             return "continue";
         }
         var currCol = columns[colIndex];
-        var currRow = config.data[rowIndex];
+        var currRow = rows[rowIndex];
         if (currCol.hidden) {
             return "continue";
         }
         var content = spans[i].text ? spans[i].text : currRow[col] === undefined ? "" : currRow[col];
-        var tooltipText = content;
         var t = function (text, _row, _col) { return (text || text === 0 ? text : ""); };
         var template = currCol.template || t;
         content = template(content, currRow, currCol);
@@ -4971,7 +5394,11 @@ function getSpans(config, frozen) {
             typeof content === "string"
                 ? dom_1.el("div.dhx_span-cell-content", { ".innerHTML": content })
                 : content;
-        var top_1 = config.rowHeight * rowIndex - 1;
+        var currentTop = 0;
+        for (var index = 0; index < rowIndex; index++) {
+            currentTop += rows[index].$height;
+        }
+        var top_1 = currentTop - 1;
         var left = 0;
         for (var s = colIndex - 1; s >= 0; s--) {
             left += columns[s].$width;
@@ -4985,17 +5412,19 @@ function getSpans(config, frozen) {
         css += rowspanWithLastCol || colspanWithLastCol ? " dhx_span-last-col" : "";
         css += !spanWidth ? " dhx_span-" + (currCol.type || "string") + "-cell" : " dhx_span-string-cell";
         css += currCol.align ? " dhx_align-" + currCol.align : " dhx_align-left";
-        var width = spanWidth > 1 ? cells_1.getWidth(config.columns, spanWidth, colIndex) : currCol.$width;
+        var width = spanWidth > 1 ? cells_1.getWidth(columns, spanWidth, colIndex) : currCol.$width;
+        var height = spanHeight > 1 ? cells_1.getHeight(rows, spanHeight, rowIndex) : currRow.$height;
         spanCells.push(dom_1.el("div", {
             class: css,
             style: {
                 width: width,
-                height: (spanHeight || 1) * cellHeight,
+                height: height,
                 top: top_1,
                 left: left,
-                lineHeight: config.rowHeight + "px",
             },
-            title: hiddenTitle ? main_1.removeHTMLTags(tooltipText) : null,
+            dhx_col_id: col,
+            dhx_id: row,
+            "aria-hidden": "true",
         }, [content]));
     };
     for (var i = 0; i < spans.length; i++) {
@@ -5005,10 +5434,11 @@ function getSpans(config, frozen) {
 }
 exports.getSpans = getSpans;
 function getShifts(conf) {
-    var columnsLeft = conf.columns.filter(function (col) { return !col.hidden; }).slice(0, conf.$positions.xStart);
+    var columnsLeft = conf.columns.slice(0, conf.$positions.xStart);
+    var rowsTop = conf.data.slice(0, conf.$positions.yStart);
     return {
         x: main_1.getTotalWidth(columnsLeft),
-        y: conf.$positions.yStart * conf.rowHeight,
+        y: main_1.getTotalHeight(rowsTop),
     };
 }
 exports.getShifts = getShifts;
@@ -5021,18 +5451,36 @@ exports.getShifts = getShifts;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-// [todo]
 function getWidth(columns, colspan, index) {
-    var cols = columns.filter(function (col) { return !col.hidden; });
+    var cols = columns.filter(function (_a) {
+        var hidden = _a.hidden;
+        return !hidden;
+    });
     if (!colspan) {
         return cols[index].$width;
     }
-    return cols.reduce(function (w, c, i) {
-        w += i >= index && i < index + colspan ? c.$width : 0;
-        return w;
+    return cols.reduce(function (width, _a, i) {
+        var $width = _a.$width;
+        width += i >= index && i < index + colspan ? $width : 0;
+        return width;
     }, 0);
 }
 exports.getWidth = getWidth;
+function getHeight(dataRows, rowspan, index) {
+    var rows = dataRows.filter(function (_a) {
+        var hidden = _a.hidden;
+        return !hidden;
+    });
+    if (!rowspan) {
+        return rows[index].$height;
+    }
+    return rows.reduce(function (height, _a, i) {
+        var $height = _a.$height;
+        height += i >= index && i < index + rowspan ? $height : 0;
+        return height;
+    }, 0);
+}
+exports.getHeight = getHeight;
 
 
 /***/ }),
@@ -5046,8 +5494,8 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(58));
-__export(__webpack_require__(111));
-__export(__webpack_require__(25));
+__export(__webpack_require__(114));
+__export(__webpack_require__(28));
 
 
 /***/ }),
@@ -5059,9 +5507,9 @@ __export(__webpack_require__(25));
 Object.defineProperty(exports, "__esModule", { value: true });
 /* eslint-disable @typescript-eslint/unbound-method */
 var core_1 = __webpack_require__(1);
-var html_1 = __webpack_require__(2);
-var ts_data_1 = __webpack_require__(5);
-var types_1 = __webpack_require__(25);
+var html_1 = __webpack_require__(3);
+var ts_data_1 = __webpack_require__(4);
+var types_1 = __webpack_require__(28);
 var Uploader = /** @class */ (function () {
     function Uploader(config, data, events) {
         if (config === void 0) { config = {}; }
@@ -5359,12 +5807,12 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var events_1 = __webpack_require__(3);
-var loader_1 = __webpack_require__(102);
-var sort_1 = __webpack_require__(105);
-var dataproxy_1 = __webpack_require__(20);
-var helpers_1 = __webpack_require__(16);
-var types_1 = __webpack_require__(15);
+var events_1 = __webpack_require__(2);
+var loader_1 = __webpack_require__(105);
+var sort_1 = __webpack_require__(108);
+var dataproxy_1 = __webpack_require__(23);
+var helpers_1 = __webpack_require__(17);
+var types_1 = __webpack_require__(16);
 var core_1 = __webpack_require__(1);
 var DataCollection = /** @class */ (function () {
     function DataCollection(config, events) {
@@ -5963,7 +6411,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsonDriver_1 = __webpack_require__(61);
 var CsvDriver_1 = __webpack_require__(62);
-var XMLDriver_1 = __webpack_require__(103);
+var XMLDriver_1 = __webpack_require__(106);
 exports.dataDrivers = {
     json: JsonDriver_1.JsonDriver,
     csv: CsvDriver_1.CsvDriver,
@@ -6129,8 +6577,8 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
-var types_1 = __webpack_require__(33);
+var html_1 = __webpack_require__(3);
+var types_1 = __webpack_require__(35);
 var DEFAULT_SHOW_DELAY = 750;
 var DEFAULT_HIDE_DELAY = 200;
 function findPosition(targetRect, position, width, height) {
@@ -6182,16 +6630,22 @@ var tooltipBox = document.createElement("div");
 var tooltipText = document.createElement("span");
 tooltipText.className = "dhx_tooltip__text";
 tooltipBox.appendChild(tooltipText);
+tooltipBox.setAttribute("role", "tooltip");
 tooltipBox.style.position = "absolute";
 var lastNode = null;
 var isActive = false;
 var hideTimeout = null;
 var showTimeout = null;
 var activeListenersDestructor;
-function showTooltip(node, text, position, css, force) {
+function showTooltip(node, text, position, css, force, htmlEnable) {
     if (force === void 0) { force = false; }
     var rects = node.getBoundingClientRect();
-    tooltipText.textContent = text;
+    if (htmlEnable) {
+        tooltipText.innerHTML = text;
+    }
+    else {
+        tooltipText.textContent = text;
+    }
     document.body.appendChild(tooltipBox);
     tooltipBox.className = "dhx_widget dhx_tooltip" + (force ? " dhx_tooltip--forced" : "");
     var _a = tooltipBox.getBoundingClientRect(), width = _a.width, height = _a.height;
@@ -6236,10 +6690,10 @@ function hideTooltip(delay) {
     }
 }
 function addListeners(node, text, config) {
-    var force = config.force, showDelay = config.showDelay, hideDelay = config.hideDelay, position = config.position, css = config.css;
+    var force = config.force, showDelay = config.showDelay, hideDelay = config.hideDelay, position = config.position, css = config.css, htmlEnable = config.htmlEnable;
     if (!force) {
         showTimeout = setTimeout(function () {
-            showTooltip(node, text, position || types_1.Position.bottom, css);
+            showTooltip(node, text, position || types_1.Position.bottom, css, false, htmlEnable);
         }, showDelay || DEFAULT_SHOW_DELAY);
     }
     var hide = function () {
@@ -6254,7 +6708,7 @@ function addListeners(node, text, config) {
         activeListenersDestructor = null;
     };
     if (force) {
-        showTooltip(node, text, position, css, force);
+        showTooltip(node, text, position, css, force, htmlEnable);
     }
     node.addEventListener("mouseleave", hide);
     node.addEventListener("blur", hide);
@@ -6309,8 +6763,8 @@ exports.disableTooltip = disableTooltip;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(21);
-var ts_data_1 = __webpack_require__(5);
+var types_1 = __webpack_require__(24);
+var ts_data_1 = __webpack_require__(4);
 var Selection = /** @class */ (function () {
     function Selection(config, data, events) {
         var _this = this;
@@ -6617,11 +7071,26 @@ var ColorpickerEvents;
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(8);
 var defaultTextTemplate = function (item) { return item.toString(); };
+var getScaleAriaAttrs = function (axis, text) { return ({
+    role: "graphics-object",
+    "aria-label": axis + "-axis" + (text ? ", " + text : ""),
+}); };
 function bottom(points, config, width, height) {
     var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
     var template = textTemplate || defaultTextTemplate;
@@ -6656,33 +7125,31 @@ function bottom(points, config, width, height) {
             dom_1.sv("textPath", { href: "#" + id, class: "scale-title " }, title),
         ]);
     }
-    return dom_1.sv("g", [mainLine, svTitle].concat(text));
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("x", title || config.text)), [mainLine, svTitle].concat(text));
 }
 exports.bottom = bottom;
 function bottomGrid(points, width, height, config) {
     var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine, targetValue = config.targetValue;
     var len = points.length;
     var gridLines = [];
-    var className = "grid-line " + (dashed ? "dash-line" : "");
+    var className = "grid-line " + (dashed ? "dash-line" : "") + " " + (!grid ? "hidden-line" : "");
     for (var i = 0; i < len; i++) {
         if (i === 0 && points[i][0] === 0 && !config.hidden) {
             continue;
         }
         if (i === targetLine) {
-            var d = "M" + points[i][0] + " 0 V " + height;
-            var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
-            gridLines.push(path);
+            var d_1 = "M" + points[i][0] + " 0 V " + height;
+            var path_1 = dom_1.sv("path", { d: d_1, class: className + " spec-grid-line" });
+            gridLines.push(path_1);
             continue;
         }
-        if (grid) {
-            var d = "M" + points[i][0] + " 0 V " + height;
-            var path = dom_1.sv("path", { d: d, class: className });
-            gridLines.push(path);
-            if (i === len - 1 && points[i][0] !== width) {
-                var additionD = "M" + width + " 0 V " + height;
-                var additionPath = dom_1.sv("path", { d: additionD, class: className });
-                gridLines.push(additionPath);
-            }
+        var d = "M" + points[i][0] + " 0 V " + height;
+        var path = dom_1.sv("path", { d: d, class: className, _ref: "line" + Math.round(points[i][0]) });
+        gridLines.push(path);
+        if (i === len - 1 && points[i][0] !== width) {
+            var additionD = "M" + width + " 0 V " + height;
+            var additionPath = dom_1.sv("path", { d: additionD, class: className });
+            gridLines.push(additionPath);
         }
     }
     if (targetValue) {
@@ -6723,33 +7190,31 @@ function top(points, config, width, _height) {
             dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
         ]);
     }
-    return dom_1.sv("g", [mainLine, svTitle].concat(text));
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("x", title || config.text)), [mainLine, svTitle].concat(text));
 }
 exports.top = top;
 function topGrid(points, _width, height, config) {
     var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine;
     var len = points.length;
     var gridLines = [];
-    var className = "grid-line " + (dashed ? "dash-line" : "");
+    var className = "grid-line " + (dashed ? "dash-line" : "") + " " + (!grid ? "hidden-line" : "");
     for (var i = 0; i < len; i++) {
         if (i === 0 && points[i][0] === 0 && !config.hidden) {
             continue;
         }
         if (i === targetLine) {
-            var d = "M" + points[i][0] + " 0 V " + height;
-            var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
-            gridLines.push(path);
+            var d_2 = "M" + points[i][0] + " 0 V " + height;
+            var path_2 = dom_1.sv("path", { d: d_2, class: className + " spec-grid-line" });
+            gridLines.push(path_2);
             continue;
         }
-        if (grid) {
-            var d = "M" + points[i][0] + " 0 V " + height;
-            var path = dom_1.sv("path", { d: d, class: className });
-            gridLines.push(path);
-            if (i === len - 1 && points[i][0] !== 0) {
-                var additionD = "M0 0 V " + height;
-                var additionPath = dom_1.sv("path", { d: additionD, class: className });
-                gridLines.push(additionPath);
-            }
+        var d = "M" + points[i][0] + " 0 V " + height;
+        var path = dom_1.sv("path", { d: d, class: className, _ref: "line" + Math.round(points[i][0]) });
+        gridLines.push(path);
+        if (i === len - 1 && points[i][0] !== 0) {
+            var additionD = "M0 0 V " + height;
+            var additionPath = dom_1.sv("path", { d: additionD, class: className });
+            gridLines.push(additionPath);
         }
     }
     return dom_1.sv("g", gridLines);
@@ -6794,6 +7259,7 @@ function left(points, config, _width, height) {
         class: "main-scale",
         d: "M0 " + height + " V 0.5",
         id: id,
+        _ref: points.length ? "line0" : null,
     }); // 0.5 instead of 0, coz stroke-linecap: square and dirrent stroke size
     var svTitle = null;
     if (title) {
@@ -6801,7 +7267,7 @@ function left(points, config, _width, height) {
             dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
         ]);
     }
-    return dom_1.sv("g", [mainLine, svTitle].concat(text));
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("y", title || config.text)), [mainLine, svTitle].concat(text));
 }
 exports.left = left;
 function leftGrid(points, width, height, config) {
@@ -6877,6 +7343,7 @@ function right(points, config, width, height) {
         d: "M" + width + " " + height + " V 0",
         class: "main-scale",
         id: id,
+        _ref: points.length ? "line0" : null,
     });
     var svTitle = null;
     if (title) {
@@ -6884,7 +7351,7 @@ function right(points, config, width, height) {
             dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
         ]);
     }
-    return dom_1.sv("g", [mainLine, svTitle].concat(text));
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("y", title || config.text)), [mainLine, svTitle].concat(text));
 }
 exports.right = right;
 function rightGrid(points, width, height, config) {
@@ -6951,7 +7418,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(8);
-var ScaleSeria_1 = __webpack_require__(47);
+var ScaleSeria_1 = __webpack_require__(48);
 var Area = /** @class */ (function (_super) {
     __extends(Area, _super);
     function Area() {
@@ -6959,10 +7426,13 @@ var Area = /** @class */ (function (_super) {
     }
     Area.prototype.paint = function (width, height, prev) {
         _super.prototype.paint.call(this, width, height);
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.value || ""),
+        }); };
         var svg = [];
         this._form(width, height, svg, prev);
         this._markers(svg);
-        return dom_1.sv("g", { class: "seria", _key: this.id }, svg);
+        return dom_1.sv("g", __assign({ class: "seria", _key: this.id }, getChartAriaAttrs(this.config)), svg);
     };
     Area.prototype.paintformAndMarkers = function (width, height, prev) {
         _super.prototype.paint.call(this, width, height);
@@ -7012,8 +7482,13 @@ var Area = /** @class */ (function (_super) {
             var len_1 = points.length - 1;
             var strokePadding_1 = function (index) { return (index === len_1 ? -0.5 : index ? 0 : 0.5); };
             var line = points
-                .map(function (item, index) { return (index ? "L" : "M") + (item[0] + strokePadding_1(index) + " " + item[1]); })
-                .join(" ");
+                .map(function (item, index) {
+                return index
+                    ? "L" + (item[0] + strokePadding_1(index)) + " " + item[1]
+                    : "M0 " + item[1] + " L0 " + (item[1] + strokePadding_1(index)) + " L" + (item[0] +
+                        strokePadding_1(index)) + " " + item[1];
+            })
+                .join(" ") + ("L" + width + " " + last[1]);
             var linePath = dom_1.sv("path", {
                 d: line,
                 "stroke-width": strokeWidth,
@@ -7028,6 +7503,7 @@ var Area = /** @class */ (function (_super) {
             d: d,
             class: css,
             fill: fill,
+            _ref: id,
             "fill-opacity": alpha,
             stroke: "none",
         });
@@ -7063,6 +7539,164 @@ exports.default = Area;
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(8);
+function hoverMode(cfg) {
+    // cfg.fill = cfg.stroke; ??
+    return cfg;
+}
+exports.hoverMode = hoverMode;
+function standarMode(cfg) {
+    return cfg;
+}
+exports.standarMode = standarMode;
+var forms = {
+    circle: function (color, fill, _alpha, x, y, id, mode) {
+        var config = {
+            _ref: id,
+            cx: x,
+            cy: y,
+            r: 4,
+            class: "figure point-circle",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("circle", mode(config));
+    },
+    rect: function (color, fill, _alpha, x, y, id, mode) {
+        var config = {
+            _ref: id,
+            x: x - 4,
+            y: y - 4,
+            width: 8,
+            height: 8,
+            class: "figure point-rect",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("rect", mode(config));
+    },
+    rhombus: function (color, fill, _alpha, x, y, id, mode) {
+        var config = {
+            _ref: id,
+            points: x - 5 + "," + y + " " + x + "," + (y + 5) + " " + (x + 5) + "," + y + " " + x + "," + (y - 5),
+            class: "figure point-rhombus",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("polygon", mode(config));
+    },
+    triangle: function (color, fill, _alpha, x, y, id, mode) {
+        var config = {
+            _ref: id,
+            points: x + "," + (y - 5) + " " + (x + 5) + "," + (y + 5) + " " + (x - 5) + "," + (y + 5),
+            class: "figure point-triangle",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("polygon", mode(config));
+    },
+    simpleCircle: function (color, _fill, _alpha, x, y, id, mode) {
+        var config = {
+            _ref: id,
+            cx: x,
+            cy: y,
+            r: 3,
+            class: "figure point-simple-circle",
+            fill: color,
+        };
+        return dom_1.sv("circle", mode(config));
+    },
+    simpleRect: function (color, _fill, _alpha, x, y, id, mode) {
+        var config = {
+            _ref: id,
+            x: x - 3,
+            y: y - 3,
+            width: 6,
+            height: 6,
+            class: "figure point-simple-rect",
+            fill: color,
+        };
+        return dom_1.sv("rect", mode(config));
+    },
+    empty: function () {
+        return null;
+    },
+};
+var formsHTML = {
+    circle: function (color, fill, _alpha, x, y, id) {
+        return "<circle class=\"figure point-circle\" _ref=\"" + id + "\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"4\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    rect: function (color, fill, _alpha, x, y, id) {
+        return "<rect _ref=\"" + id + "\" x=\"" + (x - 4) + "\" y=\"" + (y -
+            4) + "\" width=\"8\" height=\"8\" class=\"figure point-rect\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    rhombus: function (color, fill, _alpha, x, y, id) {
+        return "<polygon _ref=\"" + id + "\" points=\"" + (x - 5) + "," + y + " " + x + "," + (y + 5) + " " + (x + 5) + "," + y + " " + x + "," + (y -
+            5) + "\" class=\"figure point-rhombus\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    triangle: function (color, fill, _alpha, x, y, id) {
+        return "<polygon _ref=\"" + id + "\" points=\"" + x + "," + (y - 5) + " " + (x + 5) + "," + (y + 5) + " " + (x - 5) + "," + (y +
+            5) + "\" class=\"figure point-triangle\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    simpleCircle: function (color, _fill, _alpha, x, y, id) {
+        return "<circle _ref=\"" + id + "\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"3\" class=\"figure point-simple-circle\" fill=\"" + color + "\"/>";
+    },
+    simpleRect: function (color, _fill, _alpha, x, y, id) {
+        return "<rect _ref=\"id\" x=\"" + (x - 3) + "\" y=\"" + (y -
+            3) + "\" width=\"6\" height=\"6\" class=\"figure point-simple-rect\" fill=\"" + color + "\"/>";
+    },
+    empty: function () {
+        return null;
+    },
+};
+function getHelper(type) {
+    var helper = forms[type.toString()];
+    if (!helper) {
+        throw new Error("unknown point type");
+    }
+    return helper;
+}
+exports.getHelper = getHelper;
+function getHTMLHelper(type) {
+    var helper = formsHTML[type.toString()];
+    if (!helper) {
+        throw new Error("unknown point type");
+    }
+    return helper;
+}
+exports.getHTMLHelper = getHTMLHelper;
+function getShadeHelper(type, color, mode) {
+    var helper = getHelper(type);
+    color = color || "none";
+    var shade = common_1.getColorShade(color, 0.2);
+    return function (x, y, id) {
+        return helper(color, shade, "", x, y, id, mode);
+    };
+}
+exports.getShadeHelper = getShadeHelper;
+function getShadeHTMLHelper(type, color) {
+    var helper = getHTMLHelper(type);
+    color = color || "none";
+    var shade = common_1.getColorShade(color, 0.2);
+    return function (x, y, id) {
+        return helper(color, shade, "", x, y, id);
+    };
+}
+exports.getShadeHTMLHelper = getShadeHTMLHelper;
+
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -7091,7 +7725,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(8);
-var ScaleSeria_1 = __webpack_require__(47);
+var ScaleSeria_1 = __webpack_require__(48);
 var Bar = /** @class */ (function (_super) {
     __extends(Bar, _super);
     function Bar() {
@@ -7109,6 +7743,9 @@ var Bar = /** @class */ (function (_super) {
     };
     Bar.prototype.paint = function (width, height, prev) {
         _super.prototype.paint.call(this, width, height);
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.value || ""),
+        }); };
         if (!this.config.active) {
             return null;
         }
@@ -7119,7 +7756,7 @@ var Bar = /** @class */ (function (_super) {
         var css = "chart " + this.config.type + " " + (this.config.css || "") + " " + (this.config.dashed ? "dash-line" : "");
         var form = this._getForm(this._points, css, width, height, prev);
         svg = svg.concat(form);
-        return dom_1.sv("g", { class: "seria", _key: this.id }, svg);
+        return dom_1.sv("g", __assign({ class: "seria", _key: this.id }, getChartAriaAttrs(this.config)), svg);
     };
     Bar.prototype.getTooltipType = function (_id, _x, y) {
         if (this.config.baseLine !== undefined && this._baseLinePosition < y) {
@@ -7155,19 +7792,30 @@ var Bar = /** @class */ (function (_super) {
     };
     Bar.prototype._getForm = function (points, css, _width, height, prev) {
         var _this = this;
-        var _a = this.config, fill = _a.fill, alpha = _a.alpha, showText = _a.showText, showTextTemplate = _a.showTextTemplate, showTextRotate = _a.showTextRotate;
+        var getPointAriaLabel = function (barType, item, baseLine) {
+            if (baseLine === void 0) { baseLine = 0; }
+            var x = item[3];
+            var yStart = baseLine;
+            var yEnd = item[4];
+            if (baseLine > yEnd) {
+                yStart = yEnd;
+                yEnd = baseLine;
+            }
+            return barType === "xbar"
+                ? "bar y=" + x + ", x from " + yStart + " to " + yEnd
+                : "bar x=" + x + ", y from " + yStart + " to " + yEnd;
+        };
+        var getPointAriaAttrs = function (barType, item, baseLine) { return ({
+            role: "graphics-symbol",
+            "aria-roledescription": "bar",
+            "aria-label": getPointAriaLabel(barType, item, baseLine),
+        }); };
+        var _a = this.config, baseLine = _a.baseLine, fill = _a.fill, alpha = _a.alpha, showText = _a.showText, showTextTemplate = _a.showTextTemplate, showTextRotate = _a.showTextRotate;
         var svg = [];
         var base = this._base(height);
         var getPrev = function (index) { return (!prev ? base : prev[index][1]); };
         var series = points.map(function (item, index) {
-            return dom_1.sv("path", {
-                _key: "seria" + _this.config.id + index,
-                d: _this._path(item, getPrev(index)),
-                class: css,
-                fill: fill,
-                onclick: [_this._handlers.onclick, item[2], _this.config.value],
-                "fill-opacity": alpha,
-            });
+            return dom_1.sv("path", __assign({ _key: "seria" + _this.config.id + index, _ref: common_1.calcPointRef(item[2], _this.config.id), d: _this._path(item, getPrev(index)), class: css, fill: fill, onclick: [_this._handlers.onmousemove, item[2], _this.config.id], onmousemove: [_this._handlers.onmousemove, item[2], _this.config.id], onmouseleave: [_this._handlers.onmouseleave, item[2], _this.config.id], "fill-opacity": alpha }, getPointAriaAttrs(_this.config.type, item, baseLine)));
         });
         svg.push.apply(svg, series);
         if ((showText || showTextTemplate || showTextRotate) && showText !== false) {
@@ -7175,7 +7823,7 @@ var Bar = /** @class */ (function (_super) {
             var text = points.map(function (item, index) {
                 var value = _this._getText(item);
                 return isWrite_1(item, index)
-                    ? dom_1.sv("text", _this._text(item, getPrev(index), showTextRotate), [
+                    ? dom_1.sv("text", __assign(__assign({}, _this._text(item, getPrev(index), showTextRotate)), { "aria-hidden": "true" }), [
                         showTextTemplate
                             ? common_1.verticalCenteredText(showTextTemplate(value))
                             : common_1.verticalCenteredText(value),
@@ -7218,7 +7866,7 @@ exports.default = Bar;
 
 
 /***/ }),
-/* 76 */
+/* 77 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7275,7 +7923,7 @@ exports.default = spline;
 
 
 /***/ }),
-/* 77 */
+/* 78 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7300,7 +7948,7 @@ var ComboState;
 
 
 /***/ }),
-/* 78 */
+/* 79 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7323,7 +7971,7 @@ var DataViewEvents;
 
 
 /***/ }),
-/* 79 */
+/* 80 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7350,7 +7998,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 var helper_1 = __webpack_require__(6);
 var ts_popup_1 = __webpack_require__(10);
 var types_1 = __webpack_require__(7);
@@ -7524,10 +8172,9 @@ var Checkbox = /** @class */ (function (_super) {
                 showHelper: function (e) {
                     e.preventDefault();
                     e.stopPropagation();
-                    _this._helper.show(e.target);
-                },
-                cancelUnusefulClick: function (e) {
-                    e.preventDefault();
+                    _this._helper.show(e.target, {
+                        mode: _this.config.labelPosition === "left" ? "bottom" : "right",
+                    });
                 },
                 onchange: function (e) {
                     _this.config.checked = e.target.checked;
@@ -7591,6 +8238,10 @@ var Checkbox = /** @class */ (function (_super) {
                             onchange: this._handlers.onchange,
                             required: required,
                             _ref: "input",
+                            "aria-label": label || "checkbox " + (text || ""),
+                            "aria-describedby": helpMessage
+                                ? "dhx_label__help_" + (id || this._uid)
+                                : null,
                         }),
                         dom_1.el("span.dhx_checkbox__visual-input"),
                         dom_1.el("span.dhx_text", [text]),
@@ -7624,7 +8275,7 @@ exports.Checkbox = Checkbox;
 
 
 /***/ }),
-/* 80 */
+/* 81 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7637,7 +8288,7 @@ exports.default = {
 
 
 /***/ }),
-/* 81 */
+/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -7668,21 +8319,24 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var view_1 = __webpack_require__(4);
-var ts_data_1 = __webpack_require__(5);
-var Exporter_1 = __webpack_require__(195);
-var data_1 = __webpack_require__(54);
-var main_1 = __webpack_require__(18);
-var Selection_1 = __webpack_require__(196);
-var KeyManager_1 = __webpack_require__(197);
-var types_1 = __webpack_require__(9);
-var render_1 = __webpack_require__(199);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
 var core_1 = __webpack_require__(1);
-var ts_calendar_1 = __webpack_require__(28);
-var content_1 = __webpack_require__(207);
-var columnsResizer_1 = __webpack_require__(208);
+var KeyManager_1 = __webpack_require__(14);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
+var Exporter_1 = __webpack_require__(195);
+var data_1 = __webpack_require__(21);
+var main_1 = __webpack_require__(15);
+var Selection_1 = __webpack_require__(196);
+var types_1 = __webpack_require__(9);
+var render_1 = __webpack_require__(83);
+var date_1 = __webpack_require__(22);
+var content_1 = __webpack_require__(205);
+var columnsResizer_1 = __webpack_require__(206);
+var ts_message_1 = __webpack_require__(18);
+var keys_1 = __webpack_require__(207);
+var FocusManager_1 = __webpack_require__(20);
 var Grid = /** @class */ (function (_super) {
     __extends(Grid, _super);
     function Grid(container, config) {
@@ -7699,6 +8353,7 @@ var Grid = /** @class */ (function (_super) {
             headerRowHeight: 40,
             footerRowHeight: 40,
             keyNavigation: true,
+            // selection: "cell", // TODO: turn it on to test aria attrs only OR add correct tabindexes to use native focus
             sortable: true,
             columns: [],
             data: [],
@@ -7707,9 +8362,6 @@ var Grid = /** @class */ (function (_super) {
             // TODO: remove suite_7.0
             headerSort: true,
         }, config);
-        if (_this.config.splitAt) {
-            _this.config.leftSplit = _this.config.splitAt;
-        }
         _this.content = content_1.getContent();
         _this._scroll = {
             top: 0,
@@ -7719,33 +8371,142 @@ var Grid = /** @class */ (function (_super) {
         _this.config.autoWidth = _this.config.autoWidth || _this.config.fitToContainer;
         _this.config.adjust = _this.config.adjust || _this.config.columnsAutoWidth;
         _this.config.editable = _this.config.editable || _this.config.editing;
+        _this.config.leftSplit = _this.config.leftSplit || _this.config.splitAt;
         if (!_this.config.sortable || !_this.config.headerSort) {
             _this.config.sortable = false;
         }
+        _this.config.columns.forEach(function (col) {
+            col.format = col.format || col.dateFormat;
+        });
+        var showCellTooltip = function (row, column, node) {
+            if (row && column && main_1.isTooltip(_this.config, column)) {
+                var value = data_1.toFormat(row[column.id], column.type, column.format);
+                if (column.tooltipTemplate) {
+                    value = column.tooltipTemplate(value, row, column);
+                }
+                else if (value && column.template) {
+                    value = column.template(value, row, column);
+                }
+                value &&
+                    ts_message_1.tooltip(value, {
+                        css: "dhx_grid_tooltip",
+                        node: node,
+                        htmlEnable: main_1.isHtmlEnable(_this.config, column),
+                    });
+            }
+        };
+        var showContentTootlip = function (e, column) {
+            if (column && main_1.isTooltip(_this.config, column)) {
+                var value = (e.target.querySelector(".dhx_grid-header-cell-text span") &&
+                    e.target.querySelector(".dhx_grid-header-cell-text span").textContent) ||
+                    (e.target.querySelector(".dhx_grid-footer-cell-text span") &&
+                        e.target.querySelector(".dhx_grid-footer-cell-text span").textContent) ||
+                    "";
+                value &&
+                    ts_message_1.tooltip(value, {
+                        css: "dhx_grid_tooltip",
+                        node: e.target,
+                        htmlEnable: main_1.isHtmlEnable(_this.config, column),
+                    });
+            }
+        };
         var htmlEvents = {
-            onclick: html_1.eventHandler(function (ev) { return html_1.locate(ev); }, {
-                "dhx_grid-header-cell": function (_ev, item) {
-                    var isResizable = _ev.target.getAttribute("dhx_resized");
-                    var column = _this._getColumn(item);
-                    if (column && main_1.isSortable(_this.config, column) && !isResizable) {
-                        _this.events.fire(types_1.GridEvents.sort, [item]);
+            onclick: html_1.eventHandler(function (e) { return html_1.locate(e); }, {
+                "dhx_grid-header-cell--sortable": function (e, id) {
+                    var isResizable = e.target.getAttribute("dhx_resized");
+                    var column = _this._getColumn(id);
+                    if (column &&
+                        main_1.isSortable(_this.config, column) &&
+                        !isResizable &&
+                        _this.events.fire(types_1.GridEvents.beforeSort, [column, _this._sortDir ? "asc" : "desc"])) {
+                        _this._sort(id);
                     }
                 },
-                "dhx_grid-expand-cell": function (_ev, item) {
-                    if (_ev.target.classList.contains("dhx_grid-expand-cell-icon")) {
+                "dhx_grid-expand-cell": function (e, item) {
+                    if (e.target.classList.contains("dhx_grid-expand-cell-icon")) {
                         _this.events.fire(types_1.GridEvents.expand, [item]);
                     }
                 },
             }),
             onscroll: function (e) {
-                // [TODO] Hide loading data to render
-                _this._lazyLoad(e);
                 _this.events.fire(types_1.GridEvents.scroll, [
                     {
                         y: e.target.scrollTop,
                         x: e.target.scrollLeft,
                     },
                 ]);
+            },
+            onmouseover: {
+                ".dhx_grid-cell": function (e) {
+                    var row = _this.data.getItem(e.path[1].getAttribute("dhx_id"));
+                    var column = _this._getColumn(e.target.getAttribute("dhx_col_id"));
+                    showCellTooltip(row, column, e.target);
+                },
+                ".dhx_grid-cell:not(.dhx_tree-cell) .dhx_grid-cell__content, .dhx_tree-cell :not(.dhx_grid-cell__content)": function (e) {
+                    var row = _this.data.getItem(e.path[2].getAttribute("dhx_id"));
+                    var column = _this._getColumn(e.path[1].getAttribute("dhx_col_id"));
+                    showCellTooltip(row, column, e.target);
+                },
+                ".dhx_grid-cell.dhx_tree-cell .dhx_grid-cell__content": function (e) {
+                    var row = _this.data.getItem(e.path[3].getAttribute("dhx_id"));
+                    var column = _this._getColumn(e.path[2].getAttribute("dhx_col_id"));
+                    showCellTooltip(row, column, e.path[2]);
+                },
+                ".dhx_span-cell:not(.dhx_grid-header-cell)": function (e) {
+                    var row = _this.data.getItem(e.target.getAttribute("dhx_id"));
+                    var column = _this._getColumn(e.target.getAttribute("dhx_col_id"));
+                    var span = _this.getSpan(row.id, column.id);
+                    if (row && span && main_1.isTooltip(_this.config, span)) {
+                        var value = span.text || data_1.toFormat(row[column.id], column.type, column.format);
+                        if (span.tooltipTemplate) {
+                            value = span.tooltipTemplate(value, span);
+                        }
+                        else if (column.template) {
+                            value = column.template(value, row, column);
+                        }
+                        value &&
+                            ts_message_1.tooltip(value, {
+                                css: "dhx_grid_tooltip",
+                                node: e.target,
+                                htmlEnable: true,
+                            });
+                    }
+                },
+                ".dhx_grid-header-cell:not(.dhx_span-cell)": function (e) {
+                    var column = _this._getColumn(e.target.getAttribute("dhx_id"));
+                    showContentTootlip(e, column);
+                },
+                ".dhx_grid-footer-cell:not(.dhx_span-cell)": function (e) {
+                    var column = _this._getColumn(e.target.getAttribute("dhx_id"));
+                    showContentTootlip(e, column);
+                },
+                ".dhx_grid-header-cell.dhx_span-cell": function (e) {
+                    var column = _this._getColumn(e.target.getAttribute("dhx_id"));
+                    var headerSpan = column && column.header.find(function (item) { return !!(item.rowspan || item.colspan); });
+                    if (column && headerSpan && main_1.isTooltip(_this.config, column)) {
+                        var value = headerSpan.text || "";
+                        value &&
+                            ts_message_1.tooltip(value, {
+                                css: "dhx_grid_tooltip",
+                                node: e.target,
+                                htmlEnable: main_1.isHtmlEnable(_this.config, column),
+                            });
+                    }
+                },
+                ".dhx_grid-header-cell-text_content": function (e) {
+                    var column = _this._getColumn(e.path[1].getAttribute("dhx_id"));
+                    if (column && main_1.isTooltip(_this.config, column)) {
+                        var value = (e.path[2].querySelector(".dhx_grid-header-cell-text_content") &&
+                            e.path[2].querySelector(".dhx_grid-header-cell-text_content").textContent) ||
+                            "";
+                        value &&
+                            ts_message_1.tooltip(value, {
+                                css: "dhx_grid_tooltip",
+                                node: e.path[1],
+                                htmlEnable: main_1.isHtmlEnable(_this.config, column),
+                            });
+                    }
+                },
             },
         };
         if (_this.config.dragMode || _this.config.dragItem) {
@@ -7771,7 +8532,15 @@ var Grid = /** @class */ (function (_super) {
             disabled: !_this.config.selection,
         }, _this.events);
         if (_this.config.keyNavigation) {
-            _this.keyManager = new KeyManager_1.KeyManager(_this);
+            _this.keyManager = new KeyManager_1.KeyManager(function (e, focusId) {
+                if (focusId === _this._uid && _this.events.fire(types_1.GridEvents.beforeKeyDown, [e])) {
+                    _this.events.fire(types_1.GridEvents.afterKeyDown, [e]);
+                    return true;
+                }
+                return false;
+            });
+            _this._initHotKey();
+            FocusManager_1.focusManager.setFocusId(_this._uid);
         }
         var view = dom_1.create({
             render: function (vm, obj) {
@@ -7787,6 +8556,7 @@ var Grid = /** @class */ (function (_super) {
     }
     Grid.prototype.destructor = function () {
         this._destroyContent();
+        this.keyManager && this.keyManager.destructor();
         this.events.events = {};
         this.events.context = null;
         this._activeFilters = this._filterData = this._scroll = this.content = null;
@@ -7847,7 +8617,13 @@ var Grid = /** @class */ (function (_super) {
             return;
         column.hidden = false;
         this.config.$totalWidth += column.width;
+        var filter = this._hiddenFilters && this._hiddenFilters[column.id];
+        if (filter) {
+            this._activeFilters[column.id] = filter;
+            delete this._hiddenFilters[column.id];
+        }
         this.paint();
+        this._checkFilters();
         this.events.fire(types_1.GridEvents.afterColumnShow, [column]);
     };
     Grid.prototype.hideColumn = function (colId) {
@@ -7859,7 +8635,17 @@ var Grid = /** @class */ (function (_super) {
             return;
         column.hidden = true;
         this.config.$totalWidth -= column.width;
+        var filter = this._activeFilters && this._activeFilters[column.id];
+        if (filter) {
+            if (!this._hiddenFilters) {
+                this._hiddenFilters = {};
+            }
+            this._hiddenFilters[column.id] = filter;
+            delete this._activeFilters[column.id];
+            this.data.filter();
+        }
         this.paint();
+        this._checkFilters();
         this.events.fire(types_1.GridEvents.afterColumnHide, [column]);
     };
     Grid.prototype.isColumnHidden = function (colId) {
@@ -7919,76 +8705,61 @@ var Grid = /** @class */ (function (_super) {
         gridBody.scrollTop = typeof y === "number" ? y : gridBody.scrollTop;
     };
     Grid.prototype.scrollTo = function (row, col) {
-        var columns = this.config.columns.filter(function (col) { return !col.hidden; });
-        var colInd = core_1.findIndex(columns, function (obj) { return obj.id === col; });
         var selectedCell = this.selection.getCell();
+        var columns = this.config.columns.filter(function (col) { return !col.hidden; });
+        var colInd = core_1.findIndex(columns, function (_a) {
+            var id = _a.id;
+            return id === col;
+        });
         var prevCol = selectedCell ? selectedCell.column : this.config.columns[0];
         var prevColInd = core_1.findIndex(columns, function (obj) { return obj.id === prevCol.id; });
         var fixedColsWidth = this.config.leftSplit
             ? main_1.getTotalWidth(columns.slice(0, this.config.leftSplit))
             : 0;
         var x = main_1.getTotalWidth(columns.slice(0, colInd)) - (colInd - prevColInd < 0 ? fixedColsWidth : 0);
-        var y = this.data.getIndex(row) * this.config.rowHeight;
+        var rows = this.data.getRawData(0, -1);
+        var rowInd = core_1.findIndex(rows, function (_a) {
+            var id = _a.id;
+            return id === row;
+        });
+        var y = main_1.getTotalHeight(rows.slice(0, rowInd));
         var scrollState = this.getScrollState();
         var gridRight = this.config.width + scrollState.x;
         var gridBottom = this.config.height + scrollState.y - this.config.headerRowHeight * this.config.$headerLevel;
-        var cellTop = y - scrollState.y - this.config.rowHeight;
+        var cellTop = y - scrollState.y - rows[rowInd].$height;
         var cellLeft = x - scrollState.x - columns[colInd].$width;
-        var cellBottom = y + this.config.rowHeight * 2 + 18 - gridBottom;
+        var cellBottom = y + rows[rowInd].$height * 2 + 18 - gridBottom;
         var cellRight = x + columns[colInd].$width * 2 + 18 - gridRight;
         var scrollTop = cellTop > 0 && cellBottom < 0 ? 0 : cellTop < 0 ? cellTop : cellBottom;
         var scrollLeft = cellLeft > 0 && cellRight < 0 ? 0 : cellLeft < 0 ? cellLeft : cellRight;
         this.scroll(scrollLeft + scrollState.x, scrollTop + scrollState.y);
     };
     Grid.prototype.adjustColumnWidth = function (id, adjust) {
-        var _this = this;
         if (adjust === void 0) { adjust = true; }
         var columns = this.config.columns.filter(function (col) { return !col.hidden; });
-        var index = core_1.findIndex(columns, function (c) { return c.id === id; });
-        var col = columns[index];
-        var widthArr = [];
-        if ((adjust === "header" || adjust === true) && col.header) {
-            col.header.forEach(function (item) {
-                if (item.text) {
-                    widthArr.push(html_1.getStrSize(main_1.removeHTMLTags(item.text)).width + (main_1.isSortable(_this.config, col) ? 40 : 20));
-                }
-            });
-        }
-        if ((adjust === "footer" || adjust === true) && col.footer) {
-            col.footer.forEach(function (item) {
-                if (item.text || item.content) {
-                    widthArr.push(html_1.getStrSize(main_1.removeHTMLTags(item.text || _this.content[item.content].toHtml(col, _this.config))).width + 20);
-                }
-            });
-        }
-        if (adjust === "data" || adjust === true) {
-            this.data.map(function (row) {
-                if (typeof row[col.id] === "string" || typeof row[col.id] === "number") {
-                    widthArr.push(html_1.getStrSize(main_1.removeHTMLTags(row[col.id])).width + 20);
-                }
-            });
-        }
-        if (widthArr.length > 0) {
-            this.config.$totalWidth = columns.reduce(function (t, column, i) {
-                if (i === index) {
-                    column.$width = Math.max.apply(Math, widthArr);
-                }
-                return (t += column.hidden ? 0 : column.$width);
-            }, 0);
-            this.paint();
-        }
+        var col = columns.filter(function (col) { return col.id === id; });
+        var totalCols = this._adjustColumnsWidth(this.config.data, col, adjust);
+        this.config.$totalWidth = columns.reduce(function (totalWidth, column) {
+            if (totalCols[column.id]) {
+                column.$fixed = true;
+                column.$width = totalCols[column.id];
+            }
+            return (totalWidth += column.$width);
+        }, 0);
+        this.paint();
     };
     Grid.prototype.getCellRect = function (row, col) {
         var colums = this.config.columns.filter(function (col) { return !col.hidden; });
+        var rows = this.data.getRawData(0, -1);
         var colInd = core_1.findIndex(colums, function (obj) { return obj.id === col; });
-        var rowInd = this._getRowIndex(row);
+        var rowInd = core_1.findIndex(rows, function (obj) { return obj.id === row; });
         var x = main_1.getTotalWidth(colums.slice(0, colInd));
-        var y = rowInd * this.config.rowHeight;
+        var y = main_1.getTotalHeight(rows.slice(0, rowInd));
         return {
             x: x,
             y: y,
-            height: this.config.rowHeight,
-            width: colums[colInd].$width,
+            height: rows[rowInd] ? rows[rowInd].$height : 0,
+            width: colums[colInd] ? colums[colInd].$width : 0,
         };
     };
     Grid.prototype.getColumn = function (colId) {
@@ -8090,19 +8861,11 @@ var Grid = /** @class */ (function (_super) {
         data_1.countColumns(this.config, columns);
     };
     Grid.prototype._parseData = function () {
-        var columns = this.config.columns.filter(function (col) { return !col.hidden; });
-        var firstItem = this.data.getId(0);
-        if (firstItem) {
-            if (columns.length) {
-                this._checkColumns();
-            }
-        }
+        this.config.data = this._prepareData(this.data);
+        this._detectColsTypes();
         this._checkFilters();
         this._checkMarks();
         this._render();
-    };
-    Grid.prototype._checkColumns = function () {
-        this._detectColsTypes();
     };
     Grid.prototype._createCollection = function (prep) {
         this.data = new ts_data_1.DataCollection({ prep: prep }, this.events);
@@ -8126,8 +8889,12 @@ var Grid = /** @class */ (function (_super) {
             _this._parseData();
         });
         this.data.events.on(ts_data_1.DataEvents.change, function (id, status, obj) {
-            // [dirty]
             if (status === "remove" && obj.$emptyRow) {
+                return;
+            }
+            if (status === "setPage") {
+                _this.scrollTo(_this.data.getId(obj[0]), _this.config.columns[0].id.toString());
+                _this._render();
                 return;
             }
             if (id) {
@@ -8137,10 +8904,14 @@ var Grid = /** @class */ (function (_super) {
             _this._detectColsTypes();
             _this._removeMarks();
             _this._checkMarks();
-            _this._adjustColumns();
+            if (status === "add" || status === "update" || status === "remove") {
+                _this.config.data = _this._prepareData(_this.data);
+            }
             if (_this.config.autoEmptyRow && (!_this._activeFilters || core_1.isEmptyObj(_this._activeFilters))) {
                 var emptyRow = _this.data.find({ by: "$emptyRow", match: true });
                 if (emptyRow) {
+                    if (emptyRow.id === id)
+                        return;
                     _this.data.move(emptyRow.id, _this.data.getLength() - 1);
                 }
                 else {
@@ -8210,7 +8981,8 @@ var Grid = /** @class */ (function (_super) {
             }
         });
         this.events.on(ts_data_1.DragEvents.beforeDrop, function (data, events) {
-            if (_this.data.getItem(data.start)) {
+            if (_this.config.dragItem === "row" &&
+                (_this.config.dragMode === "both" || _this.config.dragMode === "target")) {
                 return _this.events.fire(types_1.GridEvents.beforeRowDrop, [data, events]);
             }
             else if (_this.config.dragItem === "column") {
@@ -8224,6 +8996,8 @@ var Grid = /** @class */ (function (_super) {
             else if (_this.config.dragItem === "column") {
                 _this.events.fire(types_1.GridEvents.afterColumnDrop, [data, events]);
             }
+            _this.config.data = _this._prepareData(_this.data.serialize());
+            _this.data.parse(_this.config.data);
         });
         this.events.on(ts_data_1.DragEvents.afterDrag, function (data, events) {
             updater({ $dragtarget: undefined });
@@ -8232,11 +9006,6 @@ var Grid = /** @class */ (function (_super) {
             }
             else if (_this.config.dragItem === "column") {
                 _this.events.fire(types_1.GridEvents.afterColumnDrag, [data, events]);
-            }
-        });
-        this.events.on(types_1.GridEvents.sort, function (id) {
-            if (id) {
-                _this._sort(id);
             }
         });
         // TODO: When introducing touch events, remove system events
@@ -8439,20 +9208,174 @@ var Grid = /** @class */ (function (_super) {
         this.data.sort({
             by: by,
             dir: this._sortDir,
-            as: function (el) {
+            as: function (item) {
                 var col = _this.getColumn(by);
-                if (el && col.type === "date") {
-                    return "" + ts_calendar_1.stringToDate(el, col.dateFormat).getTime();
+                if (item && col.type === "date") {
+                    return typeof item === "string"
+                        ? date_1.stringToDate(item, col.format).getTime()
+                        : item.getTime();
                 }
-                return el ? "" + el : "";
+                return item ? "" + item : "";
             },
         });
+        this.events.fire(types_1.GridEvents.afterSort, [this.getColumn(by), this._sortDir]);
     };
     Grid.prototype._clearTouchTimer = function () {
         if (this._touch.timer) {
             clearTimeout(this._touch.timer);
             this._touch.timer = null;
         }
+    };
+    Grid.prototype._checkFilters = function () {
+        var _this = this;
+        var data = this._filterData;
+        this.config.columns.forEach(function (col) {
+            col.header.forEach(function (cell) {
+                if (cell.content && (cell.content === "selectFilter" || cell.content === "comboFilter")) {
+                    var unique = data_1.getUnique(data, col.id);
+                    if (col.$uniqueData && col.$uniqueData.length > unique.length) {
+                        unique.forEach(function (item) {
+                            if (!col.$uniqueData.includes(item)) {
+                                col.$uniqueData.push(item);
+                            }
+                        });
+                    }
+                    else {
+                        col.$uniqueData = unique;
+                    }
+                }
+            });
+        });
+        var _loop_1 = function (compare) {
+            var col = this_1.config.columns.find(function (i) { return i.id === compare; });
+            var filter = col.header.find(function (i) { return !!i.content; });
+            if (filter &&
+                (filter.content === "selectFilter" || filter.content === "comboFilter") &&
+                !col.$uniqueData.find(function (i) { return i.toString() === _this._activeFilters[compare].match; })) {
+                delete this_1._activeFilters[compare];
+                this_1.data.filter();
+            }
+            else {
+                this_1.data.filter(this_1._activeFilters[compare], { add: true });
+            }
+        };
+        var this_1 = this;
+        for (var compare in this._activeFilters) {
+            _loop_1(compare);
+        }
+    };
+    Grid.prototype._adjustColumns = function () {
+        var _this = this;
+        if (typeof this.config.adjust === "boolean" ||
+            this.config.adjust === "data" ||
+            this.config.adjust === "header" ||
+            this.config.adjust === "footer") {
+            var columns = this.config.columns.filter(function (col) { return !col.hidden; });
+            if (!columns.length)
+                return;
+            var data = !this.config.data.length ? this.data.map(function (row) { return row; }) : this.config.data;
+            var totalCols_1 = this._adjustColumnsWidth(data, columns);
+            this.config.$totalWidth = columns.reduce(function (totalWidth, column) {
+                column.$fixed = true;
+                column.$width = totalCols_1[column.id];
+                return (totalWidth += column.$width);
+            }, 0);
+        }
+        else {
+            var columns = this.config.columns.filter(function (col) { return !col.hidden && col.adjust; });
+            if (!columns.length)
+                return;
+            columns.forEach(function (col) {
+                _this.adjustColumnWidth(col.id, col.adjust);
+            });
+        }
+    };
+    Grid.prototype._prepareData = function (data) {
+        var _this = this;
+        if (this.config.autoHeight)
+            this.config.autoHeight = false;
+        this._adjustColumns();
+        return data.map(function (row) {
+            row.$height = row.height || _this.config.rowHeight;
+            return row;
+        });
+    };
+    Grid.prototype._adjustColumnsWidth = function (rows, cols, adjust) {
+        var _a, _b, _c;
+        if (adjust === void 0) { adjust = this.config.adjust; }
+        var columnsWidth = {};
+        if (adjust === "header" || adjust === true) {
+            var currentCols = cols.filter(function (col) { return col.header; });
+            var data = data_1.getMaxColsWidth(this._prepareColumnData(currentCols, "header"), currentCols, {
+                font: "bold 14.4px Arial",
+            });
+            if (data) {
+                for (var _i = 0, _d = Object.entries(data); _i < _d.length; _i++) {
+                    var _e = _d[_i], key = _e[0], value = _e[1];
+                    columnsWidth = Object.assign(columnsWidth, (_a = {},
+                        _a[key] = +value + (main_1.isSortable(this.config, this.getColumn(key)) ? 36 : 16),
+                        _a));
+                }
+            }
+        }
+        if (adjust === "footer" || adjust === true) {
+            var currentCols = cols.filter(function (col) { return col.footer; });
+            var data = data_1.getMaxColsWidth(this._prepareColumnData(currentCols, "footer"), currentCols, {
+                font: "bold 14.4px Arial",
+            });
+            if (data) {
+                for (var _f = 0, _g = Object.entries(data); _f < _g.length; _f++) {
+                    var _h = _g[_f], key = _h[0], value = _h[1];
+                    if ((columnsWidth[key] && columnsWidth[key] < +value + 16) || !columnsWidth[key]) {
+                        columnsWidth = Object.assign(columnsWidth, (_b = {},
+                            _b[key] = +value + 16,
+                            _b));
+                    }
+                }
+            }
+        }
+        if (adjust === "data" || adjust === true) {
+            var data = data_1.getMaxColsWidth(rows, cols);
+            if (data) {
+                for (var _j = 0, _k = Object.entries(data); _j < _k.length; _j++) {
+                    var _l = _k[_j], key = _l[0], value = _l[1];
+                    if ((columnsWidth[key] && columnsWidth[key] < +value + 16) || !columnsWidth[key]) {
+                        columnsWidth = Object.assign(columnsWidth, (_c = {},
+                            _c[key] = +value + 16,
+                            _c));
+                    }
+                }
+            }
+        }
+        return columnsWidth;
+    };
+    Grid.prototype._prepareColumnData = function (data, type) {
+        var _a;
+        var _b, _c, _d, _e, _f, _g, _h, _j, _k;
+        var totalRow = [];
+        for (var i = 0; i < data.length; i++) {
+            var row = [];
+            for (var k = 0; k < ((_b = data[k]) === null || _b === void 0 ? void 0 : _b[type].length); k++) {
+                var rowData = {};
+                if ((_d = (_c = data[i]) === null || _c === void 0 ? void 0 : _c[type][k]) === null || _d === void 0 ? void 0 : _d.text) {
+                    rowData[data[i].id] = ((_f = (_e = data[i]) === null || _e === void 0 ? void 0 : _e[type][k]) === null || _f === void 0 ? void 0 : _f.text) || "";
+                    row.push(rowData);
+                }
+                else if (((_h = (_g = data[i]) === null || _g === void 0 ? void 0 : _g[type][k]) === null || _h === void 0 ? void 0 : _h.content) && type === "footer") {
+                    rowData[data[i].id] =
+                        this.content[(_k = (_j = data[i]) === null || _j === void 0 ? void 0 : _j[type][k]) === null || _k === void 0 ? void 0 : _k.content].toHtml(this.getColumn(data[i].id), this.config) || "";
+                    row.push(rowData);
+                }
+            }
+            for (var j = 0; j < row.length; j++) {
+                for (var _i = 0, _l = Object.entries(row[j]); _i < _l.length; _i++) {
+                    var _m = _l[_i], key = _m[0], value = _m[1];
+                    totalRow[j] = __assign({}, totalRow[j]) || {};
+                    totalRow[j] = Object.assign(totalRow[j], (_a = {}, _a[key] = value, _a));
+                }
+            }
+        }
+        return totalRow;
     };
     Grid.prototype._dragStart = function (e) {
         if (this.config.dragMode && this.config.dragItem === "row" && !this.config.$editable) {
@@ -8490,8 +9413,7 @@ var Grid = /** @class */ (function (_super) {
         };
         if (this.config.data instanceof ts_data_1.DataCollection) {
             this.data = this.config.data;
-            this.config.data = [];
-            this._parseData();
+            this.config.data = this.data.serialize();
             return;
         }
         this._createCollection(prep);
@@ -8503,7 +9425,7 @@ var Grid = /** @class */ (function (_super) {
             row: row,
         }); });
         var colCellsData = this.data.map(function (row) { return row[col.id]; });
-        var _loop_1 = function (cell) {
+        var _loop_2 = function (cell) {
             var css = func(cell.data, colCellsData, cell.row, col);
             if (css) {
                 col.$cellCss = col.$cellCss || {};
@@ -8518,7 +9440,7 @@ var Grid = /** @class */ (function (_super) {
         };
         for (var _i = 0, colCells_1 = colCells; _i < colCells_1.length; _i++) {
             var cell = colCells_1[_i];
-            _loop_1(cell);
+            _loop_2(cell);
         }
     };
     Grid.prototype._checkMarks = function () {
@@ -8531,9 +9453,14 @@ var Grid = /** @class */ (function (_super) {
                 }
                 else {
                     _this._setMarks(col, function (el, c) {
-                        var data = c.filter(function (item) { return item !== null && item !== undefined && item !== ""; });
-                        var min = Math.min.apply(Math, data);
-                        var max = Math.max.apply(Math, data);
+                        var data = [];
+                        c.forEach(function (item) {
+                            if (item !== null && item !== undefined && item !== "") {
+                                data.push(parseFloat(item));
+                            }
+                        });
+                        var min = core_1.getMinArrayNymber(data);
+                        var max = core_1.getMaxArrayNymber(data);
                         if (mark.max && max === parseFloat(el)) {
                             return mark.max;
                         }
@@ -8553,53 +9480,19 @@ var Grid = /** @class */ (function (_super) {
             }
         });
     };
-    Grid.prototype._adjustColumns = function () {
-        var _this = this;
-        var columns = this.config.columns.filter(function (col) { return !col.hidden; });
-        columns.map(function (col, i) {
-            if ((col.adjust !== false && _this.config.adjust) || col.adjust) {
-                _this.adjustColumnWidth(col.id, col.adjust || _this.config.adjust);
-            }
-        });
-    };
     // [todo] make more smart type detection
     Grid.prototype._detectColsTypes = function () {
-        var firstRow = this.data.getItem(this.data.getId(0));
-        if (!firstRow) {
-            return;
-        }
-        this.config.columns.map(function (col) {
+        this.config.columns.forEach(function (col) {
             if (col.type) {
                 return col;
             }
-            var firstCell = firstRow ? firstRow[col.id] : "";
-            var v = parseFloat(firstCell);
-            var val = isNaN(v) ? firstCell : v;
-            if (val) {
-                col.type = typeof val;
+            if (col.format) {
+                col.type = "number";
                 return col;
             }
-        });
-    };
-    Grid.prototype._checkFilters = function () {
-        var data = this._filterData;
-        var columns = this.config.columns.filter(function (col) { return !col.hidden; });
-        columns.map(function (col) {
-            col.header.map(function (cell) {
-                if (cell.content && (cell.content === "selectFilter" || cell.content === "comboFilter")) {
-                    var unique = data_1.getUnique(data, col.id);
-                    if (col.$uniqueData && col.$uniqueData.length > unique.length) {
-                        unique.forEach(function (item) {
-                            if (!col.$uniqueData.includes(item)) {
-                                col.$uniqueData.push(item);
-                            }
-                        });
-                    }
-                    else {
-                        col.$uniqueData = unique;
-                    }
-                }
-            });
+            if (!col.type) {
+                col.type = "string";
+            }
         });
     };
     Grid.prototype._destroyContent = function () {
@@ -8612,18 +9505,13 @@ var Grid = /** @class */ (function (_super) {
     Grid.prototype._render = function () {
         this.paint();
     };
-    Grid.prototype._lazyLoad = function (e) {
-        var y = e.target.scrollTop;
-        if (this.getScrollState().y !== y) {
-            var from = Math.round(y / this.config.rowHeight);
-            var onScreenCount = (this.config.height - this.config.headerRowHeight) / this.config.rowHeight;
-            var proxy = this.data.dataProxy;
-            if (proxy &&
-                proxy.config &&
-                !this.data.isDataLoaded(from, onScreenCount + from + proxy.config.prepare)) {
-                proxy.updateUrl(null, { from: from, limit: proxy.config.limit });
-                this.data.load(proxy);
-            }
+    Grid.prototype._initHotKey = function () {
+        var handlers = keys_1.getKeysHandlers(this);
+        for (var key in handlers) {
+            this.keyManager.addHotKey(key, handlers[key]);
+        }
+        for (var key in this.config.hotkeys) {
+            this.keyManager.addHotKey(key, this.config.hotkeys[key]);
         }
     };
     return Grid;
@@ -8632,7 +9520,281 @@ exports.Grid = Grid;
 
 
 /***/ }),
-/* 82 */
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var html_1 = __webpack_require__(3);
+var data_1 = __webpack_require__(21);
+var main_1 = __webpack_require__(15);
+var Cells_1 = __webpack_require__(55);
+var FixedCols_1 = __webpack_require__(204);
+var FixedRows_1 = __webpack_require__(84);
+var core_1 = __webpack_require__(1);
+var BORDERS = 2;
+function getRenderConfig(obj, data, wrapperSizes) {
+    var config = obj.config;
+    var columns = config.columns.filter(function (col) { return !col.hidden; });
+    var positions = data_1.calculatePositions(wrapperSizes.width, wrapperSizes.height, obj._scroll, config);
+    var currentColumns = columns.slice(positions.xStart, positions.xEnd);
+    var currentRows = data.slice(positions.yStart, positions.yEnd);
+    return __assign(__assign({}, config), { data: data,
+        columns: columns, scroll: obj._scroll, $positions: positions, headerHeight: config.$headerLevel * config.headerRowHeight, footerHeight: config.$footerLevel * config.footerRowHeight, firstColId: columns[0] && columns[0].id, events: obj.events, _events: obj._events, currentColumns: currentColumns,
+        currentRows: currentRows, sortBy: obj._sortBy, sortDir: obj._sortDir, content: obj.content, gridId: obj._uid });
+}
+exports.getRenderConfig = getRenderConfig;
+function getElementSizes(element) {
+    if (!element)
+        return;
+    if (!element.tagName)
+        element = element._parent._container;
+    if (!element)
+        return;
+    var styles = element.currentStyle || window.getComputedStyle(element);
+    var paddingsByWidth = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight) || 0;
+    var paddingsByHeight = parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom) || 0;
+    return {
+        width: element.clientWidth - paddingsByWidth,
+        height: element.clientHeight - paddingsByHeight,
+    };
+}
+function getGridData(renderConfig, shifts) {
+    var content = Cells_1.getCells(renderConfig);
+    var contentSpans = Cells_1.getSpans(renderConfig);
+    var resizedLine;
+    var colums = renderConfig.columns;
+    if (renderConfig.$resizing) {
+        var colIndex = core_1.findIndex(colums, function (col) { return col.id === renderConfig.$resizing; });
+        var firstCellLeft = main_1.getTotalWidth(colums.slice(0, colIndex)) + colums[colIndex].$width;
+        resizedLine = dom_1.el(".dhx_grid-resize-line", {
+            style: {
+                top: 0,
+                left: firstCellLeft,
+                height: renderConfig.$totalHeight,
+            },
+        });
+    }
+    var selection = renderConfig.selection ? renderConfig.selection.toHTML() : null;
+    selection =
+        typeof selection === "string" ? dom_1.el("div.dhx_selection", { ".innerHTML": selection }) : selection;
+    var pos = renderConfig.$positions;
+    var events = {};
+    function getCellInfo(e) {
+        var rowId = html_1.locate(e, "dhx_id");
+        var colId = html_1.locate(e, "dhx_col_id");
+        var row = renderConfig.currentRows.filter(function (item) { return item.id === rowId; })[0];
+        var col = renderConfig.currentColumns.filter(function (item) { return item.id === colId; })[0];
+        return {
+            row: rowId ? row : {},
+            col: colId ? col : {},
+        };
+    }
+    if (renderConfig.eventHandlers) {
+        for (var key in renderConfig.eventHandlers) {
+            if (renderConfig.eventHandlers.hasOwnProperty(key)) {
+                var event_1 = renderConfig.eventHandlers[key];
+                events[key] = html_1.eventHandler(function (e) { return getCellInfo(e); }, __assign({}, event_1));
+            }
+        }
+    }
+    return dom_1.el(".dhx_data-wrap", __assign({ style: {
+            height: renderConfig.$totalHeight,
+            width: renderConfig.$totalWidth,
+            "padding-left": shifts.x,
+            "padding-top": shifts.y,
+        }, role: "presentation" }, events), [
+        dom_1.el(".dhx_grid_data", __assign(__assign({ _flags: dom_1.KEYED_LIST }, Cells_1.getHandlers(pos.yStart, pos.xStart, renderConfig)), { role: "rowgroup" }), content),
+        // el(".dhx_span-spans", contentSpans),
+        dom_1.el(".dhx_span-spans", { role: "presentation" }, contentSpans),
+        dom_1.el(".dhx_grid_selection", { _ref: "selection", "aria-hidden": "true" }, [selection, resizedLine]),
+    ]);
+}
+function getContentHeight(renderConfig, isSticky, wrapperSizes) {
+    var contentHeight = wrapperSizes.height - BORDERS;
+    contentHeight = isSticky ? contentHeight : contentHeight - renderConfig.headerHeight;
+    var isFooter = renderConfig.$footer;
+    return (contentHeight = isFooter
+        ? isSticky
+            ? contentHeight
+            : contentHeight - renderConfig.footerHeight
+        : contentHeight);
+}
+function applyAutoWidth(config, wrapperSizes, firstApply) {
+    if (firstApply === void 0) { firstApply = true; }
+    var scrollbarY = config.$totalHeight >= wrapperSizes.height - config.headerRowHeight ? html_1.getScrollbarWidth() : 0;
+    var newTotalWidth = wrapperSizes.width - BORDERS - scrollbarY;
+    var growingColumns = config.columns.filter(function (col) { return !col.hidden && !col.width && !col.$fixed && main_1.isAutoWidth(config, col); });
+    var nonGrowingColumnsWidth = main_1.getTotalWidth(config.columns.filter(function (col) { return col.width || col.$fixed || !main_1.isAutoWidth(config, col); }));
+    var fullGravity = growingColumns.reduce(function (gravity, col) { return gravity + (col.gravity || 1); }, 0);
+    if (newTotalWidth < config.$totalWidth) {
+        var growingColumnsWidth_1 = growingColumns.reduce(function (width, col) { return width + (col.maxWidth || col.$width); }, 0);
+        if (growingColumns.length > 1) {
+            growingColumns.forEach(function (col) {
+                var newWidth = Math.abs(newTotalWidth - growingColumnsWidth_1) * ((col.gravity || 1) / fullGravity);
+                var wrongMin = newWidth < col.minWidth;
+                var wrongMax = newWidth > col.maxWidth;
+                if (!wrongMin && !wrongMax) {
+                    col.$width = newWidth;
+                }
+                else if (wrongMin) {
+                    nonGrowingColumnsWidth += col.$width - newWidth;
+                    col.$fixed = true;
+                }
+                else if (wrongMax) {
+                    col.$width = col.maxWidth;
+                    col.$fixed = true;
+                }
+            });
+        }
+    }
+    else {
+        growingColumns.forEach(function (col) {
+            var newWidth = Math.abs(newTotalWidth - nonGrowingColumnsWidth) * ((col.gravity || 1) / fullGravity);
+            var wrongMin = newWidth < col.minWidth;
+            var wrongMax = newWidth > col.maxWidth;
+            if (!wrongMin && !wrongMax) {
+                col.$width = newWidth;
+            }
+            else if (wrongMin) {
+                nonGrowingColumnsWidth += col.$width - newWidth;
+                col.$fixed = true;
+            }
+            else if (wrongMax) {
+                col.$width = col.maxWidth;
+                col.$fixed = true;
+            }
+            if (!firstApply && col.$fixed) {
+                delete col.$fixed;
+            }
+        });
+    }
+    if (firstApply) {
+        applyAutoWidth(config, wrapperSizes, false);
+    }
+}
+function render(vm, obj, htmlEvents, selection, uid) {
+    if (!obj._container) {
+        obj.config.width = 1;
+        obj.config.height = 1;
+    }
+    // if grid placed inside another component, it will fit to its container
+    if (vm && vm.node && vm.node.parent && vm.node.parent.el) {
+        var parentNode = vm.node.parent.el;
+        var parentSizes = getElementSizes(parentNode);
+        obj.config.width = parentSizes.width;
+        obj.config.height = parentSizes.height;
+    }
+    var config = obj.config;
+    // when grid is destructing and user try to repaint it
+    if (!config) {
+        return dom_1.el("div");
+    }
+    if (!config.columns.length) {
+        return dom_1.el(".dhx_grid");
+    }
+    var data = obj.data.getRawData(0, -1, null, 2);
+    if (config.columns.reduce(function (check, col) { return (check = !col.hidden ? col.hidden : check); }, true)) {
+        config.$totalHeight = 0;
+    }
+    else {
+        config.$totalHeight = data.reduce(function (total, _a) {
+            var $height = _a.$height;
+            return (total += $height || 0);
+        }, 0);
+    }
+    var sizes = getElementSizes(obj._container);
+    var wrapperSizes = {
+        width: (config.width ? config.width : sizes && sizes.width) || 0,
+        height: (config.height ? config.height : sizes && sizes.height) || 0,
+    };
+    // TODO: Remove scroll
+    if (main_1.isAutoWidth(config)) {
+        applyAutoWidth(config, wrapperSizes);
+        config.$totalWidth = main_1.getTotalWidth(config.columns);
+    }
+    config.width = wrapperSizes.width;
+    config.height = wrapperSizes.height;
+    var renderConfig = getRenderConfig(obj, data, wrapperSizes);
+    renderConfig.selection = selection;
+    renderConfig.datacollection = obj.data;
+    var shifts = Cells_1.getShifts(renderConfig);
+    var isSticky = main_1.isCssSupport("position", "sticky");
+    var gridBodyHeight = getContentHeight(renderConfig, isSticky, wrapperSizes);
+    var layoutState = {
+        wrapper: wrapperSizes,
+        sticky: isSticky,
+        shifts: shifts,
+        gridBodyHeight: gridBodyHeight,
+    };
+    var header = FixedRows_1.getFixedRows(renderConfig, __assign(__assign({}, layoutState), { name: "header", position: "top" }));
+    var footer = renderConfig.$footer
+        ? FixedRows_1.getFixedRows(renderConfig, __assign(__assign({}, layoutState), { name: "footer", position: "bottom" }))
+        : null;
+    var lessByWidth = renderConfig.$totalWidth + BORDERS < wrapperSizes.width ? "dhx_grid-less-width" : "";
+    var lessByHeight = renderConfig.$totalHeight + BORDERS < wrapperSizes.height ? "dhx_grid-less-height" : "";
+    // dirty: but work. Change checking of rendering Grid
+    if (!vm.node) {
+        var _a = obj.getScrollState(), x_1 = _a.x, y_1 = _a.y;
+        dom_1.awaitRedraw().then(function () {
+            obj.scroll(x_1, y_1);
+        });
+    }
+    return dom_1.el(".dhx_grid.dhx_widget", {
+        class: (renderConfig.css || "") +
+            (!isSticky ? " dhx_grid_border" : "") +
+            (config.multiselection ? " dhx_no-select--pointer" : ""),
+        dhx_widget_id: uid,
+        role: "grid",
+        "aria-rowcount": renderConfig.data.length,
+        "aria-colcount": config.columns.filter(function (col) { return !col.hidden; }).length,
+    }, [
+        dom_1.resizer(function () { return obj.paint(); }),
+        dom_1.el(".dhx_grid-content", {
+            style: __assign({}, wrapperSizes),
+            onclick: htmlEvents.onclick,
+            onmouseover: htmlEvents.onmouseover,
+            class: (lessByWidth + " " + lessByHeight).trim(),
+            role: "presentation",
+        }, [
+            isSticky ? null : header,
+            dom_1.el(".dhx_grid-body", {
+                style: {
+                    height: gridBodyHeight,
+                    width: wrapperSizes.width - BORDERS,
+                },
+                onscroll: htmlEvents.onscroll,
+                _ref: "grid_body",
+                role: "presentation",
+            }, [
+                isSticky ? header : null,
+                getGridData(renderConfig, shifts),
+                isSticky ? footer : null,
+            ]),
+            FixedCols_1.getFixedColsHeader(renderConfig, layoutState),
+            FixedCols_1.getFixedCols(renderConfig, layoutState),
+            isSticky ? null : footer,
+        ]),
+    ]);
+}
+exports.render = render;
+
+
+/***/ }),
+/* 84 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8658,7 +9820,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var cells_1 = __webpack_require__(56);
-var main_1 = __webpack_require__(18);
+var main_1 = __webpack_require__(15);
 var types_1 = __webpack_require__(9);
 function handleMouse(col, config, type, e) {
     if (!type)
@@ -8687,37 +9849,73 @@ function buildRows(columns, name) {
     var header = columns.map(function (col) { return col[name] || [{}]; });
     return main_1.transpose(header);
 }
-function getCustomContentCell(cell, column, config, rowName, css) {
+function getColumnHeaderText(col) {
+    var colHeader = col.id;
+    if (col.header && col.header.length) {
+        var i = col.header.length - 1;
+        while (i >= 0) {
+            var headerConf = col.header[i];
+            if (headerConf && headerConf.text) {
+                colHeader = headerConf.text;
+                break;
+            }
+            i -= 1;
+        }
+    }
+    return colHeader;
+}
+function getCustomContentCell(cell, column, config, rowName, css, colIndex) {
     if (css === void 0) { css = ""; }
-    var rowHeight = config[rowName + "RowHeight"] - 10 + 1 || 31;
+    var rowHeight = config[rowName + "RowHeight"] || 40;
     var type = column.type ? "dhx_" + column.type + "-cell" : "dhx_string_cell";
     // TODO: over with index of filter inside of header or footer
-    return dom_1.el(".dhx_grid-" + rowName + "-cell.dhx_grid-custom-content-cell." + type, __assign({ class: css, style: {
+    var content = config.content[cell.content] && config.content[cell.content].toHtml(column, config);
+    return dom_1.el(".dhx_grid-" + rowName + "-cell.dhx_grid-custom-content-cell." + type, __assign(__assign({ class: css, style: {
             width: column.$width,
-            lineHeight: rowHeight + "px",
-        } }, getHandlers(column, rowName, config)), [config.content[cell.content] && config.content[cell.content].toHtml(column, config)]);
+            height: rowHeight + "px",
+        } }, getHandlers(column, rowName, config)), { dhx_id: column.id, role: "gridcell", "aria-colindex": colIndex, "aria-label": getColumnHeaderText(column) }), [
+        content &&
+            (typeof content === "string"
+                ? dom_1.el("div", {
+                    class: "dhx_grid-footer-cell-text",
+                    role: "presentation",
+                }, [
+                    dom_1.el("span", {
+                        ".innerHTML": column.template
+                            ? column.template(content, cell.row, column)
+                            : content,
+                    }),
+                ])
+                : content),
+    ]);
 }
 function getRows(config, rowsConfig) {
     if (!config.data || !config.columns) {
         return [];
     }
+    var pos = config.$positions;
     var rowName = rowsConfig.name;
-    var columns = config.currentColumns.filter(function (col) { return !col.hidden; });
+    var columns = config.currentColumns;
     var rowHeight = config[rowName + "RowHeight"] || 40;
     var rows = buildRows(columns, rowName);
     return rows.map(function (row, j) {
-        return dom_1.el(".dhx_" + rowName + "-row", { style: { height: rowHeight } }, row.map(function (cell, i) {
-            var hiddenTitle = config.tooltip
-                ? typeof columns[i].tooltip === "boolean"
-                    ? columns[i].tooltip
-                    : true
-                : columns[i].tooltip;
+        return dom_1.el(".dhx_" + rowName + "-row", {
+            style: {
+                height: rowHeight,
+            },
+            role: "row",
+            "aria-rowindex": j + 1,
+        }, row.map(function (cell, i) {
             var css = cell.css || "";
             var column = columns[i];
+            var colIndex = pos.xStart + i + 1;
             var sortIconCss = "dxi dxi-sort-variant dhx_grid-sort-icon";
+            var ariaSort = "none";
             if (config.sortBy && "" + column.id === config.sortBy && !cell.content) {
-                sortIconCss += " dhx_grid-sort-icon--" + (config.sortDir || "asc");
+                var dir = config.sortDir || "asc";
+                sortIconCss += " dhx_grid-sort-icon--" + dir;
                 css += " dhx_grid-" + rowName + "-cell--sorted ";
+                ariaSort = dir === "asc" ? "ascending" : "descending";
             }
             var sortIconVisible = main_1.isSortable(config, column) && cell.text && rowName !== "footer";
             if (sortIconVisible) {
@@ -8726,20 +9924,22 @@ function getRows(config, rowsConfig) {
             var isFirstCol = i === 0 ? "dhx_first-column-cell" : "";
             var isLastCol = i === columns.length - 1 ? "dhx_last-column-cell" : "";
             if (!cell.content) {
-                if (!cell.align || cell.align === "center") {
-                    css += " dhx_grid-header-cell--" + (column.type === "number" ? "align_right" : "align_left") + " ";
+                if (cell.align) {
+                    css += " dhx_grid-header-cell--align_" + cell.align + " ";
                 }
                 else {
-                    css += " dhx_grid-header-cell--align_" + (cell.align === "right" ? "right" : "left") + " ";
+                    css += " dhx_grid-header-cell--" + (column.type === "number" || column.type === "percent" || column.type === "date"
+                        ? "align_right"
+                        : "align_left") + " ";
                 }
-            }
-            if ((config.sortable && column.sortable !== false) || column.sortable) {
-                css += " dhx_grid-sortable ";
             }
             css += isFirstCol + " " + isLastCol;
             var resizable = column.resizable !== undefined ? column.resizable : config.resizable;
             if (resizable) {
-                resizable = dom_1.el("div", { class: "dhx_resizer_grip_wrap" }, [
+                resizable = dom_1.el("div", {
+                    class: "dhx_resizer_grip_wrap",
+                    "aria-hidden": "true",
+                }, [
                     dom_1.el("div", {
                         class: "dhx_resizer_grip",
                         dhx_resized: column.id,
@@ -8756,28 +9956,45 @@ function getRows(config, rowsConfig) {
                 css += " dhx_align-" + cell.align;
             }
             if (cell.content) {
-                return getCustomContentCell(cell, column, config, rowName, css);
+                return getCustomContentCell(cell, column, config, rowName, css, colIndex);
             }
+            var cellAria = {
+                role: "columnheader",
+                "aria-colindex": colIndex,
+                "aria-sort": ariaSort,
+                "aria-label": cell.text,
+            };
+            var innerCellAria = {
+                role: "button",
+                "aria-label": "Click to sort by",
+            };
+            if (rowName === "footer") {
+                cellAria.role = "gridcell";
+                delete cellAria["aria-sort"];
+                delete cellAria["aria-label"];
+                delete innerCellAria.role;
+            }
+            var cellCss = "dhx_grid-header-cell-text_content";
+            if (config.autoHeight)
+                cellCss += " dhx_grid-header-cell-text_content-auto-height";
             return dom_1.el(".dhx_grid-" + rowName + "-cell", __assign(__assign({ class: css.trim(), dhx_id: column.id, _key: i, style: {
                     width: column.$width,
-                    lineHeight: rowHeight + 1 + "px",
-                } }, getHandlers(column, rowName, config)), { title: hiddenTitle ? main_1.removeHTMLTags(cell.text) : null }), [
-                dom_1.el("div", {
-                    class: "dhx_grid-header-cell-text",
+                    height: rowHeight + "px",
+                } }, getHandlers(column, rowName, config)), cellAria), [
+                dom_1.el("div.dhx_grid-header-cell-text", {
+                    role: "presentation",
                 }, [
-                    dom_1.el("div", {
-                        ".innerHTML": cell.text,
-                    }),
+                    dom_1.el("span", __assign({ class: cellCss, ".innerHTML": cell.text }, innerCellAria)),
                     resizable || null,
                 ]),
-                sortIconVisible && dom_1.el("div", { class: sortIconCss }),
+                sortIconVisible && dom_1.el("div", { class: sortIconCss, "aria-hidden": "true" }),
             ]);
         }));
     });
 }
 exports.getRows = getRows;
-function getSpans(config, rowsConfig) {
-    var cols = config.columns.filter(function (col) { return !col.hidden; });
+function getFixedSpans(config, rowsConfig) {
+    var cols = config.columns;
     var rows = main_1.transpose(cols.map(function (col) { return col[rowsConfig.name] || []; }));
     var height = config[rowsConfig.name + "RowHeight"] || 40;
     var leftShift = 0;
@@ -8786,20 +10003,10 @@ function getSpans(config, rowsConfig) {
         return dom_1.el(".dhx_span-row", {
             style: { top: height * i + "px", height: height },
             class: "dhx_header-row",
+            "aria-hidden": "true",
         }, row
             .map(function (cell, cellIdx) {
             var col = cols[cellIdx];
-            var hiddenTitle;
-            config.spans &&
-                config.spans.forEach(function (span) {
-                    if (span.column === col.id) {
-                        hiddenTitle = config.tooltip
-                            ? typeof span.tooltip === "boolean"
-                                ? span.tooltip
-                                : true
-                            : span.tooltip;
-                    }
-                });
             leftShift += col.hidden ? 0 : col.$width;
             var isFirstCol = cellIdx === 0 ? "dhx_first-column-cell" : "";
             var isLastCol = cellIdx === cols.length - 1 || (cell.colspan || 0) + (cellIdx - 1) >= cols.length - 1
@@ -8814,21 +10021,33 @@ function getSpans(config, rowsConfig) {
             if (config.sortBy && "" + col.id === config.sortBy && !cell.content) {
                 sortIconCss += " dhx_grid-sort-icon--" + (config.sortDir || "asc");
             }
-            var css = isFirstCol + " " + isLastCol + " " + (cell.rowspan ? "dhx_span-cell__rowspan" : "") + " " + (cell.align
-                ? "dhx_align-" + cell.align
-                : col.align
-                    ? "dhx_align-" + col.align
-                    : "dhx_align-left");
+            var cellAlign = col.align
+                ? "dhx_align-" + col.align
+                : (col.type === "number" || col.type === "percent" || col.type === "date") &&
+                    !cell.colspan
+                    ? "dhx_align-right"
+                    : "dhx_align-left";
+            var css = "dhx_grid-header-cell " + isFirstCol + " " + isLastCol + " " + (cell.rowspan ? "dhx_span-cell__rowspan" : "") + " " + (cell.align ? "dhx_align-" + cell.align : cellAlign);
             if (sortIconVisible) {
                 css += " dhx_grid-header-cell--sortable";
             }
             if (!cell.content) {
-                css += " dhx_grid-header-cell--" + (col.type === "number" ? "align_right" : "align_left") + " ";
+                if (cell.align) {
+                    css += " dhx_grid-header-cell--align_" + cell.align + " ";
+                }
+                else {
+                    css += " dhx_grid-header-cell--" + (col.type === "number" || col.type === "percent" || col.type === "date"
+                        ? "align_right"
+                        : "align_left") + " ";
+                }
             }
             var borderLeft = "";
             if (leftShift - col.$width > 0) {
                 borderLeft = "1px solid #e4e4e4";
             }
+            var cellCss = "dhx_grid-header-cell-text_content";
+            if (config.autoHeight)
+                cellCss += " dhx_grid-header-cell-text_content-auto-height";
             return cell.colspan || cell.rowspan
                 ? dom_1.el(".dhx_span-cell", {
                     style: {
@@ -8837,13 +10056,14 @@ function getSpans(config, rowsConfig) {
                         left: leftShift - col.$width,
                         borderLeft: borderLeft,
                         top: height * i,
-                        lineHeight: spanHeight + "px",
                     },
                     class: css.trim(),
-                    title: hiddenTitle ? main_1.removeHTMLTags(cell.text) : null,
                     dhx_id: col.id,
                 }, [
-                    dom_1.el("div", { ".innerHTML": cell.text }),
+                    dom_1.el("span", {
+                        class: cellCss,
+                        ".innerHTML": cell.text,
+                    }),
                     sortIconVisible && dom_1.el("div", { class: sortIconCss }),
                 ])
                 : null;
@@ -8851,16 +10071,16 @@ function getSpans(config, rowsConfig) {
             .filter(function (cell) { return cell; }));
     });
 }
-exports.getSpans = getSpans;
+exports.getFixedSpans = getFixedSpans;
 function getFixedRows(config, rowsConfig) {
     var _a;
     var rows = getRows(config, rowsConfig);
-    var spans = getSpans(config, rowsConfig);
+    var spans = getFixedSpans(config, rowsConfig);
     var fixedCols = null;
     if (rowsConfig.name === "footer" && !rowsConfig.sticky) {
         fixedCols =
             config.leftSplit >= 0 &&
-                getRows(__assign(__assign({}, config), { currentColumns: config.columns.filter(function (col) { return !col.hidden; }).slice(0, config.leftSplit), $positions: __assign(__assign({}, config.$positions), { xStart: 0, xEnd: config.leftSplit }) }), rowsConfig);
+                getRows(__assign(__assign({}, config), { currentColumns: config.columns.slice(0, config.leftSplit), $positions: __assign(__assign({}, config.$positions), { xStart: 0, xEnd: config.leftSplit }) }), rowsConfig);
     }
     var styles = (_a = {
             position: "sticky"
@@ -8877,6 +10097,7 @@ function getFixedRows(config, rowsConfig) {
     return dom_1.el(".dhx_" + rowsConfig.name + "-wrapper", {
         class: rowsConfig.sticky ? "" : "dhx_compatible-" + rowsConfig.name,
         style: __assign(__assign({}, styles), { left: rowsConfig.sticky ? left : 0, height: config[rowsConfig.name + "Height"], width: rowsConfig.sticky ? config.$totalWidth : rowsConfig.wrapper.width - BORDERS }),
+        role: "presentation",
     }, [
         dom_1.el(".dhx_grid-" + rowsConfig.name, {
             style: {
@@ -8885,13 +10106,18 @@ function getFixedRows(config, rowsConfig) {
                 paddingLeft: rowsConfig.shifts.x,
                 width: config.$totalWidth,
             },
+            role: "presentation",
         }, [
-            dom_1.el(".dhx_" + rowsConfig.name + "-rows", __spreadArrays(rows)),
+            dom_1.el(".dhx_" + rowsConfig.name + "-rows", {
+                role: "rowgroup",
+                "aria-rowcount": __spreadArrays(rows).length,
+            }, __spreadArrays(rows)),
             dom_1.el(".dhx_" + rowsConfig.name + "-spans", {
                 style: {
                     marginLeft: -rowsConfig.shifts.x,
                 },
-                class: ".dhx_" + rowsConfig.name + "-rows",
+                class: "dhx_" + rowsConfig.name + "-rows",
+                role: "presentation",
             }, spans),
             fixedCols &&
                 dom_1.el(".dhx_" + rowsConfig.name + "-fixed-cols", {
@@ -8903,14 +10129,14 @@ function getFixedRows(config, rowsConfig) {
                     },
                 }, fixedCols),
         ]),
-        dom_1.el("div", { style: { width: config.$totalWidth } }),
+        dom_1.el("div", { style: { width: config.$totalWidth }, role: "presentation" }),
     ]);
 }
 exports.getFixedRows = getFixedRows;
 
 
 /***/ }),
-/* 83 */
+/* 85 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8928,7 +10154,7 @@ var SidebarEvents;
 
 
 /***/ }),
-/* 84 */
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8945,16 +10171,16 @@ var TabbarEvents;
 
 
 /***/ }),
-/* 85 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var Keymanager_1 = __webpack_require__(14);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var KeyManager_1 = __webpack_require__(14);
 var EditorMode;
 (function (EditorMode) {
     EditorMode["editText"] = "text";
@@ -8969,6 +10195,7 @@ var Editor = /** @class */ (function () {
     function Editor() {
         var _this = this;
         this.events = new events_1.EventSystem();
+        this._keyManager = new KeyManager_1.KeyManager();
         this._documentClick = function (e) {
             var id = html_1.locate(e, "id");
             if (id !== "input_" + _this._item.id) {
@@ -9037,15 +10264,15 @@ var Editor = /** @class */ (function () {
     };
     Editor.prototype._addHotkeys = function () {
         var _this = this;
-        Keymanager_1.keyManager.addHotKey("escape", function () {
+        this._keyManager.addHotKey("escape", function () {
             _this._finishEdit();
-        }, this);
-        Keymanager_1.keyManager.addHotKey("enter", function () {
+        });
+        this._keyManager.addHotKey("enter", function () {
             _this._finishEdit();
-        }, this);
+        });
     };
     Editor.prototype._removeHotkeys = function () {
-        Keymanager_1.keyManager.removeHotKey(null, this);
+        this._keyManager.removeHotKey();
     };
     Editor.prototype._finishEdit = function () {
         if (!this.events.fire(EditorEvents.end, [this._targetId, this._item.id, this._currentValue]))
@@ -9069,7 +10296,7 @@ exports.default = new Editor();
 
 
 /***/ }),
-/* 86 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9095,13 +10322,15 @@ var TreeEvents;
     TreeEvents["beforeEditEnd"] = "beforeEditEnd";
     TreeEvents["afterEditEnd"] = "afterEditEnd";
     TreeEvents["focusChange"] = "focusChange";
+    TreeEvents["beforeCheck"] = "beforeCheck";
+    TreeEvents["afterCheck"] = "afterCheck";
     /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
     TreeEvents["itemContextMenu"] = "itemcontextmenu";
 })(TreeEvents = exports.TreeEvents || (exports.TreeEvents = {}));
 
 
 /***/ }),
-/* 87 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9110,13 +10339,13 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(226));
-__export(__webpack_require__(89));
-__export(__webpack_require__(88));
+__export(__webpack_require__(224));
+__export(__webpack_require__(91));
+__export(__webpack_require__(90));
 
 
 /***/ }),
-/* 88 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9147,7 +10376,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
-var ts_data_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 var TreeGridCollection = /** @class */ (function (_super) {
     __extends(TreeGridCollection, _super);
     function TreeGridCollection(config, events) {
@@ -9255,7 +10484,7 @@ exports.TreeGridCollection = TreeGridCollection;
 
 
 /***/ }),
-/* 89 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9271,18 +10500,19 @@ var TreeGridEvents;
 
 
 /***/ }),
-/* 90 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(91);
-__webpack_require__(92);
 __webpack_require__(93);
 __webpack_require__(94);
-module.exports = __webpack_require__(95);
+__webpack_require__(95);
+__webpack_require__(96);
+__webpack_require__(97);
+module.exports = __webpack_require__(98);
 
 
 /***/ }),
-/* 91 */
+/* 93 */
 /***/ (function(module, exports) {
 
 Object.values = Object.values
@@ -9320,7 +10550,7 @@ Object.values = Object.values
 
 
 /***/ }),
-/* 92 */
+/* 94 */
 /***/ (function(module, exports) {
 
 /* eslint-disable prefer-rest-params */
@@ -9432,7 +10662,7 @@ if (!Array.prototype.findIndex) {
 
 
 /***/ }),
-/* 93 */
+/* 95 */
 /***/ (function(module, exports) {
 
 if (!String.prototype.includes) {
@@ -9476,10 +10706,26 @@ if (!String.prototype.padStart) {
         }
     };
 }
+if (!String.prototype.padEnd) {
+    String.prototype.padEnd = function padEnd(targetLength, padString) {
+        targetLength = targetLength >> 0;
+        padString = String(padString || " ");
+        if (this.length > targetLength) {
+            return String(this);
+        }
+        else {
+            targetLength = targetLength - this.length;
+            if (targetLength > padString.length) {
+                padString += padString.repeat(targetLength / padString.length);
+            }
+            return String(this) + padString.slice(0, targetLength);
+        }
+    };
+}
 
 
 /***/ }),
-/* 94 */
+/* 96 */
 /***/ (function(module, exports) {
 
 /* eslint-disable @typescript-eslint/no-this-alias */
@@ -9539,7 +10785,22 @@ if (!Object.entries) {
 
 
 /***/ }),
-/* 95 */
+/* 97 */
+/***/ (function(module, exports) {
+
+Math.sign =
+    Math.sign ||
+        function (x) {
+            x = +x;
+            if (x === 0 || isNaN(x)) {
+                return x;
+            }
+            return x > 0 ? 1 : -1;
+        };
+
+
+/***/ }),
+/* 98 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9548,42 +10809,42 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(96));
+__export(__webpack_require__(99));
 // HELPERS
-var ts_data_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 exports.dataDrivers = ts_data_1.dataDriversPro;
 exports.LazyDataProxy = ts_data_1.LazyDataProxy;
-var ts_treegrid_1 = __webpack_require__(87);
+var ts_treegrid_1 = __webpack_require__(89);
 exports.TreeGridCollection = ts_treegrid_1.TreeGridCollection;
-var ts_grid_1 = __webpack_require__(53);
+var ts_grid_1 = __webpack_require__(54);
 exports.Grid = ts_grid_1.ProGrid;
-var ts_pagination_1 = __webpack_require__(227);
+var ts_pagination_1 = __webpack_require__(225);
 exports.Pagination = ts_pagination_1.Pagination;
 // WIDGETS
-var ts_treegrid_2 = __webpack_require__(87);
+var ts_treegrid_2 = __webpack_require__(89);
 exports.TreeGrid = ts_treegrid_2.TreeGrid;
 
 
 /***/ }),
-/* 96 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(97);
+__webpack_require__(100);
 // HELPERS
 /* tslint:disable */
-var CssManager_1 = __webpack_require__(30);
+var CssManager_1 = __webpack_require__(32);
 exports.cssManager = CssManager_1.cssManager;
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 exports.EventSystem = events_1.EventSystem;
 var dom_1 = __webpack_require__(0);
 exports.awaitRedraw = dom_1.awaitRedraw;
 exports.resizeHandler = dom_1.resizeHandler;
 var ts_vault_1 = __webpack_require__(57);
 exports.Uploader = ts_vault_1.Uploader;
-var ts_data_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 exports.DataCollection = ts_data_1.DataCollection;
 exports.TreeCollection = ts_data_1.TreeCollection;
 exports.DataProxy = ts_data_1.DataProxy;
@@ -9592,57 +10853,57 @@ exports.ajax = ts_data_1.ajax;
 // WIDGETS
 var ts_layout_1 = __webpack_require__(13);
 exports.Layout = ts_layout_1.Layout;
-var ts_list_1 = __webpack_require__(37);
+var ts_list_1 = __webpack_require__(39);
 exports.List = ts_list_1.List;
-var ts_calendar_1 = __webpack_require__(28);
+var ts_calendar_1 = __webpack_require__(41);
 exports.Calendar = ts_calendar_1.Calendar;
-var ts_colorpicker_1 = __webpack_require__(43);
+var ts_colorpicker_1 = __webpack_require__(44);
 exports.Colorpicker = ts_colorpicker_1.Colorpicker;
-var ts_chart_1 = __webpack_require__(149);
+var ts_chart_1 = __webpack_require__(150);
 exports.Chart = ts_chart_1.Chart;
-var ts_combobox_1 = __webpack_require__(29);
+var ts_combobox_1 = __webpack_require__(31);
 exports.Combobox = ts_combobox_1.Combobox;
 var ts_dataview_1 = __webpack_require__(175);
 exports.DataView = ts_dataview_1.DataView;
 var ts_form_1 = __webpack_require__(179);
 exports.Form = ts_form_1.Form;
-var ts_grid_1 = __webpack_require__(53);
+var ts_grid_1 = __webpack_require__(54);
 exports.Grid = ts_grid_1.Grid;
-var ts_message_1 = __webpack_require__(19);
+var ts_message_1 = __webpack_require__(18);
 exports.message = ts_message_1.message;
 exports.alert = ts_message_1.alert;
 exports.confirm = ts_message_1.confirm;
 exports.enableTooltip = ts_message_1.enableTooltip;
 exports.disableTooltip = ts_message_1.disableTooltip;
 exports.tooltip = ts_message_1.tooltip;
-var ts_menu_1 = __webpack_require__(210);
+var ts_menu_1 = __webpack_require__(209);
 exports.Menu = ts_menu_1.Menu;
 exports.ContextMenu = ts_menu_1.ContextMenu;
 var ts_popup_1 = __webpack_require__(10);
 exports.Popup = ts_popup_1.Popup;
-var ts_ribbon_1 = __webpack_require__(213);
+var ts_ribbon_1 = __webpack_require__(212);
 exports.Ribbon = ts_ribbon_1.Ribbon;
-var ts_sidebar_1 = __webpack_require__(215);
+var ts_sidebar_1 = __webpack_require__(214);
 exports.Sidebar = ts_sidebar_1.Sidebar;
-var ts_slider_1 = __webpack_require__(40);
+var ts_slider_1 = __webpack_require__(43);
 exports.Slider = ts_slider_1.Slider;
-var ts_tabbar_1 = __webpack_require__(217);
+var ts_tabbar_1 = __webpack_require__(216);
 exports.Tabbar = ts_tabbar_1.Tabbar;
-var ts_timepicker_1 = __webpack_require__(39);
+var ts_timepicker_1 = __webpack_require__(42);
 exports.Timepicker = ts_timepicker_1.Timepicker;
-var ts_toolbar_1 = __webpack_require__(27);
+var ts_toolbar_1 = __webpack_require__(30);
 exports.Toolbar = ts_toolbar_1.Toolbar;
-var ts_tree_1 = __webpack_require__(219);
+var ts_tree_1 = __webpack_require__(218);
 exports.Tree = ts_tree_1.Tree;
-var ts_window_1 = __webpack_require__(222);
+var ts_window_1 = __webpack_require__(220);
 exports.Window = ts_window_1.Window;
 // TOOLS
-var ts_colorpicker_2 = __webpack_require__(43);
-var en_1 = __webpack_require__(34);
-var en_2 = __webpack_require__(42);
-var en_3 = __webpack_require__(51);
-var en_4 = __webpack_require__(80);
-var en_5 = __webpack_require__(68);
+var ts_colorpicker_2 = __webpack_require__(44);
+var en_1 = __webpack_require__(36);
+var date_1 = __webpack_require__(22);
+var en_2 = __webpack_require__(52);
+var en_3 = __webpack_require__(81);
+var en_4 = __webpack_require__(68);
 var w = window;
 exports.i18n = w.dhx && w.dhx.i18n ? w.dhx.i18 : {};
 exports.i18n.setLocale = function (component, value) {
@@ -9653,20 +10914,20 @@ exports.i18n.setLocale = function (component, value) {
 };
 exports.i18n.colorpicker = exports.i18n.colorpicker || ts_colorpicker_2.locale;
 exports.i18n.message = exports.i18n.message || en_1.default;
-exports.i18n.calendar = exports.i18n.calendar || en_2.default;
-exports.i18n.combobox = exports.i18n.combobox || en_3.default;
-exports.i18n.form = exports.i18n.form || en_4.default;
-exports.i18n.timepicker = exports.i18n.timepicker || en_5.default;
+exports.i18n.calendar = exports.i18n.calendar || date_1.locale;
+exports.i18n.combobox = exports.i18n.combobox || en_2.default;
+exports.i18n.form = exports.i18n.form || en_3.default;
+exports.i18n.timepicker = exports.i18n.timepicker || en_4.default;
 
 
 /***/ }),
-/* 97 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
 
 /***/ }),
-/* 98 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -9722,7 +10983,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(99);
+__webpack_require__(102);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -9733,10 +10994,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
                          (typeof global !== "undefined" && global.clearImmediate) ||
                          (this && this.clearImmediate);
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33)))
 
 /***/ }),
-/* 99 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -9926,10 +11187,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31), __webpack_require__(100)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33), __webpack_require__(103)))
 
 /***/ }),
-/* 100 */
+/* 103 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -10119,7 +11380,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 101 */
+/* 104 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -12060,7 +13321,7 @@ return nano;
 
 
 /***/ }),
-/* 102 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12077,8 +13338,8 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(16);
-var types_1 = __webpack_require__(15);
+var helpers_1 = __webpack_require__(17);
+var types_1 = __webpack_require__(16);
 var Loader = /** @class */ (function () {
     function Loader(parent, changes) {
         this._parent = parent;
@@ -12244,13 +13505,13 @@ exports.Loader = Loader;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 103 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var xml_1 = __webpack_require__(104);
+var xml_1 = __webpack_require__(107);
 var ARRAY_NAME = "items";
 var ITEM_NAME = "item";
 // convert xml tag to js object, all subtags and attributes are mapped to the properties of result object
@@ -12384,7 +13645,7 @@ exports.XMLDriver = XMLDriver;
 
 
 /***/ }),
-/* 104 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12424,13 +13685,13 @@ exports.jsonToXML = jsonToXML;
 
 
 /***/ }),
-/* 105 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var helpers_1 = __webpack_require__(16);
+var helpers_1 = __webpack_require__(17);
 var Sort = /** @class */ (function () {
     function Sort() {
     }
@@ -12476,7 +13737,7 @@ exports.Sort = Sort;
 
 
 /***/ }),
-/* 106 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -12504,9 +13765,9 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var datacollection_1 = __webpack_require__(59);
-var dataproxy_1 = __webpack_require__(20);
-var helpers_1 = __webpack_require__(16);
-var types_1 = __webpack_require__(15);
+var dataproxy_1 = __webpack_require__(23);
+var helpers_1 = __webpack_require__(17);
+var types_1 = __webpack_require__(16);
 function addToOrder(store, obj, parent, index) {
     if (index !== undefined && index !== -1 && store[parent] && store[parent][index]) {
         store[parent].splice(index, 0, obj);
@@ -13074,7 +14335,7 @@ exports.TreeCollection = TreeCollection;
 
 
 /***/ }),
-/* 107 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13091,10 +14352,10 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
-var CollectionStore_1 = __webpack_require__(108);
-var types_1 = __webpack_require__(15);
-var helpers_1 = __webpack_require__(16);
+var html_1 = __webpack_require__(3);
+var CollectionStore_1 = __webpack_require__(111);
+var types_1 = __webpack_require__(16);
+var helpers_1 = __webpack_require__(17);
 function getPosition(e) {
     var y = e.clientY;
     var element = html_1.locateNode(e);
@@ -13505,7 +14766,7 @@ exports.dragManager = dhx.dragManager;
 
 
 /***/ }),
-/* 108 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13532,7 +14793,7 @@ exports.collectionStore = dhx.collectionStore;
 
 
 /***/ }),
-/* 109 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13551,9 +14812,9 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var dataproxy_1 = __webpack_require__(20);
+var dataproxy_1 = __webpack_require__(23);
 var core_1 = __webpack_require__(1);
-var ajax_1 = __webpack_require__(32);
+var ajax_1 = __webpack_require__(34);
 var LazyDataProxy = /** @class */ (function (_super) {
     __extends(LazyDataProxy, _super);
     function LazyDataProxy(url, config) {
@@ -13597,15 +14858,15 @@ exports.LazyDataProxy = LazyDataProxy;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 110 */
+/* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var events_1 = __webpack_require__(3);
-var types_1 = __webpack_require__(21);
-var types_2 = __webpack_require__(15);
+var events_1 = __webpack_require__(2);
+var types_1 = __webpack_require__(24);
+var types_2 = __webpack_require__(16);
 var Selection = /** @class */ (function () {
     function Selection(config, data, events) {
         var _this = this;
@@ -13676,7 +14937,7 @@ exports.Selection = Selection;
 
 
 /***/ }),
-/* 111 */
+/* 114 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13715,22 +14976,22 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var scrollView_1 = __webpack_require__(112);
-var view_1 = __webpack_require__(4);
-var ts_data_1 = __webpack_require__(5);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var scrollView_1 = __webpack_require__(115);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 var ts_layout_1 = __webpack_require__(13);
-var ts_message_1 = __webpack_require__(19);
-var ts_toolbar_1 = __webpack_require__(27);
-var ts_navbar_1 = __webpack_require__(17);
-var en_1 = __webpack_require__(36);
-var types_1 = __webpack_require__(25);
+var ts_message_1 = __webpack_require__(18);
+var ts_toolbar_1 = __webpack_require__(30);
+var ts_navbar_1 = __webpack_require__(19);
+var en_1 = __webpack_require__(38);
+var types_1 = __webpack_require__(28);
 var Uploader_1 = __webpack_require__(58);
-var configs_1 = __webpack_require__(132);
-var helper_1 = __webpack_require__(133);
-var ProgressBar_1 = __webpack_require__(134);
-var ReadStackPreview_1 = __webpack_require__(135);
+var configs_1 = __webpack_require__(134);
+var helper_1 = __webpack_require__(135);
+var ProgressBar_1 = __webpack_require__(136);
+var ReadStackPreview_1 = __webpack_require__(137);
 var Vault = /** @class */ (function (_super) {
     __extends(Vault, _super);
     function Vault(container, config) {
@@ -14174,7 +15435,7 @@ exports.Vault = Vault;
 
 
 /***/ }),
-/* 112 */
+/* 115 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14182,7 +15443,7 @@ exports.Vault = Vault;
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
 var ScrollView = /** @class */ (function () {
     function ScrollView(getRootView, config) {
         var _a;
@@ -14382,7 +15643,7 @@ exports.ScrollView = ScrollView;
 
 
 /***/ }),
-/* 113 */
+/* 116 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14401,8 +15662,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cell_1 = __webpack_require__(114);
-var types_1 = __webpack_require__(26);
+var Cell_1 = __webpack_require__(117);
+var types_1 = __webpack_require__(29);
 var dom_1 = __webpack_require__(0);
 var Layout = /** @class */ (function (_super) {
     __extends(Layout, _super);
@@ -14592,7 +15853,7 @@ exports.Layout = Layout;
 
 
 /***/ }),
-/* 114 */
+/* 117 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14624,11 +15885,11 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var view_1 = __webpack_require__(4);
-var types_1 = __webpack_require__(26);
-var helpers_1 = __webpack_require__(115);
-var events_1 = __webpack_require__(3);
-var CssManager_1 = __webpack_require__(30);
+var view_1 = __webpack_require__(5);
+var types_1 = __webpack_require__(29);
+var helpers_1 = __webpack_require__(118);
+var events_1 = __webpack_require__(2);
+var CssManager_1 = __webpack_require__(32);
 var Cell = /** @class */ (function (_super) {
     __extends(Cell, _super);
     function Cell(parent, config) {
@@ -14835,7 +16096,7 @@ var Cell = /** @class */ (function (_super) {
                     break;
             }
         }
-        var cell = dom_1.el("div", __assign(__assign((_a = { _key: this._uid, _ref: this._uid }, _a["aria-labelledby"] = this.config.id ? "tab-content-" + this.config.id : null, _a), handlers), { class: this._getCss(false) +
+        var cell = dom_1.el("div", __assign(__assign((_a = { _key: this._uid, _ref: this._uid }, _a["aria-label"] = this.config.id ? "tab-content-" + this.config.id : null, _a), handlers), { class: this._getCss(false) +
                 (this.config.css ? " " + this.config.css : "") +
                 (fullStyle ? " " + cssClassName : "") +
                 (this.config.collapsed ? " dhx_layout-cell--collapsed" : "") +
@@ -15126,11 +16387,11 @@ var Cell = /** @class */ (function (_super) {
         if (config.height === "content")
             autoHeight = true;
         var _a = config, width = _a.width, height = _a.height, cols = _a.cols, rows = _a.rows, minWidth = _a.minWidth, minHeight = _a.minHeight, maxWidth = _a.maxWidth, maxHeight = _a.maxHeight, gravity = _a.gravity, collapsed = _a.collapsed, $fixed = _a.$fixed;
-        var gravityNumber = core_1.sign(gravity) === -1 ? 0 : gravity;
+        var gravityNumber = Math.sign(gravity) === -1 ? 0 : gravity;
         if (typeof gravity === "boolean") {
             gravityNumber = gravity ? 1 : 0;
         }
-        var fixed = typeof gravity === "boolean" ? !gravity : core_1.sign(gravity) === -1;
+        var fixed = typeof gravity === "boolean" ? !gravity : Math.sign(gravity) === -1;
         if (this._isXDirection()) {
             if ($fixed || width || (gravity === undefined && (minWidth || maxWidth))) {
                 fixed = true;
@@ -15208,13 +16469,13 @@ exports.Cell = Cell;
 
 
 /***/ }),
-/* 115 */
+/* 118 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(26);
+var types_1 = __webpack_require__(29);
 function getResizeMode(isXLayout, conf1, conf2) {
     var field = isXLayout ? "width" : "height";
     var is1perc = conf1[field] && conf1[field].includes("%");
@@ -15269,14 +16530,14 @@ exports.getMarginSize = getMarginSize;
 
 
 /***/ }),
-/* 116 */
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
-var types_1 = __webpack_require__(33);
+var html_1 = __webpack_require__(3);
+var types_1 = __webpack_require__(35);
 var nodeTimeout = new WeakMap();
 var containers = new Map();
 function createMessageContainer(parent, position) {
@@ -15323,6 +16584,8 @@ function message(props) {
     props.position = props.position || types_1.MessageContainerPosition.topRight;
     var messageBox = document.createElement("div");
     messageBox.className = "dhx_widget dhx_message " + (props.css || "");
+    messageBox.setAttribute("role", "alert");
+    props.text && messageBox.setAttribute("aria-describedby", "dhx_alert__content");
     if (props.html) {
         messageBox.innerHTML = props.html;
     }
@@ -15365,21 +16628,31 @@ exports.message = message;
 
 
 /***/ }),
-/* 117 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Promise) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var en_1 = __webpack_require__(34);
+var en_1 = __webpack_require__(36);
 var common_1 = __webpack_require__(63);
 function alert(props) {
     var apply = props.buttons && props.buttons[0] ? props.buttons[0] : en_1.default.apply;
     var unblock = common_1.blockScreen(props.blockerCss);
     return new Promise(function (res) {
         var alertBox = document.createElement("div");
+        alertBox.setAttribute("role", "alert");
+        alertBox.setAttribute("aria-modal", "true");
+        props.text && alertBox.setAttribute("aria-describedby", "dhx_alert__content");
+        props.header && alertBox.setAttribute("aria-labelledby", "dhx_alert__header");
         alertBox.className = "dhx_widget dhx_alert " + (props.css || "");
-        alertBox.innerHTML = "\n\t\t\t" + (props.header ? "<div class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t\t" + (props.text ? "<div class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button class=\"dhx_alert__apply-button dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
+        var closeAlert = function (e) {
+            if (e.key === "Escape" || e.key === "Esc" || e.key === " ") {
+                e.preventDefault();
+                alertBox.querySelector("button").click();
+            }
+        };
+        alertBox.innerHTML = "\n\t\t\t" + (props.header ? "<div id=\"dhx_alert__header\" class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t\t" + (props.text ? "<div id=\"dhx_alert__content\" class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button type=\"button\" aria-label=\"confirm\" class=\"dhx_alert__apply-button dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
         document.body.appendChild(alertBox);
         alertBox.querySelector(".dhx_alert__apply-button").focus();
         alertBox.querySelector("button").addEventListener("click", function () {
@@ -15387,6 +16660,7 @@ function alert(props) {
             document.body.removeChild(alertBox);
             res(true);
         });
+        alertBox.addEventListener("keydown", closeAlert);
     });
 }
 exports.alert = alert;
@@ -15394,13 +16668,13 @@ exports.alert = alert;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 118 */
+/* 121 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Promise) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var en_1 = __webpack_require__(34);
+var en_1 = __webpack_require__(36);
 var common_1 = __webpack_require__(63);
 function confirm(props) {
     props.buttonsAlignment = props.buttonsAlignment || "right";
@@ -15409,12 +16683,17 @@ function confirm(props) {
     var unblock = common_1.blockScreen(props.blockerCss);
     return new Promise(function (res) {
         var confirmBox = document.createElement("div");
+        confirmBox.setAttribute("role", "alertdialog");
+        confirmBox.setAttribute("aria-modal", "true");
+        props.text && confirmBox.setAttribute("aria-describedby", "dhx_alert__content");
+        props.header && confirmBox.setAttribute("aria-labelledby", "dhx_alert__header");
+        var focusItem;
         var answer = function (val) {
             unblock();
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
             confirmBox.removeEventListener("click", clickHandler);
             // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            confirmBox.removeEventListener("keydown", closeConfirm);
+            document.removeEventListener("keydown", closeConfirm);
             document.body.removeChild(confirmBox);
             res(val);
         };
@@ -15428,13 +16707,25 @@ function confirm(props) {
                 confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
                 answer(e.target.classList.contains("dhx_alert__confirm-reject"));
             }
+            else if (e.key === "Tab") {
+                if (focusItem === "aply") {
+                    focusItem = "reject";
+                    confirmBox.querySelector(".dhx_alert__confirm-reject").focus();
+                }
+                else {
+                    focusItem = "aply";
+                    confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
+                }
+                e.preventDefault();
+            }
         };
         confirmBox.className = "dhx_widget dhx_alert dhx_alert--confirm" + (props.css ? " " + props.css : "");
-        confirmBox.innerHTML = "\n\t\t" + (props.header ? "<div class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t" + (props.text ? "<div class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button class=\"dhx_alert__confirm-reject dhx_button dhx_button--view_link dhx_button--color_primary dhx_button--size_medium\">" + reject + "</button>\n\t\t\t\t<button class=\"dhx_alert__confirm-aply dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
+        confirmBox.innerHTML = "\n\t\t" + (props.header ? "<div class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t" + (props.text ? "<div class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button type=\"button\" aria-label=\"reject\" class=\"dhx_alert__confirm-reject dhx_button dhx_button--view_link dhx_button--color_primary dhx_button--size_medium\">" + reject + "</button>\n\t\t\t\t<button type=\"button\"  aria-label=\"aply\"class=\"dhx_alert__confirm-aply dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
         document.body.appendChild(confirmBox);
+        focusItem = "aply";
         confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
         confirmBox.addEventListener("click", clickHandler);
-        confirmBox.addEventListener("keydown", closeConfirm);
+        document.addEventListener("keydown", closeConfirm);
     });
 }
 exports.confirm = confirm;
@@ -15442,7 +16733,7 @@ exports.confirm = confirm;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 119 */
+/* 122 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15460,12 +16751,23 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(2);
-var ts_message_1 = __webpack_require__(19);
-var ts_navbar_1 = __webpack_require__(17);
+var html_1 = __webpack_require__(3);
+var ts_message_1 = __webpack_require__(18);
+var ts_navbar_1 = __webpack_require__(19);
 var Toolbar = /** @class */ (function (_super) {
     __extends(Toolbar, _super);
     function Toolbar(element, config) {
@@ -15473,7 +16775,7 @@ var Toolbar = /** @class */ (function (_super) {
             navigationType: "click",
         }, config)) || this;
         _this._currentRoot = null;
-        var render = function () { return _this._draw(); };
+        var render = function () { return _this._draw(element); };
         _this.mount(element, dom_1.create({ render: render }));
         return _this;
     }
@@ -15563,19 +16865,16 @@ var Toolbar = /** @class */ (function (_super) {
             widgetName: "toolbar",
         });
     };
-    Toolbar.prototype._draw = function () {
+    Toolbar.prototype._draw = function (element) {
         var _this = this;
+        var getAriaAttrs = function (element) { return ({
+            role: "toolbar",
+            "aria-label": element || "",
+        }); };
         return dom_1.el("nav.dhx_widget.dhx_toolbar", {
             class: this.config.css ? this.config.css : "",
         }, [
-            dom_1.el("ul.dhx_navbar.dhx_navbar--horizontal", {
-                dhx_widget_id: this._uid,
-                tabindex: 0,
-                onclick: this._handlers.onclick,
-                onmousedown: this._handlers.onmousedown,
-                oninput: this._handlers.input,
-                onmouseover: this._handlers.tooltip,
-                _hooks: {
+            dom_1.el("ul.dhx_navbar.dhx_navbar--horizontal", __assign(__assign({ dhx_widget_id: this._uid, tabindex: 0 }, getAriaAttrs(element)), { onclick: this._handlers.onclick, onmousedown: this._handlers.onmousedown, oninput: this._handlers.input, onmouseover: this._handlers.tooltip, _hooks: {
                     didInsert: function (node) {
                         node.el.addEventListener("keyup", function (e) {
                             if (e.which !== 9) {
@@ -15596,8 +16895,7 @@ var Toolbar = /** @class */ (function (_super) {
                             }
                         }, true);
                     },
-                },
-            }, this.data.map(function (item) { return _this._factory(item); }, this.data.getRoot(), false)),
+                } }), this.data.map(function (item) { return _this._factory(item); }, this.data.getRoot(), false)),
         ]);
     };
     Toolbar.prototype._getMode = function (item, root) {
@@ -15619,7 +16917,7 @@ exports.Toolbar = Toolbar;
 
 
 /***/ }),
-/* 120 */
+/* 123 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -15651,12 +16949,12 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var Keymanager_1 = __webpack_require__(14);
-var view_1 = __webpack_require__(4);
-var ts_data_1 = __webpack_require__(5);
-var types_1 = __webpack_require__(35);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var KeyManager_1 = __webpack_require__(14);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
+var types_1 = __webpack_require__(37);
 function addInGroups(groups, item) {
     if (groups[item.group]) {
         if (item.active) {
@@ -15706,6 +17004,7 @@ var Navbar = /** @class */ (function (_super) {
         _this._factory = _this._getFactory();
         _this._initHandlers();
         _this._init();
+        _this._keyManager = new KeyManager_1.KeyManager(function (_, focusId) { return focusId === _this._uid; });
         _this._initEvents();
         if (Array.isArray(_this.config.data)) {
             _this.data.parse(_this.config.data);
@@ -15772,7 +17071,7 @@ var Navbar = /** @class */ (function (_super) {
     };
     Navbar.prototype.destructor = function () {
         this.events.clear();
-        Keymanager_1.keyManager.removeHotKey(null, this);
+        this._keyManager.destructor();
         !!this._vpopups.node && this._vpopups.unmount();
         this.unmount();
     };
@@ -16075,12 +17374,14 @@ var Navbar = /** @class */ (function (_super) {
             if (!_this.data.haveItems(itemId)) {
                 return null;
             }
+            var getAriaAttrs = function (item) { return ({
+                role: "menu",
+                "aria-labeledby": item.id,
+                "aria-live": "polite",
+            }); };
             var item = _this.data.getItem(itemId) || _this._rootItem; // for root item
             _this._popupActive = true;
-            return dom_1.el("ul", {
-                class: "dhx_widget dhx_menu" + (_this.config.menuCss ? " " + _this.config.menuCss : ""),
-                _key: itemId,
-                _hooks: {
+            return dom_1.el("ul", __assign({ class: "dhx_widget dhx_menu" + (_this.config.menuCss ? " " + _this.config.menuCss : ""), _key: itemId, _hooks: {
                     didInsert: function (vnode) {
                         var _a = vnode.el.getBoundingClientRect(), width = _a.width, height = _a.height;
                         var position = _this._isContextMenu && _this._activePosition && itemId === root
@@ -16107,12 +17408,9 @@ var Navbar = /** @class */ (function (_super) {
                             vnode.patch({ style: style });
                         }
                     },
-                },
-                tabindex: 0,
-                style: item.$style || {
+                }, tabindex: 0, style: item.$style || {
                     position: "absolute",
-                },
-            }, _this._drawMenuItems(itemId));
+                } }, getAriaAttrs(item)), _this._drawMenuItems(itemId));
         })
             .reverse();
     };
@@ -16155,10 +17453,10 @@ var Navbar = /** @class */ (function (_super) {
     };
     Navbar.prototype._resetHotkeys = function () {
         var _this = this;
-        Keymanager_1.keyManager.removeHotKey(null, this);
+        this._keyManager.removeHotKey(null, this);
         this.data.map(function (item) {
             if (item.hotkey) {
-                Keymanager_1.keyManager.addHotKey(item.hotkey, function () { return _this._onMenuItemClick(item.id, null); }, _this);
+                _this._keyManager.addHotKey(item.hotkey, function () { return _this._onMenuItemClick(item.id, null); });
             }
         });
     };
@@ -16181,37 +17479,22 @@ exports.Navbar = Navbar;
 
 
 /***/ }),
-/* 121 */
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
-var activeView = null;
-exports.getFocus = function () { return activeView; };
-document.addEventListener("click", function (e) {
-    activeView = html_1.locate(e, "dhx_widget_id");
-});
-
-
-/***/ }),
-/* 122 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var button_1 = __webpack_require__(123);
-var navItem_1 = __webpack_require__(124);
-var customHTMLButton_1 = __webpack_require__(125);
-var imageButton_1 = __webpack_require__(126);
-var input_1 = __webpack_require__(127);
-var menuItem_1 = __webpack_require__(128);
-var separator_1 = __webpack_require__(129);
-var spacer_1 = __webpack_require__(130);
-var title_1 = __webpack_require__(131);
-var helpers_1 = __webpack_require__(22);
+var button_1 = __webpack_require__(125);
+var navItem_1 = __webpack_require__(126);
+var customHTMLButton_1 = __webpack_require__(127);
+var imageButton_1 = __webpack_require__(128);
+var input_1 = __webpack_require__(129);
+var menuItem_1 = __webpack_require__(130);
+var separator_1 = __webpack_require__(131);
+var spacer_1 = __webpack_require__(132);
+var title_1 = __webpack_require__(133);
+var helpers_1 = __webpack_require__(25);
 function itemfactory(item, events, widgetName, props) {
     switch (item.type) {
         case "navItem":
@@ -16320,51 +17603,110 @@ exports.createFactory = createFactory;
 
 
 /***/ }),
-/* 123 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(22);
+var helpers_1 = __webpack_require__(25);
 function button(item, widgetName) {
+    var getAriaAttrs = function (item) {
+        var isItemActivated = item.active || item.$activeParent;
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+            "aria-label": item.value || item.tooltip || item.id || "" + (" " + (item.count || "")),
+        };
+        if (item.items) {
+            // as menu
+            attrs["id"] = item.id;
+            attrs["aria-haspopup"] = "menu"; // menu has hot keys, listbox doesn't have
+            if (isItemActivated) {
+                attrs["aria-expanded"] = "true";
+            }
+        }
+        return attrs;
+    };
     var isIconButton = item.icon && !item.value;
     var counterClass = isIconButton ? " dhx_navbar-count--absolute" : " dhx_navbar-count--button-inline";
-    return dom_1.el("button.dhx_button", {
-        class: helpers_1.getNavbarButtonCSS(item, widgetName),
-        dhx_id: item.id,
-        disabled: item.disabled,
-        type: "button",
-    }, [
+    return dom_1.el("button.dhx_button", __assign({ class: helpers_1.getNavbarButtonCSS(item, widgetName), dhx_id: item.id, disabled: item.disabled, type: "button" }, getAriaAttrs(item)), [
         item.icon ? helpers_1.getIcon(item.icon, "button") : null,
         item.html
             ? dom_1.el("div.dhx_button__text", { ".innerHTML": item.html })
             : item.value && dom_1.el("span.dhx_button__text", item.value),
         item.count > 0 && helpers_1.getCount(item, counterClass, isIconButton),
         item.value && item.$openIcon
-            ? dom_1.el("span.dhx_button__icon.dhx_button__icon--menu.dxi.dxi-menu-right")
+            ? dom_1.el("span.dhx_button__icon.dhx_button__icon--menu.dxi.dxi-menu-right", {
+                "aria-hidden": "true",
+            })
             : null,
         item.loading &&
-            dom_1.el("span.dhx_button__loading", [dom_1.el("span.dhx_button__loading-icon.dxi.dxi-loading")]),
+            dom_1.el("span.dhx_button__loading", {
+                "aria-hidden": "true",
+            }, [dom_1.el("span.dhx_button__loading-icon.dxi.dxi-loading")]),
     ]);
 }
 exports.button = button;
 
 
 /***/ }),
-/* 124 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(22);
+var helpers_1 = __webpack_require__(25);
 function navItem(item, widgetName, collapsed) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+            "aria-label": item.value || " ",
+        };
+        var isItemActivated = item.active || item.$activeParent;
+        if (item.type === "selectButton" || item.items) {
+            attrs["id"] = item.id;
+            attrs["aria-haspopup"] = "menu"; // menu has hot keys, listbox doesn't have
+            if (isItemActivated) {
+                attrs["aria-expanded"] = "true";
+            }
+        }
+        else {
+            if (item.twoState || isItemActivated) {
+                attrs["aria-pressed"] = isItemActivated ? "true" : "false";
+            }
+            if (!item.value && item.icon && item.tooltip) {
+                attrs["aria-label"] = item.tooltip + " " + (item.count || "");
+            }
+        }
+        return attrs;
+    };
     var baseClass = " dhx_" + widgetName + "-button";
-    return dom_1.el("button", {
-        class: "dhx_button" +
+    return dom_1.el("button", __assign({ class: "dhx_button" +
             baseClass +
             (item.active || item.$activeParent ? baseClass + "--active" : "") +
             (item.disabled ? baseClass + "--disabled" : "") +
@@ -16372,14 +17714,11 @@ function navItem(item, widgetName, collapsed) {
             (item.circle ? baseClass + "--circle" : "") +
             (item.size ? " " + baseClass + "--" + item.size : "") +
             (!item.value && item.icon ? baseClass + "--icon" : "") +
-            (item.css ? " " + item.css : ""),
-        dhx_id: item.id,
-        disabled: item.disabled,
-        type: "button",
-    }, [
+            (item.css ? " " + item.css : ""), dhx_id: item.id, disabled: item.disabled, type: "button" }, getAriaAttrs(item)), [
         item.icon &&
             dom_1.el("span", {
                 class: item.icon + baseClass + "__icon",
+                "aria-hidden": "true",
             }),
         item.html &&
             dom_1.el("div", {
@@ -16395,6 +17734,7 @@ function navItem(item, widgetName, collapsed) {
         item.$openIcon &&
             dom_1.el("span.dxi.dxi-menu-right", {
                 class: baseClass + "__caret",
+                "aria-hidden": "true",
             }),
     ]);
 }
@@ -16402,51 +17742,86 @@ exports.navItem = navItem;
 
 
 /***/ }),
-/* 125 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 function customHTMLButton(item, widgetName, asMenuItem) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+        };
+        if (item.twoState || item.active || item.$activeParent) {
+            attrs["aria-pressed"] = item.active || item.$activeParent ? "true" : "false";
+        }
+        return attrs;
+    };
     var baseClass = asMenuItem ? " dhx_button dhx_menu-button" : " dhx_button dhx_nav-menu-button";
-    return dom_1.el("button", {
-        class: "dhx_custom-button" + baseClass + (item.$activeParent ? baseClass + "--active" : ""),
-        dhx_id: item.id,
-        type: "button",
-        ".innerHTML": item.html,
-    }, item.html ? "" : item.value);
+    return dom_1.el("button", __assign({ class: "dhx_custom-button" + baseClass + (item.$activeParent ? baseClass + "--active" : ""), dhx_id: item.id, type: "button", ".innerHTML": item.html }, getAriaAttrs(item)), item.html ? "" : item.value);
 }
 exports.customHTMLButton = customHTMLButton;
 
 
 /***/ }),
-/* 126 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(22);
+var helpers_1 = __webpack_require__(25);
 function imageButton(item, widgetName) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+        };
+        if (item.twoState || item.active) {
+            attrs["aria-pressed"] = item.active ? "true" : "false";
+        }
+        if (!item.value && item.src && item.tooltip) {
+            attrs["aria-label"] = item.tooltip + " " + (item.count || "");
+        }
+        return attrs;
+    };
     var baseClass = "dhx_" + widgetName + "-button-image";
     var isRibbon = widgetName === "ribbon";
-    return dom_1.el("button.dhx_button", {
-        class: baseClass +
+    return dom_1.el("button.dhx_button", __assign({ class: baseClass +
             (item.size ? " " + baseClass + "--" + item.size : "") +
             (!item.value && item.src ? " " + baseClass + "--icon" : "") +
             (isRibbon && item.$openIcon ? " " + baseClass + "--select" : "") +
-            (item.active ? " " + baseClass + "--active" : ""),
-        dhx_id: item.id,
-        type: "button",
-    }, [
+            (item.active ? " " + baseClass + "--active" : ""), dhx_id: item.id, type: "button" }, getAriaAttrs(item)), [
         isRibbon &&
             item.value &&
             item.$openIcon &&
             dom_1.el("span.dxi.dxi-menu-right", {
                 class: baseClass + "__caret",
+                "aria-hidden": "true",
             }),
         item.html
             ? dom_1.el("div", {
@@ -16461,6 +17836,7 @@ function imageButton(item, widgetName) {
             dom_1.el("span", {
                 class: baseClass + "__image",
                 style: { backgroundImage: "url(" + item.src + ")" },
+                role: "presentation",
             }),
         item.count > 0 && helpers_1.getCount(item, baseClass + "__count", true),
     ]);
@@ -16469,14 +17845,14 @@ exports.imageButton = imageButton;
 
 
 /***/ }),
-/* 127 */
+/* 129 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(35);
+var types_1 = __webpack_require__(37);
 function onBlur(events, id) {
     events.fire(types_1.NavigationBarEvents.inputBlur, [id]);
 }
@@ -16489,9 +17865,12 @@ function input(item, events, widgetName) {
         style: {
             width: item.width ? item.width : "200px",
         },
+        role: "presentation",
     }, [
-        dom_1.el("label.dhx_label", { for: item.id }, item.label),
-        dom_1.el(".dhx_input__wrapper", [
+        item.label && dom_1.el("label.dhx_label", { for: item.id }, item.label),
+        dom_1.el(".dhx_input__wrapper", {
+            role: "presentation",
+        }, [
             dom_1.el("input.dhx_input", {
                 placeholder: item.placeholder,
                 class: item.icon ? "dhx_input--icon-padding" : "",
@@ -16508,10 +17887,14 @@ function input(item, events, widgetName) {
                     },
                 },
                 _key: item.id,
+                "aria-label": item.label ||
+                    item.helpMessage ||
+                    "type " + (item.placeholder ? "text like " + item.placeholder : "text"),
             }),
             item.icon
                 ? dom_1.el(".dhx_input__icon", {
                     class: item.icon,
+                    "aria-hidden": "true",
                 })
                 : null,
         ]),
@@ -16521,25 +17904,41 @@ exports.input = input;
 
 
 /***/ }),
-/* 128 */
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(22);
+var helpers_1 = __webpack_require__(25);
 function menuItem(item, widgetName, asMenuItem) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            role: "menuitem",
+            "aria-disabled": item.disabled ? "true" : "false",
+        };
+        if (item.items) {
+            attrs["aria-haspopup"] = "true";
+        }
+        return attrs;
+    };
     var baseClass = asMenuItem ? " dhx_menu-button" : " dhx_nav-menu-button";
-    return dom_1.el("button", {
-        class: "dhx_button" +
+    return dom_1.el("button", __assign({ class: "dhx_button" +
             baseClass +
             (item.disabled ? baseClass + "--disabled" : "") +
-            (item.active || item.$activeParent ? baseClass + "--active" : ""),
-        disabled: item.disabled,
-        dhx_id: item.id,
-        type: "button",
-    }, asMenuItem
+            (item.active || item.$activeParent ? baseClass + "--active" : ""), disabled: item.disabled, dhx_id: item.id, type: "button" }, getAriaAttrs(item)), asMenuItem
         ? [
             item.icon || item.value || item.html
                 ? dom_1.el("span.dhx_menu-button__block.dhx_menu-button__block--left", [
@@ -16574,7 +17973,7 @@ exports.menuItem = menuItem;
 
 
 /***/ }),
-/* 129 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16587,7 +17986,7 @@ exports.separator = separator;
 
 
 /***/ }),
-/* 130 */
+/* 132 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16600,7 +17999,7 @@ exports.spacer = spacer;
 
 
 /***/ }),
-/* 131 */
+/* 133 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16612,13 +18011,14 @@ function title(item, widgetName) {
         class: "dhx_navbar-title" + " dhx_navbar-title--" + widgetName,
         dhx_id: item.id,
         ".innerHTML": item.html,
+        "aria-label": item.value || "",
     }, !item.html ? item.value : null);
 }
 exports.title = title;
 
 
 /***/ }),
-/* 132 */
+/* 134 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16649,13 +18049,13 @@ exports.layoutConfigWithoutTopbar = {
 
 
 /***/ }),
-/* 133 */
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var en_1 = __webpack_require__(36);
+var en_1 = __webpack_require__(38);
 var basis = ["byte", "kilobyte", "megabyte", "gigabyte"];
 function getBasis(size, current) {
     if (size === void 0) { size = 0; }
@@ -16885,7 +18285,7 @@ exports.isImage = isImage;
 
 
 /***/ }),
-/* 134 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -16905,9 +18305,9 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var view_1 = __webpack_require__(4);
-var en_1 = __webpack_require__(36);
-var types_1 = __webpack_require__(25);
+var view_1 = __webpack_require__(5);
+var en_1 = __webpack_require__(38);
+var types_1 = __webpack_require__(28);
 var ProgressBar = /** @class */ (function (_super) {
     __extends(ProgressBar, _super);
     function ProgressBar(events, config) {
@@ -16957,7 +18357,7 @@ exports.ProgressBar = ProgressBar;
 
 
 /***/ }),
-/* 135 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17010,7 +18410,7 @@ exports.ReadStackPreview = ReadStackPreview;
 
 
 /***/ }),
-/* 136 */
+/* 138 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17048,15 +18448,16 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
-var ts_data_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 var dom_1 = __webpack_require__(0);
-var Keymanager_1 = __webpack_require__(14);
-var types_1 = __webpack_require__(21);
-var view_1 = __webpack_require__(4);
+var KeyManager_1 = __webpack_require__(14);
+var FocusManager_1 = __webpack_require__(20);
+var types_1 = __webpack_require__(24);
+var view_1 = __webpack_require__(5);
 var Selection_1 = __webpack_require__(65);
-var html_1 = __webpack_require__(2);
-var types_2 = __webpack_require__(38);
-var editors_1 = __webpack_require__(137);
+var html_1 = __webpack_require__(3);
+var types_2 = __webpack_require__(40);
+var editors_1 = __webpack_require__(139);
 exports.MOVE_UP = 1;
 exports.MOVE_DOWN = 2;
 var List = /** @class */ (function (_super) {
@@ -17098,9 +18499,19 @@ var List = /** @class */ (function (_super) {
             disabled: !_this.config.selection,
             multiselection: _this.config.multiselection,
         }, _this.data, _this.events);
-        if (_this.config.keyNavigation)
-            _this._enableHotKeys();
-        _this.events.on(ts_data_1.DataEvents.change, function () { return _this.paint(); });
+        if (_this.config.keyNavigation) {
+            _this.keyManager = new KeyManager_1.KeyManager(function (e, focusId) {
+                return focusId === _this._uid && (!_this._edited || (_this._edited && e.key !== "escape"));
+            });
+            _this._initHotKey();
+            FocusManager_1.focusManager.setFocusId(_this._uid);
+        }
+        _this.events.on(ts_data_1.DataEvents.change, function (_, status, item) {
+            if (status === "setPage") {
+                _this.showItem(_this.data.getId(item[0]));
+            }
+            _this.paint();
+        });
         _this.events.on(types_1.SelectionEvents.afterUnSelect, function () { return _this.paint(); });
         _this.events.on(types_1.SelectionEvents.afterSelect, function () { return _this.paint(); });
         _this.events.on(types_2.ListEvents.afterEditEnd, _this.editEnd.bind(_this));
@@ -17285,7 +18696,7 @@ var List = /** @class */ (function (_super) {
         return this.data.getItem(this._focus);
     };
     List.prototype.setFocus = function (id) {
-        if (this._focus != id) {
+        if (this._focus != id && this.data.exists(id)) {
             this._focus = id;
             this.showItem(id);
             this.events.fire(types_2.ListEvents.focusChange, [this.data.getIndex(this._focus), this._focus]);
@@ -17296,7 +18707,7 @@ var List = /** @class */ (function (_super) {
         return this._focus;
     };
     List.prototype.destructor = function () {
-        Keymanager_1.keyManager.removeHotKey(null, this);
+        this.keyManager.destructor();
         this.selection.destructor();
         this.unmount();
     };
@@ -17311,7 +18722,8 @@ var List = /** @class */ (function (_super) {
         }
         var virtual = this.config.virtual;
         var index = this.data.getIndex(id);
-        var el = listEl.children[index];
+        var currentPage = Math.floor(index / listEl.children.length) || 0;
+        var el = listEl.children[index - listEl.children.length * currentPage];
         if (!virtual && !el)
             return;
         var height = virtual ? parseInt(this.config.itemHeight) : el.clientHeight;
@@ -17340,7 +18752,7 @@ var List = /** @class */ (function (_super) {
             return editor.toHTML();
         }
         var mx = this.data.getMetaMap(item);
-        var node = __assign(__assign({}, this._events), { class: "dhx_list-item" +
+        var node = __assign(__assign(__assign(__assign({}, this._events), { class: "dhx_list-item" +
                 (mx && mx.selected ? " dhx_list-item--selected" : "") +
                 (focus ? " dhx_list-item--focus" : "") +
                 (mx && mx.drop && !this._edited ? " dhx_list-item--drophere" : "") +
@@ -17348,7 +18760,7 @@ var List = /** @class */ (function (_super) {
                 (this.config.dragMode && !this._edited ? " dhx_list-item--drag" : "") +
                 (item.css ? " " + item.css : ""), dhx_id: item.id, _ref: item.id.toString(), style: {
                 height: itemHeight,
-            }, _key: item.id, ".innerHTML": html });
+            }, _key: item.id, ".innerHTML": html }), this.getItemAriaAttrs(this, item)), { tabindex: focus ? 0 : -1 });
         if (html) {
             node[".innerHTML"] = html;
             return dom_1.el("li", node);
@@ -17371,12 +18783,12 @@ var List = /** @class */ (function (_super) {
                 dom_1.el(".div", { style: { height: range[3] + "px" } }),
             ]);
         }
-        return dom_1.el("ul.dhx_widget.dhx_list", __assign({ style: {
+        return dom_1.el("ul.dhx_widget.dhx_list", __assign(__assign({ style: {
                 "min-height": this.config.itemHeight,
                 "max-height": this.config.height,
                 position: "relative",
             }, class: (this.config.css ? this.config.css : "") +
-                (this.config.multiselection && this.selection.getItem() ? " dhx_no-select--pointer" : ""), dhx_widget_id: this._uid }, this._handlers), kids);
+                (this.config.multiselection && this.selection.getItem() ? " dhx_no-select--pointer" : ""), dhx_widget_id: this._uid }, this._handlers), this.getListAriaAttrs(this.config, this.data.getLength())), kids);
     };
     List.prototype.moveFocus = function (mode, step) {
         var length = this.data.getLength();
@@ -17415,7 +18827,7 @@ var List = /** @class */ (function (_super) {
     };
     List.prototype._getHotkeys = function () {
         var _this = this;
-        var handlers = {
+        return {
             arrowDown: function (e) {
                 _this.moveFocus(exports.MOVE_DOWN);
                 e.preventDefault();
@@ -17424,15 +18836,18 @@ var List = /** @class */ (function (_super) {
                 _this.moveFocus(exports.MOVE_UP);
                 e.preventDefault();
             },
+            escape: function () {
+                _this.editEnd(null);
+            },
             enter: function (e) {
                 _this.selection.add(_this._focus);
                 _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
             },
-            "enter+shift": function (e) {
+            "shift+enter": function (e) {
                 _this.selection.add(_this._focus, false, true);
                 _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
             },
-            "enter+ctrl": function (e) {
+            "ctrl+enter": function (e) {
                 _this.selection.add(_this._focus, true, false);
                 _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
             },
@@ -17452,19 +18867,38 @@ var List = /** @class */ (function (_super) {
                 }
             },
         };
-        return handlers;
     };
-    List.prototype._enableHotKeys = function () {
-        var _this = this;
-        // can't be set in the above block because of `this` call
-        var handlers = __assign(__assign({}, this._getHotkeys()), (this.config.hotkeys || {}));
-        Keymanager_1.addHotkeys(handlers, function (e, focus) {
-            return focus === _this._uid && !_this._edited;
-        }, this);
-        // [TODO] may have sense to be a default behavior for EditInput
-        Keymanager_1.keyManager.addHotKey("escape", function () {
-            _this.editEnd(null);
-        });
+    List.prototype._initHotKey = function () {
+        var handlers = this._getHotkeys();
+        for (var key in handlers) {
+            this.keyManager.addHotKey(key, handlers[key]);
+        }
+        for (var key in this.config.hotkeys) {
+            this.keyManager.addHotKey(key, this.config.hotkeys[key]);
+        }
+    };
+    List.prototype.getItemAriaAttrs = function (context, item) {
+        var getAriaGrabbed = function (context, item) {
+            return context.config.dragMode && !context._edited
+                ? { "aria-grabbed": Boolean(item.$dragtarget && !context._edited).toString() }
+                : {};
+        };
+        var getAriaRoleDescription = function (context) {
+            return context.config.editable
+                ? {
+                    "aria-roledescription": "" + (context._edited ? "Press Enter to stop editing" : "Double click to edit content"),
+                }
+                : {};
+        };
+        return __assign(__assign({ role: "option", "aria-selected": item.$selected ? "true" : "false" }, getAriaGrabbed(context, item)), getAriaRoleDescription(context));
+    };
+    List.prototype.getListAriaAttrs = function (config, dataLength) {
+        return {
+            role: "listbox",
+            "aria-label": "Listbox " + (config.title || "") + ", count of options = " + dataLength + "." + (config.editable ? " Content is editable." : ""),
+            "aria-multiselectable": config.selection && config.multiselection ? "true" : "false",
+            "aria-readonly": config.editable ? "false" : "true",
+        };
     };
     return List;
 }(view_1.View));
@@ -17472,13 +18906,13 @@ exports.List = List;
 
 
 /***/ }),
-/* 137 */
+/* 139 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var InputEditor_1 = __webpack_require__(138);
+var InputEditor_1 = __webpack_require__(140);
 function getEditor(item, list) {
     return new InputEditor_1.InputEditor(item, list);
 }
@@ -17486,14 +18920,14 @@ exports.getEditor = getEditor;
 
 
 /***/ }),
-/* 138 */
+/* 140 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(38);
+var types_1 = __webpack_require__(40);
 var InputEditor = /** @class */ (function () {
     function InputEditor(item, list) {
         var _this = this;
@@ -17525,8 +18959,8 @@ var InputEditor = /** @class */ (function () {
     InputEditor.prototype.toHTML = function () {
         this._mode = true;
         var itemHeight = this._config.itemHeight;
-        return dom_1.el(".dhx_input__wrapper", {}, [
-            dom_1.el("div.dhx_input__container", {}, [
+        return dom_1.el(".dhx_input__wrapper", { role: "presentation" }, [
+            dom_1.el("div.dhx_input__container", { role: "presentation" }, [
                 dom_1.el("input.dhx_input", {
                     class: this._item.css ? " " + this._item.css : "",
                     style: {
@@ -17569,7 +19003,7 @@ exports.InputEditor = InputEditor;
 
 
 /***/ }),
-/* 139 */
+/* 141 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -17608,13 +19042,11 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var view_1 = __webpack_require__(4);
-var ts_timepicker_1 = __webpack_require__(39);
-var DateHelper_1 = __webpack_require__(144);
-var DateFormatter_1 = __webpack_require__(41);
-var helper_1 = __webpack_require__(145);
-var en_1 = __webpack_require__(42);
+var events_1 = __webpack_require__(2);
+var view_1 = __webpack_require__(5);
+var ts_timepicker_1 = __webpack_require__(42);
+var helper_1 = __webpack_require__(146);
+var date_1 = __webpack_require__(22);
 var types_1 = __webpack_require__(70);
 var Calendar = /** @class */ (function (_super) {
     __extends(Calendar, _super);
@@ -17647,10 +19079,10 @@ var Calendar = /** @class */ (function (_super) {
             _this._setSelected(_this.config.value);
         }
         if (_this.config.date) {
-            _this._currentDate = DateHelper_1.DateHelper.toDateObject(_this.config.date, _this.config.dateFormat);
+            _this._currentDate = date_1.DateHelper.toDateObject(_this.config.date, _this.config.dateFormat);
         }
         else if (_this._getSelected()) {
-            _this._currentDate = DateHelper_1.DateHelper.copy(_this._getSelected());
+            _this._currentDate = date_1.DateHelper.copy(_this._getSelected());
         }
         else {
             _this._currentDate = new Date();
@@ -17681,7 +19113,7 @@ var Calendar = /** @class */ (function (_super) {
             _this._timepicker.events.on(ts_timepicker_1.TimepickerEvents.afterApply, function () {
                 var _a = _this._timepicker.getValue(true), hour = _a.hour, minute = _a.minute, AM = _a.AM;
                 var oldDate = _this._getSelected();
-                var newDate = DateHelper_1.DateHelper.withHoursAndMinutes(_this._getSelected() || new Date(), hour, minute, AM);
+                var newDate = date_1.DateHelper.withHoursAndMinutes(_this._getSelected() || new Date(), hour, minute, AM);
                 if (_this.events.fire(types_1.CalendarEvents.beforeChange, [newDate, oldDate, true])) {
                     _this._selected[_this._selected.length - 1] = newDate;
                     _this.events.fire(types_1.CalendarEvents.change, [newDate, oldDate, true]);
@@ -17700,8 +19132,8 @@ var Calendar = /** @class */ (function (_super) {
         }
         this._selected = [];
         var currentDate = value instanceof Array ? value[0] : value;
-        var date = DateHelper_1.DateHelper.toDateObject(currentDate, this.config.dateFormat);
-        var oldDate = DateHelper_1.DateHelper.copy(this._getSelected());
+        var date = date_1.DateHelper.toDateObject(currentDate, this.config.dateFormat);
+        var oldDate = date_1.DateHelper.copy(this._getSelected());
         if (!this.events.fire(types_1.CalendarEvents.beforeChange, [date, oldDate, false])) {
             return false;
         }
@@ -17723,19 +19155,19 @@ var Calendar = /** @class */ (function (_super) {
         }
         if (this.config.range) {
             return asDateObject
-                ? this._selected.map(function (date) { return DateHelper_1.DateHelper.copy(date); })
-                : this._selected.map(function (date) { return DateFormatter_1.getFormatedDate(_this.config.dateFormat, date); });
+                ? this._selected.map(function (date) { return date_1.DateHelper.copy(date); })
+                : this._selected.map(function (date) { return date_1.getFormattedDate(_this.config.dateFormat, date); });
         }
         return asDateObject
-            ? DateHelper_1.DateHelper.copy(this._selected[0])
-            : DateFormatter_1.getFormatedDate(this.config.dateFormat, this._selected[0]);
+            ? date_1.DateHelper.copy(this._selected[0])
+            : date_1.getFormattedDate(this.config.dateFormat, this._selected[0]);
     };
     Calendar.prototype.getCurrentMode = function () {
         return this._currentViewMode;
     };
     Calendar.prototype.showDate = function (date, mode) {
         if (date) {
-            this._currentDate = DateHelper_1.DateHelper.copy(date);
+            this._currentDate = date_1.DateHelper.copy(date);
         }
         if (mode) {
             this._currentViewMode = mode;
@@ -17769,17 +19201,17 @@ var Calendar = /** @class */ (function (_super) {
         this._linkedCalendar = targetCalendar;
         var rawLowerDate = this.getValue(true);
         var rawUpperDate = targetCalendar.getValue(true);
-        var lowerDate = rawLowerDate && DateHelper_1.DateHelper.dayStart(rawLowerDate);
-        var upperDate = rawUpperDate && DateHelper_1.DateHelper.dayStart(rawUpperDate);
+        var lowerDate = rawLowerDate && date_1.DateHelper.dayStart(rawLowerDate);
+        var upperDate = rawUpperDate && date_1.DateHelper.dayStart(rawUpperDate);
         var getRangeClass = function (date) {
-            if (DateHelper_1.DateHelper.isSameDay(upperDate, lowerDate)) {
+            if (date_1.DateHelper.isSameDay(upperDate, lowerDate)) {
                 return null;
             }
             var positionInRange = "dhx_calendar-day--in-range";
-            if (DateHelper_1.DateHelper.isSameDay(date, lowerDate)) {
+            if (date_1.DateHelper.isSameDay(date, lowerDate)) {
                 positionInRange += " dhx_calendar-day--first-date";
             }
-            if (DateHelper_1.DateHelper.isSameDay(date, upperDate)) {
+            if (date_1.DateHelper.isSameDay(date, upperDate)) {
                 positionInRange += " dhx_calendar-day--last-date";
             }
             return positionInRange;
@@ -17807,11 +19239,11 @@ var Calendar = /** @class */ (function (_super) {
         this.config.thisMonthOnly = true;
         targetCalendar.config.thisMonthOnly = true;
         this.events.on(types_1.CalendarEvents.change, function (date) {
-            lowerDate = DateHelper_1.DateHelper.dayStart(date);
+            lowerDate = date_1.DateHelper.dayStart(date);
             _this._linkedCalendar.paint();
         }, "link");
         this._linkedCalendar.events.on(types_1.CalendarEvents.change, function (date) {
-            upperDate = DateHelper_1.DateHelper.dayStart(date);
+            upperDate = date_1.DateHelper.dayStart(date);
             _this.paint();
         }, "link");
         this._linkedCalendar.paint();
@@ -17831,12 +19263,12 @@ var Calendar = /** @class */ (function (_super) {
     Calendar.prototype._setSelected = function (value) {
         var _this = this;
         var currentDate = value instanceof Array ? value[0] : value;
-        var date = DateHelper_1.DateHelper.toDateObject(currentDate, this.config.dateFormat);
+        var date = date_1.DateHelper.toDateObject(currentDate, this.config.dateFormat);
         if (value instanceof Array && this.config.range) {
             var filterDate_1 = [];
             value.forEach(function (element, index) {
                 if (index < 2) {
-                    filterDate_1.push(DateHelper_1.DateHelper.toDateObject(element, _this.config.dateFormat));
+                    filterDate_1.push(date_1.DateHelper.toDateObject(element, _this.config.dateFormat));
                 }
             });
             if (filterDate_1.length === 2 && filterDate_1[0] < filterDate_1[1]) {
@@ -17875,11 +19307,11 @@ var Calendar = /** @class */ (function (_super) {
             onclick: {
                 ".dhx_calendar-year, .dhx_calendar-month, .dhx_calendar-day": function (_e, vn) {
                     var date = vn.attrs._date;
-                    var oldDate = DateHelper_1.DateHelper.copy(_this._getSelected());
+                    var oldDate = date_1.DateHelper.copy(_this._getSelected());
                     switch (_this._currentViewMode) {
                         case "calendar": {
                             var mergedDate = _this.config.timePicker
-                                ? DateHelper_1.DateHelper.mergeHoursAndMinutes(date, _this._getSelected() || _this._currentDate)
+                                ? date_1.DateHelper.mergeHoursAndMinutes(date, _this._getSelected() || _this._currentDate)
                                 : date;
                             if (!_this.events.fire(types_1.CalendarEvents.beforeChange, [mergedDate, oldDate, true])) {
                                 return;
@@ -17899,12 +19331,12 @@ var Calendar = /** @class */ (function (_super) {
                         }
                         case "month":
                             if (_this.config.mode !== "month") {
-                                DateHelper_1.DateHelper.setMonth(_this._currentDate, date);
+                                date_1.DateHelper.setMonth(_this._currentDate, date);
                                 _this.showDate(null, "calendar");
                                 _this.events.fire(types_1.CalendarEvents.monthSelected, [date]);
                             }
                             else {
-                                var newDate = DateHelper_1.DateHelper.fromYearAndMonth(_this._currentDate.getFullYear() || _this._getSelected().getFullYear(), date);
+                                var newDate = date_1.DateHelper.fromYearAndMonth(_this._currentDate.getFullYear() || _this._getSelected().getFullYear(), date);
                                 if (!_this.events.fire(types_1.CalendarEvents.beforeChange, [newDate, oldDate, true])) {
                                     return;
                                 }
@@ -17917,12 +19349,12 @@ var Calendar = /** @class */ (function (_super) {
                             break;
                         case "year":
                             if (_this.config.mode !== "year") {
-                                DateHelper_1.DateHelper.setYear(_this._currentDate, date);
+                                date_1.DateHelper.setYear(_this._currentDate, date);
                                 _this.showDate(null, "month");
                                 _this.events.fire(types_1.CalendarEvents.yearSelected, [date]);
                             }
                             else {
-                                var newDate = DateHelper_1.DateHelper.fromYear(date);
+                                var newDate = date_1.DateHelper.fromYear(date);
                                 if (!_this.events.fire(types_1.CalendarEvents.beforeChange, [newDate, oldDate, true])) {
                                     return;
                                 }
@@ -17944,13 +19376,13 @@ var Calendar = /** @class */ (function (_super) {
                     var newDate;
                     switch (_this._currentViewMode) {
                         case "calendar":
-                            newDate = DateHelper_1.DateHelper.addMonth(_this._currentDate, 1);
+                            newDate = date_1.DateHelper.addMonth(_this._currentDate, 1);
                             break;
                         case "month":
-                            newDate = DateHelper_1.DateHelper.addYear(_this._currentDate, 1);
+                            newDate = date_1.DateHelper.addYear(_this._currentDate, 1);
                             break;
                         case "year":
-                            newDate = DateHelper_1.DateHelper.addYear(_this._currentDate, 12);
+                            newDate = date_1.DateHelper.addYear(_this._currentDate, 12);
                     }
                     _this.showDate(newDate);
                 },
@@ -17958,13 +19390,13 @@ var Calendar = /** @class */ (function (_super) {
                     var newDate;
                     switch (_this._currentViewMode) {
                         case "calendar":
-                            newDate = DateHelper_1.DateHelper.addMonth(_this._currentDate, -1);
+                            newDate = date_1.DateHelper.addMonth(_this._currentDate, -1);
                             break;
                         case "month":
-                            newDate = DateHelper_1.DateHelper.addYear(_this._currentDate, -1);
+                            newDate = date_1.DateHelper.addYear(_this._currentDate, -1);
                             break;
                         case "year":
-                            newDate = DateHelper_1.DateHelper.addYear(_this._currentDate, -12);
+                            newDate = date_1.DateHelper.addYear(_this._currentDate, -12);
                     }
                     _this.showDate(newDate);
                 },
@@ -17984,31 +19416,31 @@ var Calendar = /** @class */ (function (_super) {
     Calendar.prototype._getData = function (date) {
         var _this = this;
         var firstDay = this.config.weekStart === "monday" ? 1 : 0;
-        var first = DateHelper_1.DateHelper.weekStart(DateHelper_1.DateHelper.monthStart(date), firstDay);
+        var first = date_1.DateHelper.weekStart(date_1.DateHelper.monthStart(date), firstDay);
         var data = [];
         var weeksCount = 6;
         var currentDate = first;
         while (weeksCount--) {
-            var currentWeek = DateHelper_1.DateHelper.getWeekNumber(currentDate);
+            var currentWeek = date_1.DateHelper.getWeekNumber(currentDate);
             var disabledDays = 0;
             var daysCount = 7;
             var days = [];
             var _loop_1 = function () {
-                var isDateWeekEnd = DateHelper_1.DateHelper.isWeekEnd(currentDate);
+                var isDateWeekEnd = date_1.DateHelper.isWeekEnd(currentDate);
                 var isCurrentMonth = date.getMonth() === currentDate.getMonth();
                 var isBlocked = this_1.config.disabledDates && this_1.config.disabledDates(currentDate);
                 var css = [];
                 if (this_1.config.range && this_1._selected[0] && this_1._selected[1]) {
                     var getRangeClass_1 = function () {
-                        if (DateHelper_1.DateHelper.isSameDay(_this._selected[0], _this._selected[1])) {
+                        if (date_1.DateHelper.isSameDay(_this._selected[0], _this._selected[1])) {
                             return null;
                         }
                         return "dhx_calendar-day--in-range";
                     };
                     var rangeMark = function () {
                         if (_this._selected[0] && _this._selected[1]) {
-                            var firstDate = DateHelper_1.DateHelper.dayStart(_this._selected[0]);
-                            var lastDate = DateHelper_1.DateHelper.dayStart(_this._selected[1]);
+                            var firstDate = date_1.DateHelper.dayStart(_this._selected[0]);
+                            var lastDate = date_1.DateHelper.dayStart(_this._selected[1]);
                             return currentDate >= firstDate && currentDate <= lastDate && getRangeClass_1();
                         }
                     };
@@ -18047,7 +19479,7 @@ var Calendar = /** @class */ (function (_super) {
                     }
                 }
                 this_1._selected.forEach(function (selected, index) {
-                    if (selected && DateHelper_1.DateHelper.isSameDay(selected, currentDate)) {
+                    if (selected && date_1.DateHelper.isSameDay(selected, currentDate)) {
                         var dayCss = "dhx_calendar-day--selected";
                         if (_this.config.range) {
                             dayCss += " dhx_calendar-day--selected-" + (index === 0 ? "first " : "last");
@@ -18060,7 +19492,7 @@ var Calendar = /** @class */ (function (_super) {
                     day: currentDate.getDate(),
                     css: css.join(" "),
                 });
-                currentDate = DateHelper_1.DateHelper.addDay(currentDate);
+                currentDate = date_1.DateHelper.addDay(currentDate);
             };
             var this_1 = this;
             while (daysCount--) {
@@ -18077,7 +19509,7 @@ var Calendar = /** @class */ (function (_super) {
     Calendar.prototype._drawCalendar = function () {
         var date = this._currentDate;
         var _a = this.config, weekStart = _a.weekStart, thisMonthOnly = _a.thisMonthOnly, css = _a.css, timePicker = _a.timePicker, width = _a.width;
-        var weekDays = weekStart === "monday" ? __spreadArrays(en_1.default.daysShort.slice(1), [en_1.default.daysShort[0]]) : en_1.default.daysShort;
+        var weekDays = weekStart === "monday" ? __spreadArrays(date_1.locale.daysShort.slice(1), [date_1.locale.daysShort[0]]) : date_1.locale.daysShort;
         var weekDaysHeader = weekDays.map(function (day) { return dom_1.el(".dhx_calendar-weekday", day); });
         var data = this._getData(date);
         var content = [];
@@ -18110,7 +19542,7 @@ var Calendar = /** @class */ (function (_super) {
                 width: this.config.weekNumbers ? "calc(" + width + " + 48px )" : width,
             } }, this._handlers), [
             dom_1.el(".dhx_calendar__wrapper", [
-                this._drawHeader(dom_1.el("button.dhx_calendar-action__show-month.dhx_button.dhx_button--view_link.dhx_button--size_small.dhx_button--color_secondary.dhx_button--circle", en_1.default.months[date.getMonth()] + " " + date.getFullYear())),
+                this._drawHeader(dom_1.el("button.dhx_calendar-action__show-month.dhx_button.dhx_button--view_link.dhx_button--size_small.dhx_button--color_secondary.dhx_button--circle", date_1.locale.months[date.getMonth()] + " " + date.getFullYear())),
                 this.config.weekNumbers &&
                     dom_1.el(".dhx_calendar__dates-wrapper", [
                         dom_1.el(".dhx_calendar__weekdays", weekDaysHeader),
@@ -18145,7 +19577,7 @@ var Calendar = /** @class */ (function (_super) {
             } }, this._handlers), [
             dom_1.el(".dhx_calendar__wrapper", [
                 this._drawHeader(dom_1.el("button.dhx_calendar-action__show-year.dhx_button.dhx_button--view_link.dhx_button--size_small.dhx_button--color_secondary.dhx_button--circle", date.getFullYear())),
-                dom_1.el(".dhx_calendar__months", en_1.default.monthsShort.map(function (item, i) {
+                dom_1.el(".dhx_calendar__months", date_1.locale.monthsShort.map(function (item, i) {
                     return dom_1.el("div", {
                         class: "dhx_calendar-month" +
                             (currentMonth === i && currentYear === date.getFullYear()
@@ -18157,7 +19589,7 @@ var Calendar = /** @class */ (function (_super) {
                 })),
                 mode !== "month"
                     ? dom_1.el(".dhx_calendar__actions", [
-                        dom_1.el("button.dhx_button.dhx_button--color_primary.dhx_button--view_link.dhx_button--size_small.dhx_button--width_full.dhx_button--circle.dhx_calendar-action__cancel", en_1.default.cancel),
+                        dom_1.el("button.dhx_button.dhx_button--color_primary.dhx_button--view_link.dhx_button--size_small.dhx_button--width_full.dhx_button--circle.dhx_calendar-action__cancel", date_1.locale.cancel),
                     ])
                     : null,
             ]),
@@ -18166,7 +19598,7 @@ var Calendar = /** @class */ (function (_super) {
     Calendar.prototype._drawYearSelector = function () {
         var _this = this;
         var date = this._currentDate;
-        var yearsDiapason = DateHelper_1.DateHelper.getTwelweYears(date);
+        var yearsDiapason = date_1.DateHelper.getTwelweYears(date);
         var _a = this.config, css = _a.css, timePicker = _a.timePicker, weekNumbers = _a.weekNumbers, width = _a.width, mode = _a.mode;
         var widgetClass = "dhx_calendar dhx_widget" +
             (css ? " " + css : "") +
@@ -18187,7 +19619,7 @@ var Calendar = /** @class */ (function (_super) {
                 })),
                 mode !== "year" && mode !== "month"
                     ? dom_1.el(".dhx_calendar__actions", [
-                        dom_1.el("button.dhx_button.dhx_button--color_primary.dhx_button--view_link.dhx_button--size_small.dhx_button--width_full.dhx_button--circle.dhx_calendar-action__cancel", en_1.default.cancel),
+                        dom_1.el("button.dhx_button.dhx_button--color_primary.dhx_button--view_link.dhx_button--size_small.dhx_button--width_full.dhx_button--circle.dhx_calendar-action__cancel", date_1.locale.cancel),
                     ])
                     : null,
             ]),
@@ -18197,11 +19629,11 @@ var Calendar = /** @class */ (function (_super) {
         return dom_1.el(".dhx_calendar__navigation", [
             dom_1.el("button.dhx_calendar-navigation__button.dhx_calendar-action__prev" +
                 helper_1.linkButtonClasses +
-                ".dhx_button--icon.dhx_button--circle", [dom_1.el(".dhx_button__icon.dxi.dxi-chevron-left")]),
+                ".dhx_button--icon.dhx_button--circle", { "aria-label": "prev" }, [dom_1.el(".dhx_button__icon.dxi.dxi-chevron-left")]),
             actionContent,
             dom_1.el("button.dhx_calendar-navigation__button.dhx_calendar-action__next" +
                 helper_1.linkButtonClasses +
-                ".dhx_button--icon.dhx_button--circle", [dom_1.el(".dhx_button__icon.dxi.dxi-chevron-right")]),
+                ".dhx_button--icon.dhx_button--circle", { "aria-label": "next" }, [dom_1.el(".dhx_button__icon.dxi.dxi-chevron-right")]),
         ]);
     };
     Calendar.prototype._drawTimepicker = function () {
@@ -18217,7 +19649,7 @@ exports.Calendar = Calendar;
 
 
 /***/ }),
-/* 140 */
+/* 142 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18249,12 +19681,12 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var view_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var view_1 = __webpack_require__(5);
 var ts_layout_1 = __webpack_require__(13);
-var ts_slider_1 = __webpack_require__(40);
+var ts_slider_1 = __webpack_require__(43);
 var en_1 = __webpack_require__(68);
-var helper_1 = __webpack_require__(143);
+var helper_1 = __webpack_require__(145);
 var types_1 = __webpack_require__(69);
 function validate(value, max) {
     if (isNaN(value)) {
@@ -18440,6 +19872,7 @@ var Timepicker = /** @class */ (function (_super) {
             var close_1 = function () {
                 return dom_1.el("button.dhx_timepicker__button-close.dhx_button.dhx_button--view_link.dhx_button--size_medium.dhx_button--view_link.dhx_button--color_secondary.dhx_button--icon.dhx_button--circle", {
                     onclick: _this._outerHandlers.close,
+                    "aria-label": "close timepicker",
                 }, [dom_1.el("span.dhx_button__icon.dxi.dxi-close")]);
             };
             layout.getCell("save-action").attach(save);
@@ -18523,6 +19956,7 @@ var Timepicker = /** @class */ (function (_super) {
                 value: this.getValue(true).hour.toString().length > 1
                     ? this.getValue(true).hour
                     : "0" + this.getValue(true).hour,
+                "aria-label": "hours",
             }),
             dom_1.el("span.dhx_timepicker-delimer", ":"),
             dom_1.el("input.dhx_timepicker-input.dhx_timepicker-input--minutes", {
@@ -18530,6 +19964,7 @@ var Timepicker = /** @class */ (function (_super) {
                 value: this.getValue(true).minute.toString().length > 1
                     ? this.getValue(true).minute
                     : "0" + this.getValue(true).minute,
+                "aria-label": "minutes",
             }),
             this.config.timeFormat === 12
                 ? dom_1.el(".dhx_timepicker-ampm", this._time.AM ? "AM" : "PM")
@@ -18542,7 +19977,7 @@ exports.Timepicker = Timepicker;
 
 
 /***/ }),
-/* 141 */
+/* 143 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -18574,9 +20009,9 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var Keymanager_1 = __webpack_require__(14);
-var view_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var KeyManager_1 = __webpack_require__(14);
+var view_1 = __webpack_require__(5);
 var ts_popup_1 = __webpack_require__(10);
 var types_1 = __webpack_require__(67);
 var helper_1 = __webpack_require__(6);
@@ -18628,6 +20063,19 @@ var Slider = /** @class */ (function (_super) {
         _this.events = new events_1.EventSystem(_this);
         _this._axis = _this.config.mode === "horizontal" ? "clientX" : "clientY";
         _this._initStartPosition();
+        _this._keyManager = new KeyManager_1.KeyManager(function (_, focusId) {
+            var inFocus = focusId === _this._uid;
+            var activeEl = document.activeElement;
+            var refs = _this.getRootView().refs;
+            if (!refs || !inFocus) {
+                return false;
+            }
+            var runner = refs.runner;
+            if (runner && runner.el === activeEl) {
+                return true;
+            }
+            return _this.config.range && refs.extraRunner && refs.extraRunner.el === activeEl;
+        });
         _this._initHotkeys();
         var vNode = dom_1.create({
             render: function () { return _this._draw(); },
@@ -18688,7 +20136,7 @@ var Slider = /** @class */ (function (_super) {
         this.paint();
     };
     Slider.prototype.destructor = function () {
-        this._hotkeysDestructor();
+        this._keyManager.destructor();
         document.body.contains(this._tooltip) && document.body.removeChild(this._tooltip);
         this._tooltip = null;
         this.unmount();
@@ -18708,51 +20156,39 @@ var Slider = /** @class */ (function (_super) {
     };
     Slider.prototype._initHotkeys = function () {
         var _this = this;
-        var isRunnersInFocus = function () {
-            var activeEl = document.activeElement;
-            var refs = _this.getRootView().refs;
-            if (!refs) {
-                return false;
-            }
-            var runner = refs.runner;
-            if (runner && runner.el === activeEl) {
-                return true;
-            }
-            if (_this.config.range && refs.extraRunner && refs.extraRunner.el === activeEl) {
-                return true;
-            }
-            return false;
+        var handlers = {
+            arrowLeft: function (e) {
+                if (_this.config.mode === "vertical") {
+                    return;
+                }
+                e.preventDefault();
+                _this._move(-_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
+            },
+            arrowRight: function (e) {
+                if (_this.config.mode === "vertical") {
+                    return;
+                }
+                e.preventDefault();
+                _this._move(_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
+            },
+            arrowUp: function (e) {
+                if (_this.config.mode === "horizontal") {
+                    return;
+                }
+                e.preventDefault();
+                _this._move(_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
+            },
+            arrowDown: function (e) {
+                if (_this.config.mode === "horizontal") {
+                    return;
+                }
+                e.preventDefault();
+                _this._move(-_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
+            },
         };
-        this._hotkeysDestructor = Keymanager_1.addHotkeys({
-            arrowleft: function (e) {
-                if (_this.config.mode === "vertical") {
-                    return;
-                }
-                e.preventDefault();
-                _this._move(-_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
-            },
-            arrowright: function (e) {
-                if (_this.config.mode === "vertical") {
-                    return;
-                }
-                e.preventDefault();
-                _this._move(_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
-            },
-            arrowup: function (e) {
-                if (_this.config.mode === "horizontal") {
-                    return;
-                }
-                e.preventDefault();
-                _this._move(_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
-            },
-            arrowdown: function (e) {
-                if (_this.config.mode === "horizontal") {
-                    return;
-                }
-                e.preventDefault();
-                _this._move(-_this.config.step, e.target.classList.contains("dhx_slider__thumb--extra"));
-            },
-        }, isRunnersInFocus);
+        for (var key in handlers) {
+            this._keyManager.addHotKey(key, handlers[key]);
+        }
     };
     Slider.prototype._move = function (value, forExtra) {
         if (this.config.inverse) {
@@ -19244,7 +20680,7 @@ exports.Slider = Slider;
 
 
 /***/ }),
-/* 142 */
+/* 144 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19276,9 +20712,9 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var view_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var view_1 = __webpack_require__(5);
 var types_1 = __webpack_require__(66);
 var Popup = /** @class */ (function (_super) {
     __extends(Popup, _super);
@@ -19288,6 +20724,9 @@ var Popup = /** @class */ (function (_super) {
         var popup = (_this._popup = document.createElement("div"));
         popup.className = "dhx_widget dhx_popup" + (_this.config.css ? " " + _this.config.css : "");
         popup.style.position = "absolute";
+        popup.setAttribute("role", "dialog");
+        popup.setAttribute("aria-modal", "true");
+        popup.setAttribute("aria-live", "polite");
         _this.mount(popup, dom_1.create({
             render: function () { return _this.toVDOM(); },
         }));
@@ -19487,7 +20926,7 @@ exports.Popup = Popup;
 
 
 /***/ }),
-/* 143 */
+/* 145 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19503,108 +20942,7 @@ exports.isTimeCheck = isTimeCheck;
 
 
 /***/ }),
-/* 144 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var DateFormatter_1 = __webpack_require__(41);
-var DateHelper = /** @class */ (function () {
-    function DateHelper() {
-    }
-    DateHelper.copy = function (d) {
-        return new Date(d);
-    };
-    DateHelper.fromYear = function (year) {
-        return new Date(year, 0, 1);
-    };
-    DateHelper.fromYearAndMonth = function (year, month) {
-        return new Date(year, month, 1);
-    };
-    DateHelper.weekStart = function (d, firstWeekday) {
-        var diff = (d.getDay() + 7 - firstWeekday) % 7;
-        return new Date(d.getFullYear(), d.getMonth(), d.getDate() - diff);
-    };
-    DateHelper.monthStart = function (d) {
-        return new Date(d.getFullYear(), d.getMonth(), 1);
-    };
-    DateHelper.yearStart = function (d) {
-        return new Date(d.getFullYear(), 0, 1);
-    };
-    DateHelper.dayStart = function (d) {
-        return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-    };
-    DateHelper.addDay = function (d, count) {
-        if (count === void 0) { count = 1; }
-        return new Date(d.getFullYear(), d.getMonth(), d.getDate() + count);
-    };
-    DateHelper.addMonth = function (d, count) {
-        if (count === void 0) { count = 1; }
-        return new Date(d.getFullYear(), d.getMonth() + count);
-    };
-    DateHelper.addYear = function (d, count) {
-        if (count === void 0) { count = 1; }
-        return new Date(d.getFullYear() + count, d.getMonth());
-    };
-    DateHelper.withHoursAndMinutes = function (d, hours, minutes, dateFormat) {
-        if (dateFormat === undefined || (!dateFormat && hours === 12) || (dateFormat && hours !== 12)) {
-            return new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours, minutes);
-        }
-        else if (dateFormat && hours === 12) {
-            return new Date(d.getFullYear(), d.getMonth(), d.getDate(), 0, minutes);
-        }
-        else {
-            return new Date(d.getFullYear(), d.getMonth(), d.getDate(), hours + 12, minutes);
-        }
-    };
-    DateHelper.setMonth = function (d, month) {
-        d.setMonth(month);
-    };
-    DateHelper.setYear = function (d, year) {
-        d.setFullYear(year);
-    };
-    DateHelper.mergeHoursAndMinutes = function (source, target) {
-        return new Date(source.getFullYear(), source.getMonth(), source.getDate(), target.getHours(), target.getMinutes());
-    };
-    DateHelper.isWeekEnd = function (d) {
-        return d.getDay() === 0 || d.getDay() === 6;
-    };
-    DateHelper.getTwelweYears = function (d) {
-        var y = d.getFullYear();
-        var firstYear = y - (y % 12);
-        return core_1.range(firstYear, firstYear + 11);
-    };
-    DateHelper.getWeekNumber = function (d) {
-        if (d.getDay() !== 6) {
-            d = DateHelper.addDay(d, 6 - d.getDay());
-        }
-        var dayMS = 24 * 60 * 60 * 1000;
-        var ordinal = (d.valueOf() - DateHelper.yearStart(d).valueOf()) / dayMS;
-        return Math.floor((ordinal - d.getDay() + 10) / 7);
-    };
-    DateHelper.isSameDay = function (d1, d2) {
-        return (d1.getFullYear() === d2.getFullYear() &&
-            d1.getMonth() === d2.getMonth() &&
-            d1.getDate() === d2.getDate());
-    };
-    DateHelper.toDateObject = function (date, dateFormat) {
-        if (typeof date === "string") {
-            return DateFormatter_1.stringToDate(date, dateFormat);
-        }
-        else {
-            return new Date(date);
-        }
-    };
-    DateHelper.nullTimestampDate = new Date(0);
-    return DateHelper;
-}());
-exports.DateHelper = DateHelper;
-
-
-/***/ }),
-/* 145 */
+/* 146 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19614,7 +20952,7 @@ exports.linkButtonClasses = ".dhx_button.dhx_button--view_link.dhx_button--icon.
 
 
 /***/ }),
-/* 146 */
+/* 147 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19641,20 +20979,20 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var view_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var view_1 = __webpack_require__(5);
 var core_1 = __webpack_require__(1);
-var color_1 = __webpack_require__(44);
+var color_1 = __webpack_require__(45);
 var colors_1 = __webpack_require__(71);
-var en_1 = __webpack_require__(45);
+var en_1 = __webpack_require__(46);
 var types_1 = __webpack_require__(72);
 // tslint:disable-next-line
 var tooltip_1 = __webpack_require__(64);
 // tslint:disable-next-line
-var ts_message_1 = __webpack_require__(19);
-var picker_1 = __webpack_require__(147);
-var calculations_1 = __webpack_require__(148);
+var ts_message_1 = __webpack_require__(18);
+var picker_1 = __webpack_require__(148);
+var calculations_1 = __webpack_require__(149);
 var Colorpicker = /** @class */ (function (_super) {
     __extends(Colorpicker, _super);
     function Colorpicker(container, config) {
@@ -19961,15 +21299,15 @@ exports.Colorpicker = Colorpicker;
 
 
 /***/ }),
-/* 147 */
+/* 148 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(44);
+var color_1 = __webpack_require__(45);
 var dom_1 = __webpack_require__(0);
-var en_1 = __webpack_require__(45);
+var en_1 = __webpack_require__(46);
 function getPicker(colorpicker, pickerState, handlers) {
     var rgb = color_1.HSVtoRGB(pickerState.hsv);
     pickerState.background = color_1.RGBToHex(rgb);
@@ -20028,6 +21366,7 @@ function getPicker(colorpicker, pickerState, handlers) {
                     oninput: handlers.oninput,
                     maxlength: "7",
                     _key: "hex_input",
+                    "aria-label": "type color in HEX format",
                 }),
             ]),
         ]),
@@ -20060,7 +21399,7 @@ exports.calculatePaletteGrip = calculatePaletteGrip;
 
 
 /***/ }),
-/* 148 */
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20091,7 +21430,7 @@ exports.calculateRangeGrip = calculateRangeGrip;
 
 
 /***/ }),
-/* 149 */
+/* 150 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20100,12 +21439,12 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(150));
-__export(__webpack_require__(23));
+__export(__webpack_require__(151));
+__export(__webpack_require__(26));
 
 
 /***/ }),
-/* 150 */
+/* 151 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20136,17 +21475,17 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var view_1 = __webpack_require__(4);
-var ts_data_1 = __webpack_require__(5);
-var ComposeLayer_1 = __webpack_require__(151);
-var Legend_1 = __webpack_require__(153);
-var Tooltip_1 = __webpack_require__(155);
-var types_1 = __webpack_require__(23);
+var events_1 = __webpack_require__(2);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
+var ComposeLayer_1 = __webpack_require__(152);
+var Legend_1 = __webpack_require__(154);
+var types_1 = __webpack_require__(26);
 var index_1 = __webpack_require__(156);
 var index_2 = __webpack_require__(160);
-var Stacker_1 = __webpack_require__(170);
+var Stacker_1 = __webpack_require__(169);
 var common_1 = __webpack_require__(8);
+var Tooltip_1 = __webpack_require__(170);
 var Chart = /** @class */ (function (_super) {
     __extends(Chart, _super);
     function Chart(node, config) {
@@ -20199,10 +21538,59 @@ var Chart = /** @class */ (function (_super) {
         _this._layers = new ComposeLayer_1.ComposeLayer();
         _this.setConfig(config);
         _this._initEvents();
-        var render = function (vm, obj) {
+        _this._tooltip = new Tooltip_1.Tooltip(_this);
+        var render = function () {
             if (!_this.data.getLength()) {
                 return dom_1.el("div");
             }
+            var getChartAriaLabel = function (config) {
+                /*  Full example (without symbols of new line):
+                    Type chart "Title". X/Y Scale Name: bottom axis from Min to Max. Scale Name: left axis Name from Min to Max.
+                    Series: seria A, seria B, seria C, ...
+                 */
+                var scales = _this._scales;
+                var series = config.series;
+                var type = config.type;
+                if (!type) {
+                    // scatter chart
+                    type = series && series.length && series[0] ? series[0].type || "" : "";
+                }
+                var label = (type || "") + " chart.";
+                var getAxisName = function (cfg) { return (cfg._isXDirection ? "X" : "Y"); };
+                var getAxisTitle = function (cfg) { return cfg.title || cfg.text || cfg.value || ""; };
+                var getAxisMin = function (cfg) { return (cfg.steps && cfg.steps.length ? cfg.steps[0] : cfg.min || 0); };
+                var getAxisMax = function (cfg) {
+                    return cfg.steps && cfg.steps.length
+                        ? cfg.steps[cfg.steps.length - 1]
+                        : cfg.max || cfg.maxPoints || "max";
+                };
+                var getRadialAxisValue = function (attr, point) { return point[attr]; };
+                if (scales) {
+                    Object.keys(scales).forEach(function (direction) {
+                        var scale = scales[direction];
+                        var cfg = scale._axis || scale.config;
+                        if (direction === "radial") {
+                            var xData = scale._data._order;
+                            label += " X scale " + getAxisTitle(scale.config) + ": " + direction + " axis from " + getRadialAxisValue(scale.config.value, xData[0]) + " to " + getRadialAxisValue(scale.config.value, xData[xData.length - 1]) + ".";
+                            label += " " + getAxisName(scale) + " scale: axis from " + getAxisMin(cfg) + " to " + getAxisMax(cfg) + ".";
+                        }
+                        else {
+                            label += " " + getAxisName(scale) + " scale " + getAxisTitle(scale.config) + ": " + direction + " axis from " + getAxisMin(cfg) + " to " + getAxisMax(cfg) + ".";
+                        }
+                    });
+                }
+                if (series && series.length) {
+                    label += " Series:";
+                    series.forEach(function (seria, index) {
+                        label += " " + (type === "pie" || type === "pie3D" || type === "donut" ? seria.text : seria.value);
+                        label += index === series.length - 1 ? "." : ",";
+                    });
+                }
+                return label;
+            };
+            var getChartAriaAttrs = function (config) { return ({
+                "aria-label": getChartAriaLabel(config),
+            }); };
             var content = [
                 dom_1.resizer(function (x, y) {
                     _this._width = x;
@@ -20223,15 +21611,23 @@ var Chart = /** @class */ (function (_super) {
                 }),
             ];
             if (_this._width && _this._height) {
-                content.push(_this._layers.toVDOM(_this._width, _this._height));
+                content.push(_this._layers.toVDOM(_this._width, _this._height, _this.events));
             }
-            return dom_1.el(".dhx_widget.dhx_chart", {
-                class: config.css ? config.css : "",
-                onmousemove: _this._globalHTMLHandlers.onmousemove,
-                onmouseleave: _this._globalHTMLHandlers.onmouseleave,
-            }, content);
+            return dom_1.el(".dhx_widget.dhx_chart", __assign({ class: config.css ? config.css : "", onmousemove: _this._globalHTMLHandlers.onmousemove, onmouseleave: _this._globalHTMLHandlers.onmouseleave }, getChartAriaAttrs(config)), content);
         };
-        _this.mount(node, dom_1.create({ render: render }));
+        var view = dom_1.create({
+            render: render,
+            hooks: {
+                didMount: function (vm) {
+                    if (vm && vm.node && vm.node.parent && vm.node.parent.el) {
+                        _this._width = vm.node.parent.el.offsetWidth;
+                        _this._height = vm.node.parent.el.offsetHeight || 400;
+                        _this.paint();
+                    }
+                },
+            },
+        });
+        _this.mount(node, view);
         return _this;
     }
     Chart.prototype.getSeries = function (key) {
@@ -20245,8 +21641,8 @@ var Chart = /** @class */ (function (_super) {
         return result;
     };
     Chart.prototype.destructor = function () {
-        this._tooltip.destructor();
         this.events.clear();
+        this._tooltip.destructor();
         this.unmount();
     };
     Chart.prototype.setConfig = function (config) {
@@ -20318,12 +21714,11 @@ var Chart = /** @class */ (function (_super) {
             var legend = new Legend_1.Legend(this.data, legendConfig, this.events);
             this._layers.add(legend);
         }
-        this._tooltip = new Tooltip_1.Tooltip(document.body, { chart: this });
         this.paint();
     };
     Chart.prototype._setScale = function (config, position) {
         var scale = new index_1.default[config.type](this.data, config, position);
-        if (scale.config.grid && scale.config.type !== "radial") {
+        if (scale.config.type !== "radial") {
             this._layers.add(scale.scaleGrid());
         }
         this._layers.add(scale);
@@ -20363,7 +21758,7 @@ exports.Chart = Chart;
 
 
 /***/ }),
-/* 151 */
+/* 152 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20377,7 +21772,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var Filters_1 = __webpack_require__(152);
+var Filters_1 = __webpack_require__(153);
 var ComposeLayer = /** @class */ (function () {
     function ComposeLayer() {
         this._data = [];
@@ -20433,6 +21828,7 @@ var ComposeLayer = /** @class */ (function () {
         return dom_1.sv("svg", {
             width: width,
             height: height,
+            role: "graphics-document",
         }, [defs, chartsContent]);
     };
     return ComposeLayer;
@@ -20441,7 +21837,7 @@ exports.ComposeLayer = ComposeLayer;
 
 
 /***/ }),
-/* 152 */
+/* 153 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20485,7 +21881,7 @@ exports.dropShadow = function () {
 
 
 /***/ }),
-/* 153 */
+/* 154 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20502,10 +21898,10 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(23);
+var types_1 = __webpack_require__(26);
 var dom_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(8);
-var legend_1 = __webpack_require__(154);
+var legend_1 = __webpack_require__(155);
 function getDefaultMargin(halign, valign) {
     switch (valign) {
         case "middle": {
@@ -20564,6 +21960,10 @@ var Legend = /** @class */ (function () {
     };
     Legend.prototype.paint = function (width, height) {
         var _this = this;
+        var getLegendAriaAttrs = function (item) { return ({
+            role: "button",
+            "aria-label": item.active ? "Hide chart " + item.text : "Show chart " + item.text,
+        }); };
         var data = this._getData();
         var config = this.config;
         var positionX;
@@ -20576,11 +21976,7 @@ var Legend = /** @class */ (function () {
         var xPadding = 0;
         var yPadding = 0;
         data.forEach(function (item) {
-            svg.push(dom_1.sv("g", {
-                transform: "translate(" + xPadding + "," + yPadding + ")",
-                onclick: [_this._handlers.onclick, item.id, _this.config.values],
-                class: "legend-item " + (!item.active ? "not-active" : ""),
-            }, [
+            svg.push(dom_1.sv("g", __assign({ transform: "translate(" + xPadding + "," + yPadding + ")", onclick: [_this._handlers.onclick, item.id, _this.config.values], class: "legend-item " + (!item.active ? "not-active" : "") }, getLegendAriaAttrs(item)), [
                 dom_1.sv("text", {
                     x: figureWidth / 2 + 5,
                     y: 0,
@@ -20620,19 +22016,22 @@ var Legend = /** @class */ (function () {
                     : width - xPadding + itemPadding + figureWidth / 2;
                 break;
         }
-        return dom_1.sv("g", { transform: "translate(" + positionX + ", " + positionY + ")" }, svg);
+        return dom_1.sv("g", {
+            transform: "translate(" + positionX + ", " + positionY + ")",
+            "aria-label": "Legend",
+        }, svg);
     };
     Legend.prototype._getData = function () {
         var drawData = [];
         if (this.config.values) {
             var text_1 = common_1.locator(this.config.values.text);
             var fill_1 = common_1.locator(this.config.values.color);
-            this._data.map(function (item) {
+            this._data.map(function (item, index) {
                 drawData.push({
                     id: item.id,
                     text: text_1(item).toString(),
                     alpha: 1,
-                    fill: fill_1(item).toString(),
+                    fill: fill_1(item).toString() || common_1.getDefaultColor(index),
                     active: !item.$hidden,
                 });
             });
@@ -20661,7 +22060,7 @@ exports.Legend = Legend;
 
 
 /***/ }),
-/* 154 */
+/* 155 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20707,224 +22106,6 @@ exports.legendShape = legendShape;
 
 
 /***/ }),
-/* 155 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(8);
-var types_1 = __webpack_require__(23);
-var view_1 = __webpack_require__(4);
-var getAttrs = function (textWidth, x, y, type, chartType) {
-    var dy = chartType === "bar" ? 5 : 0;
-    switch (type) {
-        case "top": {
-            var h1 = (textWidth + 20 - 8 - 4) / 2;
-            var h2 = textWidth + 20 - 4;
-            var d = "M0 0 l4 -4 h" + h1 + " a2 2 0 0 0 2 -2 v-18 a2 2 0 0 0 -2 -2 h" + -h2 + " a2 2 0 0 0 -2 2 v18 a2 2 0 0 0 2 2 h" + h1 + " Z";
-            var textX = 0;
-            var textY = -15;
-            return {
-                d: d,
-                left: x,
-                top: y - 6 + dy,
-                textX: textX,
-                textY: textY,
-            };
-        }
-        case "bot": {
-            var h1 = (textWidth + 20 - 8 - 4) / 2;
-            var h2 = textWidth + 20 - 4;
-            var d = "M0 0 l4 4 h" + h1 + " a2 2 0 0 1 2 2 v18 a2 2 0 0 1 -2 2 h" + -h2 + " a2 2 0 0 1 -2 -2 v-18 a2 2 0 0 1 2 -2 h" + h1 + " Z";
-            var textX = 0;
-            var textY = 15;
-            return {
-                d: d,
-                left: x,
-                top: y + 6 - dy,
-                textX: textX,
-                textY: textY,
-            };
-        }
-        case "right": {
-            var h = textWidth + 20 - 4;
-            var d = "M0 0 l4 -4 v-5 a2 2 0 0 1 2 -2 h" + h + " a2 2 0 0 1 2 2 v18 a2 2 0 0 1 -2 2 h" + -h + " a2 2 0 0 1 -2 -2 v-5 Z";
-            var textX = h / 2 + 6;
-            var textY = 0;
-            return {
-                d: d,
-                left: x + 1,
-                top: y,
-                textX: textX,
-                textY: textY,
-            };
-        }
-        case "left": {
-            var h = textWidth + 20 - 4;
-            var d = "M0 0 l-4 -4 v-5 a2 2 0 0 0 -2 -2 h" + -h + " a2 2 0 0 0 -2 2 v18 a2 2 0 0 0 2 2 h" + h + " a2 2 0 0 0 2 -2 v-5 Z";
-            var textX = -h / 2 - 6;
-            var textY = 0;
-            return {
-                d: d,
-                left: x - 1,
-                top: y,
-                textX: textX,
-                textY: textY,
-            };
-        }
-        case "simple": {
-            var h = textWidth + 20 - 4;
-            var d = "M0 0 v-4 a2 2 0 0 1 2 -2 h" + h + " a2 2 0 0 1 2 2 v18 a2 2 0 0 1 -2 2 h" + -h + " a2 2 0 0 1 -2 -2 v-6 Z";
-            var textX = h / 2 + 2;
-            var textY = 6;
-            return {
-                d: d,
-                left: x - h / 2 - 2,
-                top: y - 5,
-                textX: textX,
-                textY: textY,
-            };
-        }
-    }
-};
-var Tooltip = /** @class */ (function (_super) {
-    __extends(Tooltip, _super);
-    function Tooltip(container, config) {
-        var _this = _super.call(this, container, config) || this;
-        _this._chart = config.chart;
-        _this._state = {
-            leftOffset: 0,
-            topOffset: 0,
-            value: "",
-            x: 0,
-            y: 0,
-            type: null,
-            chartType: null,
-            isVisible: false,
-        };
-        _this.mount(container, dom_1.create({ render: function () { return _this._draw(); } }));
-        _this._chart.events.on(types_1.ChartEvents.chartMouseMove, function (x, y, left, top) {
-            var closest = [Infinity, null, null, null, null]; // (dist, x, y, id, serieid)
-            _this._chart.eachSeries(function (serie) {
-                var serieClosest = serie.getClosest(x, y);
-                if (closest[0] > serieClosest[0]) {
-                    closest[0] = serieClosest[0];
-                    closest[1] = serieClosest[1];
-                    closest[2] = serieClosest[2];
-                    closest[3] = serieClosest[3];
-                    closest[4] = serie.id;
-                }
-            });
-            var tooltipSeries = _this._chart.getSeries(closest[4]);
-            if (tooltipSeries) {
-                var ref = common_1.calcPointRef(closest[3], closest[4]);
-                if (ref === _this._lastPointRef) {
-                    return;
-                }
-                var text = tooltipSeries.getTooltipText(closest[3]);
-                if (text) {
-                    var tooltipType = tooltipSeries.getTooltipType(closest[3], closest[1], closest[2]);
-                    _this._enableActivePoint(ref);
-                    _this._state.leftOffset = left;
-                    _this._state.topOffset = top;
-                    _this._state.value = text;
-                    _this._state.x = closest[1];
-                    _this._state.y = closest[2];
-                    _this._state.type = tooltipType;
-                    _this._state.chartType = tooltipSeries.config.type;
-                    _this._state.isVisible = true;
-                }
-                else {
-                    _this._hide();
-                }
-                _this.paint();
-            }
-        }, _this);
-        _this._chart.events.on(types_1.ChartEvents.chartMouseLeave, function () { return _this._hide(); }, _this);
-        return _this;
-    }
-    Tooltip.prototype.destructor = function () {
-        this._chart.events.detach(types_1.ChartEvents.chartMouseLeave, this);
-        this._chart.events.detach(types_1.ChartEvents.chartMouseMove, this);
-        this.unmount();
-    };
-    Tooltip.prototype._hide = function () {
-        this._disableLastActivePoint();
-        this._state.isVisible = false;
-        this.paint();
-    };
-    Tooltip.prototype._enableActivePoint = function (ref) {
-        var rootView = this._chart.getRootView();
-        var point = rootView && rootView.refs && rootView.refs[ref];
-        if (point) {
-            this._disableLastActivePoint();
-            this._lastPointRef = ref;
-            point.patch({ class: point.attrs.class + " active-figure" });
-        }
-    };
-    Tooltip.prototype._disableLastActivePoint = function () {
-        if (this._lastPointRef) {
-            var rootView = this._chart.getRootView();
-            var point = rootView && rootView.refs && rootView.refs[this._lastPointRef];
-            if (point) {
-                point.patch({ class: point.attrs.class.replace(" active-figure", "") });
-            }
-            this._lastPointRef = null;
-        }
-    };
-    Tooltip.prototype._draw = function () {
-        var _a = this._state, value = _a.value, x = _a.x, y = _a.y, type = _a.type, chartType = _a.chartType, isVisible = _a.isVisible;
-        var attrs;
-        if (isVisible && value !== "") {
-            var style = common_1.getFontStyle("tooltip-text");
-            var textWidth = common_1.getTextWidth(value, style);
-            attrs = getAttrs(textWidth, x, y, type || "top", chartType);
-        }
-        else {
-            attrs = { textX: 0, textY: 0, d: null, left: 0, top: 0 };
-        }
-        return dom_1.el(".dhx_chart.tooltip-container", {
-            style: {
-                pointerEvents: "none",
-                width: 0,
-                height: 0,
-                visibility: isVisible ? "visible" : "hidden",
-                position: "absolute",
-                left: attrs.left + this._state.leftOffset + "px",
-                top: attrs.top + this._state.topOffset + "px",
-            },
-        }, isVisible
-            ? [
-                dom_1.sv("svg", [
-                    dom_1.sv("path", { d: attrs.d, class: "tooltip-form" }),
-                    dom_1.sv("text", { x: attrs.textX, y: attrs.textY, class: "tooltip-text" }, [
-                        common_1.verticalCenteredText(value),
-                    ]),
-                ]),
-            ]
-            : null);
-    };
-    return Tooltip;
-}(view_1.View));
-exports.Tooltip = Tooltip;
-
-
-/***/ }),
 /* 156 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -20932,7 +22113,7 @@ exports.Tooltip = Tooltip;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var RadialScale_1 = __webpack_require__(157);
-var Scale_1 = __webpack_require__(46);
+var Scale_1 = __webpack_require__(47);
 var TextScale_1 = __webpack_require__(159);
 var scaleTypes = {
     radial: RadialScale_1.RadialScale,
@@ -20962,8 +22143,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var circle_1 = __webpack_require__(24);
-var Scale_1 = __webpack_require__(46);
+var circle_1 = __webpack_require__(27);
+var Scale_1 = __webpack_require__(47);
 var RadialScale = /** @class */ (function (_super) {
     __extends(RadialScale, _super);
     function RadialScale(_data, config) {
@@ -20979,7 +22160,7 @@ var RadialScale = /** @class */ (function (_super) {
         var realAxis = this.config.showAxis ? this._axis.steps : null;
         var axis = this._axis.steps.map(function (step) { return _this.point(step); });
         var scales = this._data.map(function (item) { return item[attribute]; });
-        var config = { scales: scales, axis: axis, realAxis: realAxis, zebra: zebra };
+        var config = { scales: scales, axis: axis, realAxis: realAxis, zebra: zebra, attribute: attribute };
         return circle_1.radarScale(config, width, height);
     };
     RadialScale.prototype.point = function (val) {
@@ -21021,9 +22202,16 @@ var AxisCreator = /** @class */ (function () {
     function AxisCreator(_data, conf) {
         if (conf === void 0) { conf = {}; }
         this._data = _data;
+        var chekedData = [];
+        for (var _i = 0, _a = this._data; _i < _a.length; _i++) {
+            var item = _a[_i];
+            if (typeof item === "number") {
+                chekedData.push(item);
+            }
+        }
         var defaults = {
-            min: Math.min.apply(Math, this._data),
-            max: Math.max.apply(Math, this._data),
+            min: Math.min.apply(Math, chekedData),
+            max: Math.max.apply(Math, chekedData),
             maxTicks: this._data.length < 20 ? this._data.length : 20,
         };
         this.config = __assign(__assign({}, defaults), conf);
@@ -21118,7 +22306,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = __webpack_require__(8);
-var Scale_1 = __webpack_require__(46);
+var Scale_1 = __webpack_require__(47);
 var SvgScales_1 = __webpack_require__(73);
 var renderScale = {
     left: SvgScales_1.left,
@@ -21224,16 +22412,16 @@ exports.TextScale = TextScale;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var Area_1 = __webpack_require__(74);
-var Bar_1 = __webpack_require__(75);
-var BarX_1 = __webpack_require__(162);
-var Donut_1 = __webpack_require__(163);
-var Line_1 = __webpack_require__(50);
-var Pie_1 = __webpack_require__(164);
-var Pie3D_1 = __webpack_require__(165);
-var Radar_1 = __webpack_require__(166);
-var Scatter_1 = __webpack_require__(167);
-var Spline_1 = __webpack_require__(168);
-var SplineArea_1 = __webpack_require__(169);
+var Bar_1 = __webpack_require__(76);
+var BarX_1 = __webpack_require__(161);
+var Donut_1 = __webpack_require__(162);
+var Line_1 = __webpack_require__(51);
+var Pie_1 = __webpack_require__(163);
+var Pie3D_1 = __webpack_require__(164);
+var Radar_1 = __webpack_require__(165);
+var Scatter_1 = __webpack_require__(166);
+var Spline_1 = __webpack_require__(167);
+var SplineArea_1 = __webpack_require__(168);
 var seriesTypes = {
     line: Line_1.default,
     spline: Spline_1.default,
@@ -21256,120 +22444,6 @@ exports.default = seriesTypes;
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(8);
-function hoverMode(cfg) {
-    // cfg.fill = cfg.stroke; ??
-    return cfg;
-}
-exports.hoverMode = hoverMode;
-function standarMode(cfg) {
-    return cfg;
-}
-exports.standarMode = standarMode;
-var forms = {
-    circle: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            cx: x,
-            cy: y,
-            r: 4,
-            class: "figure point-circle",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("circle", mode(config));
-    },
-    rect: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            x: x - 4,
-            y: y - 4,
-            width: 8,
-            height: 8,
-            class: "figure point-rect",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("rect", mode(config));
-    },
-    rhombus: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            points: x - 5 + "," + y + " " + x + "," + (y + 5) + " " + (x + 5) + "," + y + " " + x + "," + (y - 5),
-            class: "figure point-rhombus",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("polygon", mode(config));
-    },
-    triangle: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            points: x + "," + (y - 5) + " " + (x + 5) + "," + (y + 5) + " " + (x - 5) + "," + (y + 5),
-            class: "figure point-triangle",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("polygon", mode(config));
-    },
-    simpleCircle: function (color, _fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            cx: x,
-            cy: y,
-            r: 3,
-            class: "figure point-simple-circle",
-            fill: color,
-        };
-        return dom_1.sv("circle", mode(config));
-    },
-    simpleRect: function (color, _fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            x: x - 3,
-            y: y - 3,
-            width: 6,
-            height: 6,
-            class: "figure point-simple-rect",
-            fill: color,
-        };
-        return dom_1.sv("rect", mode(config));
-    },
-    empty: function () {
-        return null;
-    },
-};
-function getHelper(type) {
-    var helper = forms[type.toString()];
-    if (!helper) {
-        throw new Error("unknown point type");
-    }
-    return helper;
-}
-exports.getHelper = getHelper;
-function getShadeHelper(type, color, mode) {
-    var helper = getHelper(type);
-    color = color || "none";
-    var shade = common_1.getColorShade(color, 0.2);
-    return function (x, y, id) {
-        return helper(color, shade, "", x, y, id, mode);
-    };
-}
-exports.getShadeHelper = getShadeHelper;
-
-
-/***/ }),
-/* 162 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = function (d, b) {
         extendStatics = Object.setPrototypeOf ||
@@ -21384,7 +22458,7 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Bar_1 = __webpack_require__(75);
+var Bar_1 = __webpack_require__(76);
 var BarX = /** @class */ (function (_super) {
     __extends(BarX, _super);
     function BarX() {
@@ -21451,7 +22525,7 @@ exports.default = BarX;
 
 
 /***/ }),
-/* 163 */
+/* 162 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21469,11 +22543,22 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(24);
+var circle_1 = __webpack_require__(27);
 var common_1 = __webpack_require__(8);
-var NoScaleSeria_1 = __webpack_require__(49);
+var NoScaleSeria_1 = __webpack_require__(50);
 var Donut = /** @class */ (function (_super) {
     __extends(Donut, _super);
     function Donut() {
@@ -21481,6 +22566,18 @@ var Donut = /** @class */ (function (_super) {
     }
     Donut.prototype.paint = function (width, height) {
         var _this = this;
+        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
+        var getPointAriaAttrs = function (value, text, percent) {
+            if (percent === void 0) { percent = 0; }
+            return ({
+                role: "graphics-symbol",
+                "aria-roledescription": "piece of donut",
+                "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
+            });
+        };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.text || ""),
+        }); };
         var radius;
         if (height > width) {
             radius = width / 2;
@@ -21510,10 +22607,13 @@ var Donut = /** @class */ (function (_super) {
                     var dy = isUp ? -textPadding * 2 : textPadding;
                     var linkStart = circle_1.getCoordinates(avPercent, radius + 10, radius + 10);
                     var className2 = isRight ? "donut-value start-text" : "donut-value end-text";
-                    var text1 = dom_1.sv("text", { x: linkStart[0], y: linkStart[1] + dy, class: className }, [
-                        common_1.verticalCenteredText(text.toString()),
-                    ]);
-                    var text2 = dom_1.sv("text", { x: linkStart[0], y: linkStart[1] + dy + 16, class: className2 }, [common_1.verticalCenteredText(value.toString())]);
+                    var text1 = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
+                    var text2 = dom_1.sv("text", {
+                        x: linkStart[0],
+                        y: linkStart[1] + dy + 16,
+                        class: className2,
+                        "aria-hidden": "true",
+                    }, [common_1.verticalCenteredText(value.toString())]);
                     links.push(text1);
                     links.push(text2);
                     break;
@@ -21523,18 +22623,12 @@ var Donut = /** @class */ (function (_super) {
                     var textPadding = 10;
                     var dy = isUp ? -textPadding : textPadding;
                     var linkStart = circle_1.getCoordinates(avPercent, radius + 10, radius + 10);
-                    var textSvg = dom_1.sv("text", { x: linkStart[0], y: linkStart[1] + dy, class: className }, [
-                        common_1.verticalCenteredText(text.toString()),
-                    ]);
+                    var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
                     links.push(textSvg);
                     break;
                 }
                 case "percentOnly": {
-                    var percentText = dom_1.sv("text", {
-                        x: (middleLine[0] * 7) / 9,
-                        y: (middleLine[1] * 7) / 9,
-                        class: "pie-inner-value",
-                    }, [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
+                    var percentText = dom_1.sv("text", __assign({ x: (middleLine[0] * 7) / 9, y: (middleLine[1] * 7) / 9, class: "pie-inner-value" }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
                     links.push(percentText);
                     break;
                 }
@@ -21551,6 +22645,7 @@ var Donut = /** @class */ (function (_super) {
                 onmouseout: [circle_1.pieLikeHandlers.onmouseout],
                 // eslint-disable-next-line @typescript-eslint/unbound-method
                 onmouseover: [circle_1.pieLikeHandlers.onmouseover, shiftX, shiftY],
+                role: "presentation",
             });
             svg.push(currentSector);
             if (_this._points.length === 1) {
@@ -21567,9 +22662,10 @@ var Donut = /** @class */ (function (_super) {
             cy: 0,
             r: (radius * 5) / 9,
             fill: "#FFFFFF",
+            role: "presentation",
         }));
         svg = svg.concat(links);
-        return dom_1.sv("g", { transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, svg);
+        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
     };
     return Donut;
 }(NoScaleSeria_1.default));
@@ -21577,7 +22673,7 @@ exports.default = Donut;
 
 
 /***/ }),
-/* 164 */
+/* 163 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21609,9 +22705,9 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(24);
+var circle_1 = __webpack_require__(27);
 var common_1 = __webpack_require__(8);
-var NoScaleSeria_1 = __webpack_require__(49);
+var NoScaleSeria_1 = __webpack_require__(50);
 var Pie = /** @class */ (function (_super) {
     __extends(Pie, _super);
     function Pie() {
@@ -21620,6 +22716,15 @@ var Pie = /** @class */ (function (_super) {
     // todo move to NoScaleSeria
     Pie.prototype.paint = function (width, height) {
         var _this = this;
+        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
+        var getPointAriaAttrs = function (value, text, percent) { return ({
+            role: "graphics-symbol",
+            "aria-roledescription": "piece of pie",
+            "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
+        }); };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.text || ""),
+        }); };
         var _a = this.config, stroke = _a.stroke, strokeWidth = _a.strokeWidth, gradient = _a.gradient, useLines = _a.useLines, showText = _a.showText, showTextTemplate = _a.showTextTemplate, subType = _a.subType;
         var radius;
         if (height > width) {
@@ -21661,20 +22766,13 @@ var Pie = /** @class */ (function (_super) {
                     d: "M" + linkStart[0] + " " + linkStart[1] + " L" + linkEnd[0] + " " + linkEnd[1] + " h " + lineLength,
                     class: "pie-value-connector",
                 }));
-                var textSvg = dom_1.sv("text", {
-                    x: linkEnd[0],
-                    y: linkEnd[1],
-                    dx: lineLength / 2 + lineLength > 0 ? 10 : -10,
-                    class: className,
-                }, [common_1.verticalCenteredText(text.toString())]);
+                var textSvg = dom_1.sv("text", __assign({ x: linkEnd[0], y: linkEnd[1], dx: lineLength / 2 + lineLength > 0 ? 10 : -10, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
                 links.push(textSvg);
             }
             else {
                 var textPadding = 5;
                 var dy = avPercent > 0.5 || avPercent < 0 ? -textPadding : textPadding;
-                var textSvg = dom_1.sv("text", { x: linkStart[0], y: linkStart[1] + dy, class: className }, [
-                    common_1.verticalCenteredText(text.toString()),
-                ]);
+                var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
                 links.push(textSvg);
             }
             if ((showText || showTextTemplate) && showText !== false) {
@@ -21682,6 +22780,7 @@ var Pie = /** @class */ (function (_super) {
                     x: middleLine[0] * 0.7,
                     y: middleLine[1] * 0.7,
                     class: "pie-inner-value",
+                    "aria-hidden": "true",
                 }, [
                     showTextTemplate
                         ? common_1.verticalCenteredText(showTextTemplate(value.toString()))
@@ -21694,6 +22793,7 @@ var Pie = /** @class */ (function (_super) {
                     x: middleLine[0] * 0.5,
                     y: middleLine[1] * 0.5,
                     class: "pie-inner-value",
+                    "aria-hidden": "true",
                 }, [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
                 links.push(percentText);
             }
@@ -21712,6 +22812,7 @@ var Pie = /** @class */ (function (_super) {
                 onmouseover: [circle_1.pieLikeHandlers.onmouseover, shiftX, shiftY],
                 // eslint-disable-next-line @typescript-eslint/unbound-method
                 onmouseout: [circle_1.pieLikeHandlers.onmouseout],
+                role: "presentation",
             });
             pie.push(currentSector);
             if (_this._points.length > 1 && stroke) {
@@ -21735,7 +22836,7 @@ var Pie = /** @class */ (function (_super) {
         svg = svg.concat(pie);
         svg = svg.concat(lines);
         svg = svg.concat(links);
-        return dom_1.sv("g", { transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, svg);
+        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
     };
     return Pie;
 }(NoScaleSeria_1.default));
@@ -21743,7 +22844,7 @@ exports.default = Pie;
 
 
 /***/ }),
-/* 165 */
+/* 164 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21761,11 +22862,22 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(24);
+var circle_1 = __webpack_require__(27);
 var common_1 = __webpack_require__(8);
-var NoScaleSeria_1 = __webpack_require__(49);
+var NoScaleSeria_1 = __webpack_require__(50);
 var Pie = /** @class */ (function (_super) {
     __extends(Pie, _super);
     function Pie() {
@@ -21774,6 +22886,15 @@ var Pie = /** @class */ (function (_super) {
     // todo move to NoScaleSeria
     Pie.prototype.paint = function (width, height) {
         var _this = this;
+        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
+        var getPointAriaAttrs = function (value, text, percent) { return ({
+            role: "graphics-symbol",
+            "aria-roledescription": "piece of pie",
+            "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
+        }); };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.text || ""),
+        }); };
         var _a = this.config, subType = _a.subType, useLines = _a.useLines, showText = _a.showText, showTextTemplate = _a.showTextTemplate;
         var radiusX;
         if (height > width) {
@@ -21810,20 +22931,13 @@ var Pie = /** @class */ (function (_super) {
                     d: "M" + linkStart[0] + " " + linkStart[1] + " L" + linkEnd[0] + " " + linkEnd[1] + " h " + lineLength,
                     class: "pie-value-connector",
                 }));
-                var textSvg = dom_1.sv("text", {
-                    x: linkEnd[0],
-                    y: linkEnd[1],
-                    dx: lineLength / 2 + lineLength > 0 ? 10 : -10,
-                    class: className,
-                }, [common_1.verticalCenteredText(text.toString())]);
+                var textSvg = dom_1.sv("text", __assign({ x: linkEnd[0], y: linkEnd[1], dx: lineLength / 2 + lineLength > 0 ? 10 : -10, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
                 links.push(textSvg);
             }
             else {
                 var textPadding = 10;
                 var dy = avPercent > 0.5 || avPercent < 0 ? -textPadding : textPadding;
-                var textSvg = dom_1.sv("text", { x: linkStart[0], y: linkStart[1] + dy, class: className }, [
-                    common_1.verticalCenteredText(text.toString()),
-                ]);
+                var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
                 links.push(textSvg);
             }
             if ((showText || showTextTemplate) && showText !== false) {
@@ -21831,6 +22945,7 @@ var Pie = /** @class */ (function (_super) {
                     x: middleLine[0] * 0.7,
                     y: middleLine[1] * 0.7,
                     class: "pie-inner-value",
+                    "aria-hidden": "true",
                 }, [
                     showTextTemplate
                         ? common_1.verticalCenteredText(showTextTemplate(value))
@@ -21843,6 +22958,7 @@ var Pie = /** @class */ (function (_super) {
                     x: middleLine[0] * 0.6,
                     y: middleLine[1] * 0.6,
                     class: "pie-inner-value",
+                    "aria-hidden": "true",
                 }, [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
                 links.push(percentText);
             }
@@ -21871,6 +22987,7 @@ var Pie = /** @class */ (function (_super) {
                     class: "chart pie3d addition",
                     stroke: "none",
                     filter: "url(#shadow)",
+                    role: "presentation",
                 });
                 svg.push(additionPath);
             }
@@ -21883,6 +23000,7 @@ var Pie = /** @class */ (function (_super) {
                 stroke: "none",
                 onclick: [_this._handlers.onclick, item[1], item[2]],
                 class: "chart pie3d",
+                role: "presentation",
             }));
             if (_this._points.length === 1) {
                 tooltipData.push([width / 2, height / 2]);
@@ -21895,7 +23013,7 @@ var Pie = /** @class */ (function (_super) {
         this._center = [width / 2, height / 2];
         this._tooltipData = tooltipData;
         svg = svg.concat(links);
-        return dom_1.sv("g", { transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, svg);
+        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
     };
     return Pie;
 }(NoScaleSeria_1.default));
@@ -21903,7 +23021,7 @@ exports.default = Pie;
 
 
 /***/ }),
-/* 166 */
+/* 165 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21934,9 +23052,9 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(24);
+var circle_1 = __webpack_require__(27);
 var common_1 = __webpack_require__(8);
-var BaseSeria_1 = __webpack_require__(48);
+var BaseSeria_1 = __webpack_require__(49);
 var Radar = /** @class */ (function (_super) {
     __extends(Radar, _super);
     function Radar() {
@@ -21956,12 +23074,16 @@ var Radar = /** @class */ (function (_super) {
         if (!this.config.active) {
             return (this._points = []);
         }
+        var xLocator = common_1.locator(this._scale.config.value);
         this._points = this._data.map(function (item, index) {
             // raw values
             var value = _this._locator(item);
             var set = [value, value, item.id, value, value];
             if (prev) {
                 set[1] += prev[index][1];
+            }
+            if (xLocator) {
+                set.push(xLocator(item));
             }
             return set;
         });
@@ -21979,6 +23101,20 @@ var Radar = /** @class */ (function (_super) {
     Radar.prototype.paint = function (width, height) {
         var _this = this;
         _super.prototype.paint.call(this, width, height);
+        var getPointAriaAttrs = function (key, points) {
+            var point;
+            if (key) {
+                point = points.find(function (p) { return key.includes(p[2]); });
+            }
+            return {
+                role: "graphics-symbol",
+                "aria-roledescription": "point",
+                "aria-label": point ? "point x=" + point[5] + " y=" + point[4] : "",
+            };
+        };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.value || ""),
+        }); };
         if (!this.config.active) {
             return;
         }
@@ -21994,12 +23130,17 @@ var Radar = /** @class */ (function (_super) {
             class: "chart radar",
         }));
         if (config.pointType) {
-            var points = this._points.map(function (p) {
-                return _this._drawPointType(p[0], p[1], common_1.calcPointRef(p[2], _this.id));
+            var points = this._points
+                .map(function (p) { return _this._drawPointType(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); })
+                .map(function (node) {
+                if (node && node.attrs) {
+                    node.attrs = __assign(__assign({}, node.attrs), getPointAriaAttrs(node.key, _this._points));
+                }
+                return node;
             });
             svg.push(dom_1.sv("g", points));
         }
-        return dom_1.sv("g", { id: "seria" + config.id }, svg);
+        return dom_1.sv("g", __assign({ id: "seria" + config.id }, getChartAriaAttrs(this.config)), svg);
     };
     Radar.prototype._calckFinalPoints = function (width, height) {
         var _this = this;
@@ -22048,7 +23189,7 @@ exports.default = Radar;
 
 
 /***/ }),
-/* 167 */
+/* 166 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22078,7 +23219,7 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var Line_1 = __webpack_require__(50);
+var Line_1 = __webpack_require__(51);
 var common_1 = __webpack_require__(8);
 var Scatter = /** @class */ (function (_super) {
     __extends(Scatter, _super);
@@ -22115,7 +23256,7 @@ exports.default = Scatter;
 
 
 /***/ }),
-/* 168 */
+/* 167 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22135,8 +23276,8 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var spline_1 = __webpack_require__(76);
-var Line_1 = __webpack_require__(50);
+var spline_1 = __webpack_require__(77);
+var Line_1 = __webpack_require__(51);
 var Spline = /** @class */ (function (_super) {
     __extends(Spline, _super);
     function Spline() {
@@ -22161,7 +23302,7 @@ exports.default = Spline;
 
 
 /***/ }),
-/* 169 */
+/* 168 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22181,7 +23322,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var spline_1 = __webpack_require__(76);
+var spline_1 = __webpack_require__(77);
 var Area_1 = __webpack_require__(74);
 var SplineArea = /** @class */ (function (_super) {
     __extends(SplineArea, _super);
@@ -22228,7 +23369,7 @@ exports.default = SplineArea;
 
 
 /***/ }),
-/* 170 */
+/* 169 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22282,6 +23423,220 @@ exports.default = Stacker;
 
 
 /***/ }),
+/* 170 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var common_1 = __webpack_require__(8);
+var line_1 = __webpack_require__(75);
+var types_1 = __webpack_require__(26);
+var Tooltip = /** @class */ (function () {
+    function Tooltip(chart) {
+        this._chart = chart;
+        this._initEvents();
+    }
+    Tooltip.prototype.destructor = function () {
+        document.body.removeChild(this._tooltip);
+    };
+    Tooltip.prototype._showLineTooltip = function (lineTooltipItems) {
+        var lineTooltip = "";
+        var root = this._chart.getRootView();
+        var calcPointTop = 0;
+        for (var _i = 0, lineTooltipItems_1 = lineTooltipItems; _i < lineTooltipItems_1.length; _i++) {
+            var item = lineTooltipItems_1[_i];
+            calcPointTop += item.top;
+            this._prevLine =
+                root &&
+                    root.refs &&
+                    root.refs["line" + Math.round(item.left)] &&
+                    root.refs["line" + Math.round(item.left)].el;
+            this._prevLine.classList.add("grid-line__active");
+            var seria = this._chart.getSeries(item.seriaId);
+            var point = seria.getPoints();
+            if (!point.length || !seria.config.tooltip)
+                continue;
+            var shadeColor = seria.config.pointColor ||
+                (seria.config.color && seria.config.color !== "none"
+                    ? seria.config.color
+                    : seria.config.fill);
+            var shadeHTMLHelper = line_1.getShadeHTMLHelper(seria.config.pointType !== "empty" && seria.config.pointType
+                ? seria.config.pointType
+                : "simpleRect", shadeColor);
+            lineTooltip += "<div class=\"line-point\" _ref=\"dhx_tooltip_" + seria.config.id + "_box\">\n\t\t\t\t<svg class=\"dhx_tooltip_svg\" role=\"graphics-document\" style=\"width: 8px; height: 8px;\">" + shadeHTMLHelper(4, 4, point[0][2]) + "</svg>\n\t\t\t\t<span class=\"dhx_line-point-text\" _ref=\"dhx_tooltip_" + seria.config.id + "_text\">" + item.text + "</span>\n\t\t\t</div>";
+        }
+        if (!this._tooltip) {
+            this._createTooltip();
+        }
+        var bodyHeight = document.body.offsetHeight;
+        var bodyWidth = document.body.offsetWidth;
+        this._tooltip.innerHTML = lineTooltip;
+        this._tooltip.classList.add("dhx_chart_tooltip__visible");
+        var middlePointHeight = calcPointTop / lineTooltipItems.length;
+        var lineRect = this._prevLine.getBoundingClientRect();
+        var contentHight = this._tooltip.offsetHeight;
+        var contentWidth = this._tooltip.offsetWidth;
+        var top = middlePointHeight - contentHight / 2 + lineRect.top + window.scrollY;
+        var left = lineRect.left + 10;
+        if (top + contentHight > bodyHeight) {
+            top -= top + contentHight - bodyHeight;
+        }
+        if (left + contentWidth > bodyWidth) {
+            left = lineRect.left - contentWidth - 10;
+        }
+        this._tooltip.style.left = left + "px";
+        this._tooltip.style.top = top + "px";
+    };
+    Tooltip.prototype._showTooltip = function (text, e) {
+        if (!this._tooltip) {
+            this._createTooltip();
+        }
+        var bodyHeight = document.body.offsetHeight;
+        var bodyWidth = document.body.offsetWidth;
+        this._tooltip.innerHTML = text;
+        this._tooltip.classList.add("dhx_chart_tooltip__visible");
+        var contentHight = this._tooltip.offsetHeight;
+        var contentWidth = this._tooltip.offsetWidth;
+        var mouseTop = e.pageY + 10;
+        var mouseLeft = e.pageX + 10;
+        if (mouseTop + contentHight > bodyHeight) {
+            mouseTop = e.pageY - contentHight;
+        }
+        if (mouseLeft + contentWidth > bodyWidth) {
+            mouseLeft = e.pageX - contentWidth - 10;
+        }
+        this._tooltip.style.left = mouseLeft + "px";
+        this._tooltip.style.top = mouseTop + "px";
+    };
+    Tooltip.prototype._showTooltipOnClosest = function (closest) {
+        if (!this._tooltip) {
+            this._createTooltip();
+        }
+        var tooltipSeries = this._chart.getSeries(closest[4]);
+        if (tooltipSeries) {
+            var text = tooltipSeries.getTooltipText(closest[3]);
+            if (!text)
+                return;
+            var layersSize = this._chart._layers.getSizes();
+            var root = this._chart.getRootNode();
+            var rect = root.getBoundingClientRect();
+            this._tooltip.innerHTML = text;
+            this._tooltip.classList.add("dhx_chart_tooltip__visible");
+            var bodyHeight = document.body.offsetHeight;
+            var contentHight = this._tooltip.offsetHeight;
+            var top_1 = closest[2] +
+                rect.top +
+                contentHight / 2 +
+                layersSize.top -
+                (this._chart.config.type === "radar" ? 10 : 15);
+            if (top_1 + contentHight > bodyHeight) {
+                top_1 =
+                    closest[2] +
+                        rect.top -
+                        contentHight / 2 +
+                        layersSize.top -
+                        (this._chart.config.type === "radar" ? 10 : 15);
+            }
+            if (top_1 + contentHight > bodyHeight) {
+                this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+            this._tooltip.style.left = rect.left + closest[1] + 10 + "px";
+            this._tooltip.style.top = top_1 + "px";
+        }
+    };
+    Tooltip.prototype._createTooltip = function () {
+        this._tooltip = document.createElement("div");
+        this._tooltip.classList.add("dhx_chart_tooltip");
+        this._tooltip.classList.add("dhx_chart_tooltip_line");
+        this._tooltip.classList.add("dhx_chart_tooltip__hidden");
+        document.body.appendChild(this._tooltip);
+    };
+    Tooltip.prototype._initEvents = function () {
+        var _this = this;
+        this._chart.events.on(types_1.ChartEvents.chartMouseMove, function (x, y) {
+            if (_this._prevLine) {
+                _this._prevLine.classList.remove("grid-line__active");
+            }
+            if (!_this._mouseOverBar) {
+                var lineTooltipItems_2 = [];
+                var closest_1 = [Infinity, null, null, null, null]; // (dist, x, y, id, serieid)
+                _this._chart.eachSeries(function (seria) {
+                    var type = seria.config.type;
+                    if (type === "line" || type === "spline" || type === "splineArea" || type === "area") {
+                        var closestLine = seria.getClosestVertical(x);
+                        var item = {
+                            value: closestLine[4],
+                            text: seria.getTooltipText(closestLine[3]),
+                            seriaId: seria.config.id,
+                            left: closestLine[1],
+                            top: closestLine[2],
+                        };
+                        if (typeof item.left === "number" && typeof item.top === "number") {
+                            lineTooltipItems_2.push(item);
+                        }
+                    }
+                    else if (type === "pie" || type === "pie3D" || type === "donut" || type === "radar") {
+                        var seriaClosest = seria.getClosest(x, y);
+                        if (closest_1[0] > seriaClosest[0]) {
+                            closest_1[0] = seriaClosest[0];
+                            closest_1[1] = seriaClosest[1];
+                            closest_1[2] = seriaClosest[2];
+                            closest_1[3] = seriaClosest[3];
+                            closest_1[4] = seria.id;
+                        }
+                    }
+                });
+                if (lineTooltipItems_2.length) {
+                    lineTooltipItems_2.sort(function (a, b) { return b.value - a.value; });
+                    _this._showLineTooltip(lineTooltipItems_2);
+                }
+                else {
+                    _this._showTooltipOnClosest(closest_1);
+                }
+            }
+        });
+        this._chart.events.on(types_1.ChartEvents.seriaMouseMove, function (id, seriaId, e) {
+            _this._mouseOverBar = true;
+            var rootView = _this._chart.getRootView();
+            var seria = _this._chart.getSeries(seriaId);
+            var text = seria.getTooltipText(id);
+            var item = rootView && rootView.refs && rootView.refs[common_1.calcPointRef(id, seriaId)].el;
+            item.setAttribute("fill-opacity", seria.config.alpha > 0.6 ? seria.config.alpha - 0.4 : 1);
+            if (text) {
+                _this._showTooltip(text, e);
+            }
+            else if (_this._tooltip) {
+                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+        });
+        this._chart.events.on(types_1.ChartEvents.seriaMouseLeave, function (id, seriaId) {
+            _this._mouseOverBar = false;
+            var rootView = _this._chart.getRootView();
+            var seria = _this._chart.getSeries(seriaId);
+            if (seria.config.type !== "area") {
+                var item = rootView && rootView.refs && rootView.refs[common_1.calcPointRef(id, seriaId)].el;
+                item.setAttribute("fill-opacity", seria.config.alpha);
+            }
+            if (_this._tooltip) {
+                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+        });
+        this._chart.events.on(types_1.ChartEvents.chartMouseLeave, function () {
+            if (_this._tooltip) {
+                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+            if (_this._prevLine) {
+                _this._prevLine.classList.remove("grid-line__active");
+            }
+        });
+    };
+    return Tooltip;
+}());
+exports.Tooltip = Tooltip;
+
+
+/***/ }),
 /* 171 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -22310,19 +23665,19 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
 var keycodes_1 = __webpack_require__(172);
-var view_1 = __webpack_require__(4);
-var ts_data_1 = __webpack_require__(5);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 var ts_layout_1 = __webpack_require__(13);
-var ts_list_1 = __webpack_require__(37);
+var ts_list_1 = __webpack_require__(39);
 var ts_popup_1 = __webpack_require__(10);
 var keyListener_1 = __webpack_require__(173);
-var en_1 = __webpack_require__(51);
-var types_1 = __webpack_require__(21);
+var en_1 = __webpack_require__(52);
+var types_1 = __webpack_require__(24);
 var helper_1 = __webpack_require__(174);
-var types_2 = __webpack_require__(77);
+var types_2 = __webpack_require__(78);
 var helper_2 = __webpack_require__(6);
 function itemsCountTemplate(count, templateFN) {
     if (typeof templateFN === "function") {
@@ -22337,7 +23692,7 @@ var template = function (item) {
         return "<span class=\"" + item.icon + " dhx_combobox-options__icon\"></span> <span class=\"dhx_combobox-options__value\">" + item.value + "</span>";
     }
     if (item.src) {
-        return "<img src=\"" + item.src + "\" class=\"dhx_combobox-options__image\"></img> <span class=\"dhx_combobox-options__value\">" + item.value + "</span>";
+        return "<img src=\"" + item.src + "\" class=\"dhx_combobox-options__image\" alt=" + item.value + "></img> <span class=\"dhx_combobox-options__value\">" + item.value + "</span>";
     }
     return "<span class=\"dhx_combobox-options__value\">" + item.value + "</span>";
 };
@@ -22347,7 +23702,7 @@ var Combobox = /** @class */ (function (_super) {
         var _this = _super.call(this, element, core_1.extend({
             template: template,
             listHeight: 224,
-            itemHeight: 32,
+            itemHeight: 36,
             disabled: false,
             readOnly: false,
         }, config)) || this;
@@ -22559,7 +23914,9 @@ var Combobox = /** @class */ (function (_super) {
             showHelper: function (e) {
                 e.preventDefault();
                 e.stopPropagation();
-                _this._helper.show(e.target);
+                _this._helper.show(e.target, {
+                    mode: _this.config.labelPosition === "left" ? "bottom" : "right",
+                });
             },
             selectAll: function () {
                 if (_this._state.unselectActive) {
@@ -22870,6 +24227,7 @@ var Combobox = /** @class */ (function (_super) {
                             tabindex: "0",
                             role: "button",
                             onclick: this._handlers.showHelper,
+                            id: "dhx_label__help_" + this._uid,
                         }),
                     ]
                     : labelStyle.label)
@@ -22908,6 +24266,13 @@ var Combobox = /** @class */ (function (_super) {
                                     : this._state.value,
                                 readOnly: readOnly || disabled,
                                 required: required,
+                                "aria-label": readOnly
+                                    ? "Select value"
+                                    : "Type or select value",
+                                "aria-describedby": helpMessage
+                                    ? "dhx_label__help_" + this._uid
+                                    : null,
+                                "aria-expanded": true,
                             }),
                         ]),
                     ])),
@@ -22926,9 +24291,7 @@ var Combobox = /** @class */ (function (_super) {
                 ? [
                     dom_1.el("li.dhx_combobox-input-list__item.dhx_combobox-tag", [
                         dom_1.el("span.dhx_combobox-tag__value", itemsCountTemplate(count, this.config.itemsCount)),
-                        dom_1.el("button.dhx_button.dhx_combobox-tag__action.dhx_combobox__action-clear-all", [
-                            dom_1.el("span.dhx_button__icon.dxi.dxi-close-circle"),
-                        ]),
+                        dom_1.el("button.dhx_button.dhx_combobox-tag__action.dhx_combobox__action-clear-all", { "aria-label": "clear all" }, [dom_1.el("span.dhx_button__icon.dxi.dxi-close-circle")]),
                     ]),
                 ]
                 : [];
@@ -22943,13 +24306,14 @@ var Combobox = /** @class */ (function (_super) {
                 dom_1.el("span.dhx_combobox-tag__value", _this._getItemText(item)),
                 dom_1.el("button.dhx_button.dhx_button--icon.dhx_combobox-tag__action.dhx_combobox__action-remove", {
                     type: "button",
+                    "aria-label": "remove",
                 }, [dom_1.el("span.dhx_button__icon.dxi.dxi-close-circle")]),
             ]);
         });
     };
     Combobox.prototype._drawImageOrIcon = function (item) {
         if (item.src) {
-            return dom_1.el("img.dhx_combobox-tag__image", { src: item.src });
+            return dom_1.el("img.dhx_combobox-tag__image", { src: item.src, alt: "" });
         }
         else if (item.icon) {
             return dom_1.el("span.dhx_combobox-tag__icon", { class: item.icon });
@@ -23084,7 +24448,7 @@ exports.KeyListener = KeyListener;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var en_1 = __webpack_require__(51);
+var en_1 = __webpack_require__(52);
 function selectAllView() {
     return dom_1.el(".dhx_list-item.dhx_combobox-options__item.dhx_combobox-options__item--select-all.dhx_combobox__action-select-all", en_1.default.selectAll);
 }
@@ -23110,7 +24474,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(176));
-__export(__webpack_require__(78));
+__export(__webpack_require__(79));
 
 
 /***/ }),
@@ -23146,7 +24510,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var ts_list_1 = __webpack_require__(37);
+var ts_list_1 = __webpack_require__(39);
 var editors_1 = __webpack_require__(177);
 var DataView = /** @class */ (function (_super) {
     __extends(DataView, _super);
@@ -23168,7 +24532,9 @@ var DataView = /** @class */ (function (_super) {
         }
         var virtual = this.config.virtual;
         var index = this.data.getIndex(id);
-        var itemRow = dataViewEl.children[Math.floor(index / this.config.itemsInRow)];
+        var currentRow = Math.floor(index / this.config.itemsInRow);
+        var currentPage = Math.floor(currentRow / dataViewEl.children.length) || 0;
+        var itemRow = dataViewEl.children[currentRow - dataViewEl.children.length * currentPage];
         if (!virtual && !itemRow)
             return;
         var item = itemRow.children[index % this.config.itemsInRow];
@@ -23199,8 +24565,7 @@ var DataView = /** @class */ (function (_super) {
             return editor.toHTML(isLastItemInRow);
         }
         var mx = this.data.getMetaMap(item);
-        return dom_1.el("div", {
-            class: "dhx_dataview-item" +
+        return dom_1.el("div", __assign(__assign({ class: "dhx_dataview-item" +
                 (mx && mx.selected ? " dhx_dataview-item--selected" : "") +
                 (focus ? " dhx_dataview-item--focus" : "") +
                 (mx && mx.drop && !this._edited ? " dhx_dataview-item--drophere" : "") +
@@ -23208,20 +24573,16 @@ var DataView = /** @class */ (function (_super) {
                 (this.config.dragMode && !this._edited ? " dhx_dataview-item--drag" : "") +
                 (gapWithPx(gap) ? " dhx_dataview-item--with-gap" : "") +
                 (item.css ? " " + item.css : "") +
-                (isLastItemInRow ? " dhx_dataview-item--last-item-in-row" : ""),
-            style: {
+                (isLastItemInRow ? " dhx_dataview-item--last-item-in-row" : ""), style: {
                 width: "calc(" + 100 / itemsInRow + "% - " + gapWithPx(gap) + " * " + (itemsInRow - 1) /
                     itemsInRow + "px)",
                 "margin-right": isLastItemInRow ? "" : gap,
                 height: template ? null : itemHeight,
-            },
-            _key: id,
-            dhx_id: id,
-            _ref: id,
-        }, html
+            }, _key: id, dhx_id: id, _ref: id }, this.getDataViewItemAriaAttrs(this, item)), { tabindex: focus ? 0 : -1 }), html
             ? [
                 dom_1.el(".dhx_dataview-item__inner-html", {
                     ".innerHTML": html,
+                    role: "presentation",
                 }),
             ]
             : item.value || item.text || item.value);
@@ -23239,13 +24600,14 @@ var DataView = /** @class */ (function (_super) {
             currentCounter = (currentCounter + 1) % itemsInRow;
             return items;
         }, []);
-        return dom_1.el("", __assign(__assign({}, this._handlers), { dhx_widget_id: this._uid, class: (css ? css : "") +
+        return dom_1.el("", __assign(__assign(__assign({}, this._handlers), { dhx_widget_id: this._uid, class: (css ? css : "") +
                 " dhx_widget dhx_dataview" +
                 (this.config.multiselection && this.selection.getItem() ? " dhx_no-select--pointer" : ""), style: {
                 height: this.config.height,
-            } }), rows.map(function (row) {
+            } }), this.getDataViewAriaAttrs(this.config, this.data.getLength(), rows.length, itemsInRow)), rows.map(function (row, index) {
             return dom_1.el(".dhx_dataview-row", {
                 style: { margin: gap },
+                "aria-label": "Row " + (index + 1),
             }, row);
         }));
     };
@@ -23269,6 +24631,29 @@ var DataView = /** @class */ (function (_super) {
             e.preventDefault();
         };
         return handlers;
+    };
+    DataView.prototype.getDataViewItemAriaAttrs = function (context, item) {
+        var getAriaGrabbed = function (context, item) {
+            return context.config.dragMode && !context._edited
+                ? { "aria-grabbed": Boolean(item.$dragtarget && !context._edited).toString() }
+                : {};
+        };
+        var getAriaRoleDescription = function (context) {
+            return context.config.editable
+                ? {
+                    "aria-roledescription": "" + (context._edited ? "Press Enter to stop editing" : "Double click to edit content"),
+                }
+                : {};
+        };
+        return __assign(__assign({ role: "option", "aria-selected": item.$selected ? "true" : "false" }, getAriaGrabbed(context, item)), getAriaRoleDescription(context));
+    };
+    DataView.prototype.getDataViewAriaAttrs = function (config, itemsCount, rowsCount, itemsInRow) {
+        return {
+            role: "listbox",
+            "aria-label": "Dataview, " + itemsCount + " options on " + rowsCount + " rows, " + itemsInRow + " options per row." + (config.editable ? " Content is editable." : ""),
+            "aria-multiselectable": config.selection && config.multiselection ? "true" : "false",
+            "aria-readonly": config.editable ? "false" : "true",
+        };
     };
     return DataView;
 }(ts_list_1.List));
@@ -23297,7 +24682,7 @@ exports.getEditor = getEditor;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(78);
+var types_1 = __webpack_require__(79);
 var InputEditor = /** @class */ (function () {
     function InputEditor(item, dataView) {
         var _this = this;
@@ -23338,11 +24723,13 @@ var InputEditor = /** @class */ (function () {
                     itemsInRow + "px)",
                 marginRight: isLastItemInRow ? "" : gap,
             },
+            role: "presentation",
         }, [
             dom_1.el("div.dhx_input__container", {
                 style: {
                     height: "100%",
                 },
+                role: "presentation",
             }, [
                 dom_1.el("input.dhx_input", {
                     class: (this._item.css ? " " + this._item.css : "") +
@@ -23451,15 +24838,15 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var events_1 = __webpack_require__(3);
-var view_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var view_1 = __webpack_require__(5);
 var ts_layout_1 = __webpack_require__(13);
 var core_1 = __webpack_require__(1);
 var dateinput_1 = __webpack_require__(181);
 var button_1 = __webpack_require__(182);
-var checkbox_1 = __webpack_require__(79);
+var checkbox_1 = __webpack_require__(80);
 var checkboxGroup_1 = __webpack_require__(183);
-var input_1 = __webpack_require__(52);
+var input_1 = __webpack_require__(53);
 var radioGroup_1 = __webpack_require__(184);
 var select_1 = __webpack_require__(186);
 var textarea_1 = __webpack_require__(187);
@@ -24395,6 +25782,9 @@ var Form = /** @class */ (function (_super) {
         this.config.css += " dhx_form";
         this._createLayoutConfig(this.config, layoutConfig);
         var layout = (this.layout = new ts_layout_1.Layout(container, layoutConfig));
+        var node = layout.getRootNode();
+        node.setAttribute("role", "form");
+        this.config.title && node.setAttribute("aria-label", this.config.title);
         for (var name_1 in attachments) {
             layout.getCell(name_1).attach(attachments[name_1]);
         }
@@ -24472,8 +25862,9 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_calendar_1 = __webpack_require__(28);
-var events_1 = __webpack_require__(3);
+var ts_calendar_1 = __webpack_require__(41);
+var date_1 = __webpack_require__(22);
+var events_1 = __webpack_require__(2);
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var label_1 = __webpack_require__(11);
@@ -24581,7 +25972,7 @@ var DatePicker = /** @class */ (function (_super) {
         var value = typeof validateValue === "undefined" ? this.getValue() : validateValue;
         var checkValue = this.config.valueFormat === "Date"
             ? value instanceof Date
-            : ts_calendar_1.stringToDate(value, this.calendar.config.dateFormat, true);
+            : date_1.stringToDate(value, this.calendar.config.dateFormat, true);
         if (!silent && !this.events.fire(types_1.ItemEvent.beforeValidate, [value]))
             return;
         this._isValid = this.config.validation ? this.config.validation(value) : !!checkValue;
@@ -24602,7 +25993,7 @@ var DatePicker = /** @class */ (function (_super) {
         var _a = this.config, value = _a.value, valueFormat = _a.valueFormat;
         if ((!(value instanceof Date) && asDateObject && value !== "") ||
             (!(value instanceof Date) && valueFormat === "Date" && value !== "")) {
-            return ts_calendar_1.stringToDate(value, this.calendar.config.dateFormat) || "";
+            return date_1.stringToDate(value, this.calendar.config.dateFormat) || "";
         }
         return value || "";
     };
@@ -24720,7 +26111,7 @@ var DatePicker = /** @class */ (function (_super) {
             },
             onchange: function (e) {
                 var value = e.target.value;
-                if (_this.config.editable && ts_calendar_1.stringToDate(value, _this.calendar.config.dateFormat, true)) {
+                if (_this.config.editable && date_1.stringToDate(value, _this.calendar.config.dateFormat, true)) {
                     _this.setValue(value);
                 }
                 else if (value === "") {
@@ -24750,7 +26141,7 @@ var DatePicker = /** @class */ (function (_super) {
         };
     };
     DatePicker.prototype._draw = function () {
-        var _a = this.config, icon = _a.icon, required = _a.required, disabled = _a.disabled, placeholder = _a.placeholder, name = _a.name, id = _a.id, editable = _a.editable;
+        var _a = this.config, icon = _a.icon, required = _a.required, disabled = _a.disabled, placeholder = _a.placeholder, name = _a.name, id = _a.id, editable = _a.editable, label = _a.label, helpMessage = _a.helpMessage;
         var value = this.config.value instanceof Date ? this.calendar.getValue() : this.config.value;
         return dom_1.el("div.dhx_form-group", {
             class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config)),
@@ -24779,6 +26170,8 @@ var DatePicker = /** @class */ (function (_super) {
                         onblur: this._handlers.onblur,
                         autocomplete: "off",
                         readOnly: !editable,
+                        "aria-label": label || (editable ? "type or" : "") + " select date",
+                        "aria-describedby": helpMessage ? "dhx_label__help_" + (id || this._uid) : null,
                     }),
                 ]),
                 helper_1.getValidationMessage(this.config) &&
@@ -24830,9 +26223,9 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var view_1 = __webpack_require__(4);
+var view_1 = __webpack_require__(5);
 var types_1 = __webpack_require__(7);
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 var core_1 = __webpack_require__(1);
 var helper_1 = __webpack_require__(6);
 var Button = /** @class */ (function (_super) {
@@ -25007,8 +26400,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var ts_layout_1 = __webpack_require__(13);
-var events_1 = __webpack_require__(3);
-var checkbox_1 = __webpack_require__(79);
+var events_1 = __webpack_require__(2);
+var checkbox_1 = __webpack_require__(80);
 var label_1 = __webpack_require__(11);
 var types_1 = __webpack_require__(7);
 var core_1 = __webpack_require__(1);
@@ -25249,16 +26642,6 @@ var CheckboxGroup = /** @class */ (function (_super) {
             });
             this._helper.attachHTML(this.config.helpMessage);
         }
-        this._handlers = {
-            showHelper: function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                _this._helper.show(e.target);
-            },
-            cancelUnusefulClick: function (e) {
-                e.preventDefault();
-            },
-        };
         var checkboxesConfig = this.config.options.rows || this.config.options.cols;
         checkboxesConfig.forEach(function (option) {
             option.id = option.id || core_1.uid();
@@ -25355,7 +26738,7 @@ var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var ts_layout_1 = __webpack_require__(13);
 var ts_popup_1 = __webpack_require__(10);
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 var radiobutton_1 = __webpack_require__(185);
 var helper_1 = __webpack_require__(6);
 var label_1 = __webpack_require__(11);
@@ -25390,16 +26773,6 @@ var RadioGroup = /** @class */ (function (_super) {
             });
             _this._helper.attachHTML(_this.config.helpMessage);
         }
-        _this._handlers = {
-            showHelper: function (e) {
-                e.preventDefault();
-                e.stopPropagation();
-                _this._helper.show(e.target);
-            },
-            cancelUnusefulClick: function (e) {
-                e.preventDefault();
-            },
-        };
         var render = function () { return _this._draw(); };
         _this.mount(container, dom_1.create({ render: render }));
         return _this;
@@ -25683,8 +27056,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var view_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var view_1 = __webpack_require__(5);
 var helper_1 = __webpack_require__(6);
 var types_1 = __webpack_require__(7);
 var RadioButtonEvents;
@@ -25831,7 +27204,7 @@ var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var label_1 = __webpack_require__(11);
 var helper_1 = __webpack_require__(6);
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 var types_1 = __webpack_require__(7);
 var Select = /** @class */ (function (_super) {
     __extends(Select, _super);
@@ -26097,7 +27470,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var helper_1 = __webpack_require__(6);
-var input_1 = __webpack_require__(52);
+var input_1 = __webpack_require__(53);
 var types_1 = __webpack_require__(7);
 var core_1 = __webpack_require__(1);
 var Textarea = /** @class */ (function (_super) {
@@ -26204,7 +27577,7 @@ var Textarea = /** @class */ (function (_super) {
         this.paint();
     };
     Textarea.prototype._draw = function () {
-        var _a = this.config, id = _a.id, value = _a.value, disabled = _a.disabled, name = _a.name, placeholder = _a.placeholder, required = _a.required, resizable = _a.resizable, readOnly = _a.readOnly, maxlength = _a.maxlength, minlength = _a.minlength;
+        var _a = this.config, id = _a.id, value = _a.value, disabled = _a.disabled, name = _a.name, placeholder = _a.placeholder, required = _a.required, resizable = _a.resizable, readOnly = _a.readOnly, maxlength = _a.maxlength, minlength = _a.minlength, label = _a.label, helpMessage = _a.helpMessage;
         return dom_1.el("div.dhx_form-group.dhx_form-group--textarea", {
             class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config)),
         }, [
@@ -26229,6 +27602,8 @@ var Textarea = /** @class */ (function (_super) {
                         resize: resizable ? "both" : "none",
                     },
                     _ref: "textarea",
+                    "aria-label": label || (readOnly ? value : "") + " type text",
+                    "aria-describedby": helpMessage ? "dhx_label__help_" + (id || this._uid) : null,
                 }),
                 helper_1.getValidationMessage(this.config) &&
                     dom_1.el("span.dhx_input__caption", {}, helper_1.getValidationMessage(this.config)),
@@ -26270,7 +27645,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var helper_1 = __webpack_require__(6);
-var input_1 = __webpack_require__(52);
+var input_1 = __webpack_require__(53);
 var types_1 = __webpack_require__(7);
 var Text = /** @class */ (function (_super) {
     __extends(Text, _super);
@@ -26350,7 +27725,7 @@ var Text = /** @class */ (function (_super) {
         this.paint();
     };
     Text.prototype._draw = function () {
-        var _a = this.config, id = _a.id, value = _a.value, name = _a.name, inputType = _a.inputType;
+        var _a = this.config, id = _a.id, value = _a.value, name = _a.name, inputType = _a.inputType, label = _a.label;
         return dom_1.el("div.dhx_form-group.dhx_form-group--textinput", {
             class: helper_1.getFormItemCss(this.config),
         }, [
@@ -26363,6 +27738,9 @@ var Text = /** @class */ (function (_super) {
                     value: core_1.isDefined(value) ? value : "",
                     name: name,
                     _ref: "input",
+                    tabindex: -1,
+                    role: "presentation",
+                    "aria-label": label || value,
                 }),
             ]),
         ]);
@@ -26402,8 +27780,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var helper_1 = __webpack_require__(6);
-var ts_combobox_1 = __webpack_require__(29);
-var events_1 = __webpack_require__(3);
+var ts_combobox_1 = __webpack_require__(31);
+var events_1 = __webpack_require__(2);
 var label_1 = __webpack_require__(11);
 var types_1 = __webpack_require__(7);
 var Combo = /** @class */ (function (_super) {
@@ -26706,8 +28084,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
-var ts_slider_1 = __webpack_require__(40);
-var events_1 = __webpack_require__(3);
+var ts_slider_1 = __webpack_require__(43);
+var events_1 = __webpack_require__(2);
 var label_1 = __webpack_require__(11);
 var types_1 = __webpack_require__(7);
 var helper_1 = __webpack_require__(6);
@@ -26917,15 +28295,15 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var view_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var view_1 = __webpack_require__(5);
 var core_1 = __webpack_require__(1);
-var ts_data_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
 var ts_vault_1 = __webpack_require__(57);
 var ts_popup_1 = __webpack_require__(10);
 var helper_1 = __webpack_require__(6);
-var en_1 = __webpack_require__(80);
+var en_1 = __webpack_require__(81);
 var types_1 = __webpack_require__(7);
 var SimpleVault = /** @class */ (function (_super) {
     __extends(SimpleVault, _super);
@@ -26992,7 +28370,9 @@ var SimpleVault = /** @class */ (function (_super) {
             showHelper: function (e) {
                 e.stopPropagation();
                 e.preventDefault();
-                _this._helper.show(e.target);
+                _this._helper.show(e.target, {
+                    mode: _this.config.labelPosition === "left" ? "bottom" : "right",
+                });
             },
         };
         var render = function () { return _this._draw(); };
@@ -27197,7 +28577,7 @@ var SimpleVault = /** @class */ (function (_super) {
         }, [
             labelStyle &&
                 dom_1.el("label.dhx_label", {
-                    for: id || this._uid,
+                    for: this._uid,
                     class: helpMessage ? "dhx_label--with-help" : "",
                     style: labelStyle.style,
                     onclick: this._handlers.add,
@@ -27212,7 +28592,7 @@ var SimpleVault = /** @class */ (function (_super) {
                         }),
                     ]
                     : labelStyle.label),
-            dom_1.el(".dhx_input__wrapper", [
+            dom_1.el(".dhx_input__wrapper", { id: this._uid }, [
                 dom_1.el("div", {
                     _hooks: {
                         didInsert: function (node) {
@@ -27280,12 +28660,12 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_timepicker_1 = __webpack_require__(39);
+var ts_timepicker_1 = __webpack_require__(42);
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var label_1 = __webpack_require__(11);
 var ts_popup_1 = __webpack_require__(10);
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 var types_1 = __webpack_require__(7);
 var helper_1 = __webpack_require__(6);
 var TimePicker = /** @class */ (function (_super) {
@@ -27574,7 +28954,7 @@ var TimePicker = /** @class */ (function (_super) {
         };
     };
     TimePicker.prototype._draw = function () {
-        var _a = this.config, value = _a.value, required = _a.required, disabled = _a.disabled, placeholder = _a.placeholder, name = _a.name, id = _a.id, editable = _a.editable;
+        var _a = this.config, value = _a.value, required = _a.required, disabled = _a.disabled, placeholder = _a.placeholder, name = _a.name, id = _a.id, editable = _a.editable, label = _a.label, helpMessage = _a.helpMessage;
         return dom_1.el("div.dhx_form-group", {
             class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config)),
         }, [
@@ -27598,6 +28978,8 @@ var TimePicker = /** @class */ (function (_super) {
                         onkeydown: this._handlers.onkeydown,
                         autocomplete: "off",
                         readOnly: !editable,
+                        "aria-label": label || (editable ? "type or" : "") + " select date",
+                        "aria-describedby": helpMessage ? "dhx_label__help_" + (id || this._uid) : null,
                     }),
                 ]),
                 helper_1.getValidationMessage(this.config) &&
@@ -27642,8 +29024,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_colorpicker_1 = __webpack_require__(43);
-var events_1 = __webpack_require__(3);
+var ts_colorpicker_1 = __webpack_require__(44);
+var events_1 = __webpack_require__(2);
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var label_1 = __webpack_require__(11);
@@ -27895,7 +29277,7 @@ var ColorPicker = /** @class */ (function (_super) {
         };
     };
     ColorPicker.prototype._draw = function () {
-        var _a = this.config, required = _a.required, value = _a.value, icon = _a.icon, disabled = _a.disabled, placeholder = _a.placeholder, name = _a.name, id = _a.id, editable = _a.editable;
+        var _a = this.config, required = _a.required, value = _a.value, icon = _a.icon, disabled = _a.disabled, placeholder = _a.placeholder, name = _a.name, id = _a.id, editable = _a.editable, label = _a.label, helpMessage = _a.helpMessage;
         return dom_1.el("div.dhx_form-group", {
             class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config)),
         }, [
@@ -27926,6 +29308,8 @@ var ColorPicker = /** @class */ (function (_super) {
                         onblur: this._handlers.onblur,
                         autocomplete: "off",
                         readOnly: !editable,
+                        "aria-label": label || (editable ? "type or" : "") + " select color",
+                        "aria-describedby": helpMessage ? "dhx_label__help_" + (id || this._uid) : null,
                     }),
                 ]),
                 helper_1.getValidationMessage(this.config) &&
@@ -27970,9 +29354,9 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var view_1 = __webpack_require__(4);
+var view_1 = __webpack_require__(5);
 var types_1 = __webpack_require__(7);
-var events_1 = __webpack_require__(3);
+var events_1 = __webpack_require__(2);
 var core_1 = __webpack_require__(1);
 var helper_1 = __webpack_require__(6);
 var Spacer = /** @class */ (function (_super) {
@@ -28063,8 +29447,8 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var main_1 = __webpack_require__(18);
-var ts_data_1 = __webpack_require__(5);
+var main_1 = __webpack_require__(15);
+var ts_data_1 = __webpack_require__(4);
 var core_1 = __webpack_require__(1);
 function fillArray(arr, value) {
     for (var i = 0; i < arr.length; i++) {
@@ -28134,12 +29518,34 @@ var Exporter = /** @class */ (function () {
                     }
                     return items;
                 }, []);
+                var roots = columnData;
+                if (this_1._view.config.type === "tree") {
+                    var datacollection_1 = this_1._view.data;
+                    var data_1 = datacollection_1.serialize();
+                    roots = data_1.reduce(function (total, item) {
+                        if (item.$level === 0) {
+                            if (item[id_1] !== undefined && item[id_1] !== "" && !isNaN(item[id_1])) {
+                                total.push(parseFloat(item[id_1]) || 0);
+                            }
+                            else {
+                                var value_1 = 0;
+                                datacollection_1.eachChild(item.id, function (cell) {
+                                    if (!datacollection_1.haveItems(cell.id)) {
+                                        value_1 += parseFloat(cell[id_1]);
+                                    }
+                                });
+                                total.push(value_1);
+                            }
+                        }
+                        return total;
+                    }, []);
+                }
                 if (col.footer[0].content) {
-                    var val = content[col.footer[0].content].calculate(columnData, columnData);
+                    var val = content[col.footer[0].content].calculate(columnData, roots);
                     footer.push(val);
                 }
                 else {
-                    footer.push(col.footer[0].colspan || col.footer[0].css || col.footer[0].text || " ");
+                    footer.push(col.footer[0].css || col.footer[0].text || " ");
                 }
             }
             columns.push({ width: col.width });
@@ -28269,8 +29675,8 @@ exports.Exporter = Exporter;
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
-var ts_data_1 = __webpack_require__(5);
-var events_1 = __webpack_require__(3);
+var ts_data_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
 var types_1 = __webpack_require__(9);
 var Selection = /** @class */ (function () {
     function Selection(grid, config, events) {
@@ -28539,10 +29945,10 @@ var Selection = /** @class */ (function () {
                     last &&
                     dom_1.el(".dhx_grid-selected-cell", {
                         style: {
-                            width: cellRect.width - 1,
+                            width: cellRect.width,
                             height: cellRect.height - 1,
                             top: cellRect.y,
-                            left: cellRect.x + 1,
+                            left: cellRect.x,
                             position: "absolute",
                         },
                     })),
@@ -28587,553 +29993,12 @@ exports.Selection = Selection;
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var types_1 = __webpack_require__(9);
-var Keymanager_1 = __webpack_require__(14);
-var keys_1 = __webpack_require__(198);
-var html_1 = __webpack_require__(2);
-var KeyManager = /** @class */ (function () {
-    function KeyManager(grid) {
-        this._grid = grid;
-        this._initFocusHandlers();
-        this._initHotKeys();
-    }
-    KeyManager.prototype.addHotKey = function (key, handler) {
-        var _this = this;
-        Keymanager_1.keyManager.addHotKey(key, function (e) {
-            if (_this.isFocus() && _this._grid.events.fire(types_1.GridEvents.beforeKeyDown, [e])) {
-                handler(e);
-                _this._grid.events.fire(types_1.GridEvents.afterKeyDown, [e]);
-            }
-        });
-    };
-    KeyManager.prototype.isFocus = function () {
-        return this._focusedId === this._grid._uid;
-    };
-    KeyManager.prototype._initFocusHandlers = function () {
-        var _this = this;
-        document.addEventListener("click", function (e) {
-            _this._focusedId = html_1.locate(e, "dhx_widget_id");
-        });
-    };
-    KeyManager.prototype._cellSelecting = function (selection) {
-        return selection === "cell" || selection === "complex";
-    };
-    KeyManager.prototype._initHotKeys = function () {
-        var _this = this;
-        this.addHotKey("enter", function () {
-            if (_this._cellSelecting(_this._grid.config.selection)) {
-                var selected = _this._grid.selection.getCell();
-                if (selected &&
-                    ((selected.column.editable !== false && _this._grid.config.editable) ||
-                        selected.column.editable)) {
-                    if (!_this._grid.config.$editable) {
-                        if (selected.column.type !== "boolean") {
-                            _this._grid.edit(selected.row.id, selected.column.id, selected.column.editorType);
-                        }
-                        else {
-                            _this._grid.events.fire(types_1.GridEvents.afterEditEnd, [
-                                !selected.row[selected.column.id],
-                                selected.row,
-                                selected.column,
-                            ]);
-                        }
-                    }
-                    else {
-                        _this._grid.editEnd();
-                    }
-                }
-            }
-        });
-        this.addHotKey("space", function (e) {
-            if (_this._cellSelecting(_this._grid.config.selection) &&
-                _this._grid.config.editable &&
-                !_this._grid.config.$editable) {
-                var selected = _this._grid.selection.getCell();
-                if (selected && selected.column.type === "boolean") {
-                    e.preventDefault();
-                    _this._grid.events.fire(types_1.GridEvents.afterEditEnd, [
-                        !selected.row[selected.column.id],
-                        selected.row,
-                        selected.column,
-                    ]);
-                }
-            }
-        });
-        this.addHotKey("escape", function () {
-            if (_this._grid.config.$editable) {
-                _this._grid.editEnd(true);
-            }
-        });
-        // TODO: Rework current block
-        if (this._grid.getRootView()) {
-            var gridBody_1 = this._grid.getRootView().refs.grid_body.el;
-            this.addHotKey("pageUp", function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop -= gridBody_1.clientHeight;
-            });
-            this.addHotKey("pageDown", function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop += gridBody_1.clientHeight;
-            });
-            this.addHotKey("home", function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop = 0;
-            });
-            this.addHotKey("end", function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop += gridBody_1.scrollHeight;
-            });
-        }
-        this.addHotKey("tab", function (e) {
-            if (_this._grid.config.$editable ||
-                !_this._grid.config.selection ||
-                html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
-                return;
-            }
-            if (e) {
-                e.preventDefault();
-            }
-            var selected = _this._grid.selection.getCell();
-            var columns = _this._grid.config.columns.filter(function (col) { return !col.hidden; });
-            if (selected) {
-                var index = columns.indexOf(selected.column) + 1;
-                if (index >= 0 && index < columns.length) {
-                    _this._grid.selection.setCell(selected.row.id, columns[index].id);
-                    _this._grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
-                }
-                else if (index >= 0) {
-                    var newLineIndex = _this._grid.data.getIndex(selected.row.id.toString()) + 1;
-                    if (newLineIndex < _this._grid.data.getLength()) {
-                        _this._grid.selection.setCell(_this._grid.data.getId(newLineIndex), columns[0].id);
-                        _this._grid.scrollTo(_this._grid.data.getId(newLineIndex), columns[0].id.toString());
-                    }
-                }
-            }
-        });
-        this.addHotKey("shift+tab", function (e) {
-            if (_this._grid.config.$editable ||
-                !_this._grid.config.selection ||
-                html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
-                return;
-            }
-            if (e) {
-                e.preventDefault();
-            }
-            var selected = _this._grid.selection.getCell();
-            var columns = _this._grid.config.columns.filter(function (col) { return !col.hidden; });
-            if (selected) {
-                var index = columns.indexOf(selected.column) - 1;
-                if (index >= 0 && index < columns.length) {
-                    _this._grid.selection.setCell(selected.row.id, columns[index].id);
-                    _this._grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
-                }
-                else if (index < _this._grid.data.getLength()) {
-                    var newLineIndex = _this._grid.data.getIndex(selected.row.id.toString()) - 1;
-                    if (newLineIndex >= 0) {
-                        _this._grid.selection.setCell(_this._grid.data.getId(newLineIndex), columns[columns.length - 1].id);
-                        _this._grid.scrollTo(_this._grid.data.getId(newLineIndex), columns[columns.length - 1].id.toString());
-                    }
-                }
-            }
-        });
-        this.addHotKey("arrowUp", function (e) {
-            keys_1.selectionMove(e, _this._grid, "vertical", -1);
-        });
-        this.addHotKey("ctrl+arrowUp", function (e) {
-            keys_1.selectionMove(e, _this._grid, "vertical", -1, true);
-        });
-        this.addHotKey("shift+arrowUp", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "vertical", -1, false, false, true);
-            }
-        });
-        this.addHotKey("ctrl+shift+arrowUp", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "vertical", -1, true, false, true);
-            }
-        });
-        this.addHotKey("arrowDown", function (e) {
-            keys_1.selectionMove(e, _this._grid, "vertical", 1);
-        });
-        this.addHotKey("ctrl+arrowDown", function (e) {
-            keys_1.selectionMove(e, _this._grid, "vertical", 1, true);
-        });
-        this.addHotKey("shift+arrowDown", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "vertical", 1, false, false, true);
-            }
-        });
-        this.addHotKey("ctrl+shift+arrowDown", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "vertical", 1, true, false, true);
-            }
-        });
-        this.addHotKey("arrowRight", function (e) {
-            keys_1.selectionMove(e, _this._grid, "horizontal", 1);
-        });
-        this.addHotKey("ctrl+arrowRight", function (e) {
-            keys_1.selectionMove(e, _this._grid, "horizontal", 1, true);
-        });
-        this.addHotKey("shift+arrowRight", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "horizontal", 1, false, false, true);
-            }
-        });
-        this.addHotKey("ctrl+shift+arrowRight", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "horizontal", 1, true, false, true);
-            }
-        });
-        this.addHotKey("arrowLeft", function (e) {
-            keys_1.selectionMove(e, _this._grid, "horizontal", -1);
-        });
-        this.addHotKey("ctrl+arrowLeft", function (e) {
-            keys_1.selectionMove(e, _this._grid, "horizontal", -1, true);
-        });
-        this.addHotKey("shift+arrowLeft", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "horizontal", -1, false, false, true);
-            }
-        });
-        this.addHotKey("ctrl+shift+arrowLeft", function (e) {
-            if (_this._grid.config.multiselection) {
-                keys_1.selectionMove(e, _this._grid, "horizontal", -1, true, false, true);
-            }
-        });
-    };
-    return KeyManager;
-}());
-exports.KeyManager = KeyManager;
-
-
-/***/ }),
-/* 198 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
-function selectionMove(e, grid, dir, range, toEnd, ctrlUp, shiftUp) {
-    if (toEnd === void 0) { toEnd = false; }
-    if (ctrlUp === void 0) { ctrlUp = false; }
-    if (shiftUp === void 0) { shiftUp = false; }
-    if (grid.config.$editable || !grid.config.selection || html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
-        return;
-    }
-    if (e) {
-        e.preventDefault();
-    }
-    var selected = grid.selection.getCell();
-    var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
-    if (selected) {
-        if (dir === "vertical") {
-            if (toEnd) {
-                var newItem = range === 1
-                    ? grid.data.getItem(grid.data.getId(grid.data.getLength() - 1))
-                    : grid.data.getItem(grid.data.getId(0));
-                grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
-                grid.scrollTo(newItem.id, selected.column.id.toString());
-            }
-            else {
-                var index = grid.data.getIndex(selected.row.id.toString());
-                if (index + range >= 0 && index + range < grid.data.getLength()) {
-                    var newItem = grid.data.getItem(grid.data.getId(index + range));
-                    grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
-                    grid.scrollTo(newItem.id, selected.column.id.toString());
-                }
-            }
-        }
-        else {
-            if (toEnd) {
-                var newItem = range === 1 ? columns[columns.length - 1] : columns[0];
-                grid.selection.setCell(selected.row.id, newItem.id, ctrlUp, shiftUp);
-                grid.scrollTo(selected.row.id.toString(), newItem.id.toString());
-            }
-            else {
-                var index = columns.indexOf(selected.column);
-                if (index + range >= 0 && index + range < columns.length) {
-                    grid.scrollTo(selected.row.id.toString(), columns[index + range].id.toString());
-                    grid.selection.setCell(selected.row.id, columns[index + range].id, ctrlUp, shiftUp);
-                }
-            }
-        }
-    }
-}
-exports.selectionMove = selectionMove;
-
-
-/***/ }),
-/* 199 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(2);
-var data_1 = __webpack_require__(54);
-var main_1 = __webpack_require__(18);
-var Cells_1 = __webpack_require__(55);
-var FixedCols_1 = __webpack_require__(206);
-var FixedRows_1 = __webpack_require__(82);
-var core_1 = __webpack_require__(1);
-var BORDERS = 2;
-function getRenderConfig(obj, data, wrapperSizes) {
-    var config = obj.config;
-    var columns = config.columns.filter(function (col) { return !col.hidden; });
-    var positions = data_1.calculatePositions(wrapperSizes.width, wrapperSizes.height, obj._scroll, config);
-    var currentColumns = columns.slice(positions.xStart, positions.xEnd);
-    return __assign(__assign({}, config), { data: data, scroll: obj._scroll, $positions: positions, headerHeight: config.$headerLevel * config.headerRowHeight, footerHeight: config.$footerLevel * config.footerRowHeight, firstColId: columns[0].id, events: obj.events, _events: obj._events, currentColumns: currentColumns, sortBy: obj._sortBy, sortDir: obj._sortDir, content: obj.content, gridId: obj._uid });
-}
-function getElementSizes(element) {
-    if (!element) {
-        return;
-    }
-    var styles = element.currentStyle || window.getComputedStyle(element);
-    var paddingsByWidth = parseFloat(styles.paddingLeft) + parseFloat(styles.paddingRight) || 0;
-    var paddingsByHeight = parseFloat(styles.paddingTop) + parseFloat(styles.paddingBottom) || 0;
-    return {
-        width: element.clientWidth - paddingsByWidth,
-        height: element.clientHeight - paddingsByHeight,
-    };
-}
-function getGridData(renderConfig, shifts) {
-    var content = Cells_1.getCells(renderConfig);
-    var contentSpans = Cells_1.getSpans(renderConfig);
-    var resizedLine;
-    var colums = renderConfig.columns.filter(function (col) { return !col.hidden; });
-    if (renderConfig.$resizing) {
-        var colIndex = core_1.findIndex(colums, function (col) { return col.id === renderConfig.$resizing; });
-        var firstCellLeft = main_1.getTotalWidth(colums.slice(0, colIndex)) + colums[colIndex].$width;
-        resizedLine = dom_1.el(".dhx_grid-resize-line", {
-            style: {
-                top: 0,
-                left: firstCellLeft,
-                height: renderConfig.$totalHeight,
-            },
-        });
-    }
-    var selection = renderConfig.selection ? renderConfig.selection.toHTML() : null;
-    selection =
-        typeof selection === "string" ? dom_1.el("div.dhx_selection", { ".innerHTML": selection }) : selection;
-    var pos = renderConfig.$positions;
-    var events = {};
-    function getCellInfo(e) {
-        var rowId = html_1.locate(e, "dhx_id");
-        var colId = html_1.locate(e, "dhx_col_id");
-        var row = renderConfig.data.filter(function (item) { return item.id === rowId; })[0];
-        var col = renderConfig.currentColumns.filter(function (item) { return item.id === colId; })[0];
-        return {
-            row: rowId ? row : {},
-            col: colId ? col : {},
-        };
-    }
-    if (renderConfig.eventHandlers) {
-        for (var key in renderConfig.eventHandlers) {
-            if (renderConfig.eventHandlers.hasOwnProperty(key)) {
-                var event_1 = renderConfig.eventHandlers[key];
-                events[key] = html_1.eventHandler(function (e) { return getCellInfo(e); }, __assign({}, event_1));
-            }
-        }
-    }
-    return dom_1.el(".dhx_data-wrap", __assign({ style: {
-            height: renderConfig.$totalHeight,
-            width: renderConfig.$totalWidth,
-            "padding-left": shifts.x,
-            "padding-top": shifts.y,
-        } }, events), [
-        dom_1.el(".dhx_grid_data", __assign({ _flags: dom_1.KEYED_LIST }, Cells_1.getHandlers(pos.yStart, pos.xStart, renderConfig)), content),
-        dom_1.el(".dhx_span-spans", contentSpans),
-        dom_1.el(".dhx_grid_selection", { _ref: "selection" }, [selection, resizedLine]),
-    ]);
-}
-function getContentHeight(renderConfig, isSticky, wrapperSizes) {
-    var contentHeight = wrapperSizes.height - BORDERS;
-    contentHeight = isSticky ? contentHeight : contentHeight - renderConfig.headerHeight;
-    var isFooter = renderConfig.$footer;
-    return (contentHeight = isFooter
-        ? isSticky
-            ? contentHeight
-            : contentHeight - renderConfig.footerHeight
-        : contentHeight);
-}
-function applyAutoWidth(config, wrapperSizes, firstApply) {
-    if (firstApply === void 0) { firstApply = true; }
-    var scrollbarY = config.$totalHeight >= wrapperSizes.height - config.headerRowHeight ? html_1.getScrollbarWidth() : 0;
-    var newTotalWidth = wrapperSizes.width - BORDERS - scrollbarY;
-    var growingColumns = config.columns.filter(function (col) { return !col.hidden && !col.width && !col.$fixed && main_1.isAutoWidth(config, col); });
-    var nonGrowingColumnsWidth = main_1.getTotalWidth(config.columns.filter(function (col) { return col.width || col.$fixed || !main_1.isAutoWidth(config, col); }));
-    var fullGravity = growingColumns.reduce(function (gravity, col) { return gravity + (col.gravity || 1); }, 0);
-    if (newTotalWidth < config.$totalWidth) {
-        var growingColumnsWidth_1 = growingColumns.reduce(function (width, col) { return width + (col.maxWidth || col.$width); }, 0);
-        if (growingColumns.length > 1) {
-            growingColumns.forEach(function (col) {
-                var newWidth = Math.abs(newTotalWidth - growingColumnsWidth_1) * ((col.gravity || 1) / fullGravity);
-                var wrongMin = newWidth < col.minWidth;
-                var wrongMax = newWidth > col.maxWidth;
-                if (!wrongMin && !wrongMax) {
-                    col.$width = newWidth;
-                }
-                else if (wrongMin) {
-                    nonGrowingColumnsWidth += col.$width - newWidth;
-                    col.$fixed = true;
-                }
-                else if (wrongMax) {
-                    col.$width = col.maxWidth;
-                    col.$fixed = true;
-                }
-            });
-        }
-    }
-    else {
-        growingColumns.forEach(function (col) {
-            var newWidth = Math.abs(newTotalWidth - nonGrowingColumnsWidth) * ((col.gravity || 1) / fullGravity);
-            var wrongMin = newWidth < col.minWidth;
-            var wrongMax = newWidth > col.maxWidth;
-            if (!wrongMin && !wrongMax) {
-                col.$width = newWidth;
-            }
-            else if (wrongMin) {
-                nonGrowingColumnsWidth += col.$width - newWidth;
-                col.$fixed = true;
-            }
-            else if (wrongMax) {
-                col.$width = col.maxWidth;
-                col.$fixed = true;
-            }
-            if (!firstApply && col.$fixed) {
-                delete col.$fixed;
-            }
-        });
-    }
-    if (firstApply) {
-        applyAutoWidth(config, wrapperSizes, false);
-    }
-}
-function render(vm, obj, htmlEvents, selection, uid) {
-    if (!obj._container) {
-        obj.config.width = 1;
-        obj.config.height = 1;
-    }
-    // if grid placed inside another component, it will fit to its container
-    if (vm && vm.node && vm.node.parent && vm.node.parent.el) {
-        var parentNode = vm.node.parent.el;
-        var parentSizes = getElementSizes(parentNode);
-        obj.config.width = parentSizes.width;
-        obj.config.height = parentSizes.height;
-    }
-    var config = obj.config;
-    // when grid is destructing and user try to repaint it
-    if (!config) {
-        return dom_1.el("div");
-    }
-    if (!config.columns.length) {
-        return dom_1.el(".dhx_grid");
-    }
-    var data = obj.data.getRawData(0, -1, null, 2);
-    if (config.columns
-        .filter(function (col) { return !col.hidden; })
-        .reduce(function (check, col) { return (check = !col.hidden ? col.hidden : check); }, true)) {
-        config.$totalHeight = 0;
-    }
-    else {
-        config.$totalHeight = data.length * config.rowHeight;
-    }
-    var sizes = getElementSizes(obj._container);
-    var wrapperSizes = {
-        width: (config.width ? config.width : sizes && sizes.width) || 0,
-        height: (config.height ? config.height : sizes && sizes.height) || 0,
-    };
-    // TODO: Remove scroll
-    if (main_1.isAutoWidth(config)) {
-        applyAutoWidth(config, wrapperSizes);
-        config.$totalWidth = main_1.getTotalWidth(config.columns);
-    }
-    config.width = wrapperSizes.width;
-    config.height = wrapperSizes.height;
-    var renderConfig = getRenderConfig(obj, data, wrapperSizes);
-    renderConfig.selection = selection;
-    renderConfig.datacollection = obj.data;
-    var shifts = Cells_1.getShifts(renderConfig);
-    var isSticky = main_1.isCssSupport("position", "sticky");
-    var gridBodyHeight = getContentHeight(renderConfig, isSticky, wrapperSizes);
-    var layoutState = {
-        wrapper: wrapperSizes,
-        sticky: isSticky,
-        shifts: shifts,
-        gridBodyHeight: gridBodyHeight,
-    };
-    var header = FixedRows_1.getFixedRows(renderConfig, __assign(__assign({}, layoutState), { name: "header", position: "top" }));
-    var footer = renderConfig.$footer
-        ? FixedRows_1.getFixedRows(renderConfig, __assign(__assign({}, layoutState), { name: "footer", position: "bottom" }))
-        : null;
-    var lessByWidth = renderConfig.$totalWidth + BORDERS < wrapperSizes.width ? "dhx_grid-less-width" : "";
-    var lessByHeight = renderConfig.$totalHeight + BORDERS < wrapperSizes.height ? "dhx_grid-less-height" : "";
-    // dirty: but work. Change checking of rendering Grid
-    if (!vm.node) {
-        var _a = obj.getScrollState(), x_1 = _a.x, y_1 = _a.y;
-        dom_1.awaitRedraw().then(function () {
-            obj.scroll(x_1, y_1);
-        });
-    }
-    return dom_1.el(".dhx_grid.dhx_widget", {
-        class: (renderConfig.css || "") +
-            (!isSticky ? " dhx_grid_border" : "") +
-            (config.multiselection ? " dhx_no-select--pointer" : ""),
-        dhx_widget_id: uid,
-    }, [
-        dom_1.resizer(function () { return obj.paint(); }),
-        dom_1.el(".dhx_grid-content", {
-            style: __assign({}, wrapperSizes),
-            onclick: htmlEvents.onclick,
-            class: (lessByWidth + " " + lessByHeight).trim(),
-        }, [
-            isSticky ? null : header,
-            dom_1.el(".dhx_grid-body", {
-                style: {
-                    height: gridBodyHeight,
-                    width: wrapperSizes.width - BORDERS,
-                },
-                onscroll: htmlEvents.onscroll,
-                _ref: "grid_body",
-            }, [
-                isSticky ? header : null,
-                getGridData(renderConfig, shifts),
-                isSticky ? footer : null,
-            ]),
-            FixedCols_1.getFixedColsHeader(renderConfig, layoutState),
-            FixedCols_1.getFixedCols(renderConfig, layoutState),
-            isSticky ? null : footer,
-        ]),
-    ]);
-}
-exports.render = render;
-
-
-/***/ }),
-/* 200 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(9);
-var InputEditor_1 = __webpack_require__(201);
-var SelectEditor_1 = __webpack_require__(202);
-var DateEditor_1 = __webpack_require__(203);
-var CheckboxEditor_1 = __webpack_require__(204);
-var ComboboxEditor_1 = __webpack_require__(205);
+var InputEditor_1 = __webpack_require__(198);
+var SelectEditor_1 = __webpack_require__(199);
+var DateEditor_1 = __webpack_require__(200);
+var CheckboxEditor_1 = __webpack_require__(201);
+var ComboboxEditor_1 = __webpack_require__(202);
+var TextAreaEditor_1 = __webpack_require__(203);
 var lastEditor = {
     cell: {
         row: null,
@@ -29145,19 +30010,23 @@ var lastEditor = {
 var editHandler;
 function getEditor(row, col, conf) {
     var type = col.type === "boolean" ? "checkbox" : conf.$editable.editorType;
+    if (typeof type === "undefined")
+        type = conf.autoHeight ? "textarea" : "input";
     if (lastEditor.cell.row === row.id &&
         lastEditor.cell.col === col.id &&
         lastEditor.gridId === conf.gridId) {
         return lastEditor.editor;
     }
-    lastEditor = {
-        cell: {
-            row: row.id,
-            col: col.id,
-        },
-        editor: lastEditor.editor,
-        gridId: conf.gridId,
-    };
+    if (type !== "checkbox") {
+        lastEditor = {
+            cell: {
+                row: row.id,
+                col: col.id,
+            },
+            editor: lastEditor.editor,
+            gridId: conf.gridId,
+        };
+    }
     if (!editHandler) {
         editHandler = function () {
             lastEditor = {
@@ -29174,12 +30043,14 @@ function getEditor(row, col, conf) {
     switch (type) {
         case "input":
             return (lastEditor.editor = new InputEditor_1.InputEditor(row, col, conf));
+        case "textarea":
+            return (lastEditor.editor = new TextAreaEditor_1.TextAreaEditor(row, col, conf));
         case "select":
             return (lastEditor.editor = new SelectEditor_1.SelectEditor(row, col, conf));
         case "datePicker":
             return (lastEditor.editor = new DateEditor_1.DateEditor(row, col, conf));
         case "checkbox":
-            return (lastEditor.editor = new CheckboxEditor_1.CheckboxEditor(row, col, conf));
+            return new CheckboxEditor_1.CheckboxEditor(row, col, conf);
         case "combobox":
             return (lastEditor.editor = new ComboboxEditor_1.ComboboxEditor(row, col, conf));
         default:
@@ -29190,7 +30061,7 @@ exports.getEditor = getEditor;
 
 
 /***/ }),
-/* 201 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29263,7 +30134,7 @@ exports.InputEditor = InputEditor;
 
 
 /***/ }),
-/* 202 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29331,7 +30202,7 @@ exports.SelectEditor = SelectEditor;
 
 
 /***/ }),
-/* 203 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29339,17 +30210,18 @@ exports.SelectEditor = SelectEditor;
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var types_1 = __webpack_require__(9);
-var ts_calendar_1 = __webpack_require__(28);
+var ts_calendar_1 = __webpack_require__(41);
+var date_1 = __webpack_require__(22);
 var ts_popup_1 = __webpack_require__(10);
 var DateEditor = /** @class */ (function () {
     function DateEditor(row, col, config) {
         var _this = this;
         this._config = config;
         this._cell = { row: row, col: col };
-        this._calendar = new ts_calendar_1.Calendar(null, { dateFormat: col.dateFormat });
+        this._calendar = new ts_calendar_1.Calendar(null, { dateFormat: col.format });
         var value = this._cell.row[this._cell.col.id];
-        var dateFormat = this._calendar.config.dateFormat;
-        if (ts_calendar_1.stringToDate(value, dateFormat, true) || value instanceof Date) {
+        var format = this._calendar.config.dateFormat;
+        if (date_1.stringToDate(value, format, true) || value instanceof Date) {
             this._calendar.setValue(value);
             this._value = this._calendar.getValue();
             this._cell.row[this._cell.col.id] = this._value;
@@ -29368,7 +30240,7 @@ var DateEditor = /** @class */ (function () {
         if (!this._handlers) {
             return;
         }
-        var dateFormat = this._calendar.config.dateFormat;
+        var format = this._calendar.config.dateFormat;
         var value = this._cell.row[this._cell.col.id];
         if (!withoutSave) {
             if (value instanceof Date || calendarChange) {
@@ -29377,7 +30249,7 @@ var DateEditor = /** @class */ (function () {
                 this._popup.hide();
                 return;
             }
-            else if (ts_calendar_1.stringToDate(this._input.value, dateFormat, true) &&
+            else if (date_1.stringToDate(this._input.value, format, true) &&
                 this._input.value.length === value.length) {
                 this._value = this._input.value;
             }
@@ -29449,7 +30321,7 @@ exports.DateEditor = DateEditor;
 
 
 /***/ }),
-/* 204 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29528,7 +30400,7 @@ exports.CheckboxEditor = CheckboxEditor;
 
 
 /***/ }),
-/* 205 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29536,7 +30408,8 @@ exports.CheckboxEditor = CheckboxEditor;
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var types_1 = __webpack_require__(9);
-var ts_combobox_1 = __webpack_require__(29);
+var ts_combobox_1 = __webpack_require__(31);
+var FocusManager_1 = __webpack_require__(20);
 var ComboboxEditor = /** @class */ (function () {
     function ComboboxEditor(row, col, config) {
         this._config = config;
@@ -29552,6 +30425,7 @@ var ComboboxEditor = /** @class */ (function () {
             this._input.popup.hide();
             document.removeEventListener("mousedown", this._handlers.onOuterClick);
             this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            FocusManager_1.focusManager.setFocusId(this._config.gridId);
             this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
         }
         else {
@@ -29579,6 +30453,7 @@ var ComboboxEditor = /** @class */ (function () {
             _this._input.popup.getContainer().style.width = holderNode.offsetWidth + "px";
             _this._input.popup.show(holderNode);
         });
+        FocusManager_1.focusManager.setFocusId(this._input._uid);
         return dom_1.inject(this._input.getRootView());
     };
     ComboboxEditor.prototype._initHandlers = function () {
@@ -29605,7 +30480,155 @@ exports.ComboboxEditor = ComboboxEditor;
 
 
 /***/ }),
-/* 206 */
+/* 203 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var types_1 = __webpack_require__(9);
+var core_1 = __webpack_require__(1);
+var data_1 = __webpack_require__(21);
+var TextAreaEditor = /** @class */ (function () {
+    function TextAreaEditor(row, col, config) {
+        this._config = config;
+        this._cell = { row: row, col: col };
+        this._width = this._cell.col.$width;
+        var widthOffset = 0;
+        if (this._config.firstColId === this._cell.col.id && this._cell.row.hasOwnProperty("$level")) {
+            widthOffset = data_1.getTreeCellWidthOffset(this._cell.row);
+        }
+        this._width -= widthOffset - 4;
+        this._initHandlers();
+    }
+    TextAreaEditor.prototype.endEdit = function (withoutSave) {
+        var value;
+        if (!withoutSave) {
+            value = this._editor.value;
+        }
+        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
+            this._editor.removeEventListener("blur", this._handlers.onBlur);
+            this._editor.removeEventListener("change", this._handlers.onChange);
+            this._editor.removeEventListener("input", this._handlers.onInput);
+            if (this._cell.col.type !== "string" && core_1.isNumeric(value)) {
+                value = parseFloat(value);
+            }
+            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
+        }
+        else {
+            this._editor.focus();
+        }
+    };
+    TextAreaEditor.prototype.toHTML = function () {
+        var value = this._cell.row[this._cell.col.id];
+        if (this._editor) {
+            value = this._editor.value;
+        }
+        this._config.$editable.editor = this;
+        var css = typeof this._cell.row.height === "undefined" && !this._cell.col.htmlEnable
+            ? "dhx_cell-editor dhx_cell-editor__textarea"
+            : "dhx_cell-editor dhx_cell-editor__textarea_constant-height";
+        return dom_1.el("textarea", {
+            _hooks: {
+                didInsert: this._handlers.didInsert,
+            },
+            _ref: "textarea",
+            _key: "cell_editor",
+            dhx_id: "cell_editor",
+            value: value,
+            class: css,
+            style: {
+                width: this._width,
+            },
+        });
+    };
+    TextAreaEditor.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            onBlur: function () {
+                _this.endEdit();
+            },
+            onChange: function () {
+                _this.endEdit();
+            },
+            onInput: function (event) {
+                var _a;
+                if (typeof _this._cell.row.height !== "undefined" || _this._cell.col.htmlEnable)
+                    return;
+                var currentHeight = _this._getCurrentHeight(_this._editor.value, {
+                    width: _this._cell.col.$width - 2,
+                    maxHeight: _this._config.rowHeight,
+                });
+                _this._cell.row[_this._cell.col.id] = _this._editor.value;
+                var totalHeight = data_1.getCalculatedRowHeight(data_1.getMaxRowHeight(_this._cell.row, _this._config.columns));
+                var currentRowHeight = data_1.getCalculatedRowHeight(data_1.getMaxRowHeight((_a = {}, _a[_this._cell.col.id] = _this._cell.row[_this._cell.col.id], _a), _this._config.columns));
+                _this._minHeight = totalHeight === currentRowHeight ? _this._config.rowHeight : totalHeight;
+                if (currentHeight >= _this._minHeight && currentHeight !== _this._prevHeight) {
+                    if (!_this._config.events.fire(types_1.GridEvents.beforeRowResize, [
+                        _this._cell.row,
+                        event,
+                        currentHeight,
+                    ])) {
+                        return;
+                    }
+                    _this._config.events.fire(types_1.GridEvents.afterRowResize, [
+                        _this._cell.row,
+                        event,
+                        currentHeight,
+                    ]);
+                }
+                _this._prevHeight = currentHeight;
+            },
+            didInsert: function (node) {
+                _this._editor = node.el;
+                _this._editor.focus();
+                _this._editor.setSelectionRange(0, _this._editor.value.length);
+                _this._editor.addEventListener("change", _this._handlers.onChange);
+                _this._editor.addEventListener("blur", _this._handlers.onBlur);
+                _this._editor.addEventListener("input", _this._handlers.onInput);
+            },
+        };
+    };
+    TextAreaEditor.prototype._getCurrentHeight = function (value, config) {
+        config = __assign({ width: 100, maxHeight: 40, lineHeight: 20 }, config);
+        var element = document.createElement("textarea");
+        element.className = "dhx_cell-editor dhx_cell-editor__textarea";
+        element.value = value;
+        element.style.width = config.width + "px";
+        element.style.lineHeight = config.lineHeight + "px";
+        element.style.maxHeight = config.maxHeight + "px";
+        element.style.boxSizing = "border-box";
+        document.body.appendChild(element);
+        var height = this._getElementHeight(element);
+        var currentRows = element.value.split("\n").length;
+        var calculateRows = Math.round(height / config.lineHeight);
+        var calculateHeight = height < config.maxHeight ? config.maxHeight : height;
+        document.body.removeChild(element);
+        return currentRows === 1 && currentRows === calculateRows ? config.maxHeight : calculateHeight;
+    };
+    TextAreaEditor.prototype._getElementHeight = function (element) {
+        return element.scrollHeight;
+    };
+    return TextAreaEditor;
+}());
+exports.TextAreaEditor = TextAreaEditor;
+
+
+/***/ }),
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29630,12 +30653,23 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
 var Cells_1 = __webpack_require__(55);
-var FixedRows_1 = __webpack_require__(82);
-var main_1 = __webpack_require__(18);
+var FixedRows_1 = __webpack_require__(84);
+var main_1 = __webpack_require__(15);
 function getFixedColsHeader(renderConfig, layout) {
-    var columns = renderConfig.columns.filter(function (col) { return !col.hidden; }).slice(0, renderConfig.leftSplit);
+    if (typeof renderConfig.leftSplit !== "number") {
+        return;
+    }
+    var splitHidden = 0;
+    for (var index = 0; index < renderConfig.leftSplit; index++) {
+        if (renderConfig.columns[index].hidden)
+            splitHidden++;
+    }
+    if (splitHidden === renderConfig.leftSplit) {
+        return;
+    }
+    var columns = renderConfig.columns.slice(0, renderConfig.leftSplit - splitHidden);
     var width = 0;
     for (var _i = 0, columns_1 = columns; _i < columns_1.length; _i++) {
         var col = columns_1[_i];
@@ -29653,23 +30687,27 @@ function getFixedColsHeader(renderConfig, layout) {
                 maxWidth: width,
                 overflow: "hidden",
             },
+            role: "rowgroup",
+            "aria-rowcount": frozenHeaderCols.length,
         }, frozenHeaderCols.body));
 }
 exports.getFixedColsHeader = getFixedColsHeader;
 function getFixedCols(renderConfig, layout) {
-    var hiddenCheck = renderConfig.columns.reduce(function (check, col) {
-        return col.hidden ? check + 1 : check;
-    }, 0);
     if (typeof renderConfig.leftSplit !== "number") {
         return;
     }
-    if (hiddenCheck === renderConfig.leftSplit) {
+    var splitHidden = 0;
+    for (var index = 0; index < renderConfig.leftSplit; index++) {
+        if (renderConfig.columns[index].hidden)
+            splitHidden++;
+    }
+    if (splitHidden === renderConfig.leftSplit) {
         return;
     }
     var scrollBarWidth = renderConfig.$totalWidth <= layout.wrapper.width ? 0 : html_1.getScrollbarWidth();
     var fixedContentHeight = renderConfig.$totalHeight + renderConfig.headerHeight + renderConfig.footerHeight;
     var fixedColsHeight = fixedContentHeight - (fixedContentHeight > layout.gridBodyHeight ? scrollBarWidth : null);
-    var columns = renderConfig.columns.filter(function (col) { return !col.hidden; }).slice(0, renderConfig.leftSplit);
+    var columns = renderConfig.columns.slice(0, renderConfig.leftSplit - splitHidden);
     renderConfig.fixedColumnsWidth = main_1.getTotalWidth(columns);
     var fixedCols = Cells_1.getCells(__assign(__assign({}, renderConfig), { columns: columns, $positions: __assign(__assign({}, renderConfig.$positions), { xStart: 0, xEnd: renderConfig.leftSplit }) }));
     var isSticky = layout.sticky;
@@ -29684,6 +30722,8 @@ function getFixedCols(renderConfig, layout) {
                     bottom: 0,
                     left: 0,
                 },
+                role: "rowgroup",
+                "aria-rowcount": frozenFooterCols.length,
             }, frozenFooterCols)
         : null;
     var pos = renderConfig.$positions;
@@ -29699,22 +30739,24 @@ function getFixedCols(renderConfig, layout) {
             overflow: "hidden",
             width: renderConfig.fixedColumnsWidth,
         },
+        role: "presentation",
+        "aria-label": "Fixed column",
     }, [
-        dom_1.el(".dhx_grid-fixed-cols", __assign({ style: {
+        dom_1.el(".dhx_grid-fixed-cols", __assign(__assign({ style: {
                 top: -renderConfig.scroll.top + renderConfig.headerHeight - 1 + "px",
                 paddingTop: layout.shifts.y,
                 height: renderConfig.$totalHeight,
                 position: "absolute",
-            }, _flags: dom_1.KEYED_LIST }, Cells_1.getHandlers(pos.yStart, pos.xStart, renderConfig)), __spreadArrays([spans && dom_1.el(".dhx_span-spans", spans)], fixedCols)),
+            }, _flags: dom_1.KEYED_LIST }, Cells_1.getHandlers(pos.yStart, pos.xStart, renderConfig)), { role: "rowgroup", "aria-rowcount": renderConfig.data.length }), __spreadArrays([spans && dom_1.el(".dhx_span-spans", spans, { role: "presentation" })], fixedCols)),
         renderConfig.$footer && frozenFooter,
-        dom_1.el(".dhx_frozen-cols-border"),
+        dom_1.el(".dhx_frozen-cols-border", { role: "presentation" }),
     ]);
 }
 exports.getFixedCols = getFixedCols;
 
 
 /***/ }),
-/* 207 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29728,10 +30770,11 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var ts_combobox_1 = __webpack_require__(29);
-var ts_data_1 = __webpack_require__(5);
+var ts_combobox_1 = __webpack_require__(31);
+var ts_data_1 = __webpack_require__(4);
 var types_1 = __webpack_require__(9);
-var html_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var data_1 = __webpack_require__(21);
 var inputDelay;
 function onInput(eventSystem, colId, filter, filterObj, e) {
     var inputHandler = function () {
@@ -29792,7 +30835,7 @@ function getContent() {
             element: {},
             toHtml: function (column, config) {
                 var colId = column.id.toString();
-                this.element[colId] = dom_1.el("label.dhx_grid-filter__label.dxi.dxi-magnify", [
+                this.element[colId] = dom_1.el("label.dhx_grid-filter__label.dxi.dxi-magnify", { "aria-label": "Type to search" }, [
                     dom_1.el("input", {
                         type: "text",
                         class: "dhx_input dhx_grid-filter",
@@ -29901,27 +30944,53 @@ function getContent() {
             value: {},
         },
         sum: {
-            calculate: function (_col, roots) { return roots.reduce(function (sum, c) { return (sum += parseFloat(c) || 0); }, 0).toFixed(3); },
+            calculate: function (col, roots) { return roots.reduce(function (sum, c) { return (sum += parseFloat(c) || 0); }, 0); },
             toHtml: function (column, config) {
-                return applyMathMethod(column, config, this.calculate);
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
             },
         },
         avg: {
-            calculate: function (_col, roots) { return (roots.reduce(function (sum, c) { return (sum += c); }, 0) / _col.length).toFixed(3); },
+            calculate: function (col, roots) {
+                return col.length ? roots.reduce(function (sum, c) { return (sum += c); }, 0) / col.length : null;
+            },
             toHtml: function (column, config) {
-                return applyMathMethod(column, config, this.calculate);
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
             },
         },
         min: {
-            calculate: function (col) { return Math.min.apply(Math, col).toFixed(3); },
+            calculate: function (col) { return (col.length ? Math.min.apply(Math, col) : null); },
             toHtml: function (column, config) {
-                return applyMathMethod(column, config, this.calculate);
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
             },
         },
         max: {
-            calculate: function (col) { return Math.max.apply(Math, col).toFixed(3); },
+            calculate: function (col) { return (col.length ? Math.max.apply(Math, col) : null); },
             toHtml: function (column, config) {
-                return applyMathMethod(column, config, this.calculate);
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
             },
         },
         count: {
@@ -29952,7 +31021,7 @@ exports.getContent = getContent;
 
 
 /***/ }),
-/* 208 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29967,7 +31036,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var types_1 = __webpack_require__(9);
-var html_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
 function startResize(grid, column, ev, cb) {
     ev.targetTouches && ev.preventDefault();
     var initX = ev.targetTouches ? ev.targetTouches[0].clientX : ev.clientX;
@@ -30032,7 +31101,247 @@ exports.startResize = startResize;
 
 
 /***/ }),
-/* 209 */
+/* 207 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = __webpack_require__(9);
+var html_1 = __webpack_require__(3);
+function selectionMove(e, grid, dir, range, toEnd, ctrlUp, shiftUp) {
+    if (toEnd === void 0) { toEnd = false; }
+    if (ctrlUp === void 0) { ctrlUp = false; }
+    if (shiftUp === void 0) { shiftUp = false; }
+    if (grid.config.$editable || !grid.config.selection || html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
+        return;
+    }
+    if (e) {
+        e.preventDefault();
+    }
+    var selected = grid.selection.getCell();
+    var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
+    grid.data.filter(function (row) { return !row.hidden; });
+    if (selected) {
+        if (dir === "vertical") {
+            if (toEnd) {
+                var newItem = range === 1
+                    ? grid.data.getItem(grid.data.getId(grid.data.getLength() - 1))
+                    : grid.data.getItem(grid.data.getId(0));
+                grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
+                grid.scrollTo(newItem.id, selected.column.id.toString());
+            }
+            else {
+                var index = grid.data.getIndex(selected.row.id.toString());
+                if (index + range >= 0 && index + range < grid.data.getLength()) {
+                    var newItem = grid.data.getItem(grid.data.getId(index + range));
+                    grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
+                    grid.scrollTo(newItem.id, selected.column.id.toString());
+                }
+            }
+        }
+        else {
+            if (toEnd) {
+                var newItem = range === 1 ? columns[columns.length - 1] : columns[0];
+                grid.selection.setCell(selected.row.id, newItem.id, ctrlUp, shiftUp);
+                grid.scrollTo(selected.row.id.toString(), newItem.id.toString());
+            }
+            else {
+                var index = columns.indexOf(selected.column);
+                if (index + range >= 0 && index + range < columns.length) {
+                    grid.scrollTo(selected.row.id.toString(), columns[index + range].id.toString());
+                    grid.selection.setCell(selected.row.id, columns[index + range].id, ctrlUp, shiftUp);
+                }
+            }
+        }
+    }
+}
+exports.selectionMove = selectionMove;
+function getKeysHandlers(grid) {
+    var cellSelection = grid.config.selection === "cell" ||
+        grid.config.selection === "complex" ||
+        grid.config.selection === true;
+    var gridBodyHandlers = {};
+    if (grid.getRootView()) {
+        var gridBody_1 = grid.getRootView().refs.grid_body.el;
+        gridBodyHandlers = {
+            pageUp: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop -= gridBody_1.clientHeight;
+            },
+            pageDown: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop += gridBody_1.clientHeight;
+            },
+            home: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop = 0;
+            },
+            end: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop += gridBody_1.scrollHeight;
+            },
+        };
+    }
+    return __assign({ enter: function () {
+            if (cellSelection) {
+                var selected = grid.selection.getCell();
+                if (selected &&
+                    ((selected.column.editable !== false && grid.config.editable) || selected.column.editable)) {
+                    if (!grid.config.$editable) {
+                        if (selected.column.type !== "boolean") {
+                            grid.editCell(selected.row.id, selected.column.id, selected.column.editorType);
+                        }
+                        else {
+                            grid.events.fire(types_1.GridEvents.afterEditEnd, [
+                                !selected.row[selected.column.id],
+                                selected.row,
+                                selected.column,
+                            ]);
+                        }
+                    }
+                    else {
+                        grid.editEnd();
+                    }
+                }
+            }
+            else {
+                if (grid.config.$editable) {
+                    grid.editEnd();
+                }
+            }
+        }, space: function (e) {
+            if (cellSelection && grid.config.editable && !grid.config.$editable) {
+                var selected = grid.selection.getCell();
+                if (selected && selected.column.type === "boolean") {
+                    e.preventDefault();
+                    grid.events.fire(types_1.GridEvents.afterEditEnd, [
+                        !selected.row[selected.column.id],
+                        selected.row,
+                        selected.column,
+                    ]);
+                }
+            }
+        }, escape: function () {
+            if (grid.config.$editable) {
+                grid.editEnd(true);
+            }
+        }, tab: function (e) {
+            if (grid.config.$editable ||
+                !grid.config.selection ||
+                html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
+                return;
+            }
+            if (e) {
+                e.preventDefault();
+            }
+            var selected = grid.selection.getCell();
+            var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
+            if (selected) {
+                var index = columns.indexOf(selected.column) + 1;
+                if (index >= 0 && index < columns.length) {
+                    grid.selection.setCell(selected.row.id, columns[index].id);
+                    grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
+                }
+                else if (index >= 0) {
+                    var newLineIndex = grid.data.getIndex(selected.row.id.toString()) + 1;
+                    if (newLineIndex < grid.data.getLength()) {
+                        grid.selection.setCell(grid.data.getId(newLineIndex), columns[0].id);
+                        grid.scrollTo(grid.data.getId(newLineIndex), columns[0].id.toString());
+                    }
+                }
+            }
+        }, "shift+tab": function (e) {
+            if (grid.config.$editable ||
+                !grid.config.selection ||
+                html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
+                return;
+            }
+            if (e) {
+                e.preventDefault();
+            }
+            var selected = grid.selection.getCell();
+            var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
+            if (selected) {
+                var index = columns.indexOf(selected.column) - 1;
+                if (index >= 0 && index < columns.length) {
+                    grid.selection.setCell(selected.row.id, columns[index].id);
+                    grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
+                }
+                else if (index < grid.data.getLength()) {
+                    var newLineIndex = grid.data.getIndex(selected.row.id.toString()) - 1;
+                    if (newLineIndex >= 0) {
+                        grid.selection.setCell(grid.data.getId(newLineIndex), columns[columns.length - 1].id);
+                        grid.scrollTo(grid.data.getId(newLineIndex), columns[columns.length - 1].id.toString());
+                    }
+                }
+            }
+        }, arrowUp: function (e) {
+            selectionMove(e, grid, "vertical", -1);
+        }, "ctrl+arrowUp": function (e) {
+            selectionMove(e, grid, "vertical", -1, true);
+        }, "shift+arrowUp": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", -1, false, false, true);
+            }
+        }, "ctrl+shift+arrowUp": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", -1, true, false, true);
+            }
+        }, arrowDown: function (e) {
+            selectionMove(e, grid, "vertical", 1);
+        }, "ctrl+arrowDown": function (e) {
+            selectionMove(e, grid, "vertical", 1, true);
+        }, "shift+arrowDown": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", 1, false, false, true);
+            }
+        }, "ctrl+shift+arrowDown": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", 1, true, false, true);
+            }
+        }, arrowRight: function (e) {
+            selectionMove(e, grid, "horizontal", 1);
+        }, "ctrl+arrowRight": function (e) {
+            selectionMove(e, grid, "horizontal", 1, true);
+        }, "shift+arrowRight": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", 1, false, false, true);
+            }
+        }, "ctrl+shift+arrowRight": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", 1, true, false, true);
+            }
+        }, arrowLeft: function (e) {
+            selectionMove(e, grid, "horizontal", -1);
+        }, "ctrl+arrowLeft": function (e) {
+            selectionMove(e, grid, "horizontal", -1, true);
+        }, "shift+arrowLeft": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", -1, false, false, true);
+            }
+        }, "ctrl+shift+arrowLeft": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", -1, true, false, true);
+            }
+        } }, gridBodyHandlers);
+}
+exports.getKeysHandlers = getKeysHandlers;
+
+
+/***/ }),
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30050,20 +31359,32 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-var Grid_1 = __webpack_require__(81);
+var Grid_1 = __webpack_require__(82);
 var types_1 = __webpack_require__(9);
-var ts_data_1 = __webpack_require__(5);
-var html_1 = __webpack_require__(2);
+var ts_data_1 = __webpack_require__(4);
+var html_1 = __webpack_require__(3);
+var data_1 = __webpack_require__(21);
+var render_1 = __webpack_require__(83);
 var ProGrid = /** @class */ (function (_super) {
     __extends(ProGrid, _super);
     function ProGrid(container, config) {
-        return _super.call(this, container, config) || this;
+        return _super.call(this, container, __assign({ autoHeight: false }, config)) || this;
     }
     ProGrid.prototype._setEventHandlers = function () {
         var _this = this;
         _super.prototype._setEventHandlers.call(this);
-        // columns drag'n'drop feature
         this.events.on(types_1.GridEvents.headerCellMouseDown, function (col, e) {
             if (!e.targetTouches) {
                 _this._dragStartColumn(e, col);
@@ -30082,9 +31403,85 @@ var ProGrid = /** @class */ (function (_super) {
             _this._touch.start = false;
             _this._clearTouchTimer();
         });
-        // !-- columns drag'n'drop feature
+        this.events.on(types_1.GridEvents.resize, function () {
+            _this._parseColumns();
+            _this._checkFilters();
+        });
+        this.events.on(types_1.GridEvents.afterResizeEnd, function () {
+            if (_this.config.autoHeight) {
+                _this.config.data = _this.data.map(function (row) {
+                    var height = data_1.getMaxRowHeight(row, _this.config.columns);
+                    row.$height = data_1.getCalculatedRowHeight(height, {
+                        rowHeight: _this.config.rowHeight,
+                        padding: 8,
+                    });
+                    return row;
+                });
+            }
+        });
+        this.events.on(types_1.GridEvents.afterRowResize, function (row, _e, currentHeight) {
+            var _a = _this.data.getItem(row.id), id = _a.id, height = _a.height, $height = _a.$height;
+            if (height && height !== $height) {
+                _this.data.update(id, { height: currentHeight });
+            }
+            _this.data.update(id, { $height: currentHeight }, true);
+            _this.config.data = _this.data.map(function (row) { return row; });
+            _this.paint();
+        });
+        this.events.on(types_1.GridEvents.scroll, function () {
+            _this._lazyLoad();
+        });
     };
-    // columns drag'n'drop feature
+    ProGrid.prototype._prepareData = function (data) {
+        var _this = this;
+        this._adjustColumns();
+        return data.map(function (row) {
+            if (_this.config.autoHeight && typeof row.height === "undefined") {
+                var height = data_1.getMaxRowHeight(row, _this.config.columns);
+                row.$height =
+                    data_1.getCalculatedRowHeight(height, {
+                        rowHeight: _this.config.rowHeight,
+                        padding: 8,
+                    }) || _this.config.rowHeight;
+            }
+            else {
+                row.$height = row.height || _this.config.rowHeight;
+            }
+            return row;
+        });
+    };
+    ProGrid.prototype._prepareDataFromTo = function (data, from, to) {
+        var _this = this;
+        return data.mapRange(from, to, function (row) {
+            var height = data_1.getMaxRowHeight(row, _this.config.columns);
+            row.$height =
+                data_1.getCalculatedRowHeight(height, {
+                    rowHeight: _this.config.rowHeight,
+                    padding: 8,
+                }) || _this.config.rowHeight;
+            return row;
+        });
+    };
+    ProGrid.prototype._lazyLoad = function () {
+        var _this = this;
+        var _a, _b;
+        var proxy = this.data.dataProxy;
+        if (proxy && proxy.config) {
+            var data = this.data.getRawData(0, -1, null, 2);
+            var renderConfig = render_1.getRenderConfig(this, data, {
+                width: this.config.width,
+                height: this.config.height,
+            });
+            var from_1 = this.data.getIndex((_a = renderConfig.currentRows[0]) === null || _a === void 0 ? void 0 : _a.id.toString());
+            var to_1 = this.data.getIndex((_b = renderConfig.currentRows[renderConfig.currentRows.length - 1]) === null || _b === void 0 ? void 0 : _b.id.toString());
+            if (!this.data.isDataLoaded(from_1, to_1)) {
+                proxy.updateUrl(null, { from: from_1, limit: proxy.config.limit });
+                this.data.load(proxy).then(function () {
+                    _this.config.autoHeight && _this._prepareDataFromTo(_this.data, from_1, to_1);
+                });
+            }
+        }
+    };
     ProGrid.prototype._getColumnGhost = function (col) {
         var headerRow = this._container.querySelector(".dhx_header-row");
         var colHeaderCell = headerRow.querySelector(".dhx_grid-header-cell[dhx_id=\"" + col.id + "\"]");
@@ -30116,7 +31513,7 @@ exports.ProGrid = ProGrid;
 
 
 /***/ }),
-/* 210 */
+/* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30125,12 +31522,12 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(210));
 __export(__webpack_require__(211));
-__export(__webpack_require__(212));
 
 
 /***/ }),
-/* 211 */
+/* 210 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30149,8 +31546,8 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(2);
-var ts_navbar_1 = __webpack_require__(17);
+var html_1 = __webpack_require__(3);
+var ts_navbar_1 = __webpack_require__(19);
 var ContextMenu = /** @class */ (function (_super) {
     __extends(ContextMenu, _super);
     function ContextMenu() {
@@ -30208,7 +31605,7 @@ exports.ContextMenu = ContextMenu;
 
 
 /***/ }),
-/* 212 */
+/* 211 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30228,7 +31625,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var ts_navbar_1 = __webpack_require__(17);
+var ts_navbar_1 = __webpack_require__(19);
 var Menu = /** @class */ (function (_super) {
     __extends(Menu, _super);
     function Menu(element, config) {
@@ -30261,7 +31658,7 @@ exports.Menu = Menu;
 
 
 /***/ }),
-/* 213 */
+/* 212 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30270,11 +31667,11 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(214));
+__export(__webpack_require__(213));
 
 
 /***/ }),
-/* 214 */
+/* 213 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30294,10 +31691,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var ts_navbar_1 = __webpack_require__(17);
+var ts_navbar_1 = __webpack_require__(19);
 var core_1 = __webpack_require__(1);
-var html_1 = __webpack_require__(2);
-var ts_message_1 = __webpack_require__(19);
+var html_1 = __webpack_require__(3);
+var ts_message_1 = __webpack_require__(18);
 var Ribbon = /** @class */ (function (_super) {
     __extends(Ribbon, _super);
     function Ribbon(element, config) {
@@ -30480,7 +31877,7 @@ exports.Ribbon = Ribbon;
 
 
 /***/ }),
-/* 215 */
+/* 214 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30489,12 +31886,12 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(216));
-__export(__webpack_require__(83));
+__export(__webpack_require__(215));
+__export(__webpack_require__(85));
 
 
 /***/ }),
-/* 216 */
+/* 215 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30514,10 +31911,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(2);
-var types_1 = __webpack_require__(83);
-var ts_message_1 = __webpack_require__(19);
-var ts_navbar_1 = __webpack_require__(17);
+var html_1 = __webpack_require__(3);
+var types_1 = __webpack_require__(85);
+var ts_message_1 = __webpack_require__(18);
+var ts_navbar_1 = __webpack_require__(19);
 var core_1 = __webpack_require__(1);
 var Sidebar = /** @class */ (function (_super) {
     __extends(Sidebar, _super);
@@ -30672,7 +32069,7 @@ exports.Sidebar = Sidebar;
 
 
 /***/ }),
-/* 217 */
+/* 216 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30681,12 +32078,12 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(218));
-__export(__webpack_require__(84));
+__export(__webpack_require__(217));
+__export(__webpack_require__(86));
 
 
 /***/ }),
-/* 218 */
+/* 217 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -30725,16 +32122,19 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var Keymanager_1 = __webpack_require__(14);
-var CssManager_1 = __webpack_require__(30);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var KeyManager_1 = __webpack_require__(14);
+var FocusManager_1 = __webpack_require__(20);
+var CssManager_1 = __webpack_require__(32);
 var ts_layout_1 = __webpack_require__(13);
-var types_1 = __webpack_require__(84);
+var types_1 = __webpack_require__(86);
 var Tabbar = /** @class */ (function (_super) {
     __extends(Tabbar, _super);
     function Tabbar(container, config) {
         var _this = _super.call(this, container, core_1.extend({ mode: "top" }, config)) || this;
+        _this._keyManager = new KeyManager_1.KeyManager(function () { return html_1.locate(document.activeElement, "tabs_id") === _this._uid; });
+        _this._initHotkeys();
         _this._cssManager = new CssManager_1.CssManager();
         if (_this.config.disabled) {
             var disabled = _this.config.disabled;
@@ -30754,6 +32154,7 @@ var Tabbar = /** @class */ (function (_super) {
             _this.paint();
         }
         _this.events = new events_1.EventSystem(_this);
+        FocusManager_1.focusManager.setFocusId(_this._uid);
         return _this;
     }
     Tabbar.prototype.toVDOM = function () {
@@ -30791,7 +32192,7 @@ var Tabbar = /** @class */ (function (_super) {
         }, this._tabsContainer ? __spreadArrays(this._drawTabs(), [activeView ? activeView.toVDOM() : null]) : []);
     };
     Tabbar.prototype.destructor = function () {
-        this._hotkeysDestructor();
+        this._keyManager.destructor();
         this._tabsContainer = this._beforeScrollSize = this._afterScrollSize = null;
         _super.prototype.destructor.call(this);
     };
@@ -30971,49 +32372,6 @@ var Tabbar = /** @class */ (function (_super) {
             }, onHeaderScroll: core_1.debounce(function () {
                 _this.paint();
             }, 10) });
-        var activeNextTab = function (e) {
-            e.preventDefault();
-            var enableTabs = _this._getEnableTabs();
-            var activeIndex = core_1.findIndex(enableTabs, function (cell) { return cell.id === _this.config.activeView; });
-            var prev = _this.config.activeView;
-            if (activeIndex === -1) {
-                return;
-            }
-            if (activeIndex === enableTabs.length - 1) {
-                _this.config.activeView = enableTabs[0].id;
-            }
-            else {
-                _this.config.activeView = enableTabs[activeIndex + 1].id;
-            }
-            _this.events.fire(types_1.TabbarEvents.change, [_this.config.activeView, prev]);
-            _this._focusTab(_this.config.activeView);
-            _this.paint();
-        };
-        var activePrevTab = function (e) {
-            e.preventDefault();
-            var enableTabs = _this._getEnableTabs();
-            var activeIndex = core_1.findIndex(enableTabs, function (cell) { return cell.id === _this.config.activeView; });
-            var prev = _this.config.activeView;
-            if (activeIndex === -1) {
-                return;
-            }
-            if (activeIndex === 0) {
-                _this.config.activeView = enableTabs[enableTabs.length - 1].id;
-            }
-            else {
-                _this.config.activeView = enableTabs[activeIndex - 1].id;
-            }
-            _this.events.fire(types_1.TabbarEvents.change, [_this.config.activeView, prev]);
-            _this._focusTab(_this.config.activeView);
-            _this.paint();
-        };
-        var isVertical = this.config.mode === "right" || this.config.mode === "left";
-        this._hotkeysDestructor = Keymanager_1.addHotkeys({
-            arrowright: activeNextTab,
-            arrowup: isVertical ? activePrevTab : activeNextTab,
-            arrowleft: activePrevTab,
-            arrowdown: isVertical ? activeNextTab : activePrevTab,
-        }, function () { return html_1.locate(document.activeElement, "tabs_id") === _this._uid; });
     };
     Tabbar.prototype._isHorizontalMode = function () {
         return this.config.mode === "bottom" || this.config.mode === "top";
@@ -31134,14 +32492,13 @@ var Tabbar = /** @class */ (function (_super) {
                     class: "dhx_tabbar-header ",
                     onclick: this._handlers.onTabClick,
                 }, __spreadArrays(this._cells.map(function (cell) {
-                    var cssClassName = _this._cssManager.add(_this._getSizes(cell.config), "dhx_tabbar-tab-style__" + _this._uid);
                     var _a = _this.config, closable = _a.closable, closeButtons = _a.closeButtons, activeView = _a.activeView;
                     return dom_1.el("li", {
                         class: "dhx_tabbar-tab" +
-                            (cell.config.tabCss ? " " + cell.config.tabCss : "") +
-                            (" " + cssClassName),
+                            (cell.config.tabCss ? " " + cell.config.tabCss : ""),
                         dhx_tabid: cell.id,
                         role: "presentation",
+                        style: _this._getSizes(cell.config),
                     }, [
                         dom_1.el("button.dhx_button.dhx_tabbar-tab-button" +
                             (activeView === cell.id
@@ -31314,13 +32671,62 @@ var Tabbar = /** @class */ (function (_super) {
             this.paint();
         }
     };
+    Tabbar.prototype._initHotkeys = function () {
+        var _this = this;
+        var activeNextTab = function (e) {
+            e.preventDefault();
+            var enableTabs = _this._getEnableTabs();
+            var activeIndex = core_1.findIndex(enableTabs, function (cell) { return cell.id === _this.config.activeView; });
+            var prev = _this.config.activeView;
+            if (activeIndex === -1) {
+                return;
+            }
+            if (activeIndex === enableTabs.length - 1) {
+                _this.config.activeView = enableTabs[0].id;
+            }
+            else {
+                _this.config.activeView = enableTabs[activeIndex + 1].id;
+            }
+            _this.events.fire(types_1.TabbarEvents.change, [_this.config.activeView, prev]);
+            _this._focusTab(_this.config.activeView);
+            _this.paint();
+        };
+        var activePrevTab = function (e) {
+            e.preventDefault();
+            var enableTabs = _this._getEnableTabs();
+            var activeIndex = core_1.findIndex(enableTabs, function (cell) { return cell.id === _this.config.activeView; });
+            var prev = _this.config.activeView;
+            if (activeIndex === -1) {
+                return;
+            }
+            if (activeIndex === 0) {
+                _this.config.activeView = enableTabs[enableTabs.length - 1].id;
+            }
+            else {
+                _this.config.activeView = enableTabs[activeIndex - 1].id;
+            }
+            _this.events.fire(types_1.TabbarEvents.change, [_this.config.activeView, prev]);
+            _this._focusTab(_this.config.activeView);
+            _this.paint();
+        };
+        var isVertical = this.config.mode === "right" || this.config.mode === "left";
+        var handlers = {
+            arrowRight: activeNextTab,
+            arrowUp: isVertical ? activePrevTab : activeNextTab,
+            arrowLeft: activePrevTab,
+            arrowDown: isVertical ? activeNextTab : activePrevTab,
+        };
+        for (var key in handlers) {
+            this._keyManager.addHotKey(key, handlers[key]);
+        }
+    };
     return Tabbar;
 }(ts_layout_1.Layout));
 exports.Tabbar = Tabbar;
 
 
 /***/ }),
-/* 219 */
+/* 218 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31329,13 +32735,13 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(220));
-__export(__webpack_require__(85));
-__export(__webpack_require__(86));
+__export(__webpack_require__(219));
+__export(__webpack_require__(87));
+__export(__webpack_require__(88));
 
 
 /***/ }),
-/* 220 */
+/* 219 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -31367,14 +32773,15 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var html_1 = __webpack_require__(2);
-var types_1 = __webpack_require__(21);
-var view_1 = __webpack_require__(4);
-var ts_data_1 = __webpack_require__(5);
-var Editor_1 = __webpack_require__(85);
-var KeyManager_1 = __webpack_require__(221);
-var types_2 = __webpack_require__(86);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var types_1 = __webpack_require__(24);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
+var Editor_1 = __webpack_require__(87);
+var KeyManager_1 = __webpack_require__(14);
+var FocusManager_1 = __webpack_require__(20);
+var types_2 = __webpack_require__(88);
 function getSelectionIndent(level) {
     return level * 20;
 }
@@ -31414,7 +32821,7 @@ var Tree = /** @class */ (function (_super) {
         var init = function (item) {
             item.$mark = types_2.SelectStatus.unselected;
             item.checkbox = _this.config.checkbox;
-            item.$autoload = Boolean(item.items && _this.config.autoload);
+            item.$autoload = Boolean(item.items && typeof _this.config.autoload === "string");
             item.$editor = false;
             return item;
         };
@@ -31438,7 +32845,8 @@ var Tree = /** @class */ (function (_super) {
             disabled: !_this.config.selection,
         }, _this.data, _this.events);
         if (_this.config.keyNavigation) {
-            new KeyManager_1.KeyManager(_this);
+            _this._keyManager = new KeyManager_1.KeyManager(function (_, focusId) { return focusId === _this._uid; });
+            _this._initHotkeys();
         }
         _this._editor = Editor_1.default;
         _this._initEvents();
@@ -31449,6 +32857,7 @@ var Tree = /** @class */ (function (_super) {
         _this._root = _this.data.getRoot();
         var render = function () { return _this._draw(); };
         _this.mount(container, dom_1.create({ render: render }));
+        FocusManager_1.focusManager.setFocusId(_this._uid);
         return _this;
     }
     Tree.prototype.focusItem = function (id) {
@@ -31724,6 +33133,9 @@ var Tree = /** @class */ (function (_super) {
                     return;
                 }
                 if (e.target.classList.contains("dhx_tree-checkbox")) {
+                    if (!_this.events.fire(types_2.TreeEvents.beforeCheck, [_this.data.getIndex(id), id])) {
+                        return;
+                    }
                     var item = _this.data.getItem(id);
                     if (item.$mark === types_2.SelectStatus.unselected) {
                         _this.checkItem(id);
@@ -31731,6 +33143,7 @@ var Tree = /** @class */ (function (_super) {
                     else {
                         _this.uncheckItem(id);
                     }
+                    _this.events.fire(types_2.TreeEvents.afterCheck, [_this.data.getIndex(id), id, !!item.$mark]);
                     return;
                 }
                 _this.events.fire(types_2.TreeEvents.itemClick, [id, e]);
@@ -31924,6 +33337,7 @@ var Tree = /** @class */ (function (_super) {
     Tree.prototype._updateItemCheck = function (id, status) {
         this.data.update(id, { $mark: status }, true);
         this.data.eachChild(id, function (obj) { return (obj.$mark = status); }); // mark all childs
+        // this.events.fire(TreeEvents.afterCheck, [id]);
         this._updateParents(id);
     };
     Tree.prototype._updateParents = function (id, self) {
@@ -31961,158 +33375,123 @@ var Tree = /** @class */ (function (_super) {
             }
         }, self);
     };
+    Tree.prototype._initHotkeys = function () {
+        var _this = this;
+        var getFocused = function () {
+            var focused = _this._focusId;
+            if (focused) {
+                return focused;
+            }
+            else {
+                var root = _this.data.getRoot();
+                return _this.data.getItems(root)[0].id;
+            }
+        };
+        var getClosestBot = function (id, ignore) {
+            if (ignore === void 0) { ignore = false; }
+            var item = _this.data.getItem(id);
+            var haveItems = _this.data.haveItems(id);
+            if (haveItems && item.opened && !ignore) {
+                return _this.data.getItems(id)[0].id;
+            }
+            else {
+                var parent_1 = _this.data.getParent(id);
+                var childs = _this.data.getItems(parent_1);
+                var index = core_1.findIndex(childs, function (child) { return child.id === id; });
+                var len = childs.length;
+                if (index + 1 < len) {
+                    return childs[index + 1].id;
+                }
+                else {
+                    if (parent_1 === _this.data.getRoot()) {
+                        return null;
+                    }
+                    return getClosestBot(parent_1, true);
+                }
+            }
+        };
+        var getClosestTop = function (id) {
+            var index = _this.data.getIndex(id);
+            var parent = _this.data.getParent(id);
+            if (index > 0) {
+                var childs = _this.data.getItems(parent);
+                var current = childs[index - 1];
+                if (!_this.data.haveItems(current.id) || !current.opened) {
+                    return current.id;
+                }
+                while (_this.data.haveItems(current.id) && current.opened) {
+                    var allChilds = _this.data.getItems(current.id);
+                    current = allChilds[allChilds.length - 1];
+                }
+                return current.id;
+            }
+            else {
+                if (parent === _this.data.getRoot()) {
+                    return null;
+                }
+                return parent;
+            }
+        };
+        var handlers = {
+            arrowLeft: function (e) {
+                e.preventDefault();
+                var focused = getFocused();
+                var parent = _this.data.getParent(focused);
+                if (_this.data.getRoot() === parent) {
+                    _this.collapse(focused);
+                    return;
+                }
+                var isClosed = !_this.data.getItem(focused).opened;
+                if (isClosed) {
+                    _this.focusItem(parent);
+                }
+                else {
+                    if (focused !== _this.data.getRoot()) {
+                        _this.collapse(focused);
+                    }
+                }
+            },
+            arrowRight: function (e) {
+                e.preventDefault();
+                var focused = getFocused();
+                if (_this.data.haveItems(focused)) {
+                    _this.expand(focused);
+                }
+            },
+            arrowUp: function (e) {
+                e.preventDefault();
+                var focused = getFocused();
+                var next = getClosestTop(focused);
+                if (next) {
+                    _this.focusItem(next);
+                }
+            },
+            arrowDown: function (e) {
+                e.preventDefault();
+                var focused = getFocused();
+                var next = getClosestBot(focused);
+                if (next) {
+                    _this.focusItem(next);
+                }
+            },
+            enter: function () {
+                var focused = getFocused();
+                if (focused) {
+                    _this.selection.add(focused);
+                }
+            },
+        };
+        for (var key in handlers) {
+            this._keyManager.addHotKey(key, handlers[key]);
+        }
+    };
     return Tree;
 }(view_1.View));
 exports.Tree = Tree;
 
 
 /***/ }),
-/* 221 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Keymanager_1 = __webpack_require__(14);
-var core_1 = __webpack_require__(1);
-var html_1 = __webpack_require__(2);
-var KeyManager = /** @class */ (function () {
-    function KeyManager(tree) {
-        this._tree = tree;
-        this._initFocusHandlers();
-        this._initHotKeys();
-    }
-    KeyManager.prototype.addHotKey = function (key, handler) {
-        var _this = this;
-        Keymanager_1.keyManager.addHotKey(key, function (e) {
-            if (_this.isFocus() && !_this._tree.config.$editable) {
-                handler(e);
-            }
-        });
-    };
-    KeyManager.prototype.isFocus = function () {
-        return this._focusedId === this._tree._uid;
-    };
-    KeyManager.prototype._initFocusHandlers = function () {
-        var _this = this;
-        document.addEventListener("click", function (e) {
-            _this._focusedId = html_1.locate(e, "dhx_widget_id");
-        });
-    };
-    KeyManager.prototype._initHotKeys = function () {
-        var _this = this;
-        this.addHotKey("arrowLeft", function (e) {
-            e.preventDefault();
-            var focused = _this._getFocused();
-            var parent = _this._tree.data.getParent(focused);
-            if (_this._tree.data.getRoot() === parent) {
-                _this._tree.collapse(focused);
-                return;
-            }
-            var isClosed = !_this._tree.data.getItem(focused).opened;
-            if (isClosed) {
-                _this._tree.focusItem(parent);
-            }
-            else {
-                if (focused !== _this._tree.data.getRoot()) {
-                    _this._tree.collapse(focused);
-                }
-            }
-        });
-        this.addHotKey("arrowRight", function (e) {
-            e.preventDefault();
-            var focused = _this._getFocused();
-            if (_this._tree.data.haveItems(focused)) {
-                _this._tree.expand(focused);
-            }
-        });
-        this.addHotKey("arrowUp", function (e) {
-            e.preventDefault();
-            var focused = _this._getFocused();
-            var data = _this._tree.data;
-            var next = _this._getClosestTop(focused, data);
-            if (next) {
-                _this._tree.focusItem(next);
-            }
-        });
-        this.addHotKey("arrowDown", function (e) {
-            e.preventDefault();
-            var focused = _this._getFocused();
-            var data = _this._tree.data;
-            var next = _this._getClosestBot(focused, data);
-            if (next) {
-                _this._tree.focusItem(next);
-            }
-        });
-        this.addHotKey("enter", function (e) {
-            var focused = _this._getFocused();
-            if (focused) {
-                _this._tree.selection.add(focused);
-            }
-        });
-    };
-    KeyManager.prototype._getClosestBot = function (id, data, ignore) {
-        if (ignore === void 0) { ignore = false; }
-        var item = data.getItem(id);
-        var haveItems = data.haveItems(id);
-        if (haveItems && item.opened && !ignore) {
-            return data.getItems(id)[0].id;
-        }
-        else {
-            var parent_1 = data.getParent(id);
-            var childs = data.getItems(parent_1);
-            var index = core_1.findIndex(childs, function (child) { return child.id === id; });
-            var len = childs.length;
-            if (index + 1 < len) {
-                return childs[index + 1].id;
-            }
-            else {
-                if (parent_1 === data.getRoot()) {
-                    return null;
-                }
-                return this._getClosestBot(parent_1, data, true);
-            }
-        }
-    };
-    KeyManager.prototype._getClosestTop = function (id, data) {
-        var index = data.getIndex(id);
-        var parent = data.getParent(id);
-        if (index > 0) {
-            var childs = data.getItems(parent);
-            var current = childs[index - 1];
-            if (!data.haveItems(current.id) || !current.opened) {
-                return current.id;
-            }
-            while (data.haveItems(current.id) && current.opened) {
-                var allChilds = data.getItems(current.id);
-                current = allChilds[allChilds.length - 1];
-            }
-            return current.id;
-        }
-        else {
-            if (parent === data.getRoot()) {
-                return null;
-            }
-            return parent;
-        }
-    };
-    KeyManager.prototype._getFocused = function () {
-        var focused = this._tree._focusId;
-        if (focused) {
-            return focused;
-        }
-        else {
-            var root = this._tree.data.getRoot();
-            return this._tree.data.getItems(root)[0].id;
-        }
-    };
-    return KeyManager;
-}());
-exports.KeyManager = KeyManager;
-
-
-/***/ }),
-/* 222 */
+/* 220 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32121,11 +33500,11 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(223));
+__export(__webpack_require__(221));
 
 
 /***/ }),
-/* 223 */
+/* 221 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32133,14 +33512,14 @@ __export(__webpack_require__(223));
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var Keymanager_1 = __webpack_require__(14);
+var events_1 = __webpack_require__(2);
+var KeyManager_1 = __webpack_require__(14);
+var FocusManager_1 = __webpack_require__(20);
 var ts_layout_1 = __webpack_require__(13);
-var ts_toolbar_1 = __webpack_require__(27);
-var types_1 = __webpack_require__(224);
-var WindowController_1 = __webpack_require__(225);
-var html_1 = __webpack_require__(2);
-var ts_navbar_1 = __webpack_require__(17);
+var ts_toolbar_1 = __webpack_require__(30);
+var types_1 = __webpack_require__(222);
+var WindowController_1 = __webpack_require__(223);
+var ts_navbar_1 = __webpack_require__(19);
 function detectDrag(e) {
     return new Promise(function (res) {
         var handleMouseUp = function () {
@@ -32166,6 +33545,7 @@ function detectDrag(e) {
 }
 var Window = /** @class */ (function () {
     function Window(config) {
+        var _this = this;
         this.config = core_1.extend({
             movable: false,
             resizable: false,
@@ -32181,10 +33561,14 @@ var Window = /** @class */ (function () {
         this.events = new events_1.EventSystem(this);
         var popup = (this._popup = document.createElement("div"));
         popup.tabIndex = 1;
+        popup.setAttribute("role", "dialog");
+        popup.setAttribute("aria-modal", "" + (this.config.modal || false));
         if (!this.config.modal) {
             WindowController_1.default.add(this._uid, this._popup);
         }
+        this._fullScreen = false;
         this._isActive = false;
+        this._keyManager = new KeyManager_1.KeyManager(function (_, focusId) { return focusId === _this._uid; });
         this._initHandlers();
         this._initUI();
         if (this.config.html) {
@@ -32194,18 +33578,31 @@ var Window = /** @class */ (function () {
     Window.prototype.paint = function () {
         this._layout.paint();
     };
+    Window.prototype.isFullScreen = function () {
+        return this._fullScreen;
+    };
     Window.prototype.setFullScreen = function () {
-        this.setSize(window.innerWidth, window.innerHeight);
-        this.setPosition(window.pageXOffset, window.pageYOffset);
+        if (!this._fullScreen) {
+            this._fullScreen = true;
+            this.setSize(window.innerWidth, window.innerHeight);
+            this.setPosition(window.pageXOffset, window.pageYOffset);
+        }
+    };
+    Window.prototype.unsetFullScreen = function () {
+        if (this._fullScreen) {
+            this._fullScreen = false;
+            this.setSize(this._oldSizes.width, this._oldSizes.height);
+            this.setPosition(this._oldPosition.left, this._oldPosition.top);
+        }
     };
     Window.prototype.setSize = function (width, height) {
-        var oldsize = {
+        this._oldSizes = {
             width: this._popup.offsetWidth,
             height: this._popup.offsetHeight,
         };
         var size = {
-            width: oldsize.width,
-            height: oldsize.height,
+            width: this._oldSizes.width,
+            height: this._oldSizes.height,
         };
         if (core_1.isDefined(width)) {
             this.config.width = size.width = width;
@@ -32217,7 +33614,7 @@ var Window = /** @class */ (function () {
         this._popup.style.height = size.height + "px";
         this.events.fire(types_1.WindowEvents.resize, [
             size,
-            oldsize,
+            this._oldSizes,
             { left: true, top: true, bottom: true, right: true },
         ]);
     };
@@ -32228,13 +33625,13 @@ var Window = /** @class */ (function () {
         };
     };
     Window.prototype.setPosition = function (left, top) {
-        var oldposition = {
+        this._oldPosition = {
             left: this._popup.offsetLeft,
             top: this._popup.offsetTop,
         };
         var position = {
-            left: oldposition.left,
-            top: oldposition.top,
+            left: this._oldPosition.left,
+            top: this._oldPosition.top,
         };
         if (core_1.isDefined(left)) {
             this.config.left = position.left = left;
@@ -32246,7 +33643,7 @@ var Window = /** @class */ (function () {
         this._popup.style.top = position.top + "px";
         this.events.fire(types_1.WindowEvents.resize, [
             position,
-            oldposition,
+            this._oldPosition,
             { left: true, top: true, bottom: true, right: true },
         ]);
     };
@@ -32271,6 +33668,7 @@ var Window = /** @class */ (function () {
                 (this.config.modal ? " dhx_popup--window_modal" : " dhx_popup--window") +
                 (this.config.css ? " " + this.config.css : "");
         this._popup.style.position = this.config.modal ? "fixed" : "absolute";
+        this._popup.setAttribute("dhx_widget_id", this._uid);
         var _a = this._getContainerParams(), containerInnerWidth = _a.containerInnerWidth, containerInnerHeight = _a.containerInnerHeight, containerXOffset = _a.containerXOffset, containerYOffset = _a.containerYOffset;
         var width = (this.config.width =
             this.config.width || this.config.minWidth || containerInnerWidth / 2);
@@ -32301,6 +33699,7 @@ var Window = /** @class */ (function () {
         this._popup.focus();
         this._isActive = true;
         this.events.fire(types_1.WindowEvents.afterShow, [{ left: left, top: top }]);
+        FocusManager_1.focusManager.setFocusId(this._uid);
     };
     Window.prototype.hide = function () {
         this._hide();
@@ -32316,7 +33715,7 @@ var Window = /** @class */ (function () {
         if (this._blocker) {
             this.config.node.removeChild(this._blocker);
             if (this.config.closable) {
-                Keymanager_1.keyManager.removeHotKey(null, this);
+                this._keyManager.removeHotKey(null, this);
             }
             this._blocker = null;
         }
@@ -32356,6 +33755,7 @@ var Window = /** @class */ (function () {
         if (this.footer) {
             this.footer.destructor();
         }
+        this._keyManager.destructor();
         this._layout.destructor();
         this._popup = null;
     };
@@ -32443,10 +33843,10 @@ var Window = /** @class */ (function () {
             css: isHeader ? "dhx_window-content" : "dhx_window-content-without-header",
         });
         if (this.config.footer) {
-            rows.push({ id: "footer", gravity: false, css: "dhx_window-footer" });
+            rows.push({ id: "footer", height: "content", css: "dhx_window-footer" });
         }
         if (this.config.resizable) {
-            rows.push({ id: "resizers", gravity: false, css: "resizers" });
+            rows.push({ id: "resizers", height: "content", css: "resizers" });
         }
         var layout = (this._layout = new ts_layout_1.Layout(this._popup, {
             css: "dhx_window" + (this.config.modal ? " dhx_window--modal" : ""),
@@ -32465,6 +33865,7 @@ var Window = /** @class */ (function () {
                     id: "title",
                     css: "title_max",
                 });
+                this._popup.setAttribute("aria-label", this.config.title);
             }
             if (this.config.closable) {
                 this.header.data.add({
@@ -32674,8 +34075,7 @@ var Window = /** @class */ (function () {
         this._blocker = blocker;
         if (this.config.closable) {
             blocker.addEventListener("click", function (e) { return _this._hide(e); });
-            var escape_1 = html_1.isIE() ? "esc" : "escape";
-            Keymanager_1.keyManager.addHotKey(escape_1, function (e) {
+            this._keyManager.addHotKey("escape", function (e) {
                 var collection1 = Array.prototype.slice.call(document.querySelectorAll(".dhx_popup--window_modal"));
                 var collection2 = Array.prototype.slice.call(document.querySelectorAll(".dhx_popup--window"));
                 var mainCollection = collection1.concat(collection2);
@@ -32712,7 +34112,7 @@ exports.Window = Window;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 224 */
+/* 222 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32731,7 +34131,7 @@ var WindowEvents;
 
 
 /***/ }),
-/* 225 */
+/* 223 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32778,7 +34178,7 @@ exports.default = {
 
 
 /***/ }),
-/* 226 */
+/* 224 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -32797,12 +34197,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_grid_1 = __webpack_require__(53);
+var ts_grid_1 = __webpack_require__(54);
 var core_1 = __webpack_require__(1);
-var html_1 = __webpack_require__(2);
-var ts_data_1 = __webpack_require__(5);
-var TreeGridCollection_1 = __webpack_require__(88);
-var types_1 = __webpack_require__(89);
+var ts_data_1 = __webpack_require__(4);
+var TreeGridCollection_1 = __webpack_require__(90);
+var types_1 = __webpack_require__(91);
 var defaultGroupTemplate = function (groupName, group) {
     return (groupName || "") + " (" + group.length + ")";
 };
@@ -32825,19 +34224,31 @@ var TreeGrid = /** @class */ (function (_super) {
         return _this;
     }
     TreeGrid.prototype.scrollTo = function (row, col) {
-        var colInd = core_1.findIndex(this.config.columns, function (obj) { return obj.id === col; });
+        var selectedCell = this.selection.getCell();
+        var columns = this.config.columns.filter(function (col) { return !col.hidden; });
+        var colInd = core_1.findIndex(columns, function (_a) {
+            var id = _a.id;
+            return id === col;
+        });
+        var prevCol = selectedCell ? selectedCell.column : this.config.columns[0];
+        var prevColInd = core_1.findIndex(columns, function (obj) { return obj.id === prevCol.id; });
         var fixedColsWidth = this.config.leftSplit
-            ? ts_grid_1.getTotalWidth(this.config.columns.slice(0, this.config.leftSplit))
+            ? ts_grid_1.getTotalWidth(columns.slice(0, this.config.leftSplit))
             : 0;
-        var x = ts_grid_1.getTotalWidth(this.config.columns.slice(0, colInd)) - fixedColsWidth;
-        var y = this.data.getPlainIndex(row) * this.config.rowHeight;
+        var x = ts_grid_1.getTotalWidth(columns.slice(0, colInd)) - (colInd - prevColInd < 0 ? fixedColsWidth : 0);
+        var rows = this.data.map(function (i) { return i; });
+        var rowInd = core_1.findIndex(rows, function (_a) {
+            var id = _a.id;
+            return id === row;
+        });
+        var y = ts_grid_1.getTotalHeight(rows.slice(0, rowInd));
         var scrollState = this.getScrollState();
         var gridRight = this.config.width + scrollState.x;
         var gridBottom = this.config.height + scrollState.y - this.config.headerRowHeight * this.config.$headerLevel;
-        var cellTop = y - scrollState.y - this.config.rowHeight;
-        var cellLeft = x - scrollState.x - this.config.columns[colInd].$width;
-        var cellBottom = y + this.config.rowHeight * 2 + 17 - gridBottom;
-        var cellRight = x + this.config.columns[colInd].$width * 2 + 17 - gridRight;
+        var cellTop = y - scrollState.y - rows[rowInd].$height;
+        var cellLeft = x - scrollState.x - columns[colInd].$width;
+        var cellBottom = y + rows[rowInd].$height * 2 + 18 - gridBottom;
+        var cellRight = x + columns[colInd].$width * 2 + 18 - gridRight;
         var scrollTop = cellTop > 0 && cellBottom < 0 ? 0 : cellTop < 0 ? cellTop : cellBottom;
         var scrollLeft = cellLeft > 0 && cellRight < 0 ? 0 : cellLeft < 0 ? cellLeft : cellRight;
         this.scroll(scrollLeft + scrollState.x, scrollTop + scrollState.y);
@@ -32874,33 +34285,6 @@ var TreeGrid = /** @class */ (function (_super) {
                 _this.collapse(item.id);
             }
         });
-    };
-    TreeGrid.prototype.adjustColumnWidth = function (id, adjust) {
-        var _this = this;
-        if (adjust === void 0) { adjust = true; }
-        var index = core_1.findIndex(this.config.columns, function (c) { return c.id === id; });
-        var col = this.config.columns[index];
-        var widthArr = [];
-        if (adjust === "header" || adjust === true) {
-            col.header.forEach(function (item) {
-                widthArr.push(html_1.getStrSize(ts_grid_1.removeHTMLTags(item.text)).width + (ts_grid_1.isSortable(_this.config, col) ? 40 : 20));
-            });
-        }
-        if (adjust === "data" || adjust === true) {
-            this.data.map(function (row) {
-                if (typeof row[col.id] === "string" || typeof row[col.id] === "number") {
-                    widthArr.push(html_1.getStrSize(ts_grid_1.removeHTMLTags(row[col.id])).width +
-                        (index === 0 ? _this.data.getMaxLevel() * 24 + 20 : 20));
-                }
-            });
-        }
-        this.config.$totalWidth = this.config.columns.reduce(function (t, column, i) {
-            if (i === index) {
-                column.$width = Math.max.apply(Math, widthArr);
-            }
-            return (t += column.hidden ? 0 : column.$width);
-        }, 0);
-        this.paint();
     };
     TreeGrid.prototype.groupBy = function (property) {
         var _this = this;
@@ -32957,20 +34341,63 @@ var TreeGrid = /** @class */ (function (_super) {
         this.data.filter(function (i) { return !i.hidden; });
         this.events.fire(ts_grid_1.GridEvents.afterRowShow, [row]);
     };
+    TreeGrid.prototype.getCellRect = function (row, col) {
+        var columns = this.config.columns.filter(function (col) { return !col.hidden; });
+        var rows = this.data.map(function (i) { return i; });
+        var colInd = core_1.findIndex(columns, function (obj) { return obj.id === col; });
+        var rowInd = core_1.findIndex(rows, function (obj) { return obj.id === row; });
+        var x = ts_grid_1.getTotalWidth(columns.slice(0, colInd));
+        var y = ts_grid_1.getTotalHeight(rows.slice(0, rowInd));
+        return {
+            x: x,
+            y: y,
+            height: rows[rowInd] ? rows[rowInd].$height : 0,
+            width: columns[colInd] ? columns[colInd].$width : 0,
+        };
+    };
+    TreeGrid.prototype._adjustColumnsWidth = function (rows, cols, adjust) {
+        var _a, _b;
+        if (adjust === void 0) { adjust = this.config.adjust; }
+        var _c;
+        var columnsWidth = {};
+        if (adjust === "header" || adjust === true) {
+            var currentCols = cols.filter(function (col) { return col.header; });
+            var data = ts_grid_1.getMaxColsWidth(this._prepareColumnData(currentCols, "header"), currentCols, {
+                font: "bold 14.4px Arial",
+            });
+            if (data) {
+                for (var _i = 0, _d = Object.entries(data); _i < _d.length; _i++) {
+                    var _e = _d[_i], key = _e[0], value = _e[1];
+                    columnsWidth = Object.assign(columnsWidth, (_a = {},
+                        _a[key] = +value + (ts_grid_1.isSortable(this.config, this.getColumn(key)) ? 36 : 16),
+                        _a));
+                }
+            }
+        }
+        if (adjust === "data" || adjust === true) {
+            var data = ts_grid_1.getMaxColsWidth(rows, cols);
+            if (data) {
+                for (var _f = 0, _g = Object.entries(data); _f < _g.length; _f++) {
+                    var _h = _g[_f], key = _h[0], value = _h[1];
+                    var offset = ((_c = cols[0]) === null || _c === void 0 ? void 0 : _c.id) === key ? this.data.getMaxLevel() * 24 + 16 : 16;
+                    if ((columnsWidth[key] && columnsWidth[key] < +value + offset) || !columnsWidth[key]) {
+                        columnsWidth = Object.assign(columnsWidth, (_b = {},
+                            _b[key] = +value + offset,
+                            _b));
+                    }
+                }
+            }
+        }
+        return columnsWidth;
+    };
     TreeGrid.prototype._createCollection = function (prep) {
         this.data = new TreeGridCollection_1.TreeGridCollection({
             prep: prep,
             rootId: this.config.rootParent,
         }, this.events);
     };
-    TreeGrid.prototype._checkColumns = function () {
-        _super.prototype._checkColumns.call(this);
-    };
     TreeGrid.prototype._getRowIndex = function (rowId) {
         return core_1.findIndex(this.data.serialize(), function (obj) { return obj.id === rowId; });
-    };
-    TreeGrid.prototype._parseColumns = function () {
-        _super.prototype._parseColumns.call(this);
     };
     TreeGrid.prototype._setEventHandlers = function () {
         var _this = this;
@@ -33039,7 +34466,7 @@ exports.TreeGrid = TreeGrid;
 
 
 /***/ }),
-/* 227 */
+/* 225 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33048,12 +34475,12 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(228));
-__export(__webpack_require__(229));
+__export(__webpack_require__(226));
+__export(__webpack_require__(227));
 
 
 /***/ }),
-/* 228 */
+/* 226 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33074,10 +34501,10 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(3);
-var ts_data_1 = __webpack_require__(5);
-var view_1 = __webpack_require__(4);
-var ts_toolbar_1 = __webpack_require__(27);
+var events_1 = __webpack_require__(2);
+var ts_data_1 = __webpack_require__(4);
+var view_1 = __webpack_require__(5);
+var ts_toolbar_1 = __webpack_require__(30);
 var Pagination = /** @class */ (function (_super) {
     __extends(Pagination, _super);
     function Pagination(container, config) {
@@ -33114,7 +34541,11 @@ var Pagination = /** @class */ (function (_super) {
             this._toolbar.data.update("count", { value: (index + 1).toString() });
             this.paint();
             this.events.fire("change", [index, previousIndex]);
-            this.data.events.fire("change");
+            this.data.events.fire("change", [
+                undefined,
+                "setPage",
+                [index * this._size, previousIndex * this._size],
+            ]);
         }
         else {
             this.paint();
@@ -33357,7 +34788,7 @@ exports.Pagination = Pagination;
 
 
 /***/ }),
-/* 229 */
+/* 227 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -33372,3 +34803,4 @@ var PaginationEvents;
 /***/ })
 /******/ ]);
 });if (window.dhx_legacy) { if (window.dhx){ for (var key in dhx) dhx_legacy[key] = dhx[key]; } window.dhx = dhx_legacy; delete window.dhx_legacy; }
+//# sourceMappingURL=suite.js.map

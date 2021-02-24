@@ -49,7 +49,9 @@ export interface IWindow {
     attachHTML(html: string): void;
     destructor(): void;
     paint(): void;
+    isFullScreen(): boolean;
     setFullScreen(): void;
+    unsetFullScreen(): void;
     /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
     fullScreen(): void;
 }

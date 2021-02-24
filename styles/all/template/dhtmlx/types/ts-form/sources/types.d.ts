@@ -828,7 +828,7 @@ export interface ISpacer {
     setProperties(propertyConfig: IBaseLayoutItem): void;
     getProperties(): IBaseLayoutItem;
 }
-export declare type IItemConfig = IInputConfig | IButtonConfig | IComboConfig | ISliderFormConfig | ICheckboxConfig | IRadioGroupConfig | IDatePickerConfig | ISelectConfig | ISimpleVaultConfig | ITextAreaConfig | ITimePickerConfig | ITextConfig | IColorPickerConfig | IRadioGroupConfig | ICheckboxGroupConfig | ISpacerConfig;
+export declare type IItemConfig = IInputConfig | IButtonConfig | IComboConfig | ISliderFormConfig | ICheckboxConfig | IDatePickerConfig | ISelectConfig | ISimpleVaultConfig | ITextAreaConfig | ITimePickerConfig | ITextConfig | IColorPickerConfig | IRadioGroupConfig | ICheckboxGroupConfig | ISpacerConfig;
 export declare type IBlock = IBlockConfig | IItemConfig[];
 export declare enum ItemEvent {
     click = "click",

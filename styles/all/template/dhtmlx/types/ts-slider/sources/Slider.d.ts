@@ -14,6 +14,7 @@ export declare class Slider extends View implements ISlider {
     private _isExtraActive;
     private _disabled;
     private _isMouseMoving;
+    private _keyManager;
     private _handlers;
     private _possibleRange;
     private _findNewDirection;
@@ -21,7 +22,6 @@ export declare class Slider extends View implements ISlider {
     private _focusIn;
     private _tooltip;
     private _activeTooltip;
-    private _hotkeysDestructor;
     constructor(container: HTMLElement | string, config: ISliderConfig);
     disable(): void;
     enable(): void;

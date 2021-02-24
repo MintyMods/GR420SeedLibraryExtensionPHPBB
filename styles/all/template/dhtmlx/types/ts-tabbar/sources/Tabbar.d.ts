@@ -4,11 +4,11 @@ import { ITabbarConfig, TabbarEvents, ITabbarEventHandlersMap, ITabbar, ITab } f
 export declare class Tabbar extends Layout implements ITabbar {
     config: ITabbarConfig;
     events: EventSystem<TabbarEvents | LayoutEvents, ITabbarEventHandlersMap | ILayoutEventHandlersMap>;
-    private _hotkeysDestructor;
     private _tabsContainer;
     protected _cells: ITab[];
     private _beforeScrollSize;
     private _afterScrollSize;
+    private _keyManager;
     constructor(container: any, config: ITabbarConfig);
     toVDOM(): any;
     destructor(): void;
@@ -33,4 +33,5 @@ export declare class Tabbar extends Layout implements ITabbar {
     private _getTabAutoWidth;
     private _getTabAutoHeight;
     private _getTabContainer;
+    private _initHotkeys;
 }

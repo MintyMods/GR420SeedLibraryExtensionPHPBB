@@ -8,12 +8,15 @@ export default abstract class BaseSeria implements ISeria {
     protected _events: IEventSystem<ChartEvents>;
     protected _handlers: {
         onclick: (id: string, value: string) => boolean;
+        onmousemove: (id: string, value: string, e: any) => boolean;
+        onmouseleave: (id: string, value: string) => boolean;
     };
     protected _points: PointData[];
     protected _drawPointType: DrawPoint;
     constructor(_data: DataCollection<any>, config: ISeriaConfig, other: IEventSystem<ChartEvents>);
     toggle(): void;
     getClosest(x: number, y: number): [number, number, number, string];
+    getClosestVertical(x: number): [number, number, number, string, number];
     getTooltipType(_id: string): TooltipType;
     getTooltipText(id: string): any;
     dataReady(prev?: PointData[]): PointData[];

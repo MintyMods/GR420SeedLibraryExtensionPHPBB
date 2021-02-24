@@ -21,5 +21,11 @@ export declare function debounce(func: anyFunction, wait: number, immediate?: bo
 export declare function compare(obj1: any, obj2: any): boolean;
 export declare const isType: (value: any) => string;
 export declare const isEmptyObj: (obj: any) => boolean;
-export declare const sign: (x: any) => any;
+export declare const getMaxArrayNymber: (array: number[]) => number;
+export declare const getMinArrayNymber: (array: number[]) => number;
+export interface IContainerConfig {
+    lineHeight?: number;
+    font?: string;
+}
+export declare const getStringWidth: (value: string, config?: IContainerConfig) => number;
 export {};

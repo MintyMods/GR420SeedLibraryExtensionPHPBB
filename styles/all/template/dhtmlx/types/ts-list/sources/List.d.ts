@@ -1,6 +1,7 @@
 import { DataCollection, DataEvents, DragEvents, IDataEventsHandlersMap, IDragEventsHandlersMap } from "../../ts-data";
 import { VNode } from "../../ts-common/dom";
 import { IEventSystem } from "../../ts-common/events";
+import { IKeyManager } from "../../ts-common/KeyManager";
 import { IHandlers } from "../../ts-common/types";
 import { View } from "../../ts-common/view";
 import { IList, IListConfig, IListEventHandlersMap, IListItem, ISelection, ListEvents } from "./types";
@@ -11,6 +12,7 @@ export declare class List extends View implements IList {
     data: DataCollection;
     events: IEventSystem<DataEvents | ListEvents | DragEvents, IListEventHandlersMap & IDataEventsHandlersMap & IDragEventsHandlersMap>;
     selection: ISelection;
+    keyManager: IKeyManager;
     protected _handlers: IHandlers;
     protected _focus: string;
     protected _edited: string;
@@ -39,5 +41,7 @@ export declare class List extends View implements IList {
     moveFocus(mode: number, step?: number): void;
     private _getRange;
     protected _getHotkeys(): IHandlers;
-    private _enableHotKeys;
+    private _initHotKey;
+    private getItemAriaAttrs;
+    private getListAriaAttrs;
 }

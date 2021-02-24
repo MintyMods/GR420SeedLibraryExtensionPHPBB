@@ -1,12 +1,13 @@
-import { View } from "../../ts-common/view";
-export declare class Tooltip extends View {
-    private _lastPointRef;
+export declare class Tooltip {
     private _chart;
-    private _state;
-    constructor(container: any, config: any);
+    private _prevLine;
+    private _mouseOverBar;
+    private _tooltip;
+    constructor(chart: any);
     destructor(): void;
-    private _hide;
-    private _enableActivePoint;
-    private _disableLastActivePoint;
-    private _draw;
+    _showLineTooltip(lineTooltipItems: any): void;
+    _showTooltip(text: any, e: MouseEvent): void;
+    _showTooltipOnClosest(closest: any): void;
+    _createTooltip(): void;
+    private _initEvents;
 }

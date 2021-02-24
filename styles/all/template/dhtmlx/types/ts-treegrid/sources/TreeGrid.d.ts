@@ -1,4 +1,4 @@
-import { GridEvents, IAdjustBy, IEventHandlersMap, ProGrid } from "../../ts-grid";
+import { GridEvents, IAdjustBy, IEventHandlersMap, ProGrid, ICellRect, IRow, ICol, IColumnsWidth } from "../../ts-grid";
 import { IEventSystem } from "../../ts-common/events";
 import { DataEvents, DragEvents, IDataEventsHandlersMap, IDragEventsHandlersMap, IDataItem } from "../../ts-data";
 import { TreeGridCollection } from "./TreeGridCollection";
@@ -13,15 +13,14 @@ export declare class TreeGrid extends ProGrid implements ITreeGrid {
     collapse(id: string): void;
     expandAll(): void;
     collapseAll(): void;
-    adjustColumnWidth(id: string | number, adjust?: IAdjustBy): void;
     groupBy(property: string | ((item: IDataItem) => string)): void;
     ungroup(): void;
     showRow(id: string): void;
     hideRow(id: string): void;
+    getCellRect(row: string | number, col: string | number): ICellRect;
+    protected _adjustColumnsWidth(rows: IRow[], cols: ICol[], adjust?: IAdjustBy): IColumnsWidth;
     protected _createCollection(prep: (data: any[]) => any[]): void;
-    protected _checkColumns(): void;
     protected _getRowIndex(rowId: any): number;
-    protected _parseColumns(): void;
     protected _setEventHandlers(): void;
     private _groupBy;
 }

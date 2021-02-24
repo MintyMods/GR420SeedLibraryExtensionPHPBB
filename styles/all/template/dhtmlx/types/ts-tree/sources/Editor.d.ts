@@ -19,7 +19,7 @@ export interface IEditor {
     edit(targetId: string, config: IEditorConfig): VNode;
     isEditable(): boolean;
 }
-declare class Editor {
+declare class Editor implements IEditor {
     config: IEditorConfig;
     events: IEventSystem<EditorEvents>;
     private _item;
@@ -28,6 +28,7 @@ declare class Editor {
     private _active;
     private _targetId;
     private _documentClick;
+    private _keyManager;
     constructor();
     edit(targetId: string, config: IEditorConfig): any;
     isEditable(): boolean;

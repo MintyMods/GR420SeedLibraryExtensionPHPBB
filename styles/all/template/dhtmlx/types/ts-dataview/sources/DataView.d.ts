@@ -10,4 +10,6 @@ export declare class DataView extends List implements IDataView {
     protected _renderItem(item: any, index: number): VNode;
     protected _renderList(): VNode;
     protected _getHotkeys(): IHandlers;
+    private getDataViewItemAriaAttrs;
+    private getDataViewAriaAttrs;
 }
