@@ -38,6 +38,6 @@ $lang = array_merge($lang, array(
 	'UCP_SEEDS'				=> 'Settings',
 	'UCP_SEEDS_TITLE'		=> 'Minty Seed Library Module',
 	'UCP_SEEDS_USER'			=> 'Minty Seed Library user',
-	'UCP_SEEDS_USER_EXPLAIN'	=> 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+	'UCP_SEEDS_USER_EXPLAIN'	=> 'User permissions for the Seed Library',
 	'UCP_SEEDS_SAVED'		=> 'Settings have been saved successfully!',
 ));

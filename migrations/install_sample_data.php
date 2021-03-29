@@ -14,7 +14,7 @@ class install_sample_data extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return $this->config->offsetExists('minty_seeds_sample_int');
+		return $this->config->offsetExists('minty_seeds_installed');
 	}
 
 	public static function depends_on()
@@ -56,9 +56,9 @@ class install_sample_data extends \phpbb\db\migration\migration
 			// array('config_text.add', array('minty_seeds_sample', '')),
 
 			// Add new permissions
-			array('permission.add', array('a_new_minty_seeds')), // New admin permission
-			array('permission.add', array('m_new_minty_seeds')), // New moderator permission
-			array('permission.add', array('u_new_minty_seeds')), // New user permission
+			array('permission.add', array('a_minty_seeds')), // New admin permission
+			array('permission.add', array('m_minty_seeds')), // New moderator permission
+			array('permission.add', array('u_minty_seeds')), // New user permission
 
 			// array('permission.add', array('a_copy', true, 'a_existing')), // New admin permission a_copy, copies permission settings from a_existing
 
@@ -71,9 +71,9 @@ class install_sample_data extends \phpbb\db\migration\migration
 			array('permission.permission_set', array('REGISTERED_COPPA', 'u_new_minty_seeds', 'group', false)), // Set u_new_minty_seeds to never for REGISTERED_COPPA
 
 			// Add new permission roles
-			array('permission.role_add', array('seeds admin role', 'a_', 'a new role for admins')), // New role "seeds admin role"
-			array('permission.role_add', array('seeds moderator role', 'm_', 'a new role for moderators')), // New role "seeds moderator role"
-			array('permission.role_add', array('seeds user role', 'u_', 'a new role for users')), // New role "seeds user role"
+			array('permission.role_add', array('ROLE_ADMIN_MINTY_SEEDS', 'a_', 'a new role for admins')), // New role "seeds admin role"
+			array('permission.role_add', array('ROLE_MOD_MINTY_SEEDS', 'm_', 'a new role for moderators')), // New role "seeds moderator role"
+			array('permission.role_add', array('ROLE_USER_MINTY_SEEDS', 'u_', 'a new role for users')), // New role "seeds user role"
 
 			// Call a custom callable function to perform more complex operations.
 			array('custom', array(array($this, 'sample_callable_install'))),

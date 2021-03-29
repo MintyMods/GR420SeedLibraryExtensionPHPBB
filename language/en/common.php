@@ -35,16 +35,7 @@ if (empty($lang) || !is_array($lang))
 //
 
 $lang = array_merge($lang, array(
-
-	'SEEDS_HELLO'		=> 'Hello %s!',
-	'SEEDS_GOODBYE'		=> 'Goodbye %s!',
-
-	'SEEDS_EVENT'		=> ' :: Seeds Event :: ',
-
-	'ACP_SEEDS_GOODBYE'			=> 'Should say goodbye?',
 	'ACP_SEEDS_SETTING_SAVED'	=> 'Settings have been saved successfully!',
-
-	'SEEDS_PAGE'			=> 'Seeds',
-	'VIEWING_MINTY_SEEDS'			=> 'Viewing Minty Seed Library page',
-
+	'SEEDS_PAGE'				=> 'Seeds',
+	'VIEWING_MINTY_SEEDS'		=> 'Viewing Minty Seed Library page',
 ));

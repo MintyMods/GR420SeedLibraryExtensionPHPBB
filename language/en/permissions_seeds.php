@@ -45,8 +45,11 @@ if (empty($lang) || !is_array($lang))
 *	start with 'permissions_', so they are automatically loaded within the ACP.
 */
 
+
 $lang = array_merge($lang, array(
-	'ACL_A_NEW_MINTY_SEEDS'	=> 'Can use this Minty Seed Library admin feature',
-	'ACL_M_NEW_MINTY_SEEDS'	=> 'Can use this Minty Seed Library moderator feature',
-	'ACL_U_NEW_MINTY_SEEDS'	=> 'Can use this Minty Seed Library user feature',
+	'ACL_CAT_MINTY'		=> 'Minty',
+	'ACL_A_NEW_MINTY_SEEDS'	=> '<strong>Seed Library</strong> - Can use Admin features',
+	'ACL_M_NEW_MINTY_SEEDS'	=> '<strong>Seed Library</strong> - Can use Moderator features',
+	'ACL_U_NEW_MINTY_SEEDS'	=> '<strong>Seed Library</strong> - Can use User features',
 ));
+
