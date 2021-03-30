@@ -41,8 +41,7 @@ class install_sample_schema extends \phpbb\db\migration\migration
 	 *
 	 * @return array Array of schema changes
 	 */
-	public function update_schema()
-	{
+	public function update_schema() 	{
 		return array(
 			'add_tables'		=> array(
 				$this->table_prefix . 'minty_sl_seeds'	=> array(
@@ -234,7 +233,7 @@ class install_sample_schema extends \phpbb\db\migration\migration
 	{
 		return array(
 			'drop_columns'	=> array(
-				$this->table_prefix . 'users'			=> array(
+				$this->table_prefix . 'users'	=> array(
 					'user_minty_sl',
 				),
 			),

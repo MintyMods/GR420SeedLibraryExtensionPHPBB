@@ -23,7 +23,7 @@ class main_info
 			'modes'		=> array(
 				'settings'	=> array(
 					'title'	=> 'ACP_SEEDS',
-					'auth'	=> 'ext_minty/seeds && acl_a_new_minty_seeds',
+					'auth'	=> 'ext_minty/seeds && acl_a_minty_seeds',
 					'cat'	=> array('ACP_SEEDS_TITLE')
 				),
 			),

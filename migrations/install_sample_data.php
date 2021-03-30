@@ -48,35 +48,11 @@ class install_sample_data extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			// Add new config table settings
-			// array('config.add', array('minty_seeds_sample_int', 0)),
-			// array('config.add', array('minty_seeds_sample_str', '')),
-
-			// Add a new config_text table setting
-			// array('config_text.add', array('minty_seeds_sample', '')),
-
-			// Add new permissions
-			array('permission.add', array('a_minty_seeds')), // New admin permission
-			array('permission.add', array('m_minty_seeds')), // New moderator permission
-			array('permission.add', array('u_minty_seeds')), // New user permission
-
-			// array('permission.add', array('a_copy', true, 'a_existing')), // New admin permission a_copy, copies permission settings from a_existing
-
-			// Set our new permissions
-			array('permission.permission_set', array('ROLE_ADMIN_FULL', 'a_new_minty_seeds')), // Give ROLE_ADMIN_FULL a_new_minty_seeds permission
-			array('permission.permission_set', array('ROLE_MOD_FULL', 'm_new_minty_seeds')), // Give ROLE_MOD_FULL m_new_minty_seeds permission
-			array('permission.permission_set', array('ROLE_USER_FULL', 'u_new_minty_seeds')), // Give ROLE_USER_FULL u_new_minty_seeds permission
-			array('permission.permission_set', array('ROLE_USER_STANDARD', 'u_new_minty_seeds')), // Give ROLE_USER_STANDARD u_new_minty_seeds permission
-			array('permission.permission_set', array('REGISTERED', 'u_new_minty_seeds', 'group')), // Give REGISTERED group u_new_minty_seeds permission
-			array('permission.permission_set', array('REGISTERED_COPPA', 'u_new_minty_seeds', 'group', false)), // Set u_new_minty_seeds to never for REGISTERED_COPPA
-
-			// Add new permission roles
-			array('permission.role_add', array('ROLE_ADMIN_MINTY_SEEDS', 'a_', 'a new role for admins')), // New role "seeds admin role"
-			array('permission.role_add', array('ROLE_MOD_MINTY_SEEDS', 'm_', 'a new role for moderators')), // New role "seeds moderator role"
-			array('permission.role_add', array('ROLE_USER_MINTY_SEEDS', 'u_', 'a new role for users')), // New role "seeds user role"
-
 			// Call a custom callable function to perform more complex operations.
-			array('custom', array(array($this, 'sample_callable_install'))),
+			// array('custom', array(array($this, 'sample_callable_install'))),
+		
+			array('config.add', array('minty_seeds_installed', 1)),
+			array('config.add', array('minty_seeds_enabled', 0)),
 		);
 	}
 

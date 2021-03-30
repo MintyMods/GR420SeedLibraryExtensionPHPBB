@@ -85,7 +85,7 @@ class acp_controller
 			if (empty($errors))
 			{
 				// Set the options the user configured
-				$this->config->set('minty_seeds_goodbye', $this->request->variable('minty_seeds_goodbye', 0));
+				$this->config->set('minty_seeds_enabled', $this->request->variable('minty_seeds_enabled', 0));
 
 				// Add option settings change action to the admin log
 				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_ACP_SEEDS_SETTINGS');
@@ -102,10 +102,8 @@ class acp_controller
 		$this->template->assign_vars(array(
 			'S_ERROR'		=> $s_errors,
 			'ERROR_MSG'		=> $s_errors ? implode('<br />', $errors) : '',
-
 			'U_ACTION'		=> $this->u_action,
-
-			'MINTY_SEEDS_GOODBYE'	=> (bool) $this->config['minty_seeds_goodbye'],
+			'MINTY_SEEDS_ENABLED'	=> (bool) $this->config['minty_seeds_enabled'],
 		));
 	}
 

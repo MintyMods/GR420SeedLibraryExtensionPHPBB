@@ -33,19 +33,19 @@ class install_ucp_module extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			// array('module.add', array(
-			// 	'ucp',
-			// 	0,
-			// 	'UCP_SEEDS_TITLE'
-			// )),
-			// array('module.add', array(
-			// 	'ucp',
-			// 	'UCP_SEEDS_TITLE',
-			// 	array(
-			// 		'module_basename'	=> '\minty\seeds\ucp\main_module',
-			// 		'modes'				=> array('settings'),
-			// 	),
-			// )),
+			array('module.add', array(
+				'ucp',
+				0,
+				'UCP_SEEDS_TITLE'
+			)),
+			array('module.add', array(
+				'ucp',
+				'UCP_SEEDS_TITLE',
+				array(
+					'module_basename'	=> '\minty\seeds\ucp\main_module',
+					'modes'				=> array('settings'),
+				),
+			)),
 		);
 	}
 }

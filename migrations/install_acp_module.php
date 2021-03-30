@@ -14,7 +14,7 @@ class install_acp_module extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['minty_seeds_installed']);
+		return isset($this->config['-']);
 	}
 
 	public static function depends_on()
@@ -25,7 +25,7 @@ class install_acp_module extends \phpbb\db\migration\migration
 	public function update_data()
 	{
 		return array(
-			array('config.add', array('minty_seeds_installed', 0)),
+			array('config.add', array('minty_seeds_enabled', 0)),
 
 			array('module.add', array(
 				'acp',

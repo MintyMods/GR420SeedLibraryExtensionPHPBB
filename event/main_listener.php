@@ -23,9 +23,9 @@ class main_listener implements EventSubscriberInterface
 	public static function getSubscribedEvents()
 	{
 		return array(
-			'core.user_setup'							=> 'load_language_on_setup',
-			'core.page_header'							=> 'add_page_header_link',
-			'core.permissions'	=> 'add_permissions',
+			'core.user_setup'	=> 'load_language_on_setup',
+			'core.page_header'	=> 'add_page_header_link',
+			'core.permissions'	=> 'permissions',
 		);
 	}
 
@@ -124,14 +124,21 @@ class main_listener implements EventSubscriberInterface
 	 *
 	 * @param \phpbb\event\data	$event	Event object
 	 */
-	public function add_permissions($event)
-	{
-		$permissions = $event['permissions'];
+	public function permissions($event) {
 
-		$permissions['a_new_minty_seeds'] = array('lang' => 'ACL_A_NEW_MINTY_SEEDS', 'cat' => 'misc');
-		$permissions['m_new_minty_seeds'] = array('lang' => 'ACL_M_NEW_MINTY_SEEDS', 'cat' => 'post_actions');
-		$permissions['u_new_minty_seeds'] = array('lang' => 'ACL_U_NEW_MINTY_SEEDS', 'cat' => 'post');
+		$categories = $event['categories'];
+		 if (empty($categories['minty'])) {
+			$categories['minty'] = 'ACL_CAT_MINTY';
+			$event['categories'] = $categories;
+		 }
+
+		$permissions = $event['permissions'];
+		$permissions['a_minty_seeds'] = array('lang' => 'ACL_A_MINTY_SEEDS', 'cat' => 'minty');
+		$permissions['m_minty_seeds'] = array('lang' => 'ACL_M_MINTY_SEEDS', 'cat' => 'minty');
+		$permissions['u_minty_seeds'] = array('lang' => 'ACL_U_MINTY_SEEDS', 'cat' => 'minty');
+		$permissions['f_minty_seeds'] = array('lang' => 'ACL_F_MINTY_SEEDS', 'cat' => 'minty');
 
 		$event['permissions'] = $permissions;
 	}
 }
+
