@@ -10,7 +10,7 @@
 
 namespace minty\seeds\migrations;
 
-class install_sample_data extends \phpbb\db\migration\migration
+class install_seeds_data extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{

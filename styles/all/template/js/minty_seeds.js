@@ -1,8 +1,10 @@
 
 $(document).ready(function () {
-  if ($('#minty_seed_grid').length > 0) {
+  if (MINTY_SEEDS.ENABLED && $('#minty_seed_grid').length > 0) {
     console.info("Loading Minty Seed Lib");
     initMintySeedLibData();
+  } else {
+    err('Seed Library Blocked<br/> Insufficient Permissions' );    
   }
 });
 
@@ -49,10 +51,27 @@ var fullScreenWindow = false;
 
 function initMintySeedLibData() {
   buildSeedGrid();
+  buildSeedButtons();
+  buildSeedGridContextMenu();
+  buildGridDoubleClickAction();
   buildSeedForm(); 
   buildSeedWindow();
   buildBreederForm();
   buildBreederWindow();
+
+}
+
+function canReadRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.READ;
+}
+function canAddRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.ADD;
+}
+function canEditRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.EDIT;
+}
+function canDeleteRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.DELETE;
 }
 
 function showAddBreederWindow() {
@@ -64,9 +83,9 @@ function buildBreederWindow() {
   breederWindow = new dhx.Window({ width: WINDOW_WIDTH, height: 380, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
   breederWindow.footer.data.add([
     { type: "spacer" },
-    { id: "breeder_save", type: "button", value: "Save", view: "flat", color: "primary", icon: "dxi dxi-checkbox-marked-circle", },
-    { id: "breeder_cancel", type: "button", value: "Cancel", view: "flat", color: "secondary", icon: "dxi dxi-close-circle", },
-    { id: "breeder_delete", type: "button", disabled: true, value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-alert-circle", },
+    { disabled: Boolean(!(canAddRecords()||canEditRecords())), id: "breeder_save", type: "button", value: "Save", view: "flat", color: "primary", icon: "dxi dxi-checkbox-marked-circle", circle:true, padding: "0px 5px", },
+    { id: "breeder_cancel", type: "button", value: "Cancel", view: "flat", color: "secondary", icon: "dxi dxi-close-circle", circle:true, padding: "0px 5px", },
+    { disabled: Boolean(!canDeleteRecords()), id: "breeder_delete", type: "button", value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-alert-circle", circle:true, padding: "0px 5px", },
   ], 0);
 
   breederWindow.footer.events.on("click", function (id) {
@@ -92,7 +111,7 @@ function buildBreederWindow() {
 }
 
 function buildBreederForm() {
-  breederForm = new dhx.Form(null, {
+  breederForm = new dhx.Form("minty_breeder_form", {
     rows: [
       { id: BREEDER_ID, type: "input", hidden: true, },
       { id: "breeder_name", type: "input", validation: validateBreeder, required: true, label: "Name", labelPosition, labelWidth, errorMessage: "Breeder name is a required field",  },
@@ -134,17 +153,33 @@ function validateBreeder(value) {
   return true;
 }
 
-function buildAddSeedButton() {
-  var buttons = new dhx.Form("minty_add_button", {
-    css: "dhx_widget--bordered",
+function buildSeedButtons() {
+  var buttons = new dhx.Form("minty_buttons", {
     rows: [{
-      align: "end",
-      cols: [{ name: "add_button", type: "button", text: "New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", }]
+      cols: [
+        { type: "spacer" },
+        { disabled : Boolean(!canDeleteRecords()), name: "delete_button", type: "button", text: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-alert-circle", circle:true, padding: "0px 5px",},
+        { disabled : Boolean(!canEditRecords()), name: "edit_button", type: "button", text: "Edit", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px",},
+        { disabled: Boolean(!canAddRecords()), name: "add_button", type: "button", text: "New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
+      ]
     }]
   });
   buttons.getItem("add_button").events.on("Click", function (events) {
     addNewSeedGridRecord();
   });
+  buttons.getItem("edit_button").events.on("Click", function (events) {
+    editSeedGridRecord(getSelectedGridRow());
+  });
+  buttons.getItem("delete_button").events.on("Click", function (events) {
+    deleteSeedGridRecord(getSelectedGridRow());
+  });
+}
+
+function isRowSelected() {
+  return seedGrid.selection && seedGrid.selection.getCell() && seedGrid.selection.getCell().row;
+}
+function getSelectedGridRow() {
+  return isRowSelected() ? seedGrid.selection.getCell().row : null;
 }
 
 function showSeedWindow() {
@@ -186,14 +221,12 @@ function buildSeedGrid() {
     autoEmptyRow: false,
     height: 520,
     multiselection: false,
-    sortable: true,
     selection: "row",
-    resizable: true,
+    sortable: MINTY_SEEDS.GRID_SORTABLE,
+    resizable: MINTY_SEEDS.GRID_RESIZABLE,
   });
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
-  buildAddSeedButton();
-  buildGridDoubleClickAction();
-  buildSeedGridContextMenu();
+
 }
 
 function buildGridDoubleClickAction() {
@@ -204,53 +237,57 @@ function buildGridDoubleClickAction() {
 }
 
 function editSeedGridRecord(row) {
-  seedForm.clear();
-  seedGrid.selection.setCell(row.id);
-  let parsed = {
-    seed_id: row.id,
-    harvest_month: parseHarvestMonth(row.harvest_month),
-    indoor_outdoor: {
-      indoor_yn : row.indoor_yn,
-      outdoor_yn : row.outdoor_yn,
+  if (row) {
+    seedForm.clear();
+    seedGrid.selection.setCell(row.id);
+    let parsed = {
+      seed_id: row.id,
+      harvest_month: parseHarvestMonth(row.harvest_month),
+      indoor_outdoor: {
+        indoor_yn : row.indoor_yn,
+        outdoor_yn : row.outdoor_yn,
+      }
     }
+    seedForm.setValue(Object.assign(row, parsed));
+    dhx.awaitRedraw().then(function () {
+      showSeedWindow();
+    });
+  } else {
+    err('First select a grid row to edit');
   }
-  seedForm.setValue(Object.assign(row, parsed));
-  dhx.awaitRedraw().then(function () {
-    showSeedWindow();
-  });
 }
 
 function buildSeedForm() {
-  seedForm = new dhx.Form(null, {
+  seedForm = new dhx.Form("minty_seed_form", {
     css: "dhx_widget--bordered",
     rows: [
       { name: "seed_id", type: "text", label: "ID", hidden: true, },
       { cols: [
-          { name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", required: true, placeholder: "Select or Add New", errorMessage: "You must select a valid breeder from the list", labelWidth, labelPosition,  },
-          { name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", },]
+          { name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", required: true, placeholder: "Select or Add New", errorMessage: "You must select a valid breeder from the list", labelWidth, labelPosition, disabled: Boolean(!canAddRecords()), },
+          { name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", circle:true, padding: "0px 5px", disabled: Boolean(!canAddRecords()),},]
       },
-      { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Enter the full name of the plant", errorMessage: "Plant name is mandatory to save a new record" },
-      { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", },
-      { name: "sex", type: "radioGroup", options: sex_options, required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth, labelPosition, },
-      { name: "indoor_outdoor", type: "checkboxGroup", options: indoor_outdoor_options, label: "Environment", labelWidth, labelPosition, labelInline: true, },
-      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, },
-      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, },
-      { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition, labelWidth, },
-      { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition, labelWidth, },
-      { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition, labelWidth, },
-      { name: "height_outdoors", type: "input", label: "Outdoor Height", labelPosition, labelWidth, },
-      { name: "yeild_outdoors", type: "input", label: "Outdoor Yeild", labelPosition, labelWidth, },
-      { name: "harvest_month", type: "select", options: month_options, label: "Harvest Month", labelPosition, labelWidth, },
-      { name: "thc", type: "input", label: "THC", labelPosition, labelWidth, },
-      { name: "cbd", type: "input", label: "CBD", labelPosition, labelWidth, },
-      { name: "indica", type: "input", label: "Indica", labelPosition, labelWidth, },
-      { name: "sativa", type: "input", label: "Sativa", labelPosition, labelWidth, },
-      { name: "ruderalis", type: "input", label: "Ruderalis", labelPosition, labelWidth, },
-      { name: AWARDS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Awards", labelPosition, labelWidth, },
-      { name: SMELLS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Smell", labelPosition, labelWidth, },
-      { name: TASTES, filter: fuzzySearch, type: "combo", multiselection: true, label: "Taste", labelPosition, labelWidth, },
-      { name: EFFECTS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Effect", labelPosition, labelWidth, },
-      { name: METATAGS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Tags", labelPosition, labelWidth, },
+      { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Enter the full name of the plant", errorMessage: "Plant name is mandatory to save a new record", disabled: Boolean(!canAddRecords()), },
+      { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", disabled: Boolean(!canAddRecords()), },
+      { name: "sex", type: "radioGroup", options: sex_options, required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth, labelPosition, disabled: Boolean(!canAddRecords()), },
+      { name: "indoor_outdoor", type: "checkboxGroup", options: indoor_outdoor_options, label: "Environment", labelWidth, labelPosition, labelInline: true, disabled: Boolean(!canAddRecords()), },
+      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()),  },
+      { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "height_outdoors", type: "input", label: "Outdoor Height", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "yeild_outdoors", type: "input", label: "Outdoor Yeild", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "harvest_month", type: "select", options: month_options, label: "Harvest Month", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "thc", type: "input", label: "THC", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "cbd", type: "input", label: "CBD", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "indica", type: "input", label: "Indica", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "sativa", type: "input", label: "Sativa", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "ruderalis", type: "input", label: "Ruderalis", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: AWARDS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Awards", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: SMELLS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Smell", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: TASTES, filter: fuzzySearch, type: "combo", multiselection: true, label: "Taste", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: EFFECTS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Effect", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: METATAGS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Tags", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
     ]
   });
   loadComboSuggestions(BREEDER_ID, seedForm);
@@ -371,10 +408,11 @@ function addComboEvents(combobox) {
 function buildSeedGridContextMenu() {
   var seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
   var contextmenu_data = [
-    { "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
-    { "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
-    { "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" }
-  ];
+    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-magnify", "value": "View" },
+    { "disabled" : Boolean(!canAddRecords()), "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
+    { "disabled" : Boolean(!canEditRecords()), "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
+    { "disabled" : Boolean(!canDeleteRecords()), "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" }
+  ]; //"enabled" : canDeleteRecords(),
   seedGridContextMenu.data.parse(contextmenu_data);
   seedGrid.events.on("CellRightClick", function (row, column, e) {
     seedGrid.selection.setCell(row.id);
@@ -399,32 +437,39 @@ function buildSeedGridContextMenu() {
 }
 
 function addNewSeedGridRecord() {
-  seedForm.clear();
-  showSeedWindow();
-  dhx.awaitRedraw().then(function () { seedForm.setFocus(BREEDER_ID); });
+  if (canAddRecords()) {
+    seedForm.clear();
+    showSeedWindow();
+    dhx.awaitRedraw().then(function () { seedForm.setFocus(BREEDER_ID); });
+  }
 }
 
 function deleteSeedGridRecord(row) {
-  dhx.confirm({
-    header: "Permanently Delete Record - Are you sure?",
-    text: "Are you sure you want to delete the database entry for '" + row.seed_name + "' by " + row.breeder_name,
-  }).then(function (confirmed) {
-    if (confirmed) {
-      const url = GRID_DELETE_URL + '?seed_id=' + row.id;
-      dhx.ajax.get(url).then(function (result) {
-        if (result) {
-          reloadSeedGridRows();
-          msg('deleted record id ' + row.id);
-        } else {
-          err('Failed to delete record id ' + row.id);
-        }
-      }).catch(function (e) {
-        err('Grid Delete Error : ' + e.statusText, e);
-      });
-    }
-  });
+  if (row && canDeleteRecords()) {
+    dhx.confirm({
+      buttons:["cancel", "ok"],
+      header: "Permanently Delete Record - Are you sure?",
+      text: "Are you sure you want to delete the database entry for '" + row.seed_name + "' by " + row.breeder_name,
+    }).then(function (confirmed) {
+      if (confirmed) {
+        const url = GRID_DELETE_URL + '?seed_id=' + row.id;
+        dhx.ajax.get(url).then(function (result) {
+          if (result) {
+            reloadSeedGridRows();
+            msg('deleted record id ' + row.id);
+          } else {
+            err('Failed to delete record id ' + row.id);
+          }
+        }).catch(function (e) {
+          err('Grid Delete Error : ' + e.statusText, e);
+        });
+      }
+    });
+  }else {
+    err('First select a grid row to delete');
+  }
 }
-
+  
 function reloadSeedGridRows() {
   seedGrid.data.removeAll();
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 25, from: 0 }));
@@ -442,9 +487,9 @@ function buildSeedWindow() {
 function buildSeedWindowFooter() {
   seedWindow.footer.data.add([
     { type: "spacer" },
-    { id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, },
-    { id: "save_new_button", type: "button", value: "Save & New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", },
-    { id: "cancel_button", type: "button", icon: "dxi dxi-close-circle", size: "medium", color: "secondary", value: "Cancel", },
+    { id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, circle:true, padding: "0px 5px", },
+    { id: "save_new_button", type: "button", value: "Save & New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
+    { id: "cancel_button", type: "button", icon: "dxi dxi-close-circle", size: "medium", color: "secondary", value: "Cancel", circle:true, padding: "0px 5px", },
   ], 0);
   seedWindow.footer.events.on("click", function (id) {
     if (id === "cancel_button") {

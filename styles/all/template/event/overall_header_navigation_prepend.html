@@ -1,7 +1,32 @@
-<!-- IF ( U_ACP or U_MCP ) -->
-<li data-last-responsive="true">
-	<a href="{{ U_SEEDS_PAGE }}" title="{{ lang('SEEDS_PAGE') }}" role="menuitem">
-		<i class="icon fa-leaf fa-fw" aria-hidden="true"></i><span>{{ lang('SEEDS_PAGE') }}</span>
-	</a>
-</li>
+<!-- IF ( MINTY_SEEDS_ENABLED and USER_MINTY_SEEDS_ENABLED) -->
+	<!-- IF ( U_MINTY_SEEDS_READ or A_MINTY_SEEDS_ADMIN) -->
+	<li data-last-responsive="true">
+		<a href="{{ U_SEEDS_PAGE }}" title="{{ lang('SEEDS_PAGE') }}" role="menuitem">
+			<i class="icon fa-leaf fa-fw" aria-hidden="true"></i><span>{{ lang('SEEDS_PAGE') }}</span>
+		</a>
+	</li>
+	<!-- ENDIF -->
+	<script>const MINTY_SEEDS = {
+			ENABLED : Boolean({USER_MINTY_SEEDS_ENABLED}),
+			READ : Boolean({U_MINTY_SEEDS_READ}),
+			ADD : Boolean({U_MINTY_SEEDS_ADD}),
+			EDIT : Boolean({U_MINTY_SEEDS_EDIT}),
+			DELETE : Boolean({U_MINTY_SEEDS_DELETE}),
+			ADD_BREEDER : Boolean({M_MINTY_SEEDS_ADD_BREEDER}),
+			EDIT_BREEDER : Boolean({M_MINTY_SEEDS_EDIT_BREEDER}),
+			DELETE_BREEDER : Boolean({M_MINTY_SEEDS_DELETE_BREEDER}),
+			ADMIN : Boolean({A_MINTY_SEEDS_ADMIN}),
+			GRID_SEARCH : Boolean({GRID_SEARCH}),
+			GRID_SORTABLE : Boolean({GRID_SORTABLE}),
+			GRID_RESIZABLE : Boolean({GRID_RESIZABLE}),
+			
+			// @todo REMOVE THE FOLLOWING ONCE DEBUGGED
+			ENABLED : Boolean(true),
+			READ : Boolean(true),
+			ADD : Boolean(false),
+			EDIT : Boolean(false),
+			DELETE : Boolean(false),
+			ADMIN : Boolean(false),
+		};
+	</script>
 <!-- ENDIF -->

@@ -66,7 +66,7 @@ class ucp_controller
 
 		// Request the options the user can configure
 		$data = array(
-			'user_seeds' => $this->request->variable('user_seeds', $this->user->data['user_seeds']),
+			'user_minty_seeds_enabled' => $this->request->variable('user_minty_seeds_enabled', $this->user->data['user_minty_seeds_enabled']),
 		);
 
 		// Is the form being submitted to us?
@@ -101,10 +101,8 @@ class ucp_controller
 		$this->template->assign_vars(array(
 			'S_ERROR'		=> $s_errors,
 			'ERROR_MSG'		=> $s_errors ? implode('<br />', $errors) : '',
-
 			'U_UCP_ACTION'	=> $this->u_action,
-
-			'S_USER_SEEDS'	=> $data['user_seeds'],
+			'USER_MINTY_SEEDS_ENABLED'	=> $data['user_minty_seeds_enabled'],
 		));
 	}
 

@@ -21,6 +21,9 @@ define("TABLE_META_TAGS", "minty_sl_meta_tag");
 define("TABLE_AWARDS", "minty_sl_award");
 
 class main_controller {
+
+	protected $auth;
+	protected $user;
 	protected $request;
 	protected $config;
 	protected $helper;
@@ -32,27 +35,32 @@ class main_controller {
 	protected $php_ext;
 	protected $phpbb_root_path;
 
-	public function __construct(\phpbb\request\request $request, 
-								\phpbb\config\config $config, 
-								\phpbb\controller\helper $helper, 
-								\phpbb\template\template $template, 
-								\phpbb\language\language $language,
-								\phpbb\db\driver\factory $dbal,
-								\phpbb\files\factory $file_factory,
-								\phpbb\log\log $log,
-								$phpbb_root_path, 
-								$phpEx
-								) {
-		$this->request = $request;	
-		$this->config	= $config;
-		$this->helper	= $helper;
-		$this->template	= $template;
-		$this->language	= $language;
-		$this->db = $dbal;
-		$this->file_factory = $file_factory;		
-		$this->log	= $log;
-		$this->php_ext = $phpEx;
-		$this->phpbb_root_path = $phpbb_root_path;	
+	public function __construct(
+		\phpbb\auth\auth $auth,
+		\phpbb\user $user,
+		\phpbb\request\request $request, 
+		\phpbb\config\config $config, 
+		\phpbb\controller\helper $helper, 
+		\phpbb\template\template $template, 
+		\phpbb\language\language $language,
+		\phpbb\db\driver\factory $dbal,
+		\phpbb\files\factory $file_factory,
+		\phpbb\log\log $log,
+		$phpbb_root_path, 
+		$phpEx
+		) {
+			$this->auth = $auth;					
+			$this->user = $user;					
+			$this->request = $request;	
+			$this->config	= $config;
+			$this->helper	= $helper;
+			$this->template	= $template;
+			$this->language	= $language;
+			$this->db = $dbal;
+			$this->file_factory = $file_factory;		
+			$this->log	= $log;
+			$this->php_ext = $phpEx;
+			$this->phpbb_root_path = $phpbb_root_path;	
 	}
 
 	public function handle($name) {
@@ -87,7 +95,20 @@ class main_controller {
 		} else if ($name == 'minty_sl_awards') {
 			$json = $this->getAwardsOptionsJson();	
 		} else  {
-			$this->template->assign_var('SEEDS_MESSAGE', $this->language->lang($l_message, $name));
+			$this->template->assign_vars(array(
+				'SEEDS_MESSAGE' => $this->language->lang($l_message, $name),
+				'MINTY_SEEDS_ENABLED' => (bool) $this->config['minty_seeds_enabled'],
+				'USER_MINTY_SEEDS_ENABLED' => (bool) $this->user->data['user_minty_seeds_enabled'],
+				'A_MINTY_SEEDS_ADMIN'	=> ($this->auth->acl_get('a_minty_seeds_admin')) ? true : false,
+				'M_MINTY_SEEDS_ADD_BREEDER'	=> ($this->auth->acl_get('m_minty_seeds_add_breeder')) ? true : false,
+				'M_MINTY_SEEDS_EDIT_BREEDER'	=> ($this->auth->acl_get('m_minty_seeds_edit_breeder')) ? true : false,
+				'M_MINTY_SEEDS_DELETE_BREEDER'	=> ($this->auth->acl_get('m_minty_seeds_delete_breeder')) ? true : false,
+				'U_MINTY_SEEDS_ADD'	=> ($this->auth->acl_get('u_minty_seeds_add')) ? true : false,
+				'U_MINTY_SEEDS_EDIT'	=> ($this->auth->acl_get('u_minty_seeds_edit')) ? true : false,
+				'U_MINTY_SEEDS_DELETE'	=> ($this->auth->acl_get('u_minty_seeds_delete')) ? true : false,
+				'U_MINTY_SEEDS_READ'	=> ($this->auth->acl_get('u_minty_seeds_read')) ? true : false,
+			));
+
 			return $this->helper->render('@minty_seeds/seeds_body.html', $name);
 		} 
 		$json_response = new \phpbb\json_response();

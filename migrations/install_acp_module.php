@@ -14,7 +14,7 @@ class install_acp_module extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return isset($this->config['-']);
+		return $this->config->offsetExists('minty_seeds_enabled');
 	}
 
 	public static function depends_on()

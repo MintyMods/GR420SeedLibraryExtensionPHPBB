@@ -22,9 +22,9 @@ class main_info
 			'title'		=> 'ACP_SEEDS_TITLE',
 			'modes'		=> array(
 				'settings'	=> array(
-					'title'	=> 'ACP_SEEDS',
-					'auth'	=> 'ext_minty/seeds && acl_a_minty_seeds',
-					'cat'	=> array('ACP_SEEDS_TITLE')
+					'title'	=> 'ACP_SEEDS_SETTINGS',
+					'auth'	=> 'ext_minty/seeds && acl_a_minty_seeds_admin',
+					'cat'	=> array('ACP_MINTY_MODS')
 				),
 			),
 		);

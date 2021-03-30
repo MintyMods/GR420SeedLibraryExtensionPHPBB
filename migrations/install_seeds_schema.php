@@ -10,11 +10,11 @@
 
 namespace minty\seeds\migrations;
 
-class install_sample_schema extends \phpbb\db\migration\migration
+class install_seeds_schema extends \phpbb\db\migration\migration
 {
 	public function effectively_installed()
 	{
-		return $this->db_tools->sql_column_exists($this->table_prefix . 'users', 'user_minty_sl');
+		return $this->db_tools->sql_column_exists($this->table_prefix . 'users', 'user_minty_seeds_enabled');
 	}
 
 	public static function depends_on()
@@ -202,8 +202,8 @@ class install_sample_schema extends \phpbb\db\migration\migration
 			),
 
 			'add_columns'	=> array(
-				$this->table_prefix . 'users'			=> array(
-					'user_minty_sl'				=> array('UINT', 0),
+				$this->table_prefix . 'users'	=> array(
+					'user_minty_seeds_enabled'	=> array('UINT', 1),
 				),
 			),
 		);
@@ -234,7 +234,7 @@ class install_sample_schema extends \phpbb\db\migration\migration
 		return array(
 			'drop_columns'	=> array(
 				$this->table_prefix . 'users'	=> array(
-					'user_minty_sl',
+					'user_minty_seeds_enabled',
 				),
 			),
 			// 'drop_tables'		=> array(

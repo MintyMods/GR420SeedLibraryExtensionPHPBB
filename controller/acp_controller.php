@@ -104,6 +104,7 @@ class acp_controller
 			'ERROR_MSG'		=> $s_errors ? implode('<br />', $errors) : '',
 			'U_ACTION'		=> $this->u_action,
 			'MINTY_SEEDS_ENABLED'	=> (bool) $this->config['minty_seeds_enabled'],
+			'USER_MINTY_SEEDS_ENABLED'	=> (bool) $this->user->data['user_minty_seeds_enabled'],
 		));
 	}
 

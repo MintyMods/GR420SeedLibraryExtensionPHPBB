@@ -22,8 +22,8 @@ class main_info
 			'title'		=> 'UCP_SEEDS_TITLE',
 			'modes'		=> array(
 				'settings'	=> array(
-					'title'	=> 'UCP_SEEDS',
-					'auth'	=> 'ext_minty/seeds && acl_u_minty_seeds',
+					'title'	=> 'UCP_SEEDS_TITLE',
+					'auth'	=> 'ext_minty/seeds && u_minty_seeds_read',
 					'cat'	=> array('UCP_SEEDS_TITLE')
 				),
 			),

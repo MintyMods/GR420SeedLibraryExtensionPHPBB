@@ -19,6 +19,7 @@ if (empty($lang) || !is_array($lang))
 }
 
 $lang = array_merge($lang, array(
+	'ACP_MINTY_MODS' => 'Minty Mods',
 	'ACP_SEEDS_SETTING_SAVED'	=> 'Settings have been saved successfully!',
 	'SEEDS_PAGE'				=> 'Seeds',
 	'VIEWING_MINTY_SEEDS'		=> 'Viewing Minty Seed Library page',

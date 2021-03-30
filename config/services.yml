@@ -5,6 +5,8 @@ services:
     minty.seeds.controller.main:
         class: minty\seeds\controller\main_controller
         arguments:
+            - '@auth'
+            - '@user'
             - '@request'        
             - '@config'
             - '@controller.helper'
@@ -44,9 +46,12 @@ services:
     minty.seeds.listener:
         class: minty\seeds\event\main_listener
         arguments:
+            - '@auth'
+            - '@user'
             - '@language'
             - '@controller.helper'
             - '@template'
+            - '@config'
             - '%core.php_ext%'
         tags:
             - { name: event.listener }
