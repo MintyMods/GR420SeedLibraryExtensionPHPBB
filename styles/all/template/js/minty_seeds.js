@@ -113,8 +113,9 @@ function buildBreederForm() {
 function breederFormSaved(response) {
   var json = JSON.parse(response);
   if (json.saved) {
-    seedForm.setValue(json.data);
-    msg("Breeder Details Saved");
+    loadComboSuggestions(BREEDER_ID, seedForm);
+    seedForm.setValue(BREEDER_ID, json.id);
+    msg(json.data.breeder_name + " Breeder Details Saved");
     breederForm.clear();
     breederWindow.hide();
   } else {
@@ -184,8 +185,9 @@ function showSeedWindow() {
 function buildSeedGrid() {
   seedGrid = new dhx.Grid("minty_seed_grid", {
     columns: [
-      { width: 50, id: "id", hidden: true, header: [{ text: "ID" }] },
-      { width: 50, id: BREEDER_ID, hidden: true, header: [{ text: "Breeder ID" }] },
+      { width: 0, id: "id", hidden: true, header: [{ text: "ID" }] },
+      { width: 0, id: BREEDER_ID, hidden: true, header: [{ text: "Breeder ID" }] },
+      { width: 0, id: "forum_url", hidden: true,  header: [{ text: "URL" }] },
       { width: 150, id: "breeder_name", header: [{ text: "Breeder" }], type: "string"},
       { width: 150, id: "seed_name", type: "string", header: [{ text: "Name" }], type: "string"},
       { width: 100, id: "flowering_type", header: [{ text: "Type" }], type: "string" },
@@ -210,7 +212,6 @@ function buildSeedGrid() {
       { width: 120, id: EFFECTS, header: [{ text: "Effects" }], type: "string" },
       { width: 120, id: AWARDS, header: [{ text: "Awards" }], type: "string" },
       { width: 120, id: METATAGS, header: [{ text: "Effects" }], type: "string" },
-      { width: 120, id: "forum_url", header: [{ text: "Forum Link" }] },
     ],
     editable: false,
     autoEmptyRow: false,
@@ -268,20 +269,11 @@ function showSeedGridRecord(row, readonly) {
       outdoor_yn : row.outdoor_yn,
     }
   }
-  var record = Object.assign(row, parsed);
-  console.log(row.id, record);
-  seedForm.setValue(record);
-  setFormReadOnly(seedForm, readonly);
+  seedForm.setValue(Object.assign(row, parsed));
+  readonly ? seedForm.disable() : seedForm.enable();
   dhx.awaitRedraw().then(function () {
     showSeedWindow();
   });
-}
-
-function setFormReadOnly(form, readonly) {
-  readonly ? form.disable() : form.enable();
-
-
-
 }
 
 function buildSeedForm() {
@@ -368,6 +360,7 @@ function buildSeedWindowToolbar() {
     seedForm.enable();
     return true;
   });  
+  
 }
 
 function seedWindowToggleFullScreen() {
@@ -391,7 +384,7 @@ function saveSeedFormRecord(callback) {
         focusedControl = null;  
         reloadSeedGridRows();
         result = JSON.parse(result);
-        msg(seedGrid.config.data[result.seed_id].seed_name + " Saved ");
+        msg(seedGrid.config.data[result.seed_id -1].seed_name + " Saved ");
         if (callback) callback(result);
     }).catch(function(e){
       err(e.statusText, e);
@@ -507,7 +500,7 @@ function reloadSeedGridRows() {
 }
 
 function buildSeedWindow() {
-  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Seed Entry", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
+  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Seed Details", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
   buildSeedWindowToolbar();
   buildSeedWindowFooter();
   seedWindow.attach(seedForm);
