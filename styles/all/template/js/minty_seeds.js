@@ -46,7 +46,7 @@ const month_options = [
 ];
 
 var seedGrid, seedForm, seedWindow, breederForm, breederWindow;
-var focusedControl, oldSeedWindowSize, oldSeedWindowPosition = null;
+var focusedControl = null;
 var fullScreenWindow = false;
 
 function initMintySeedLibData() {
@@ -147,12 +147,16 @@ function buildSeedButtons() {
         { hidden: Boolean(!canAddRecords()), name: "add_button", type: "button", text: "New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
         { hidden : Boolean(!canEditRecords()), name: "edit_button", type: "button", text: "Edit", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-pencil", circle:true, padding: "0px 5px",},
         { hidden : Boolean(!canDeleteRecords()), name: "delete_button", type: "button", text: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px",},
-        { hidden : Boolean(!canReadRecords()), name: "view_button", type: "button", text: "View", size: "medium", view: "flat",  color: "primary", icon: "dxi dxi-magnify", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canReadRecords()), name: "view_button", type: "button", text: "View", size: "medium", view: "flat",  color: "primary", icon: "dxi dxi-eye", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canReadRecords()), name: "search_button", type: "button", text: "Search", size: "medium", view: "flat",  color: "primary", icon: "dxi dxi-magnify", circle:true, padding: "0px 5px",},
       ]
     }]
   });
   buttons.getItem("view_button").events.on("Click", function (events) {
     viewSeedGridRecord(getSelectedGridRow());
+  });
+  buttons.getItem("search_button").events.on("Click", function (events) {
+    searchSeedGridRecord();
   });
   buttons.getItem("add_button").events.on("Click", function (events) {
     addNewSeedGridRecord();
@@ -182,30 +186,30 @@ function buildSeedGrid() {
     columns: [
       { width: 50, id: "id", hidden: true, header: [{ text: "ID" }] },
       { width: 50, id: BREEDER_ID, hidden: true, header: [{ text: "Breeder ID" }] },
-      { width: 150, id: "breeder_name", header: [{ text: "Breeder" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 150, id: "seed_name", type: "string", header: [{ text: "Name" }, { content: "inputFilter" }], type: "string", editorType: "input" },
-      { width: 100, id: "flowering_type", header: [{ text: "Type" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: [' ', 'Regular', 'Feminised', 'Auto'] },
-      { width: 80, id: "sex", header: [{ text: "Sex" }, { content: "comboFilter" }], type: "string", editorType: "combobox", options: [' ', 'Male', 'Female'] },
-      { width: 50, id: "indoor_yn", type: "boolean", editorType: "checkbox", header: [{ text: "Indoor" }] },
-      { width: 50, id: "outdoor_yn", type: "boolean", editorType: "checkbox", header: [{ text: "Outdoor" }] },
-      { width: 110, id: "flowering_time", header: [{ text: "Flowering Time" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "height_indoors", type: "string", header: [{ text: "Indoor Height" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "yeild_indoors", type: "string", header: [{ text: "Indoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "height_outdoors", type: "string", header: [{ text: "Outdoor Height" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "yeild_outdoors", type: "string", header: [{ text: "Outdoor Yeild" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "harvest_month", type: "date", dateFormat: "%M", header: [{ text: "Harvest Month" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 200, id: "seed_desc", header: [{ text: "Desc" }, { content: "inputFilter" }] },
-      { width: 110, id: "thc", type: "string", header: [{ text: "THC" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "cbd", type: "string", header: [{ text: "CBD" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "indica", type: "string", header: [{ text: "Indica" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "sativa", type: "string", header: [{ text: "Sativa" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 110, id: "ruderalis", type: "nstring", header: [{ text: "Ruderalis" }, { content: "comboFilter" }], type: "string", editorType: "input" },
-      { width: 120, id: GENETICS, header: [{ text: "Genetics" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 120, id: SMELLS, header: [{ text: "Smells" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 120, id: TASTES, header: [{ text: "Tastes" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 120, id: EFFECTS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 120, id: AWARDS, header: [{ text: "Awards" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
-      { width: 120, id: METATAGS, header: [{ text: "Effects" }, { content: "comboFilter" }], type: "string", editorType: "combobox" },
+      { width: 150, id: "breeder_name", header: [{ text: "Breeder" }], type: "string"},
+      { width: 150, id: "seed_name", type: "string", header: [{ text: "Name" }], type: "string"},
+      { width: 100, id: "flowering_type", header: [{ text: "Type" }], type: "string" },
+      { width: 80, id: "sex", header: [{ text: "Sex" }], type: "string" },
+      { width: 50, id: "indoor_yn", type: "boolean", header: [{ text: "Indoor" }] },
+      { width: 50, id: "outdoor_yn", type: "boolean", header: [{ text: "Outdoor" }] },
+      { width: 110, id: "flowering_time", header: [{ text: "Flowering Time" }], type: "string"},
+      { width: 110, id: "height_indoors", type: "string", header: [{ text: "Indoor Height" } ], type: "string"},
+      { width: 110, id: "yeild_indoors", type: "string", header: [{ text: "Indoor Yeild" }], type: "string"},
+      { width: 110, id: "height_outdoors", type: "string", header: [{ text: "Outdoor Height" }], type: "string"},
+      { width: 110, id: "yeild_outdoors", type: "string", header: [{ text: "Outdoor Yeild" }], type: "string"},
+      { width: 110, id: "harvest_month", type: "date", dateFormat: "%M", header: [{ text: "Harvest Month" }], type: "string"},
+      { width: 200, id: "seed_desc", header: [{ text: "Desc" }] },
+      { width: 110, id: "thc", type: "string", header: [{ text: "THC" }], type: "string"},
+      { width: 110, id: "cbd", type: "string", header: [{ text: "CBD" }], type: "string"},
+      { width: 110, id: "indica", type: "string", header: [{ text: "Indica" }], type: "string" },
+      { width: 110, id: "sativa", type: "string", header: [{ text: "Sativa" }], type: "string"},
+      { width: 110, id: "ruderalis", type: "string", header: [{ text: "Ruderalis" }], type: "string"},
+      { width: 120, id: GENETICS, header: [{ text: "Genetics" }], type: "string"},
+      { width: 120, id: SMELLS, header: [{ text: "Smells" }], type: "string" },
+      { width: 120, id: TASTES, header: [{ text: "Tastes" }], type: "string" },
+      { width: 120, id: EFFECTS, header: [{ text: "Effects" }], type: "string" },
+      { width: 120, id: AWARDS, header: [{ text: "Awards" }], type: "string" },
+      { width: 120, id: METATAGS, header: [{ text: "Effects" }], type: "string" },
       { width: 120, id: "forum_url", header: [{ text: "Forum Link" }] },
     ],
     editable: false,
@@ -214,9 +218,9 @@ function buildSeedGrid() {
     multiselection: false,
     selection: "row",
     sortable: false,
-    resizable: MINTY_SEEDS.GRID_RESIZABLE,
-    autoWidth: MINTY_SEEDS.GRID_AUTOWIDTH,
-    autoHeight: MINTY_SEEDS.GRID_AUTOHEIGHT,
+    resizable: true,
+    autoWidth: true,
+    autoHeight: false,
   });
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
 }
@@ -228,6 +232,10 @@ function buildGridDoubleClickAction() {
   });
 }
 
+function searchSeedGridRecord() {
+  err('Searching has not been implemented yet...');
+}
+
 function addNewSeedGridRecord() {
   seedForm.enable();
   seedForm.clear();
@@ -236,27 +244,22 @@ function addNewSeedGridRecord() {
 }
 
 function viewSeedGridRecord(row) {
-  seedForm.disable();
-  //seedForm.setProperties("input_name", { readOnly:true });
   if (row) {
-    showSeedGridRecord(row);
+    showSeedGridRecord(row, true);
   } else {
     err('First select a grid row to view,<br/> you can also double click<br/> or right click a row to view');
   }
 }
 
 function editSeedGridRecord(row) {
-  seedForm.enable();
   if (row) {
-    showSeedGridRecord(row);
+    showSeedGridRecord(row, false);
   } else {
     err('First select a grid row to edit');
   }
 }
 
-function showSeedGridRecord(row) {
-  seedForm.clear();
-  seedGrid.selection.setCell(row.id);
+function showSeedGridRecord(row, readonly) {
   let parsed = {
     seed_id: row.id,
     harvest_month: parseHarvestMonth(row.harvest_month),
@@ -265,10 +268,20 @@ function showSeedGridRecord(row) {
       outdoor_yn : row.outdoor_yn,
     }
   }
-  seedForm.setValue(Object.assign(row, parsed));
+  var record = Object.assign(row, parsed);
+  console.log(row.id, record);
+  seedForm.setValue(record);
+  setFormReadOnly(seedForm, readonly);
   dhx.awaitRedraw().then(function () {
     showSeedWindow();
   });
+}
+
+function setFormReadOnly(form, readonly) {
+  readonly ? form.disable() : form.enable();
+
+
+
 }
 
 function buildSeedForm() {
@@ -351,6 +364,10 @@ function buildSeedWindowToolbar() {
         break;
     }
   });
+  seedWindow.events.on("BeforeHide", function(position, events){
+    seedForm.enable();
+    return true;
+  });  
 }
 
 function seedWindowToggleFullScreen() {
@@ -361,13 +378,10 @@ function seedWindowToggleFullScreen() {
 function seedWindowDisplayFullScreen(full) {
   if (full) {
     seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-collapse" });
-    oldSeedWindowSize = seedWindow.getSize();
-    oldSeedWindowPosition = seedWindow.getPosition();
     seedWindow.setFullScreen();
   } else {
     seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-expand" });
-    seedWindow.setSize(oldSeedWindowSize.width, oldSeedWindowSize.height);
-    seedWindow.setPosition(oldSeedWindowPosition.left,oldSeedWindowPosition.top);
+    seedWindow.unsetFullScreen();
   }
 }
 
@@ -376,8 +390,8 @@ function saveSeedFormRecord(callback) {
     seedForm.send(SEED_POST_URL, "POST", true).then(function (result) {
         focusedControl = null;  
         reloadSeedGridRows();
-        debugger;
-        msg("Seed Record " + result.seed_id + " Saved ");
+        result = JSON.parse(result);
+        msg(seedGrid.config.data[result.seed_id].seed_name + " Saved ");
         if (callback) callback(result);
     }).catch(function(e){
       err(e.statusText, e);
@@ -423,16 +437,17 @@ function addComboEvents(combobox) {
 function buildSeedGridContextMenu() {
   var seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
   var contextmenu_data = [
-    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-magnify", "value": "View" },
+    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-eye", "value": "View" },
+    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_search", "icon": "dxi dxi-magnify", "value": "Search" },
     { "disabled" : Boolean(!canAddRecords()), "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
     { "disabled" : Boolean(!canEditRecords()), "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
     { "disabled" : Boolean(!canDeleteRecords()), "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" }
-  ]; //"enabled" : canDeleteRecords(),
+  ];
   seedGridContextMenu.data.parse(contextmenu_data);
   seedGrid.events.on("CellRightClick", function (row, column, e) {
     seedGrid.selection.setCell(row.id);
-    e.preventDefault();
     seedGridContextMenu.showAt(e);
+    e.preventDefault();
   });
 
   seedGridContextMenu.events.on("Click", function (option, e) {
@@ -443,6 +458,9 @@ function buildSeedGridContextMenu() {
         break;
       case 'grid_row_view':
         viewSeedGridRecord(cell.row);
+        break;
+      case 'grid_row_search':
+        searchSeedGridRecord();
         break;
       case 'grid_row_edit':
         editSeedGridRecord(cell.row);

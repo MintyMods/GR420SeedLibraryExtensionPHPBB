@@ -3,3 +3,9 @@
     padding-right: 0 !important;
     padding-bottom: 0 !important;
 }
+
+select, textarea {
+    color: rgba(0,0,0,.7) !important;
+    background-color: #f6f6f6 !important;
+
+}
