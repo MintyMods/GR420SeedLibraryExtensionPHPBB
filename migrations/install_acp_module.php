@@ -17,13 +17,11 @@ class install_acp_module extends \phpbb\db\migration\migration
 		return $this->config->offsetExists('minty_seeds_enabled');
 	}
 
-	public static function depends_on()
-	{
+	public static function depends_on()	{
 		return array('\phpbb\db\migration\data\v320\v320');
 	}
 
-	public function update_data()
-	{
+	public function update_data() {
 		return array(
 			array('config.add', array('minty_seeds_enabled', 0)),
 

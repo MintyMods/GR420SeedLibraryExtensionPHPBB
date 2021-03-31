@@ -2,7 +2,7 @@
     "name": "minty/seeds",
     "type": "phpbb-extension",
     "description": "Seed Library",
-    "homepage": "",
+    "homepage": "https://mintymods.info",
     "version": "1.0.0-dev",
     "time": "2021-01-16",
     "license": "GPL-2.0-only",

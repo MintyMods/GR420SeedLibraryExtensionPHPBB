@@ -2,12 +2,14 @@
 	<!-- IF ( U_MINTY_SEEDS_READ or A_MINTY_SEEDS_ADMIN) -->
 	<li data-last-responsive="true">
 		<a href="{{ U_SEEDS_PAGE }}" title="{{ lang('SEEDS_PAGE') }}" role="menuitem">
-			<i class="icon fa-leaf fa-fw" aria-hidden="true"></i><span>{{ lang('SEEDS_PAGE') }}</span>
+			<i class="icon fa-leaf fa-fw" aria-hidden="true"></i><span title="Seed Library">{{ lang('SEEDS_PAGE') }}</span>
 		</a>
 	</li>
 	<!-- ENDIF -->
-	<!-- IF SCRIPT_NAME == 'app/seeds/main' -->
-	<script>const MINTY_SEEDS = Object.freeze({
+	<!-- IF SCRIPT_NAME == 'app/seeds/minty' -->
+	<script>
+		const MINTY_SEEDS = Object.freeze({
+			SCRIPT_NAME : '{SCRIPT_NAME}',
 			ENABLED : Boolean({USER_MINTY_SEEDS_ENABLED}),
 			READ : Boolean({U_MINTY_SEEDS_READ}),
 			ADD : Boolean({U_MINTY_SEEDS_ADD}),
@@ -17,17 +19,6 @@
 			EDIT_BREEDER : Boolean({M_MINTY_SEEDS_EDIT_BREEDER}),
 			DELETE_BREEDER : Boolean({M_MINTY_SEEDS_DELETE_BREEDER}),
 			ADMIN : Boolean({A_MINTY_SEEDS_ADMIN}),
-			GRID_SEARCH : Boolean({GRID_SEARCH}),
-			GRID_SORTABLE : Boolean({GRID_SORTABLE}),
-			GRID_RESIZABLE : Boolean({GRID_RESIZABLE}),
-			
-			// @todo REMOVE THE FOLLOWING ONCE DEBUGGED
-			ENABLED : Boolean(true),
-			READ : Boolean(false),
-			ADD : Boolean(false),
-			EDIT : Boolean(false),
-			DELETE : Boolean(false),
-			ADMIN : Boolean(true),
 		});
 	</script>
 	<!-- ENDIF -->

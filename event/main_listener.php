@@ -54,7 +54,7 @@ class main_listener implements EventSubscriberInterface {
 
 	public function add_page_header_link() {
 		$this->template->assign_vars(array(
-			'U_SEEDS_PAGE'	=> $this->helper->route('minty_seeds_controller', array('name' => 'main')),
+			'U_SEEDS_PAGE'	=> $this->helper->route('minty_seeds_controller', array('name' => 'minty')),
 			'MINTY_SEEDS_ENABLED' => (bool) $this->config['minty_seeds_enabled'],
 			'USER_MINTY_SEEDS_ENABLED' => (bool) $this->user->data['user_minty_seeds_enabled'],
 			'A_MINTY_SEEDS_ADMIN'	=> ($this->auth->acl_get('a_minty_seeds_admin')) ? true : false,
@@ -78,6 +78,9 @@ class main_listener implements EventSubscriberInterface {
 
 		$permissions = $event['permissions'];
 		$permissions['a_minty_seeds_admin'] = array('lang' => 'ACL_A_MINTY_SEEDS_ADMIN', 'cat' => 'minty');
+		$permissions['m_minty_seeds_add_breeder'] = array('lang' => 'ACL_M_MINTY_SEEDS_ADD_BREEDER', 'cat' => 'minty');
+		$permissions['m_minty_seeds_edit_breeder'] = array('lang' => 'ACL_M_MINTY_SEEDS_EDIT_BREEDER', 'cat' => 'minty');
+		$permissions['m_minty_seeds_delete_breeder'] = array('lang' => 'ACL_M_MINTY_SEEDS_DELETE_BREEDER', 'cat' => 'minty');
 		$permissions['u_minty_seeds_add'] = array('lang' => 'ACL_U_MINTY_SEEDS_ADD', 'cat' => 'minty');
 		$permissions['u_minty_seeds_edit'] = array('lang' => 'ACL_U_MINTY_SEEDS_EDIT', 'cat' => 'minty');
 		$permissions['u_minty_seeds_delete'] = array('lang' => 'ACL_U_MINTY_SEEDS_DELETE', 'cat' => 'minty');

@@ -8,10 +8,6 @@ $(document).ready(function () {
   }
 });
 
-function isEnabledAndActive() {
-  return MINTY_SEEDS.ENABLED && (MINTY_SEEDS.READ || MINTY_SEEDS.ADMIN);
-}
-
 const expire = 3000;
 const labelPosition = "left";
 const labelWidth = 120;
@@ -217,8 +213,10 @@ function buildSeedGrid() {
     height: 520,
     multiselection: false,
     selection: "row",
-    sortable: MINTY_SEEDS.GRID_SORTABLE,
+    sortable: false,
     resizable: MINTY_SEEDS.GRID_RESIZABLE,
+    autoWidth: MINTY_SEEDS.GRID_AUTOWIDTH,
+    autoHeight: MINTY_SEEDS.GRID_AUTOHEIGHT,
   });
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
 }
@@ -560,6 +558,10 @@ function canEditBreederRecords() {
 }
 function canDeleteBreederRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.DELETE_BREEDER;
+}
+
+function isEnabledAndActive() {
+  return MINTY_SEEDS.ENABLED && (MINTY_SEEDS.READ || MINTY_SEEDS.ADMIN);
 }
 
 function clean(text) {
