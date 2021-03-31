@@ -6,7 +6,8 @@
 		</a>
 	</li>
 	<!-- ENDIF -->
-	<script>const MINTY_SEEDS = {
+	<!-- IF SCRIPT_NAME == 'app/seeds/main' -->
+	<script>const MINTY_SEEDS = Object.freeze({
 			ENABLED : Boolean({USER_MINTY_SEEDS_ENABLED}),
 			READ : Boolean({U_MINTY_SEEDS_READ}),
 			ADD : Boolean({U_MINTY_SEEDS_ADD}),
@@ -22,11 +23,12 @@
 			
 			// @todo REMOVE THE FOLLOWING ONCE DEBUGGED
 			ENABLED : Boolean(true),
-			READ : Boolean(true),
+			READ : Boolean(false),
 			ADD : Boolean(false),
 			EDIT : Boolean(false),
 			DELETE : Boolean(false),
-			ADMIN : Boolean(false),
-		};
+			ADMIN : Boolean(true),
+		});
 	</script>
+	<!-- ENDIF -->
 <!-- ENDIF -->

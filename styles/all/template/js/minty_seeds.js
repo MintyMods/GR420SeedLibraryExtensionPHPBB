@@ -1,12 +1,16 @@
 
 $(document).ready(function () {
-  if (MINTY_SEEDS.ENABLED && $('#minty_seed_grid').length > 0) {
+  if (isEnabledAndActive()) {
     console.info("Loading Minty Seed Lib");
     initMintySeedLibData();
   } else {
-    err('Seed Library Blocked<br/> Insufficient Permissions' );    
+    err('Minty Seed Library Blocked<br/> Insufficient Permissions' );    
   }
 });
+
+function isEnabledAndActive() {
+  return MINTY_SEEDS.ENABLED && (MINTY_SEEDS.READ || MINTY_SEEDS.ADMIN);
+}
 
 const expire = 3000;
 const labelPosition = "left";
@@ -58,20 +62,6 @@ function initMintySeedLibData() {
   buildSeedWindow();
   buildBreederForm();
   buildBreederWindow();
-
-}
-
-function canReadRecords() {
-  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.READ;
-}
-function canAddRecords() {
-  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.ADD;
-}
-function canEditRecords() {
-  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.EDIT;
-}
-function canDeleteRecords() {
-  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.DELETE;
 }
 
 function showAddBreederWindow() {
@@ -83,9 +73,9 @@ function buildBreederWindow() {
   breederWindow = new dhx.Window({ width: WINDOW_WIDTH, height: 380, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
   breederWindow.footer.data.add([
     { type: "spacer" },
-    { disabled: Boolean(!(canAddRecords()||canEditRecords())), id: "breeder_save", type: "button", value: "Save", view: "flat", color: "primary", icon: "dxi dxi-checkbox-marked-circle", circle:true, padding: "0px 5px", },
     { id: "breeder_cancel", type: "button", value: "Cancel", view: "flat", color: "secondary", icon: "dxi dxi-close-circle", circle:true, padding: "0px 5px", },
-    { disabled: Boolean(!canDeleteRecords()), id: "breeder_delete", type: "button", value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-alert-circle", circle:true, padding: "0px 5px", },
+    { hidden: Boolean(!canDeleteBreederRecords()), id: "breeder_delete", type: "button", value: "Delete", view: "flat", color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px", },
+    { hidden: Boolean(!(canAddBreederRecords()||canEditBreederRecords())), id: "breeder_save", type: "button", value: "Save", view: "flat", color: "primary", icon: "dxi dxi-checkbox-marked-circle", circle:true, padding: "0px 5px", },
   ], 0);
 
   breederWindow.footer.events.on("click", function (id) {
@@ -158,11 +148,15 @@ function buildSeedButtons() {
     rows: [{
       cols: [
         { type: "spacer" },
-        { disabled : Boolean(!canDeleteRecords()), name: "delete_button", type: "button", text: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-alert-circle", circle:true, padding: "0px 5px",},
-        { disabled : Boolean(!canEditRecords()), name: "edit_button", type: "button", text: "Edit", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px",},
-        { disabled: Boolean(!canAddRecords()), name: "add_button", type: "button", text: "New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
+        { hidden: Boolean(!canAddRecords()), name: "add_button", type: "button", text: "New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
+        { hidden : Boolean(!canEditRecords()), name: "edit_button", type: "button", text: "Edit", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-pencil", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canDeleteRecords()), name: "delete_button", type: "button", text: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canReadRecords()), name: "view_button", type: "button", text: "View", size: "medium", view: "flat",  color: "primary", icon: "dxi dxi-magnify", circle:true, padding: "0px 5px",},
       ]
     }]
+  });
+  buttons.getItem("view_button").events.on("Click", function (events) {
+    viewSeedGridRecord(getSelectedGridRow());
   });
   buttons.getItem("add_button").events.on("Click", function (events) {
     addNewSeedGridRecord();
@@ -178,6 +172,7 @@ function buildSeedButtons() {
 function isRowSelected() {
   return seedGrid.selection && seedGrid.selection.getCell() && seedGrid.selection.getCell().row;
 }
+
 function getSelectedGridRow() {
   return isRowSelected() ? seedGrid.selection.getCell().row : null;
 }
@@ -226,35 +221,56 @@ function buildSeedGrid() {
     resizable: MINTY_SEEDS.GRID_RESIZABLE,
   });
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
-
 }
 
 function buildGridDoubleClickAction() {
   seedGrid.events.on("cellDblClick", function (row, column, e) {
-    editSeedGridRecord(row);
+    viewSeedGridRecord(row);
     e.preventDefault();
   });
 }
 
-function editSeedGridRecord(row) {
+function addNewSeedGridRecord() {
+  seedForm.enable();
+  seedForm.clear();
+  showSeedWindow();
+  dhx.awaitRedraw().then(function () { seedForm.setFocus(BREEDER_ID); });
+}
+
+function viewSeedGridRecord(row) {
+  seedForm.disable();
+  //seedForm.setProperties("input_name", { readOnly:true });
   if (row) {
-    seedForm.clear();
-    seedGrid.selection.setCell(row.id);
-    let parsed = {
-      seed_id: row.id,
-      harvest_month: parseHarvestMonth(row.harvest_month),
-      indoor_outdoor: {
-        indoor_yn : row.indoor_yn,
-        outdoor_yn : row.outdoor_yn,
-      }
-    }
-    seedForm.setValue(Object.assign(row, parsed));
-    dhx.awaitRedraw().then(function () {
-      showSeedWindow();
-    });
+    showSeedGridRecord(row);
+  } else {
+    err('First select a grid row to view,<br/> you can also double click<br/> or right click a row to view');
+  }
+}
+
+function editSeedGridRecord(row) {
+  seedForm.enable();
+  if (row) {
+    showSeedGridRecord(row);
   } else {
     err('First select a grid row to edit');
   }
+}
+
+function showSeedGridRecord(row) {
+  seedForm.clear();
+  seedGrid.selection.setCell(row.id);
+  let parsed = {
+    seed_id: row.id,
+    harvest_month: parseHarvestMonth(row.harvest_month),
+    indoor_outdoor: {
+      indoor_yn : row.indoor_yn,
+      outdoor_yn : row.outdoor_yn,
+    }
+  }
+  seedForm.setValue(Object.assign(row, parsed));
+  dhx.awaitRedraw().then(function () {
+    showSeedWindow();
+  });
 }
 
 function buildSeedForm() {
@@ -263,8 +279,8 @@ function buildSeedForm() {
     rows: [
       { name: "seed_id", type: "text", label: "ID", hidden: true, },
       { cols: [
-          { name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", required: true, placeholder: "Select or Add New", errorMessage: "You must select a valid breeder from the list", labelWidth, labelPosition, disabled: Boolean(!canAddRecords()), },
-          { name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", circle:true, padding: "0px 5px", disabled: Boolean(!canAddRecords()),},]
+          { disabled: Boolean(!canAddBreederRecords()), name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", required: true, placeholder: "Select Breeder", errorMessage: "You must select a valid breeder from the list", labelWidth, labelPosition,  },
+          { hidden: Boolean(!canAddBreederRecords()), name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", circle:true, padding: "0px 5px",},]
       },
       { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Enter the full name of the plant", errorMessage: "Plant name is mandatory to save a new record", disabled: Boolean(!canAddRecords()), },
       { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", disabled: Boolean(!canAddRecords()), },
@@ -317,8 +333,8 @@ function buildSeedWindowToolbar() {
   seedWindow.header.data.add([
     { type: "spacer" },
     { id: "close", icon: "dxi dxi-close" },
-    { id: "save", icon: "dxi dxi-check" },
-    { id: "save_new", icon: "dxi dxi-plus" },
+    { id: "save", icon: "dxi dxi-check", hidden:Boolean(!canAddRecords()) },
+    { id: "save_new", icon: "dxi dxi-plus", hidden:Boolean(!canAddRecords()) },
     { id: "fullscreen", icon: "dxi dxi-arrow-expand" },
   ], 1);
   seedWindow.header.events.on('click', function(id) {
@@ -362,6 +378,7 @@ function saveSeedFormRecord(callback) {
     seedForm.send(SEED_POST_URL, "POST", true).then(function (result) {
         focusedControl = null;  
         reloadSeedGridRows();
+        debugger;
         msg("Seed Record " + result.seed_id + " Saved ");
         if (callback) callback(result);
     }).catch(function(e){
@@ -426,6 +443,9 @@ function buildSeedGridContextMenu() {
       case 'grid_row_add':
         addNewSeedGridRecord();
         break;
+      case 'grid_row_view':
+        viewSeedGridRecord(cell.row);
+        break;
       case 'grid_row_edit':
         editSeedGridRecord(cell.row);
         break;
@@ -436,13 +456,6 @@ function buildSeedGridContextMenu() {
   });
 }
 
-function addNewSeedGridRecord() {
-  if (canAddRecords()) {
-    seedForm.clear();
-    showSeedWindow();
-    dhx.awaitRedraw().then(function () { seedForm.setFocus(BREEDER_ID); });
-  }
-}
 
 function deleteSeedGridRecord(row) {
   if (row && canDeleteRecords()) {
@@ -478,7 +491,7 @@ function reloadSeedGridRows() {
 }
 
 function buildSeedWindow() {
-  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Add New Seed Entry", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
+  seedWindow = new dhx.Window({ height: 600, width: WINDOW_WIDTH, title: "Seed Entry", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
   buildSeedWindowToolbar();
   buildSeedWindowFooter();
   seedWindow.attach(seedForm);
@@ -487,13 +500,16 @@ function buildSeedWindow() {
 function buildSeedWindowFooter() {
   seedWindow.footer.data.add([
     { type: "spacer" },
-    { id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, circle:true, padding: "0px 5px", },
-    { id: "save_new_button", type: "button", value: "Save & New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
     { id: "cancel_button", type: "button", icon: "dxi dxi-close-circle", size: "medium", color: "secondary", value: "Cancel", circle:true, padding: "0px 5px", },
+    { hidden : Boolean(!canDeleteRecords()), id: "delete_button", type: "button", value: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px",},
+    { hidden:Boolean(!canAddRecords()), id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, circle:true, padding: "0px 5px", },
+    { hidden:Boolean(!canAddRecords()), id: "save_new_button", type: "button", value: "Save & New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
   ], 0);
   seedWindow.footer.events.on("click", function (id) {
     if (id === "cancel_button") {
       seedWindowClose();
+    } else if (id === "delete_button") {
+      deleteSeedGridRecord(getSelectedGridRow());
     } else if (id === "save_new_button") {
       seedFormSaveNew();
     } else if (id === "save_button") {
@@ -522,6 +538,28 @@ function seedWindowClose() {
 
 function parseHarvestMonth(value) {
   return (value != '') ? value.substring(0, 3).toLowerCase() : value;
+}
+
+function canReadRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.READ;
+}
+function canAddRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.ADD;
+}
+function canEditRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.EDIT;
+}
+function canDeleteRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.DELETE;
+}
+function canAddBreederRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.ADD_BREEDER;
+}
+function canEditBreederRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.EDIT_BREEDER;
+}
+function canDeleteBreederRecords() {
+  return MINTY_SEEDS.ADMIN || MINTY_SEEDS.DELETE_BREEDER;
 }
 
 function clean(text) {

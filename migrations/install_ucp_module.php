@@ -27,7 +27,7 @@ class install_ucp_module extends \phpbb\db\migration\migration
 
 	public static function depends_on()
 	{
-		return array('\minty\seeds\migrations\install_sample_schema');
+		return array('\minty\seeds\migrations\install_seeds_schema');
 	}
 
 	public function update_data()
