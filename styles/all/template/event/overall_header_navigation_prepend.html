@@ -10,15 +10,19 @@
 	<script>
 		const MINTY_SEEDS = Object.freeze({
 			SCRIPT_NAME : '{SCRIPT_NAME}',
-			ENABLED : Boolean({USER_MINTY_SEEDS_ENABLED}),
-			READ : Boolean({U_MINTY_SEEDS_READ}),
-			ADD : Boolean({U_MINTY_SEEDS_ADD}),
-			EDIT : Boolean({U_MINTY_SEEDS_EDIT}),
-			DELETE : Boolean({U_MINTY_SEEDS_DELETE}),
-			ADD_BREEDER : Boolean({M_MINTY_SEEDS_ADD_BREEDER}),
-			EDIT_BREEDER : Boolean({M_MINTY_SEEDS_EDIT_BREEDER}),
-			DELETE_BREEDER : Boolean({M_MINTY_SEEDS_DELETE_BREEDER}),
-			ADMIN : Boolean({A_MINTY_SEEDS_ADMIN}),
+			URL : 'https://github.com/MintyMods/GR420SeedLibraryExtensionPHPBB',
+			USER_ENABLED : '{USER_MINTY_SEEDS_ENABLED}' === '1',
+			DEBUG : '{MINTY_SEEDS_DEBUG}' === '1',
+			VERSION : '{MINTY_SEEDS_VERSION}',
+			GRID_TITLE : '{MINTY_SEEDS_TITLE}',
+			READ : '{U_MINTY_SEEDS_READ}' === '1',
+			ADD : '{U_MINTY_SEEDS_ADD}' === '1',
+			EDIT : '{U_MINTY_SEEDS_EDIT}' === '1',
+			DELETE : '{U_MINTY_SEEDS_DELETE}' === '1',
+			ADD_BREEDER : '{M_MINTY_SEEDS_ADD_BREEDER}' === '1',
+			EDIT_BREEDER : '{M_MINTY_SEEDS_EDIT_BREEDER}' === '1',
+			DELETE_BREEDER : '{M_MINTY_SEEDS_DELETE_BREEDER' === '1',
+			ADMIN : '{A_MINTY_SEEDS_ADMIN}' === '1',
 		});
 	</script>
 	<!-- ENDIF -->

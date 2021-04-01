@@ -56,6 +56,9 @@ class main_listener implements EventSubscriberInterface {
 		$this->template->assign_vars(array(
 			'U_SEEDS_PAGE'	=> $this->helper->route('minty_seeds_controller', array('name' => 'minty')),
 			'MINTY_SEEDS_ENABLED' => (bool) $this->config['minty_seeds_enabled'],
+			'MINTY_SEEDS_DEBUG' => (bool) $this->config['minty_seeds_debug'],
+			'MINTY_SEEDS_VERSION' => $this->config['minty_seeds_version'],
+			'MINTY_SEEDS_TITLE' => $this->config['minty_seeds_title'],
 			'USER_MINTY_SEEDS_ENABLED' => (bool) $this->user->data['user_minty_seeds_enabled'],
 			'A_MINTY_SEEDS_ADMIN'	=> ($this->auth->acl_get('a_minty_seeds_admin')) ? true : false,
 			'M_MINTY_SEEDS_ADD_BREEDER'	=> ($this->auth->acl_get('m_minty_seeds_add_breeder')) ? true : false,

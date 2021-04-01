@@ -9,3 +9,48 @@ select, textarea {
     background-color: #f6f6f6 !important;
 
 }
+
+.minty_grid_title button {
+    text-transform: capitalize !important;
+    font-size:1.5em;
+}
+
+.minty_logo, .minty_version, .minty_url, .minty_about .dhx_toolbar {
+    font-size:1.5em;
+    -webkit-text-stroke: 1px black;
+    color: white;
+    text-align: center;
+    margin: 0 auto;
+}
+
+
+.minty_about .dhx_layout,
+.minty_about .dhx_layout-cell,
+.minty_about .dhx_toolbar {
+    background:#efefef url("../images/mintymods.png") no-repeat fixed center;
+}
+
+.minty_about_over .dhx_layout,
+.minty_about_over .dhx_layout-cell,
+.minty_about_over .dhx_toolbar { 
+    /* background-size: 100px; */
+    /* background-position-x: 100px;
+    background-position-y: 100px; */
+   
+}
+
+.minty_about .dhx_layout,
+.minty_about .dhx_layout-cell,
+.minty_about .dhx_toolbar { 
+    background-image:url('../images/mintymods.png'), 
+    background-size: 2500px;
+      animation: 30s para infinite alternate;
+    }
+  
+  @keyframes para {
+    100% {
+      background-position: 
+        -5000px 10%;
+    }
+
+S}

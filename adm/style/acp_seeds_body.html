@@ -14,9 +14,18 @@
 	<fieldset>
 		<legend>{{ lang('SETTINGS') }}</legend>
 		<dl>
+			<dt><label for="minty_seeds_title">{{ lang('ACP_MINTY_SEEDS_TITLE') ~ lang('COLON') }}</label></dt>
+			<dd><label><input type="text" class="text" name="minty_seeds_title" value="{{ MINTY_SEEDS_TITLE }}"  /></label></dd>
+		</dl>
+		<dl>
 			<dt><label for="minty_seeds_enabled">{{ lang('ACP_MINTY_SEEDS_ENABLED') ~ lang('COLON') }}</label></dt>
 			<dd><label><input type="radio" class="radio" name="minty_seeds_enabled" value="1"{% if MINTY_SEEDS_ENABLED %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 				<label><input type="radio" class="radio" name="minty_seeds_enabled" value="0"{% if not MINTY_SEEDS_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
+		</dl>
+		<dl>
+			<dt><label for="minty_seeds_debug">{{ lang('ACP_MINTY_SEEDS_DEBUG') ~ lang('COLON') }}</label></dt>
+			<dd><label><input type="radio" class="radio" name="minty_seeds_debug" value="1"{% if MINTY_SEEDS_DEBUG %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="minty_seeds_debug" value="0"{% if not MINTY_SEEDS_DEBUG %} checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
 		</dl>
 	</fieldset>
 

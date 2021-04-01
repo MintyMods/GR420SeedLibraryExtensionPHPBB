@@ -113,11 +113,11 @@ function buildBreederForm() {
 function breederFormSaved(response) {
   var json = JSON.parse(response);
   if (json.saved) {
+    seedForm.setValue(BREEDER_ID, json.data.breeder_name);
     loadComboSuggestions(BREEDER_ID, seedForm);
-    seedForm.setValue(BREEDER_ID, json.id);
-    msg(json.data.breeder_name + " Breeder Details Saved");
     breederForm.clear();
     breederWindow.hide();
+    msg(json.data.breeder_name + " Breeder Details Saved");
   } else {
     err("Failed to save Breeder Details!");
   }
@@ -141,17 +141,25 @@ function validateBreeder(value) {
 }
 
 function buildSeedButtons() {
-  var buttons = new dhx.Form("minty_buttons", {
+  var buttons = new dhx.Form("minty_buttons", { 
     rows: [{
       cols: [
+        { name: "info_button", type: "button", text: MINTY_SEEDS.GRID_TITLE, view: "link", color: "secondary", circle:true, css:'minty_grid_title'},
         { type: "spacer" },
-        { hidden: Boolean(!canAddRecords()), name: "add_button", type: "button", text: "New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
-        { hidden : Boolean(!canEditRecords()), name: "edit_button", type: "button", text: "Edit", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-pencil", circle:true, padding: "0px 5px",},
-        { hidden : Boolean(!canDeleteRecords()), name: "delete_button", type: "button", text: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px",},
-        { hidden : Boolean(!canReadRecords()), name: "view_button", type: "button", text: "View", size: "medium", view: "flat",  color: "primary", icon: "dxi dxi-eye", circle:true, padding: "0px 5px",},
-        { hidden : Boolean(!canReadRecords()), name: "search_button", type: "button", text: "Search", size: "medium", view: "flat",  color: "primary", icon: "dxi dxi-magnify", circle:true, padding: "0px 5px",},
-      ]
+        { hidden: Boolean(!canAddRecords()), name: "add_button", type: "button", text: "New", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
+        { hidden : Boolean(!canEditRecords()), name: "edit_button", type: "button", text: "Edit", view: "flat", color: "primary", icon: "dxi dxi-pencil", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canDeleteRecords()), name: "delete_button", type: "button", text: "Delete", view: "flat",  color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canReadRecords()), name: "refresh_button", type: "button", text: "Refresh", view: "flat",  color: "primary", icon: "dxi dxi-rotate-right", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canReadRecords()), name: "view_button", type: "button", text: "View", view: "flat",  color: "primary", icon: "dxi dxi-eye", circle:true, padding: "0px 5px",},
+        { hidden : Boolean(!canReadRecords()), name: "search_button", type: "button", text: "Search", view: "flat",  color: "primary", icon: "dxi dxi-magnify", circle:true, padding: "0px 5px",},
+      ]  
     }]
+  });
+  buttons.getItem("info_button").events.on("Click", function (events) {
+    showAbout();
+  });
+  buttons.getItem("refresh_button").events.on("Click", function (events) {
+    reloadSeedGridRows();
   });
   buttons.getItem("view_button").events.on("Click", function (events) {
     viewSeedGridRecord(getSelectedGridRow());
@@ -168,6 +176,22 @@ function buildSeedButtons() {
   buttons.getItem("delete_button").events.on("Click", function (events) {
     deleteSeedGridRecord(getSelectedGridRow());
   });
+}
+
+function showAbout() {
+  const html = '<div class="minty_version">Version : ' + MINTY_SEEDS.VERSION + '</div>' + 
+              '<div class="minty_version">Debugging : ' + MINTY_SEEDS.DEBUG + '</div>' +
+              '<div class="minty_url">Source : <a href=' + MINTY_SEEDS.URL + '>GitHub</a></div>' +
+              '<div class="minty_logo"></div>'; 
+  const dhxWindow = new dhx.Window({
+      width: 340,
+      height: 200,
+      modal:true,
+      title: "Minty Seed Library",
+      css: "minty_about",
+      html
+  });
+  dhxWindow.show();
 }
 
 function isRowSelected() {
@@ -332,36 +356,6 @@ function buildSeedFormEvents() {
   capitalizeControlValue(seedForm, 'seed_name'); 
 }
 
-function buildSeedWindowToolbar() {
-  seedWindow.header.data.add([
-    { type: "spacer" },
-    { id: "close", icon: "dxi dxi-close" },
-    { id: "save", icon: "dxi dxi-check", hidden:Boolean(!canAddRecords()) },
-    { id: "save_new", icon: "dxi dxi-plus", hidden:Boolean(!canAddRecords()) },
-    { id: "fullscreen", icon: "dxi dxi-arrow-expand" },
-  ], 1);
-  seedWindow.header.events.on('click', function(id) {
-    switch (id) {
-      case 'close' :
-        seedWindowClose();
-        break;
-      case 'save' :
-        seedFormSave();
-        break;
-      case 'save_new' :
-        seedFormSaveNew();
-        break;
-      case 'fullscreen' :
-        seedWindowToggleFullScreen();
-        break;
-    }
-  });
-  seedWindow.events.on("BeforeHide", function(position, events){
-    seedForm.enable();
-    return true;
-  });  
-  
-}
 
 function seedWindowToggleFullScreen() {
   fullScreenWindow = !fullScreenWindow;
@@ -427,45 +421,6 @@ function addComboEvents(combobox) {
   });
 }
 
-function buildSeedGridContextMenu() {
-  var seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
-  var contextmenu_data = [
-    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-eye", "value": "View" },
-    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_search", "icon": "dxi dxi-magnify", "value": "Search" },
-    { "disabled" : Boolean(!canAddRecords()), "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
-    { "disabled" : Boolean(!canEditRecords()), "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
-    { "disabled" : Boolean(!canDeleteRecords()), "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" }
-  ];
-  seedGridContextMenu.data.parse(contextmenu_data);
-  seedGrid.events.on("CellRightClick", function (row, column, e) {
-    seedGrid.selection.setCell(row.id);
-    seedGridContextMenu.showAt(e);
-    e.preventDefault();
-  });
-
-  seedGridContextMenu.events.on("Click", function (option, e) {
-    var cell = seedGrid.selection.getCell();
-    switch (option) {
-      case 'grid_row_add':
-        addNewSeedGridRecord();
-        break;
-      case 'grid_row_view':
-        viewSeedGridRecord(cell.row);
-        break;
-      case 'grid_row_search':
-        searchSeedGridRecord();
-        break;
-      case 'grid_row_edit':
-        editSeedGridRecord(cell.row);
-        break;
-      case 'grid_row_delete':
-        deleteSeedGridRecord(cell.row);
-        break;
-    }
-  });
-}
-
-
 function deleteSeedGridRecord(row) {
   if (row && canDeleteRecords()) {
     dhx.confirm({
@@ -504,6 +459,84 @@ function buildSeedWindow() {
   buildSeedWindowToolbar();
   buildSeedWindowFooter();
   seedWindow.attach(seedForm);
+}
+
+
+function buildSeedWindowToolbar() {
+  seedWindow.header.data.add([
+    { type: "spacer" },
+    { id: "close", icon: "dxi dxi-close" },
+    { id: "save", icon: "dxi dxi-check", hidden:Boolean(!canAddRecords()) },
+    { id: "save_new", icon: "dxi dxi-plus", hidden:Boolean(!canAddRecords()) },
+    { id: "fullscreen", icon: "dxi dxi-arrow-expand" },
+  ], 1);
+  seedWindow.header.events.on('click', function(id) {
+    switch (id) {
+      case 'close' :
+        seedWindowClose();
+        break;
+      case 'save' :
+        seedFormSave();
+        break;
+      case 'save_new' :
+        seedFormSaveNew();
+        break;
+      case 'fullscreen' :
+        seedWindowToggleFullScreen();
+        break;
+    }
+  });
+  seedWindow.events.on("BeforeHide", function(position, events){
+    seedForm.enable();
+    return true;
+  });  
+  
+}
+
+function buildSeedGridContextMenu() {
+  var seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
+  var contextmenu_data = [
+    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-eye", "value": "View" },
+    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_refresh", "icon": "dxi dxi-rotate-right", "value": "Refresh" },
+    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_search", "icon": "dxi dxi-magnify", "value": "Search" },
+    { "disabled" : Boolean(!canAddRecords()), "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
+    { "disabled" : Boolean(!canEditRecords()), "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
+    { "disabled" : Boolean(!canDeleteRecords()), "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" },
+    { "id": "grid_row_about", "icon": "dxi dxi-help-circle-outline", "value": "About" },
+  ];
+  seedGridContextMenu.data.parse(contextmenu_data);
+  seedGrid.events.on("CellRightClick", function (row, column, e) {
+    seedGrid.selection.setCell(row.id);
+    seedGridContextMenu.showAt(e);
+    e.preventDefault();
+  });
+
+  seedGridContextMenu.events.on("Click", function (option, e) {
+    var cell = seedGrid.selection.getCell();
+    switch (option) {
+      case 'grid_row_add':
+        addNewSeedGridRecord();
+        break;
+      case 'grid_row_view':
+        viewSeedGridRecord(cell.row);
+        break;
+      case 'grid_row_refresh':
+        reloadSeedGridRows();
+        break;
+      case 'grid_row_search':
+        searchSeedGridRecord();
+        break;
+      case 'grid_row_edit':
+        editSeedGridRecord(cell.row);
+        break;
+      case 'grid_row_delete':
+        deleteSeedGridRecord(cell.row);
+        break;
+      case 'grid_row_about':
+        showAbout();
+        break;
+    }
+  });
 }
 
 function buildSeedWindowFooter() {
@@ -572,7 +605,7 @@ function canDeleteBreederRecords() {
 }
 
 function isEnabledAndActive() {
-  return MINTY_SEEDS.ENABLED && (MINTY_SEEDS.READ || MINTY_SEEDS.ADMIN);
+  return MINTY_SEEDS.USER_ENABLED && (MINTY_SEEDS.READ || MINTY_SEEDS.ADMIN);
 }
 
 function clean(text) {

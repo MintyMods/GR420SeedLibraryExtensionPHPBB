@@ -52,7 +52,10 @@ class install_seeds_data extends \phpbb\db\migration\migration
 			// array('custom', array(array($this, 'sample_callable_install'))),
 		
 			array('config.add', array('minty_seeds_installed', 1)),
-			array('config.add', array('minty_seeds_enabled', 0)),
+			array('config.add', array('minty_seeds_enabled', 1)),
+			array('config.add', array('minty_seeds_debug', 0)),
+			array('config.add', array('minty_seeds_version', '1.0.0')),
+			array('config.add', array('minty_seeds_title', 'Minty Seed Library')),
 		);
 	}
 

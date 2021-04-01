@@ -103,6 +103,9 @@ class ucp_controller
 			'ERROR_MSG'		=> $s_errors ? implode('<br />', $errors) : '',
 			'U_UCP_ACTION'	=> $this->u_action,
 			'USER_MINTY_SEEDS_ENABLED'	=> $data['user_minty_seeds_enabled'],
+			'MINTY_SEEDS_DEBUG' => (bool) $this->config['minty_seeds_debug'],
+			'MINTY_SEEDS_VERSION' => $this->config['minty_seeds_version'],	
+			'MINTY_SEEDS_TITLE' => $this->config['minty_seeds_title'],			
 		));
 	}
 
