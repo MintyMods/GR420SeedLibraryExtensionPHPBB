@@ -282,7 +282,9 @@ function buildSeedForm() {
   seedForm = new dhx.Form("minty_seed_form", {
     css: "dhx_widget--bordered",
     rows: [
-      { name: "seed_id", type: "text", label: "ID", hidden: true, },
+      { name: "seed_id", type: "text", hidden: true, },
+      { name: "indoor_yn", type: "text", hidden: true, },
+      { name: "outdoor_yn", type: "text", hidden: true, },
       { cols: [
           { disabled: Boolean(!canAddBreederRecords()), name: BREEDER_ID, filter: fuzzySearch, type: "combo", width: 340, label: "Breeder", required: true, placeholder: "Select Breeder", errorMessage: "You must select a valid breeder from the list", labelWidth, labelPosition,  },
           { hidden: Boolean(!canAddBreederRecords()), name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", circle:true, padding: "0px 5px",},]
@@ -331,9 +333,12 @@ function buildSeedFormEvents() {
         focusedControl = name;
       }
   }); 
+  seedForm.events.on("BeforeSend", function() {
+    seedForm.setValue({"indoor_yn": seedForm.getItem("indoor_outdoor").getValue("indoor_yn")});
+    seedForm.setValue({"outdoor_yn": seedForm.getItem("indoor_outdoor").getValue("outdoor_yn")});
+  }); 
   capitalizeControlValue(seedForm, 'seed_name'); 
 }
-
 
 function seedWindowToggleFullScreen() {
   fullScreenWindow = !fullScreenWindow;
