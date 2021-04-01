@@ -496,12 +496,12 @@ function buildSeedWindowToolbar() {
 function buildSeedGridContextMenu() {
   var seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
   var contextmenu_data = [
-    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-eye", "value": "View" },
-    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_refresh", "icon": "dxi dxi-rotate-right", "value": "Refresh" },
-    { "disabled" : Boolean(!canReadRecords()), "id": "grid_row_search", "icon": "dxi dxi-magnify", "value": "Search" },
-    { "disabled" : Boolean(!canAddRecords()), "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
-    { "disabled" : Boolean(!canEditRecords()), "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
-    { "disabled" : Boolean(!canDeleteRecords()), "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" },
+    { "hidden" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-eye", "value": "View" },
+    { "hidden" : Boolean(!canReadRecords()), "id": "grid_row_refresh", "icon": "dxi dxi-rotate-right", "value": "Refresh" },
+    { "hidden" : Boolean(!canReadRecords()), "id": "grid_row_search", "icon": "dxi dxi-magnify", "value": "Search" },
+    { "hidden" : Boolean(!canAddRecords()), "id": "grid_row_add", "icon": "dxi dxi-plus", "value": "New" },
+    { "hidden" : Boolean(!canEditRecords()), "id": "grid_row_edit", "icon": "dxi dxi-pencil", "value": "Edit" },
+    { "hidden" : Boolean(!canDeleteRecords()), "id": "grid_row_delete", "icon": "dxi dxi-delete", "value": "Delete" },
     { "id": "grid_row_about", "icon": "dxi dxi-help-circle-outline", "value": "About" },
   ];
   seedGridContextMenu.data.parse(contextmenu_data);
