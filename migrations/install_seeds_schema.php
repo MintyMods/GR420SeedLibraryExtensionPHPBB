@@ -181,9 +181,9 @@ class install_seeds_schema extends \phpbb\db\migration\migration
 				$this->table_prefix . 'minty_sl_genetics'	=> array(
 					'COLUMNS'		=> array(
 						'seed_id'				=> array('UINT'),
-						'parent_seed_id'		=> array('UINT'),
+						'genetic_id'		=> array('UINT'),
 					),
-					'PRIMARY_KEY'	=> 'seed_id, parent_seed_id',
+					'PRIMARY_KEY'	=> 'seed_id, genetic_id',
 				),
 
 

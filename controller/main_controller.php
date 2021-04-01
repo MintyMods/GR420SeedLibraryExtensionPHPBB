@@ -113,22 +113,14 @@ class main_controller {
 		$json_response->send($json);
 	}
 
-
-
 	function processSeedFormPost() {
 		$seed_id = $this->request->variable('seed_id', 0);
-		if ($seed_id > 0 && $this->seedRecordExists($seed_id)) {
+		$this->processComboPostedOptions($seed_id);
+		if ($this->seedRecordExists($seed_id)) {
 			return $this->updateSeedRecord($seed_id);
 		} else {
 			return $this->insertNewSeedRecord();
 		}
-		// @todo sort out these combo saves
-		// $this->processComboOptions('minty_sl_genetics', $seed_id);
-		// $this->processComboOptions('minty_sl_awards', $seed_id);
-		// $this->processComboOptions('minty_sl_smells', $seed_id);
-		// $this->processComboOptions('minty_sl_tastes', $seed_id);
-		// $this->processComboOptions('minty_sl_effects', $seed_id);
-		// $this->processComboOptions('minty_sl_meta_tags', $seed_id);
 	}
 
 
@@ -138,10 +130,21 @@ class main_controller {
 		return $prefix;
 	}
 
+
+	function processComboPostedOptions($seed_id) {		
+		if ($this->canEdit() || $this->canAdd()) {
+			$this->processComboOptions('minty_sl_genetics', $seed_id);
+			$this->processComboOptions('minty_sl_awards', $seed_id);
+			$this->processComboOptions('minty_sl_smells', $seed_id);
+			$this->processComboOptions('minty_sl_tastes', $seed_id);
+			$this->processComboOptions('minty_sl_effects', $seed_id);
+			$this->processComboOptions('minty_sl_meta_tags', $seed_id);
+		}
+	}
+
 	function deleteExistingComboRecords($name, $seed_id) {
 		if ($this->canDelete()) {
-			$sql = ' DELETE FROM ' . TABLE_PREFIX . $name . ' WHERE seed_id = ' . $seed_id;
-			return $this->db->sql_query($sql);
+			return $this->db->sql_query('DELETE FROM ' . TABLE_PREFIX . $name . ' WHERE seed_id = ' . $seed_id);
 		}
 	}
 
@@ -152,8 +155,8 @@ class main_controller {
 				'seed_id'		=> $seed_id,
 				$prefix . '_id'	=> $this->parseComboValue($name, $seed_id, $value, $prefix)
 			);
-			$sql = ' INSERT INTO ' . TABLE_PREFIX . $name . 
-					$this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = ' INSERT INTO ' . TABLE_PREFIX . $name . $this->db->sql_build_array('INSERT', $sql_ary);
+			// @todo sort INSERT INTO phpbb_minty_sl_genetics (seed_id, genetic_id) VALUES (1, 1)			
 			$this->db->sql_query($sql);
 		}
 	}
@@ -190,7 +193,7 @@ class main_controller {
 	function getComboTagId($table, $seed_id, $value, $prefix) {
 		if ($this->canRead()) {
 			$sql = ' SELECT ' . $prefix . '_id FROM ' . TABLE_PREFIX . $table . 
-					' WHERE ' . $prefix . '_name = ' . $value . '';
+					' WHERE ' . $prefix . '_name = \'' . $value . '\'';
 			$result = $this->db->sql_query($sql);
 			if ($row = $this->db->sql_fetchrow($result))	{
 				$this->db->sql_freeresult($result);
@@ -447,19 +450,6 @@ class main_controller {
 		}
 	}
 
-	function getComboGeneticOptions($seed_id) {
-		if ($this->canRead()) {
-			$descriptions = array();
-			$sql = ' SELECT parent_seed_id FROM ' . TABLE_PREFIX.TABLE_GENETICS . ' WHERE seed_id = ' . $seed_id;
-			$result = $this->db->sql_query($sql);
-			while ($row = $this->db->sql_fetchrow($result))	{
-				$descriptions[] = $row['parent_seed_id'];
-			}
-			$this->db->sql_freeresult($result);
-			return $descriptions;
-		}
-	}
-
 	function getGeneticOptions() {
 		if ($this->canRead()) {
 			// @todo sort out paging for this option
@@ -476,6 +466,19 @@ class main_controller {
 			}
 			$this->db->sql_freeresult($result);
 			return $result_list;	
+		}
+	}
+
+	function getComboGeneticOptions($seed_id) {
+		if ($this->canRead()) {
+			$descriptions = array();
+			$sql = ' SELECT genetic_id FROM ' . TABLE_PREFIX.TABLE_GENETICS . ' WHERE seed_id = ' . $seed_id;
+			$result = $this->db->sql_query($sql);
+			while ($row = $this->db->sql_fetchrow($result))	{
+				$descriptions[] = $row['genetic_id'];
+			}
+			$this->db->sql_freeresult($result);
+			return $descriptions;
 		}
 	}
 

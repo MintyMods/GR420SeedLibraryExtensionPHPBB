@@ -414,7 +414,7 @@ function deleteSeedGridRecord(row) {
       if (confirmed) {
         const url = GRID_DELETE_URL + '?seed_id=' + row.id;
         dhx.ajax.get(url).then(function (result) {
-          if (result) {
+          if (!JSON.parse(result)) {
             reloadSeedGridRows();
             msg('deleted record id ' + row.id);
           } else {
@@ -627,7 +627,7 @@ function msg(text, debug) {
   dhx.message({ text, css: "dhx_message--success", icon: "dxi-checkbox-marked-circle", expire });
 }
 
-function err(text, debug, expire) {
+function err(text, debug) {
   console.log(text, debug ? debug : '');
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
 }
