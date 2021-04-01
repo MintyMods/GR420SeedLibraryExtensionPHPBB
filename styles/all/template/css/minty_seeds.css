@@ -9,6 +9,15 @@ select, textarea {
     background-color: #f6f6f6 !important;
 }
 
+.dhx_footer-wrapper, .dhx_header-wrapper {
+    z-index: 1;
+}
+
+.dhx_message, .dhx_message--error, .dhx_message--success  {
+    min-width: 300px;
+    width:auto;
+}
+
 #minty_grid_wrapper {
     width:100%;
     height:100%;

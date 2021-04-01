@@ -12,13 +12,11 @@ namespace minty\seeds\migrations;
 
 class install_seeds_schema extends \phpbb\db\migration\migration
 {
-	public function effectively_installed()
-	{
+	public function effectively_installed() {
 		return $this->db_tools->sql_column_exists($this->table_prefix . 'users', 'user_minty_seeds_enabled');
 	}
 
-	public static function depends_on()
-	{
+	public static function depends_on() {
 		return array('\phpbb\db\migration\data\v320\v320');
 	}
 

@@ -36,11 +36,11 @@ class install_ucp_module extends \phpbb\db\migration\migration
 			array('module.add', array(
 				'ucp',
 				0,
-				'UCP_SEEDS_TITLE'
+				'UCP_MINTY_TITLE'
 			)),
 			array('module.add', array(
 				'ucp',
-				'UCP_SEEDS_TITLE',
+				'UCP_MINTY_TITLE',
 				array(
 					'module_basename'	=> '\minty\seeds\ucp\main_module',
 					'modes'				=> array('settings'),

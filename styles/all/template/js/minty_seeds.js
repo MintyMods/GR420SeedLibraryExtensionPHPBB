@@ -4,7 +4,7 @@ $(document).ready(function () {
     console.info("Loading Minty Seed Lib");
     initMintySeedLibData();
   } else {
-    err('Minty Seed Library Blocked<br/> Insufficient Permissions' );    
+    err('Minty Seed Library Blocked - Insufficient Permissions' );    
   }
 });
 
@@ -87,7 +87,7 @@ function buildBreederWindow() {
           });
         } else {
           breederForm.setFocus("breeder_name");
-          err("Validation Failed");
+          err("Breeder Form Validation Failed");
         }
         break;
       }
@@ -117,7 +117,7 @@ function breederFormSaved(response) {
     loadComboSuggestions(BREEDER_ID, seedForm);
     breederForm.clear();
     breederWindow.hide();
-    msg(json.data.breeder_name + " Breeder Details Saved");
+    msg("'" + json.data.breeder_name + "' Breeder Details Saved");
   } else {
     err("Failed to save Breeder Details!");
   }
@@ -179,17 +179,6 @@ function buildSeedButtons() {
   });
 }
 
-function isRowSelected() {
-  return seedGrid.selection && seedGrid.selection.getCell() && seedGrid.selection.getCell().row;
-}
-
-function getSelectedGridRow() {
-  return isRowSelected() ? seedGrid.selection.getCell().row : null;
-}
-
-function showSeedWindow() {
-  seedWindow.show();
-}
 
 function buildSeedGrid() {
   seedGrid = new dhx.Grid("minty_seed_grid", {
@@ -237,8 +226,12 @@ function buildSeedGrid() {
 
 function buildGridDoubleClickAction() {
   seedGrid.events.on("cellDblClick", function (row, column, e) {
-    viewSeedGridRecord(row);
     e.preventDefault();
+    if (canEditRecords()) {
+      editSeedGridRecord(row);
+    } else {
+      viewSeedGridRecord(row);
+    }
   });
 }
 
@@ -361,15 +354,15 @@ function saveSeedFormRecord(callback) {
   if (seedForm.validate()) {
     seedForm.send(SEED_POST_URL, "POST", true).then(function (result) {
         focusedControl = null;  
-        reloadSeedGridRows();
         result = JSON.parse(result);
-        msg(seedGrid.config.data[result.seed_id -1].seed_name + " Saved ");
+        msg("'" + result.seed_name + "' Record Saved");
+        reloadSeedGridRows();
         if (callback) callback(result);
     }).catch(function(e){
-      err(e.statusText, e);
+      err("Error: " + e.status + ' : ' + e.statusText, e);
     });
   } else {
-    err("Failed to validate form");
+    err("Failed to validate form, correct the issue and try again.");
     seedForm.setFocus(focusedControl ? focusedControl : BREEDER_ID); 
   }
 }
@@ -543,6 +536,19 @@ function buildSeedWindowFooter() {
   });
 }
 
+
+function isRowSelected() {
+  return seedGrid.selection && seedGrid.selection.getCell() && seedGrid.selection.getCell().row;
+}
+
+function getSelectedGridRow() {
+  return isRowSelected() ? seedGrid.selection.getCell().row : null;
+}
+
+function showSeedWindow() {
+  seedWindow.show();
+}
+
 function seedFormSave() {
   saveSeedFormRecord(function(){
     seedWindowClose();
@@ -616,7 +622,7 @@ function msg(text, debug) {
   dhx.message({ text, css: "dhx_message--success", icon: "dxi-checkbox-marked-circle", expire });
 }
 
-function err(text, debug) {
+function err(text, debug, expire) {
   console.log(text, debug ? debug : '');
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
 }
