@@ -142,6 +142,7 @@ function validateBreeder(value) {
 
 function buildSeedButtons() {
   var buttons = new dhx.Form("minty_buttons", { 
+    css:'minty_buttons',
     rows: [{
       cols: [
         { name: "info_button", type: "button", text: MINTY_SEEDS.GRID_TITLE, view: "link", color: "secondary", circle:true, css:'minty_grid_title'},
@@ -176,22 +177,6 @@ function buildSeedButtons() {
   buttons.getItem("delete_button").events.on("Click", function (events) {
     deleteSeedGridRecord(getSelectedGridRow());
   });
-}
-
-function showAbout() {
-  const html = '<div class="minty_version">Version : ' + MINTY_SEEDS.VERSION + '</div>' + 
-              '<div class="minty_version">Debugging : ' + MINTY_SEEDS.DEBUG + '</div>' +
-              '<div class="minty_url">Source : <a href=' + MINTY_SEEDS.URL + '>GitHub</a></div>' +
-              '<div class="minty_logo"></div>'; 
-  const dhxWindow = new dhx.Window({
-      width: 340,
-      height: 200,
-      modal:true,
-      title: "Minty Seed Library",
-      css: "minty_about",
-      html
-  });
-  dhxWindow.show();
 }
 
 function isRowSelected() {
@@ -465,10 +450,10 @@ function buildSeedWindow() {
 function buildSeedWindowToolbar() {
   seedWindow.header.data.add([
     { type: "spacer" },
-    { id: "close", icon: "dxi dxi-close" },
-    { id: "save", icon: "dxi dxi-check", hidden:Boolean(!canAddRecords()) },
-    { id: "save_new", icon: "dxi dxi-plus", hidden:Boolean(!canAddRecords()) },
-    { id: "fullscreen", icon: "dxi dxi-arrow-expand" },
+    { id: "close", circle:true, icon: "dxi dxi-close" },
+    { id: "save", circle:true, icon: "dxi dxi-check", hidden:Boolean(!canAddRecords()) },
+    { id: "save_new", circle:true, icon: "dxi dxi-plus", hidden:Boolean(!canAddRecords()) },
+    { id: "fullscreen", circle:true, icon: "dxi dxi-arrow-expand" },
   ], 1);
   seedWindow.header.events.on('click', function(id) {
     switch (id) {
@@ -606,6 +591,22 @@ function canDeleteBreederRecords() {
 
 function isEnabledAndActive() {
   return MINTY_SEEDS.USER_ENABLED && (MINTY_SEEDS.READ || MINTY_SEEDS.ADMIN);
+}
+
+function showAbout() {
+  const html = '<div class="minty_version">Version : ' + MINTY_SEEDS.VERSION + '</div>' + 
+              '<div class="minty_url">Source : <a href=' + MINTY_SEEDS.URL + '>GitHub</a></div>' +
+              '<div class="minty_version">Debugging : ' + MINTY_SEEDS.DEBUG + '</div>' +
+              '<div class="minty_logo"></div>'; 
+  const dhxWindow = new dhx.Window({
+      width: 340,
+      height: 200,
+      modal:true,
+      title: "Minty Seed Library",
+      css: "minty_about",
+      html
+  });
+  dhxWindow.show();
 }
 
 function clean(text) {

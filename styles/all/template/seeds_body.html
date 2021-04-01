@@ -1,14 +1,17 @@
 <!-- IF SCRIPT_NAME == 'app/seeds/minty' -->
     {% include 'overall_header.html' %}
+    <div id="minty_grid_wrapper" class="minty_grid_wrapper">
+        <!-- IF ( U_MINTY_SEEDS_READ or A_MINTY_SEEDS_ADMIN) -->
+        <div id="minty_seed_grid" class="minty_seed_grid">
+        <!-- ENDIF -->
+        <!-- IF ( U_MINTY_SEEDS_ADD or A_MINTY_SEEDS_ADMIN) -->
+            <div id="minty_buttons" class="minty_buttons"/>
+        <!-- ENDIF -->
+        </div>
+    </div>
     <!-- IF ( U_MINTY_SEEDS_ADD or A_MINTY_SEEDS_ADMIN) -->
-        <div id="minty_buttons"></div>
-    <!-- ENDIF -->
-    <!-- IF ( U_MINTY_SEEDS_READ or A_MINTY_SEEDS_ADMIN) -->
-        <div style="height: 100%; width: 100%" id="minty_seed_grid"></div>
-    <!-- ENDIF -->
-    <!-- IF ( U_MINTY_SEEDS_ADD or A_MINTY_SEEDS_ADMIN) -->
-        <div id="minty_seed_form" style='display:hidden'></div>
-        <div id="minty_breeder_form" style='display:hidden'></div>
+        <div id="minty_seed_form" style='display:hidden'/>
+        <div id="minty_breeder_form" style='display:hidden'/>
     <!-- ENDIF -->
     {% include 'overall_footer.html' %}
 <!-- ENDIF -->
