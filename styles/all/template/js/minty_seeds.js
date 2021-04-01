@@ -446,7 +446,6 @@ function buildSeedWindow() {
   seedWindow.attach(seedForm);
 }
 
-
 function buildSeedWindowToolbar() {
   seedWindow.header.data.add([
     { type: "spacer" },
@@ -475,7 +474,6 @@ function buildSeedWindowToolbar() {
     seedForm.enable();
     return true;
   });  
-  
 }
 
 function buildSeedGridContextMenu() {
