@@ -53,7 +53,7 @@ function initMintySeedLibData() {
   buildSeedGrid();
   buildSeedButtons();
   buildSeedGridContextMenu();
-  buildGridDoubleClickAction();
+  
   buildSeedForm(); 
   buildSeedWindow();
   buildBreederForm();
@@ -220,7 +220,23 @@ function buildSeedGrid() {
     autoWidth: true,
     autoHeight: false,
   });
+  buildSeedGridEvents();
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
+}
+
+function buildSeedGridEvents() {
+  buildGridDoubleClickAction();
+  buildGridLoadEvents();
+}
+
+function buildGridLoadEvents() {
+
+  // seedGrid.data.events.on("BeforeAdd", function(newItem){
+  //   debugger;
+  //   console.log("A new item will be added");
+  //   return true;
+  // });
+
 }
 
 function buildGridDoubleClickAction() {
@@ -322,8 +338,8 @@ function buildSeedForm() {
       { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", disabled: Boolean(!canAddRecords()), },
       { name: "sex", type: "radioGroup", options: sex_options, required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth, labelPosition, disabled: Boolean(!canAddRecords()), },
       { name: "indoor_outdoor", type: "checkboxGroup", options: indoor_outdoor_options, label: "Environment", labelWidth, labelPosition, labelInline: true, disabled: Boolean(!canAddRecords()), },
-      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()),  },
       { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },

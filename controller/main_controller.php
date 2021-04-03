@@ -179,7 +179,6 @@ class main_controller {
 				$prefix . '_id'	=> $this->parseComboValue($name, $seed_id, $value, $prefix)
 			);
 			$sql = ' INSERT INTO ' . TABLE_PREFIX . $name . $this->db->sql_build_array('INSERT', $sql_ary);
-			// @todo sort INSERT INTO phpbb_minty_sl_genetics (seed_id, genetic_id) VALUES (1, 1)		
 			$this->db->sql_query($sql);
 		}
 	}
