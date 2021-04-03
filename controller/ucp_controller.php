@@ -32,6 +32,7 @@ class ucp_controller {
 		$errors = array();
 		$data = array(
 			'user_minty_seeds_enabled' => $this->request->variable('user_minty_seeds_enabled', $this->user->data['user_minty_seeds_enabled']),
+			'user_minty_seeds_split_enabled' => $this->request->variable('user_minty_seeds_split_enabled', $this->user->data['user_minty_seeds_split_enabled']),
 		);
 
 		if ($this->request->is_set_post('submit')) {
@@ -58,6 +59,7 @@ class ucp_controller {
 			'ERROR_MSG'		=> $s_errors ? implode('<br />', $errors) : '',
 			'U_UCP_ACTION'	=> $this->u_action,
 			'USER_MINTY_SEEDS_ENABLED'	=> $data['user_minty_seeds_enabled'],
+			'USER_MINTY_SEEDS_SPLIT_ENABLED'	=> $data['user_minty_seeds_split_enabled'],
 		));
 	}
 

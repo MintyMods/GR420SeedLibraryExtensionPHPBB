@@ -109,6 +109,7 @@ class main_controller {
 				'MINTY_SEEDS_ENABLED' => $this-> isEnabled(),
 				'MINTY_SEEDS_DEBUG' => $this->isDebugging(),
 				'USER_MINTY_SEEDS_ENABLED' => $this->isUserEnabled(),
+				'USER_MINTY_SEEDS_SPLIT_ENABLED' => $this->isUserSplitEnabled(),
 				'A_MINTY_SEEDS_ADMIN'	=> $this->isAdmin(),
 				'M_MINTY_SEEDS_ADD_BREEDER'	=> $this->canAddBreeder(),
 				'M_MINTY_SEEDS_EDIT_BREEDER'	=> $this->canEditBreeder(),
@@ -620,6 +621,9 @@ class main_controller {
 	}
 	function isUserEnabled() {
 		return (bool)$this->user->data['user_minty_seeds_enabled'];
+	}
+	function isUserSplitEnabled() {
+		return (bool)$this->user->data['user_minty_seeds_split_enabled'];
 	}
 	function isDebugging() {
 		return (bool)$this->config['minty_seeds_debug'];

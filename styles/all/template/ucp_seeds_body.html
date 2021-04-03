@@ -16,6 +16,11 @@
 					<dd><label for="user_minty_seeds_enabled1"><input type="radio" name="user_minty_seeds_enabled" id="user_minty_seeds_enabled" value="1"{% if USER_MINTY_SEEDS_ENABLED %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 						<label for="user_minty_seeds_enabled0"><input type="radio" name="user_minty_seeds_enabled" id="user_minty_seeds_enabled" value="0"{% if not USER_MINTY_SEEDS_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
 				</dl>
+				<dl>
+					<dt><label for="user_minty_seeds_split_enabled0">{{ lang('UCP_SEEDS_GRID_SPLIT') ~ lang('COLON') }}</label><br /><span>{{ lang('UCP_SEEDS_GRID_SPLIT_EXPLAIN') }}</span></dt>
+					<dd><label for="user_minty_seeds_split_enabled1"><input type="radio" name="user_minty_seeds_split_enabled" id="user_minty_seeds_split_enabled" value="1"{% if USER_MINTY_SEEDS_SPLIT_ENABLED %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+						<label for="user_minty_seeds_split_enabled0"><input type="radio" name="user_minty_seeds_split_enabled" id="user_minty_seeds_split_enabled" value="0"{% if not USER_MINTY_SEEDS_SPLIT_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
+				</dl>
 			</fieldset>
 		</div>
 	</div>

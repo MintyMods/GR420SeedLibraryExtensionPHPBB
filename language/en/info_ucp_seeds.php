@@ -21,6 +21,8 @@ $lang = array_merge($lang, array(
 	'UCP_SEEDS'				=> 'Minty Seed Library',
 	'UCP_SEEDS_TITLE'		=> 'Minty Mods',
 	'UCP_SEEDS_USER'			=> 'Seed Library Enabled',
+	'UCP_SEEDS_GRID_SPLIT'			=> 'Fix Breeder/Seed Name Columns',
+	'UCP_SEEDS_GRID_SPLIT_EXPLAIN'	=> 'When enabled, the breeder and seed name will remain visible when scrolling the seed grid to the right',
 	'UCP_SEEDS_USER_EXPLAIN'	=> 'Show/Hide the Seed Library ToolBar Icon',
 	'UCP_SEEDS_SAVED'		=> 'Settings have been saved successfully!',
 ));

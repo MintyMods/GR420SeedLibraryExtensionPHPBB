@@ -9,6 +9,10 @@ select, textarea {
     background-color: #f6f6f6 !important;
 }
 
+.minty_combo_list {
+    list-style: none;
+}
+
 .dhx_footer-wrapper, .dhx_header-wrapper {
     z-index: 1;
 }

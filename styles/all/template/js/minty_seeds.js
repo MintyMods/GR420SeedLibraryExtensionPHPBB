@@ -12,6 +12,7 @@ const expire = 3000;
 const labelPosition = "left";
 const labelWidth = 120;
 const WINDOW_WIDTH = 600; // @todo support moblile / reactive layout
+const GRID_SPLIT_AT = 2; 
 const GRID_SELECT_URL = "GRID_SELECT_RECORDS";
 const GRID_DELETE_URL = "GRID_DELETE_RECORD";
 const SEED_POST_URL = "minty_sl_seeds";
@@ -53,7 +54,6 @@ function initMintySeedLibData() {
   buildSeedGrid();
   buildSeedButtons();
   buildSeedGridContextMenu();
-  
   buildSeedForm(); 
   buildSeedWindow();
   buildBreederForm();
@@ -203,13 +203,14 @@ function buildSeedGrid() {
       { width: 110, id: "indica", type: "string", header: [{ text: "Indica" }], type: "string" },
       { width: 110, id: "sativa", type: "string", header: [{ text: "Sativa" }], type: "string"},
       { width: 110, id: "ruderalis", type: "string", header: [{ text: "Ruderalis" }], type: "string"},
-      { width: 120, id: GENETICS, header: [{ text: "Genetics" }], type: "string"},
-      { width: 120, id: SMELLS, header: [{ text: "Smells" }], type: "string" },
-      { width: 120, id: TASTES, header: [{ text: "Tastes" }], type: "string" },
-      { width: 120, id: EFFECTS, header: [{ text: "Effects" }], type: "string" },
-      { width: 120, id: AWARDS, header: [{ text: "Awards" }], type: "string" },
-      { width: 120, id: METATAGS, header: [{ text: "Effects" }], type: "string" },
+      { width: 120, id: GENETICS, template: gridDisplayComboValueAsTag, header: [{ text: "Genetics" }], type: "string"},
+      { width: 120, id: SMELLS, template: gridDisplayComboValueAsTag, header: [{ text: "Smells" }], type: "string" },
+      { width: 120, id: TASTES, template: gridDisplayComboValueAsTag, header: [{ text: "Tastes" }], type: "string" },
+      { width: 120, id: EFFECTS, template: gridDisplayComboValueAsTag, header: [{ text: "Effects" }], type: "string" },
+      { width: 120, id: AWARDS, template: gridDisplayComboValueAsTag, header: [{ text: "Awards" }], type: "string" },
+      { width: 120, id: METATAGS, template: gridDisplayComboValueAsTag, header: [{ text: "Effects" }], type: "string" },
     ],
+    leftSplit: MINTY_SEEDS.SPLIT_ENABLED ? GRID_SPLIT_AT : false, 
     editable: false,
     autoEmptyRow: false,
     height: 520,
@@ -219,9 +220,29 @@ function buildSeedGrid() {
     resizable: true,
     autoWidth: true,
     autoHeight: false,
+    htmlEnable: true,
   });
   buildSeedGridEvents();
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
+}
+
+function gridDisplayComboValueAsTag(tags, row, col) {
+  let control = seedForm.getItem(col.id);
+  let widget = control.getWidget();
+  // let result = [];
+  let result = '<ul class="minty_combo_list">';
+  tags.forEach(function(tag){
+    // result.push(buildTag(widget.data.getItem(tag)));
+    result = result + '<li>'+widget.data.getItem(tag).value + '</li>';
+  });
+  return result + '</ul>';
+}
+
+function buildTag(data) {
+  let value = data.value;
+  let id = data.id;
+  //@todo 
+  return '' + value + ',';
 }
 
 function buildSeedGridEvents() {
@@ -230,13 +251,10 @@ function buildSeedGridEvents() {
 }
 
 function buildGridLoadEvents() {
-
-  // seedGrid.data.events.on("BeforeAdd", function(newItem){
-  //   debugger;
-  //   console.log("A new item will be added");
-  //   return true;
-  // });
-
+  seedGrid.events.on("beforeRowShow", function (e) {
+    debugger;
+    return true;
+  });
 }
 
 function buildGridDoubleClickAction() {
@@ -506,8 +524,8 @@ function buildSeedWindowToolbar() {
 }
 
 function buildSeedGridContextMenu() {
-  var seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
-  var contextmenu_data = [
+  const seedGridContextMenu = new dhx.ContextMenu(null, { css: "dhx_widget--bg_gray" });
+  const contextmenu_data = [
     { "hidden" : Boolean(!canReadRecords()), "id": "grid_row_view", "icon": "dxi dxi-eye", "value": "View" },
     { "hidden" : Boolean(!canReadRecords()), "id": "grid_row_refresh", "icon": "dxi dxi-rotate-right", "value": "Refresh" },
     { "hidden" : Boolean(!canReadRecords()), "id": "grid_row_search", "icon": "dxi dxi-magnify", "value": "Search" },
@@ -571,7 +589,6 @@ function buildSeedWindowFooter() {
     }
   });
 }
-
 
 function isRowSelected() {
   return seedGrid.selection && seedGrid.selection.getCell() && seedGrid.selection.getCell().row;
