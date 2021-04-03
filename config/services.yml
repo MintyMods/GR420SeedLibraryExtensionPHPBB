@@ -16,7 +16,8 @@ services:
             - '@files.factory'
             - '@log'
             - '%core.root_path%'
-            - .%core.php_ext%               
+            - '%core.php_ext%' 
+            - '@?phpbbstudio.aps.manager'
 
     minty.seeds.controller.acp:
         class: minty\seeds\controller\acp_controller
@@ -55,3 +56,39 @@ services:
             - '%core.php_ext%'
         tags:
             - { name: event.listener }
+
+    minty.seeds.aps.action.insert_seed:
+        class: minty\seeds\aps\insert_seed
+        shared: false
+        tags:
+            - { name: phpbbstudio.aps.action, order: 0 }
+    
+    minty.seeds.aps.action.update_seed:
+        class: minty\seeds\aps\update_seed
+        shared: false
+        tags:
+            - { name: phpbbstudio.aps.action, order: 1 }
+
+    minty.seeds.aps.action.delete_seed:
+        class: minty\seeds\aps\delete_seed
+        shared: false
+        tags:
+            - { name: phpbbstudio.aps.action, order: 2 }
+
+    minty.seeds.aps.action.insert_breeder:
+        class: minty\seeds\aps\insert_breeder
+        shared: false
+        tags:
+            - { name: phpbbstudio.aps.action, order: 3 }
+    
+    minty.seeds.aps.action.update_breeder:
+        class: minty\seeds\aps\update_breeder
+        shared: false
+        tags:
+            - { name: phpbbstudio.aps.action, order: 4 }
+
+    minty.seeds.aps.action.delete_breeder:
+        class: minty\seeds\aps\delete_breeder
+        shared: false
+        tags:
+            - { name: phpbbstudio.aps.action, order: 5 }

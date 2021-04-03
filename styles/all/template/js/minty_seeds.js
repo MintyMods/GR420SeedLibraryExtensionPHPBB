@@ -179,7 +179,6 @@ function buildSeedButtons() {
   });
 }
 
-
 function buildSeedGrid() {
   seedGrid = new dhx.Grid("minty_seed_grid", {
     columns: [
@@ -355,16 +354,28 @@ function seedWindowDisplayFullScreen(full) {
   }
 }
 
+function parseJSON(json) {
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    err("ERROR Parsing JSON: " + e, json);
+  }
+}
+
 function saveSeedFormRecord(callback) {
   if (seedForm.validate()) {
-    seedForm.send(SEED_POST_URL, "POST", true).then(function (result) {
+    seedForm.send(SEED_POST_URL, "POST", true).then(function (json) {
         focusedControl = null;  
-        result = JSON.parse(result);
+        result = parseJSON(json);
         msg("'" + result.seed_name + "' Record Saved");
         reloadSeedGridRows();
         if (callback) callback(result);
     }).catch(function(e){
-      err("Error: " + e.status + ' : ' + e.statusText, e);
+      if (e.status) {
+        err("Error Saving: " + e.status + ' : ' + e.statusText, e);
+      } else {
+        err("Error Saving: " + e);
+      }
     });
   } else {
     err("Failed to validate form, correct the issue and try again.");

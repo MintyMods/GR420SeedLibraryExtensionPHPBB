@@ -34,6 +34,7 @@ class main_controller {
 	protected $log;
 	protected $php_ext;
 	protected $phpbb_root_path;
+	protected $points_manager; 
 
 	public function __construct(
 		\phpbb\auth\auth $auth,
@@ -47,7 +48,9 @@ class main_controller {
 		\phpbb\files\factory $file_factory,
 		\phpbb\log\log $log,
 		$phpbb_root_path, 
-		$phpEx) {
+		$phpEx,
+		\phpbbstudio\aps\actions\manager $points_manager = null
+		) {
 			$this->auth = $auth;					
 			$this->user = $user;					
 			$this->request = $request;	
@@ -59,12 +62,14 @@ class main_controller {
 			$this->file_factory = $file_factory;		
 			$this->log	= $log;
 			$this->php_ext = $phpEx;
-			$this->phpbb_root_path = $phpbb_root_path;	
+			$this->phpbb_root_path = $phpbb_root_path;
+			$this->points_manager = $points_manager;	
 	}
 
 	public function handle($name) {
-		require_once("./config" . $this->php_ext); 
+		require_once("./config." . $this->php_ext); 
 		$this->request->enable_super_globals();
+		// $this->language->add_lang('extended_common', 'phpbbstudio/extended');
 		$json = null;
 		if ($name == 'minty_sl_seeds') {
 			$json = $this->processSeedFormPost();		
@@ -113,16 +118,29 @@ class main_controller {
 		$json_response->send($json);
 	}
 
+	function triggerAdvancedPointsSystemAction($action, $data) {
+		if ($this->isAdvancedPointsSystemIntegrationEnabled()) {
+			$forum_ids = null;
+			$user_ids = null;
+			$this->points_manager->trigger($action, $user_ids, $data, $forum_ids);
+		}
+	}
+	function isAdvancedPointsSystemIntegrationEnabled() {
+		$aps_enabled = (bool) $this->config['minty_seeds_aps_enabled'];
+		return $aps_enabled && $this->points_manager !== null;
+	}
+
 	function processSeedFormPost() {
 		$seed_id = $this->request->variable('seed_id', 0);
 		$this->processComboPostedOptions($seed_id);
 		if ($this->seedRecordExists($seed_id)) {
+			$this->triggerAdvancedPointsSystemAction('UPDATE_SEED_RECORD', $seed_id);
 			return $this->updateSeedRecord($seed_id);
 		} else {
+			$this->triggerAdvancedPointsSystemAction('INSERT_SEED_RECORD', $seed_id);
 			return $this->insertNewSeedRecord();
 		}
 	}
-
 
 	function getTablePrefixFromComboName($name) {
 		$prefix = str_replace('minty_sl_', '', $name); 
@@ -156,11 +174,11 @@ class main_controller {
 				$prefix . '_id'	=> $this->parseComboValue($name, $seed_id, $value, $prefix)
 			);
 			$sql = ' INSERT INTO ' . TABLE_PREFIX . $name . $this->db->sql_build_array('INSERT', $sql_ary);
-			// @todo sort INSERT INTO phpbb_minty_sl_genetics (seed_id, genetic_id) VALUES (1, 1)			
+			// @todo sort INSERT INTO phpbb_minty_sl_genetics (seed_id, genetic_id) VALUES (1, 1)		
 			$this->db->sql_query($sql);
 		}
 	}
-
+	
 	function processComboOptions($name, $seed_id) {
 		$values = $this->request->variable($name, array('' => ''), true);
 		$this->deleteExistingComboRecords($name, $seed_id);
@@ -192,6 +210,7 @@ class main_controller {
 
 	function getComboTagId($table, $seed_id, $value, $prefix) {
 		if ($this->canRead()) {
+			$table = substr($table, 0, strlen($table)-1);
 			$sql = ' SELECT ' . $prefix . '_id FROM ' . TABLE_PREFIX . $table . 
 					' WHERE ' . $prefix . '_name = \'' . $value . '\'';
 			$result = $this->db->sql_query($sql);
@@ -491,9 +510,22 @@ class main_controller {
 		// if (!empty($upload_file['breeder_logo'])) {
 		// 	$file = $upload->handle_upload('files.types.form', 'breeder_logo');
 		// }
+		// $this->triggerAdvancedPointsSystemAction('IMAGE_UPLOAD', $breeder_id);
 	}
 
 	function processBreederFormPost() {
+		$breeder_id = $this->request->variable('breeder_id', 0);
+		if (true) {
+			$this->processBreederFormInsert();
+			$this->triggerAdvancedPointsSystemAction('INSERT_BREEDER_RECORD', $breeder_id);
+		} else {
+			//@todo
+			// $this->triggerAdvancedPointsSystemAction('EDIT_BREEDER_RECORD', $breeder_id);
+			// $this->triggerAdvancedPointsSystemAction('DELETE_BREEDER_RECORD', $breeder_id);
+		}
+	}
+
+	function processBreederFormInsert() {
 		if ($this->canAddBreeder()) {
 			$name = $this->request->variable('breeder_name', '');
 			$desc = $this->request->variable('breeder_desc', '');
@@ -552,6 +584,7 @@ class main_controller {
 		$seed_id = $this->request->variable('seed_id', 0);
 		if ($this->canDelete()) {
 			$this->deleteSeedRecord($seed_id);
+			$this->triggerAdvancedPointsSystemAction('DELETE_SEED_RECORD', $seed_id);
 		}
 		return $this->getSeedRecord($seed_id);
 	}

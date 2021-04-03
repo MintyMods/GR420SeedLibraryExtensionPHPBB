@@ -23,6 +23,11 @@
 				<label><input type="radio" class="radio" name="minty_seeds_enabled" value="0"{% if not MINTY_SEEDS_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
 		</dl>
 		<dl>
+			<dt><label for="minty_seeds_aps_enabled">{{ lang('ACP_MINTY_SEEDS_APS_ENABLED') ~ lang('COLON') }}</label></dt>
+			<dd><label><input type="radio" class="radio" name="minty_seeds_aps_enabled" value="1"{% if MINTY_SEEDS_APS_ENABLED %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
+				<label><input type="radio" class="radio" name="minty_seeds_aps_enabled" value="0"{% if not MINTY_SEEDS_APS_ENABLED %} checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
+		</dl>
+		<dl>
 			<dt><label for="minty_seeds_debug">{{ lang('ACP_MINTY_SEEDS_DEBUG') ~ lang('COLON') }}</label></dt>
 			<dd><label><input type="radio" class="radio" name="minty_seeds_debug" value="1"{% if MINTY_SEEDS_DEBUG %} checked="checked"{% endif %} /> {{ lang('YES') }}</label>
 				<label><input type="radio" class="radio" name="minty_seeds_debug" value="0"{% if not MINTY_SEEDS_DEBUG %} checked="checked"{% endif %} /> {{ lang('NO') }}</label></dd>
