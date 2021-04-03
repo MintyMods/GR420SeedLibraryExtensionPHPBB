@@ -111,15 +111,15 @@ function buildBreederForm() {
 }
 
 function breederFormSaved(response) {
-  var json = JSON.parse(response);
-  if (json.saved) {
+  var json = parseJSON(response);
+  if (json && json.saved) {
     seedForm.setValue(BREEDER_ID, json.data.breeder_name);
     loadComboSuggestions(BREEDER_ID, seedForm);
     breederForm.clear();
     breederWindow.hide();
     msg("'" + json.data.breeder_name + "' Breeder Details Saved");
   } else {
-    err("Failed to save Breeder Details!");
+    err("Failed to save Breeder Details!", response);
   }
 }
 
@@ -145,7 +145,7 @@ function buildSeedButtons() {
     css:'minty_buttons',
     rows: [{
       cols: [
-        { name: "info_button", type: "button", text: MINTY_SEEDS.GRID_TITLE, view: "link", color: "secondary", circle:true, css:'minty_grid_title'},
+        { name: "info_button", disabled:!MINTY_SEEDS.DEBUG, type: "button", text: MINTY_SEEDS.GRID_TITLE, view: "link", color: "secondary", circle:true, css:'minty_grid_title'},
         { type: "spacer" },
         { hidden: Boolean(!canAddRecords()), name: "add_button", type: "button", text: "New", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
         { hidden : Boolean(!canEditRecords()), name: "edit_button", type: "button", text: "Edit", view: "flat", color: "primary", icon: "dxi dxi-pencil", circle:true, padding: "0px 5px",},
@@ -270,11 +270,41 @@ function showSeedGridRecord(row, readonly) {
       outdoor_yn : row.outdoor_yn,
     }
   }
-  seedForm.setValue(Object.assign(row, parsed));
+  let final = Object.assign(row, parsed);
+  seedForm.setValue(final);
   readonly ? seedForm.disable() : seedForm.enable();
   dhx.awaitRedraw().then(function () {
     showSeedWindow();
   });
+}
+
+function parseComboValuesForSeedFormDisplay(row, parsed) {
+  COMBO_CONTROLS.forEach(function (name) {
+    let control = seedForm.getItem(name);
+    let combo = control.getWidget();
+    let options = this[name.slice(0, -1)];
+    if (options && options.length > 0) {
+      let value = [];
+      options.forEach(function(option){
+        value.push(getComboOptionId(combo,option));
+      });
+      parsed = Object.assign(parsed, {[name] : value})
+    }
+  }.bind(row)); 
+  return parsed; 
+}
+
+function getComboOptionId(combo, option) {
+  let result = null;
+  combo.data.forEach(function(entry){
+    result = combo.data.getIndex(entry.id);
+  });
+  return result;
+}
+
+function parseSeedFormServerReady() {
+  seedForm.setValue({"indoor_yn": seedForm.getItem("indoor_outdoor").getValue("indoor_yn")});
+  seedForm.setValue({"outdoor_yn": seedForm.getItem("indoor_outdoor").getValue("outdoor_yn")});
 }
 
 function buildSeedForm() {
@@ -314,7 +344,7 @@ function buildSeedForm() {
   });
   loadComboSuggestions(BREEDER_ID, seedForm);
   loadComboSuggestions(GENETICS, seedForm);
-  processComboControls(COMBO_CONTROLS, seedForm);
+  loadComboControlSuggestions(COMBO_CONTROLS, seedForm);
   buildSeedFormEvents();
 }
 
@@ -333,33 +363,9 @@ function buildSeedFormEvents() {
       }
   }); 
   seedForm.events.on("BeforeSend", function() {
-    seedForm.setValue({"indoor_yn": seedForm.getItem("indoor_outdoor").getValue("indoor_yn")});
-    seedForm.setValue({"outdoor_yn": seedForm.getItem("indoor_outdoor").getValue("outdoor_yn")});
+    parseSeedFormServerReady();
   }); 
   capitalizeControlValue(seedForm, 'seed_name'); 
-}
-
-function seedWindowToggleFullScreen() {
-  fullScreenWindow = !fullScreenWindow;
-  seedWindowDisplayFullScreen(fullScreenWindow);
-}
-
-function seedWindowDisplayFullScreen(full) {
-  if (full) {
-    seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-collapse" });
-    seedWindow.setFullScreen();
-  } else {
-    seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-expand" });
-    seedWindow.unsetFullScreen();
-  }
-}
-
-function parseJSON(json) {
-  try {
-    return JSON.parse(json);
-  } catch (e) {
-    err("ERROR Parsing JSON: " + e, json);
-  }
 }
 
 function saveSeedFormRecord(callback) {
@@ -383,17 +389,13 @@ function saveSeedFormRecord(callback) {
   }
 }
 
-function processComboControls(controls) {
+function loadComboControlSuggestions(controls, form) {
   controls.forEach(function (name) {
-    processComboControl(name);
+    let control = form.getItem(name);
+    let widget = control.getWidget();
+    widget.data.load(name);
+    addComboEvents(widget);
   });
-}
-
-function processComboControl(name) {
-  let control = seedForm.getItem(name);
-  let widget = control.getWidget();
-  widget.data.load(name);
-  addComboEvents(widget);
 }
 
 function addComboEvents(combobox) {
@@ -401,9 +403,10 @@ function addComboEvents(combobox) {
     this._input_value = value;
   });
   combobox.events.on("BeforeClose", function () {
-    const id = "U:" + Math.floor(Math.random() * 10000);
-    const value = this._input_value;
+    var value = this._input_value;
     if (value && !this.getValue(true).includes(value)) {
+      value = value.capitalize();
+      const id = 'TAG[' + Math.floor(Math.random() * 10000)+']' + value;
       this.data.add({ id, value }, 0);
       dhx.awaitRedraw().then(function () {
         this.setValue(this.getValue(true).push(id));
@@ -425,7 +428,7 @@ function deleteSeedGridRecord(row) {
       if (confirmed) {
         const url = GRID_DELETE_URL + '?seed_id=' + row.id;
         dhx.ajax.get(url).then(function (result) {
-          if (!JSON.parse(result)) {
+          if (!parseJSON(result)) {
             reloadSeedGridRows();
             msg('deleted record id ' + row.id);
           } else {
@@ -444,6 +447,7 @@ function deleteSeedGridRecord(row) {
 function reloadSeedGridRows() {
   seedGrid.data.removeAll();
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 25, from: 0 }));
+  loadComboControlSuggestions(COMBO_CONTROLS, seedForm);
   seedGrid.paint();
   dhx.awaitRedraw().then(function () { seedGrid.scrollTo("0", "seed_name"); });
 }
@@ -631,6 +635,29 @@ function showAbout() {
 
 function clean(text) {
   return text ? text.trim().toLowerCase() : "";
+}
+
+function seedWindowToggleFullScreen() {
+  fullScreenWindow = !fullScreenWindow;
+  seedWindowDisplayFullScreen(fullScreenWindow);
+}
+
+function seedWindowDisplayFullScreen(full) {
+  if (full) {
+    seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-collapse" });
+    seedWindow.setFullScreen();
+  } else {
+    seedWindow.header.data.update("fullscreen", { icon: "dxi dxi-arrow-expand" });
+    seedWindow.unsetFullScreen();
+  }
+}
+
+function parseJSON(json) {
+  try {
+    return JSON.parse(json);
+  } catch (e) {
+    err("ERROR Parsing JSON: " + e, json);
+  }
 }
 
 function msg(text, debug) {

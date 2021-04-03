@@ -14,11 +14,17 @@ define("TABLE_PREFIX", "phpbb_");
 define("TABLE_SEEDS",  "minty_sl_seeds");
 define("TABLE_BREEDER", "minty_sl_breeder");
 define("TABLE_GENETICS", "minty_sl_genetics");
-define("TABLE_SMELLS", "minty_sl_smell");
-define("TABLE_EFFECTS", "minty_sl_effect");
-define("TABLE_TASTES", "minty_sl_taste");
-define("TABLE_META_TAGS", "minty_sl_meta_tag");
-define("TABLE_AWARDS", "minty_sl_award");
+define("TABLE_SMELLS", "minty_sl_smells");
+define("TABLE_EFFECTS", "minty_sl_effects");
+define("TABLE_TASTES", "minty_sl_tastes");
+define("TABLE_META_TAGS", "minty_sl_meta_tags");
+define("TABLE_AWARDS", "minty_sl_awards");
+define("TABLE_SEED",  "minty_sl_seed");
+define("TABLE_SMELL", "minty_sl_smell");
+define("TABLE_EFFECT", "minty_sl_effect");
+define("TABLE_TASTE", "minty_sl_taste");
+define("TABLE_META_TAG", "minty_sl_meta_tag");
+define("TABLE_AWARD", "minty_sl_award");
 
 class main_controller {
 
@@ -71,7 +77,9 @@ class main_controller {
 		$this->request->enable_super_globals();
 		// $this->language->add_lang('extended_common', 'phpbbstudio/extended');
 		$json = null;
-		if ($name == 'minty_sl_seeds') {
+		if ($name == 'GRID_SELECT_RECORDS') {
+			$json = $this->getGridSelect();	
+		} else if ($name == 'minty_sl_seeds') {
 			$json = $this->processSeedFormPost();		
 		} else if ($name == 'BREEDER_UPLOAD') {
 			// $json = $this->processFileUpload();		
@@ -81,8 +89,6 @@ class main_controller {
 			$json = $this->getBreederOptions();	
 		} else if ($name == 'BREEDER_SELECT_RECORD') {
 			$json = $this->getBreedersRecord();	
-		} else if ($name == 'GRID_SELECT_RECORDS') {
-			$json = $this->getGridSelect();	
 		} else if ($name == 'GRID_DELETE_RECORD') {
 			$json = $this->processGridDelete();	
 		} else if ($name == 'minty_sl_genetics') {
@@ -148,7 +154,6 @@ class main_controller {
 		return $prefix;
 	}
 
-
 	function processComboPostedOptions($seed_id) {		
 		if ($this->canEdit() || $this->canAdd()) {
 			$this->processComboOptions('minty_sl_genetics', $seed_id);
@@ -188,7 +193,7 @@ class main_controller {
 	}
 
 	function parseComboValue($name, $seed_id, $value, $prefix) {
-		if (strlen($value) > 1 && substr($value, 0, 2) === 'U:') {
+		if (strlen($value) > 1 && substr($value, 0, 4) === 'TAG[') {
 			return intval($this->addNewUserTag($name, $seed_id, $value, $prefix));
 		}
 		return intval($value);	
@@ -196,15 +201,16 @@ class main_controller {
 
 	function addNewUserTag($table, $seed_id, $tag, $prefix) {
 		if ($this->canAdd()) {
+			$parsed = $this->db->sql_escape(substr($tag, (strpos($tag, ']') + 1), strlen($tag)));
 			$sql_ary = array(
-				$prefix . '_name'	=> $this->db->sql_escape($tag),
+				$prefix . '_name'	=> $parsed,
 				$prefix . '_desc'	=> '** added dynamically by seed id ' . $seed_id . ' **',
 			);
 			$sql = ' INSERT INTO ' . TABLE_PREFIX . 'minty_sl_'.$prefix . 
-					$this->db->sql_build_array('INSERT', $sql_ary);
+				$this->db->sql_build_array('INSERT', $sql_ary);
 			$result = $this->db->sql_query($sql);
 			$this->db->sql_freeresult($result);
-			return $this->getComboTagId($table, $seed_id, $tag, $prefix);
+			return $this->getComboTagId($table, $seed_id, $parsed, $prefix);
 		}
 	}
 
@@ -301,7 +307,7 @@ class main_controller {
 
 	function getSmellsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_SMELLS;
+			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_SMELL;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -316,7 +322,7 @@ class main_controller {
 
 	function geEffectsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_EFFECTS;
+			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_EFFECT;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -331,7 +337,7 @@ class main_controller {
 
 	function getTastesOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_TASTES;
+			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_TASTE;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -346,7 +352,7 @@ class main_controller {
 
 	function getMetaTagsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_META_TAGS;	
+			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_META_TAG;	
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -361,7 +367,7 @@ class main_controller {
 
 	function getAwardsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_AWARDS;
+			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_AWARD;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -450,9 +456,17 @@ class main_controller {
 	}
 
 	function getComboOptions($table, $seed_id) {
-		// $sql = ' SELECT parent_id FROM ' . TABLE_PREFIX.TABLE_SEEDS . $table ' WHERE seed_id = ' . $seed_id;
-		// $result = $this->db->sql_query($sql);
-
+		if ($this->canRead()) {
+			$result_list = array();
+			$name = $this->getTablePrefixFromComboName($table);
+			$sql = ' SELECT ' . $name . '_id AS id FROM ' . TABLE_PREFIX.$table . ' WHERE seed_id = ' . $seed_id;
+			$result = $this->db->sql_query($sql);
+			while ($row = $this->db->sql_fetchrow($result))	{
+				$result_list[] = $row['id'];
+			}
+			$this->db->sql_freeresult($result);
+			return $result_list;	
+		}
 	}
 
 	function getGeneticDescription($seed_id) {
@@ -514,19 +528,10 @@ class main_controller {
 	}
 
 	function processBreederFormPost() {
-		$breeder_id = $this->request->variable('breeder_id', 0);
-		if (true) {
-			$this->processBreederFormInsert();
-			$this->triggerAdvancedPointsSystemAction('INSERT_BREEDER_RECORD', $breeder_id);
-		} else {
-			//@todo
-			// $this->triggerAdvancedPointsSystemAction('EDIT_BREEDER_RECORD', $breeder_id);
-			// $this->triggerAdvancedPointsSystemAction('DELETE_BREEDER_RECORD', $breeder_id);
-		}
-	}
-
-	function processBreederFormInsert() {
+		// $this->triggerAdvancedPointsSystemAction('EDIT_BREEDER_RECORD', $breeder_id);
+		// $this->triggerAdvancedPointsSystemAction('DELETE_BREEDER_RECORD', $breeder_id);
 		if ($this->canAddBreeder()) {
+			$breeder_id = $this->request->variable('breeder_id', 0);
 			$name = $this->request->variable('breeder_name', '');
 			$desc = $this->request->variable('breeder_desc', '');
 			$url = $this->request->variable('breeder_url', '');
@@ -540,6 +545,7 @@ class main_controller {
 			);
 			$sql = ' INSERT INTO ' . TABLE_PREFIX.TABLE_BREEDER . $this->db->sql_build_array('INSERT', $sql_ary);
 			$result = $this->db->sql_query($sql);
+			$this->triggerAdvancedPointsSystemAction('INSERT_BREEDER_RECORD', $breeder_id);
 			$json = (object) [
 				'saved' => $result,
 				'id' => $this->getBreederId($name),
