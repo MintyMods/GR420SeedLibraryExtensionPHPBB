@@ -1,7 +1,7 @@
-
+const debug = MINTY_SEEDS.DEBUG;
 $(document).ready(function () {
   if (isEnabledAndActive()) {
-    console.info("Loading Minty Seed Lib");
+    if (debug) console.info("Loading Minty Seed Lib");
     initMintySeedLibData();
   } else {
     err('Minty Seed Library Blocked - Insufficient Permissions' );    
@@ -187,10 +187,10 @@ function buildSeedGrid() {
       { width: 0, id: "forum_url", hidden: true,  header: [{ text: "URL" }] },
       { width: 150, id: "breeder_name", header: [{ text: "Breeder" }], type: "string"},
       { width: 150, id: "seed_name", type: "string", header: [{ text: "Name" }], type: "string"},
-      { width: 100, id: "flowering_type", header: [{ text: "Type" }], type: "string" },
-      { width: 80, id: "sex", header: [{ text: "Sex" }], type: "string" },
+      { width: 40, id: "flowering_type", header: [{ text: "Type" }], type: "string" },
+      { width: 40, id: "sex", header: [{ text: "Sex" }], type: "string" },
       { width: 50, id: "indoor_yn", type: "boolean", header: [{ text: "Indoor" }] },
-      { width: 50, id: "outdoor_yn", type: "boolean", header: [{ text: "Outdoor" }] },
+      { width: 70, id: "outdoor_yn", type: "boolean", header: [{ text: "Outdoor" }] },
       { width: 110, id: "flowering_time", header: [{ text: "Flowering Time" }], type: "string"},
       { width: 110, id: "height_indoors", type: "string", header: [{ text: "Indoor Height" } ], type: "string"},
       { width: 110, id: "yeild_indoors", type: "string", header: [{ text: "Indoor Yeild" }], type: "string"},
@@ -222,39 +222,20 @@ function buildSeedGrid() {
     autoHeight: false,
     htmlEnable: true,
   });
-  buildSeedGridEvents();
+  buildGridDoubleClickAction();
   seedGrid.data.load(new dhx.LazyDataProxy(GRID_SELECT_URL, { limit: 15, prepare: 0, delay: 10, from: 0 }));
 }
 
 function gridDisplayComboValueAsTag(tags, row, col) {
   let control = seedForm.getItem(col.id);
   let widget = control.getWidget();
-  // let result = [];
   let result = '<ul class="minty_combo_list">';
   tags.forEach(function(tag){
-    // result.push(buildTag(widget.data.getItem(tag)));
-    result = result + '<li>'+widget.data.getItem(tag).value + '</li>';
+    if (widget.data.getItem(tag)) {
+      result = result + '<li>'+widget.data.getItem(tag).value + '</li>';
+    }
   });
   return result + '</ul>';
-}
-
-function buildTag(data) {
-  let value = data.value;
-  let id = data.id;
-  //@todo 
-  return '' + value + ',';
-}
-
-function buildSeedGridEvents() {
-  buildGridDoubleClickAction();
-  buildGridLoadEvents();
-}
-
-function buildGridLoadEvents() {
-  seedGrid.events.on("beforeRowShow", function (e) {
-    debugger;
-    return true;
-  });
 }
 
 function buildGridDoubleClickAction() {
@@ -336,9 +317,51 @@ function getComboOptionId(combo, option) {
   return result;
 }
 
+function addComboEvents(combobox) {
+  combobox.events.on("Input", function (value) {
+    this._input_value = value;
+  });
+  combobox.events.on("BeforeClose", function () {
+    var value = this._input_value;
+    if (value && !this.getValue(true).includes(value)) {
+      value = value.capitalize();
+      tag = 'TAG[' + value +']';
+      const id = 'TAG:'+ Math.floor(Math.random() * 10000);
+      this.data.add({ id, value, tag }, 0);
+      dhx.awaitRedraw().then(function () {
+        this.setValue(this.getValue(true).push(id));
+        this.paint();
+        dhx.awaitRedraw().then(function () { this.focus(); }.bind(this));
+      }.bind(this));
+    }
+    this._input_value = undefined;
+  });
+}
+
 function parseSeedFormServerReady() {
   seedForm.setValue({"indoor_yn": seedForm.getItem("indoor_outdoor").getValue("indoor_yn")});
   seedForm.setValue({"outdoor_yn": seedForm.getItem("indoor_outdoor").getValue("outdoor_yn")});
+  COMBO_CONTROLS.forEach(function(control) {
+    parseUserTagForServer(control);
+  });
+}
+
+function parseUserTagForServer(control) {
+  let data = seedForm.getItem(control).getWidget().getValue(true);
+  let parsed = [];
+  data.forEach(function(value){ 
+    if (value.indexOf('TAG:') > -1) {
+      let options = seedForm.getItem(control).getWidget().data;
+      options.forEach(function(option) {
+        if (option.id == value) {
+          parsed.push(option.tag); 
+        }
+      });
+    } else {
+      parsed.push(value); 
+    }
+  });
+  seedForm._state[control] = parsed;
 }
 
 function buildSeedForm() {
@@ -429,26 +452,6 @@ function loadComboControlSuggestions(controls, form) {
     let widget = control.getWidget();
     widget.data.load(name);
     addComboEvents(widget);
-  });
-}
-
-function addComboEvents(combobox) {
-  combobox.events.on("Input", function (value) {
-    this._input_value = value;
-  });
-  combobox.events.on("BeforeClose", function () {
-    var value = this._input_value;
-    if (value && !this.getValue(true).includes(value)) {
-      value = value.capitalize();
-      const id = 'TAG[' + Math.floor(Math.random() * 10000)+']' + value;
-      this.data.add({ id, value }, 0);
-      dhx.awaitRedraw().then(function () {
-        this.setValue(this.getValue(true).push(id));
-        this.paint();
-        dhx.awaitRedraw().then(function () { this.focus(); }.bind(this));
-      }.bind(this));
-    }
-    this._input_value = undefined;
   });
 }
 

@@ -201,7 +201,8 @@ class main_controller {
 
 	function addNewUserTag($table, $seed_id, $tag, $prefix) {
 		if ($this->canAdd()) {
-			$parsed = $this->db->sql_escape(substr($tag, (strpos($tag, ']') + 1), strlen($tag)));
+			$parsed = substr($tag, 4, (strlen($tag) -5));
+			$parsed = $this->db->sql_escape($parsed);
 			$sql_ary = array(
 				$prefix . '_name'	=> $parsed,
 				$prefix . '_desc'	=> '** added dynamically by seed id ' . $seed_id . ' **',
