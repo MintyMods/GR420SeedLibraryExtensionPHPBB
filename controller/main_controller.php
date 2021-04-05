@@ -10,22 +10,24 @@
 
 namespace minty\seeds\controller;
 
-define("TABLE_SEEDS",  "minty_sl_seeds");
-define("TABLE_BREEDER", "minty_sl_breeder");
-define("TABLE_GENETICS", "minty_sl_genetics");
-define("TABLE_SMELLS", "minty_sl_smells");
-define("TABLE_EFFECTS", "minty_sl_effects");
-define("TABLE_TASTES", "minty_sl_tastes");
-define("TABLE_META_TAGS", "minty_sl_meta_tags");
-define("TABLE_AWARDS", "minty_sl_awards");
-define("TABLE_SEED",  "minty_sl_seed");
-define("TABLE_SMELL", "minty_sl_smell");
-define("TABLE_EFFECT", "minty_sl_effect");
-define("TABLE_TASTE", "minty_sl_taste");
-define("TABLE_META_TAG", "minty_sl_meta_tag");
-define("TABLE_AWARD", "minty_sl_award");
-
 class main_controller {
+	
+	const TABLE_SEEDS = "minty_sl_seeds";
+	const TABLE_BREEDER = "minty_sl_breeder";
+	const TABLE_GENETICS = "minty_sl_genetics";
+	const TABLE_SMELLS = "minty_sl_smells";
+	const TABLE_EFFECTS = "minty_sl_effects";
+	const TABLE_TASTES = "minty_sl_tastes";
+	const TABLE_META_TAGS = "minty_sl_meta_tags";
+	const TABLE_AWARDS = "minty_sl_awards";
+	const TABLE_SEED = "minty_sl_seed";
+	const TABLE_SMELL = "minty_sl_smell";
+	const TABLE_EFFECT = "minty_sl_effect";
+	const TABLE_TASTE = "minty_sl_taste";
+	const TABLE_META_TAG = "minty_sl_meta_tag";
+	const TABLE_AWARD = "minty_sl_award";
+	const TABLE_UPLOAD = "minty_sl_upload";
+	const TABLE_UPLOADS = "minty_sl_uploads";
 
 	protected $auth;
 	protected $user;
@@ -140,13 +142,30 @@ class main_controller {
 
 	function processSeedFormPost() {
 		$seed_id = $this->request->variable('seed_id', 0);
-		$this->processComboPostedOptions($seed_id);
+		$this->processComboPostedOptions($seed_id);	
+		$this->processUploads();
 		if ($this->seedRecordExists($seed_id)) {
 			$this->triggerAdvancedPointsSystemAction('UPDATE_SEED_RECORD', $seed_id);
 			return $this->updateSeedRecord($seed_id);
 		} else {
 			$this->triggerAdvancedPointsSystemAction('INSERT_SEED_RECORD', $seed_id);
 			return $this->insertNewSeedRecord();
+		}
+	}
+	
+	function processUploads() {
+		$uploads = $this->request->variable('upload_id', '');
+		$uploads = explode( ",", $uploads);
+		foreach ($uploads as $upload) {
+			$sql_ary = array(
+				'upload_id'	 => $upload,
+				'seed_id'	 => $this->request->variable('seed_id', 0),
+				'breeder_id' => $this->request->variable('breeder_id', 0),
+				'user_id'	 => $this->getUserId(),
+			);		
+			$sql = ' INSERT INTO ' . $this->getUploadTable() . $this->db->sql_build_array('INSERT', $sql_ary);
+			$result = $this->db->sql_query($sql);
+			$this->db->sql_freeresult($result);		
 		}
 	}
 
@@ -207,6 +226,7 @@ class main_controller {
 			$sql_ary = array(
 				$prefix . '_name'	=> $parsed,
 				$prefix . '_desc'	=> '** added dynamically by seed id ' . $seed_id . ' **',
+				'user_id'	 => $this->getUserId()
 			);
 			$sql = ' INSERT INTO ' . $this->getDbPrefix() . 'minty_sl_'.$prefix . 
 				$this->db->sql_build_array('INSERT', $sql_ary);
@@ -232,7 +252,7 @@ class main_controller {
 
 	function getBreedersRecord() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getDbPrefix() . TABLE_BREEDER;
+			$sql = ' SELECT * FROM ' . $this->getBreederTable();
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -253,7 +273,7 @@ class main_controller {
 			$seed_name = $this->request->variable('seed_name', '');
 			$breeder_id = $this->request->variable('breeder_id', 0);
 			$sql_ary = $this->buildSqlArrayFromSeedFormRequest($seed_name, $breeder_id);
-			$sql = ' INSERT INTO ' . $this->getDbPrefix().TABLE_SEEDS . $this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = ' INSERT INTO ' . $this->getSeedsTable() . $this->db->sql_build_array('INSERT', $sql_ary);
 			if ($this->db->sql_query($sql)) {
 				return $this->getSeedRecord($this->getSeedIdFromNameAndBreeder($seed_name, $breeder_id));
 			}
@@ -262,7 +282,7 @@ class main_controller {
 
 	function getSeedRecord($seed_id) {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' WHERE seed_id = ' . $this->db->sql_escape($seed_id);
+			$sql = ' SELECT * FROM ' . $this->getSeedsTable() . ' WHERE seed_id = ' . $this->db->sql_escape($seed_id);
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
@@ -290,13 +310,14 @@ class main_controller {
 			'flowering_time'	=> $this->db->sql_escape($this->request->variable('flowering_time', '')),
 			'harvest_month'		=> $this->db->sql_escape($this->request->variable('harvest_month', '')),
 			'seed_desc'			=> $this->db->sql_escape($this->request->variable('seed_desc', '')),
+			'user_id'	 		=> $this->getUserId()
 		);	
 		return $sql_ary;	
 	}
 
 	function getSeedIdFromNameAndBreeder($name, $breeder) {
 		if ($this->canRead()) {
-			$sql = ' SELECT seed_id FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' WHERE breeder_id = ' . 
+			$sql = ' SELECT seed_id FROM ' . $this->getSeedsTable() . ' WHERE breeder_id = ' . 
 				$this->db->sql_escape($breeder) . 
 				' AND seed_name = "' . $this->db->sql_escape($name) . '"';
 			$result = $this->db->sql_query($sql);
@@ -309,7 +330,7 @@ class main_controller {
 
 	function getSmellsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_SMELL;
+			$sql = ' SELECT * FROM ' . $this->getSmellTable();
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -324,7 +345,7 @@ class main_controller {
 
 	function geEffectsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_EFFECT;
+			$sql = ' SELECT * FROM ' . $this->getEffectTable();
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -339,7 +360,7 @@ class main_controller {
 
 	function getTastesOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_TASTE;
+			$sql = ' SELECT * FROM ' . $this->getTasteTable();
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -354,7 +375,7 @@ class main_controller {
 
 	function getMetaTagsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_META_TAG;	
+			$sql = ' SELECT * FROM ' . $this->getMetaTagTable();	
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -369,7 +390,7 @@ class main_controller {
 
 	function getAwardsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_AWARD;
+			$sql = ' SELECT * FROM ' . $this->getAwardTable();
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -384,7 +405,7 @@ class main_controller {
 
 	function getBreederOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT breeder_id AS id, breeder_name AS value FROM ' . $this->getDbPrefix().TABLE_BREEDER;
+			$sql = ' SELECT breeder_id AS id, breeder_name AS value FROM ' . $this->getBreederTable();
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -409,7 +430,8 @@ class main_controller {
 						'S.indica, S.sativa, S.ruderalis, S.yeild_indoors, S.yeild_outdoors,' .
 						'S.height_indoors, S.height_outdoors, S.vote_likes,' .
 						'S.vote_dislikes, S.seed_desc, S.forum_url' . 
-					' FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' S, ' . $this->getDbPrefix().TABLE_BREEDER . ' B' .
+					' FROM ' . $this->getSeedsTable() . ' S, ' . 
+							   $this->getBreederTable() . ' B' .
 					' WHERE S.breeder_id = B.breeder_id';
 
 			$result = $this->db->sql_query_limit($sql, $limit, $from);
@@ -439,12 +461,12 @@ class main_controller {
 					'vote_dislikes' 		=> $row['vote_dislikes'],
 					'seed_desc' 			=> $row['seed_desc'],
 					'forum_url' 			=> $row['forum_url'],
-					TABLE_GENETICS			=> $this->getComboGeneticOptions($seed_id),
-					TABLE_SMELLS			=> $this->getComboOptions(TABLE_SMELLS, $seed_id),
-					TABLE_EFFECTS			=> $this->getComboOptions(TABLE_EFFECTS, $seed_id),
-					TABLE_TASTES			=> $this->getComboOptions(TABLE_TASTES, $seed_id),
-					TABLE_META_TAGS			=> $this->getComboOptions(TABLE_META_TAGS, $seed_id),
-					TABLE_AWARDS			=> $this->getComboOptions(TABLE_AWARDS, $seed_id),
+					self::TABLE_GENETICS			=> $this->getComboGeneticOptions($seed_id),
+					self::TABLE_SMELLS			=> $this->getComboOptions(self::TABLE_SMELLS, $seed_id),
+					self::TABLE_EFFECTS			=> $this->getComboOptions(self::TABLE_EFFECTS, $seed_id),
+					self::TABLE_TASTES			=> $this->getComboOptions(self::TABLE_TASTES, $seed_id),
+					self::TABLE_META_TAGS			=> $this->getComboOptions(self::TABLE_META_TAGS, $seed_id),
+					self::TABLE_AWARDS			=> $this->getComboOptions(self::TABLE_AWARDS, $seed_id),
 				);
 			}
 			$this->db->sql_freeresult($result);
@@ -474,7 +496,7 @@ class main_controller {
 	function getGeneticDescription($seed_id) {
 		if ($this->canRead()) {
 			$sql = ' SELECT ' . $seed_id . ' AS id, CONCAT(S.seed_name, " - ", B.breeder_name)  AS value' .
-				' FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' S, ' . $this->getDbPrefix().TABLE_BREEDER . ' B' .
+				' FROM ' . $this->getSeedsTable() . ' S, ' . $this->getBreederTable() . ' B' .
 				' WHERE S.breeder_id = B.breeder_id' .
 				' AND S.seed_id = ' . $seed_id;
 			$result = $this->db->sql_query($sql);		
@@ -490,7 +512,7 @@ class main_controller {
 			// @todo sort out paging for this option
 			$result_list = array();
 			$sql = ' SELECT S.seed_id AS id, CONCAT(S.seed_name, " - ", B.breeder_name)  AS value' .
-				' FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' S, ' . $this->getDbPrefix().TABLE_BREEDER . ' B' .
+				' FROM ' . $this->getSeedsTable() . ' S, ' . $this->getBreederTable() . ' B' .
 				' WHERE S.breeder_id = B.breeder_id';
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
@@ -507,7 +529,7 @@ class main_controller {
 	function getComboGeneticOptions($seed_id) {
 		if ($this->canRead()) {
 			$descriptions = array();
-			$sql = ' SELECT genetic_id FROM ' . $this->getDbPrefix().TABLE_GENETICS . ' WHERE seed_id = ' . $seed_id;
+			$sql = ' SELECT genetic_id FROM ' . $this->getGeneticsTable() . ' WHERE seed_id = ' . $seed_id;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$descriptions[] = $row['genetic_id'];
@@ -532,8 +554,9 @@ class main_controller {
 				'breeder_desc'	=> $this->db->sql_escape($desc),
 				'breeder_url'	=> $this->db->sql_escape($url),
 				'sponsor_yn'	=> $sponsor,
+				'user_id'	 => $this->getUserId()
 			);
-			$sql = ' INSERT INTO ' . $this->getDbPrefix().TABLE_BREEDER . $this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = ' INSERT INTO ' . $this->getBreederTable() . $this->db->sql_build_array('INSERT', $sql_ary);
 			$result = $this->db->sql_query($sql);
 			$this->triggerAdvancedPointsSystemAction('INSERT_BREEDER_RECORD', $breeder_id);
 			$json = (object) [
@@ -542,13 +565,14 @@ class main_controller {
 				'data' => $sql_ary
 			];
 			$this->db->sql_freeresult($result);
+			$this->processUploads();
 			return $json;
 		}
 	}
 
 	function getBreederId($name) {
 		if ($this->canRead()) {
-			$sql = ' SELECT breeder_id AS id FROM ' . $this->getDbPrefix().TABLE_BREEDER . 
+			$sql = ' SELECT breeder_id AS id FROM ' . $this->getBreederTable() . 
 			' WHERE breeder_name ="' . $this->db->sql_escape($name) . '"';
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
@@ -557,7 +581,6 @@ class main_controller {
 			return $id;	
 		}
 	}
-
 	
 	function seedRecordExists($seed_id) {
 		return $this->getSeedRecord($seed_id) != null;
@@ -568,7 +591,7 @@ class main_controller {
 			$seed_name = $this->request->variable('seed_name', '');
 			$breeder_id = $this->request->variable('breeder_id', 0);
 			$sql_ary = $this->buildSqlArrayFromSeedFormRequest($seed_name, $breeder_id);
-			$sql = ' UPDATE ' . $this->getDbPrefix().TABLE_SEEDS . ' SET ' . 
+			$sql = ' UPDATE ' . $this->getSeedsTable() . ' SET ' . 
 			$this->db->sql_build_array('UPDATE', $sql_ary) . 
 			' WHERE seed_id =' . $seed_id;
 			$this->db->sql_query($sql);
@@ -586,12 +609,12 @@ class main_controller {
 	}
 	
 	function deleteSeedRecord($seed_id) {
-		return $this->db->sql_query('DELETE FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' WHERE seed_id = ' . $seed_id);
+		return $this->db->sql_query('DELETE FROM ' . $this->getSeedsTable() . ' WHERE seed_id = ' . $seed_id);
 	}
 
 	function getTotalRecordCount() {
 		if ($this->canRead()) {
-			$sql = ' SELECT count(*) AS count FROM ' . $this->getDbPrefix().TABLE_SEEDS;
+			$sql = ' SELECT count(*) AS count FROM ' . $this->getSeedsTable();
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$count = $row['count'];
@@ -600,21 +623,68 @@ class main_controller {
 		}
 	}
 
+	function getSeedsTable() {
+		return 	$this->getDbPrefix().self::TABLE_SEEDS;	
+	}
+
+	function getBreederTable() {
+		return $this->getDbPrefix().self::TABLE_BREEDER;
+	}
+
+	function getUploadTable() {
+		return $this->getDbPrefix().self::TABLE_UPLOAD;
+	}
+
+	function getUploadsTable() {
+		return $this->getDbPrefix().self::TABLE_UPLOADS;
+	}
+
+	function getAwardTable() {
+		return $this->getDbPrefix().self::TABLE_AWARD;
+	}
+
+	function getEffectTable() {
+		return $this->getDbPrefix().self::TABLE_EFFECT;
+	}
+
+	function getTasteTable() {
+		return $this->getDbPrefix().self::TABLE_TASTE;
+	}
+
+	function getGeneticsTable() {
+		return $this->getDbPrefix().self::TABLE_GENETICS;
+	}
+
+	function getMetaTagTable() {
+		return $this->getDbPrefix().self::TABLE_META_TAG;
+	}
+
+	function getSmellTable() {
+		return $this->getDbPrefix().self::TABLE_SMELL;
+	}
+
 	function getUpperCaseCharOption($value) {
 		if (strlen($value) >= 1) {
 			return strtoupper(substr($value, 0, 1));
 		}
 	}
 
+	function getUserId() {
+		return $this->user->data['user_id'];
+	}
+
 	function isEnabled() {
 		return (bool)$this->config['minty_seeds_enabled'];
 	}
+
 	function isUserEnabled() {
 		return (bool)$this->user->data['user_minty_seeds_enabled'];
 	}
+
 	function isUserSplitEnabled() {
 		return (bool)$this->user->data['user_minty_seeds_split_enabled'];
 	}
+	
 	function isDebugging() {
 		return (bool)$this->config['minty_seeds_debug'];
 	}

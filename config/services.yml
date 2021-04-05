@@ -17,7 +17,6 @@ services:
             - '@log'
             - '%core.root_path%'
             - '%core.php_ext%' 
-            - '@?phpbbstudio.aps.manager'
     
     minty.seeds.controller.upload:
         class: minty\seeds\controller\upload_controller

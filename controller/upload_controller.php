@@ -7,14 +7,14 @@
  * @license GNU General Public License, version 2 (GPL-2.0)
  *
  */
-
 namespace minty\seeds\controller;
 
-define("UPLOAD_BASE", 'minty/uploads/seeds/');
-define("UPLOAD_TEMP", 'minty/uploads/temp/');
-define("TABLE_UPLOAD", 'minty_sl_uploads');
-
 class upload_controller {
+	
+	const UPLOAD_BASE = "minty/seeds/";
+	const UPLOAD_TEMP = "minty/uploads";
+	const TABLE_UPLOAD = "minty_sl_upload";
+	const TABLE_UPLOADS = "minty_sl_uploads";
 
 	protected $auth;
 	protected $user;
@@ -28,7 +28,6 @@ class upload_controller {
 	protected $log;
 	protected $php_ext;
 	protected $phpbb_root_path;
-	protected $points_manager; 
 
 	public function __construct(
 		\phpbb\auth\auth $auth,
@@ -42,8 +41,7 @@ class upload_controller {
 		\phpbb\files\factory $file_factory,
 		\phpbb\log\log $log,
 		$phpbb_root_path, 
-		$phpEx,
-		\phpbbstudio\aps\actions\manager $points_manager = null
+		$phpEx
 		) {
 			$this->auth = $auth;					
 			$this->user = $user;					
@@ -57,7 +55,6 @@ class upload_controller {
 			$this->log	= $log;
 			$this->php_ext = $phpEx;
 			$this->phpbb_root_path = $phpbb_root_path;
-			$this->points_manager = $points_manager;	
 	}
 
 	public function handle($mode) {
@@ -65,10 +62,53 @@ class upload_controller {
 		$this->request->enable_super_globals();
 		$json = null;
 		if ($mode == 'breeder_upload') {
-			$json = $this->processFileUpload();		
-		} 
+			if ($this->canAddBreeder()) {
+				$json = $this->processFileUpload();		
+			}
+		} else if ($mode == 'seed_upload') {
+			if ($this->canAdd()) {
+				$json = $this->processFileUpload();		
+			}
+		} else if ($mode == 'list_files') {
+			$json = $this->getFileList();
+		}
+
 		$json_response = new \phpbb\json_response();
 		$json_response->send($json);
+		//header("HTTP/1.1 500 Internal Server Error");
+	}
+	
+	function getFileList() {
+		$seed_id = $this->request->variable('seed_id',0);
+		$breeder_id = $this->request->variable('breeder_id',0);
+		$sql =  ' SELECT * FROM ' . $this->getUploadsTable() . 
+				' WHERE upload_id IN (' .
+				' SELECT upload_id FROM ' . $this->getUploadTable() . 
+				' WHERE breeder_id = ' . $this->db->sql_escape($breeder_id) .
+				' AND seed_id = ' . $this->db->sql_escape($seed_id) . ')';
+		$result = $this->db->sql_query($sql);
+		while ($row = $this->db->sql_fetchrow($result))	{
+			$json[] = array(
+				'name' => $row['uploadname'],
+				'link' => '/minty/uploads/' . $row['realname'],
+				'path' => '/minty/uploads/' . $row['realname'],
+				'src' => '/minty/uploads/' . $row['realname'],
+				'preview' => '/minty/uploads/' . $row['realname'],
+				'status' => "uploaded",
+				'id'	=> $row['id'],
+				'size'	=> (int)$row['size'],
+				'file' => array(
+					'size'	=> (int)$row['size'],
+					'link' => '/minty/uploads/' . $row['realname'],
+					'path' => '/minty/uploads/' . $row['realname'],
+					'name'	=> $row['uploadname'],
+					'type'	=> $row['type'],
+					'status' => "uploaded",
+				)
+			);
+		}
+		$this->db->sql_freeresult($result);
+		return $json;
 	}
 
 	function processFileUpload() {
@@ -83,35 +123,39 @@ class upload_controller {
 	
 	function recordFileUpload($filespec) {
 		$id = $this->request->variable('upload_id','');
-		if ($this->canAddBreeder()) {
-			$sql_ary = array(
-				'upload_id'	=> $this->db->sql_escape($id),
-				'name'	=> $filespec->get('realname'),
-				'path'	=> '/app.php/downloads/minty/todo',
-				'size'	=> $filespec->get('filesize'),
-				'type'	=> $filespec->get('mimetype'),
-				'user_id' => $this->user->data['user_id'],
-				'filename'=> $filespec->get('filename'),
-				'realname'=> $filespec->get('realname'),
-				'uploadname'=> $filespec->get('uploadname'),
-				'extension'	=> $filespec->get('extension'),
-			);
+		$sql_ary = array(
+			'upload_id'	=> $this->db->sql_escape($id),
+			'name'	=> $filespec->get('realname'),
+			'path'	=> $filespec->get('destination_path'),
+			'size'	=> $filespec->get('filesize'),
+			'type'	=> $filespec->get('mimetype'),
+			'user_id' => $this->user->data['user_id'],
+			'filename'=> $filespec->get('destination_file'),
+			'realname'=> $filespec->get('realname'),
+			'uploadname'=> $filespec->get('uploadname'),
+			'extension'	=> $filespec->get('extension'),
+		);
 
-			$sql = ' INSERT INTO ' . $this->getDbPrefix().TABLE_UPLOAD . $this->db->sql_build_array('INSERT', $sql_ary);
-			$result = $this->db->sql_query($sql);
-			$this->triggerAdvancedPointsSystemAction('UPLOAD_IMAGE', $id);
-			$json = (object) [
-				'id' => $id,
-				'link' =>  'minty/uploads/temp/' . $filespec->get('realname'),
-				'name' => $filespec->get('realname'),
-				'size' => $filespec->get('filesize'),
-				'status' => 'inprogress', // , "inprogress", "uploaded", or "failed")
-				'path'	=> $filespec->get('filename'),
-				//preview - (string) the path to the file preview. Can be set for a file with status:"uploaded". If the parameter isn't specified, Vault will generate preview automatically
-			];
-			$this->db->sql_freeresult($result);
-			return $json;
-		}
+		$sql = ' INSERT INTO ' . $this->getUploadsTable() . $this->db->sql_build_array('INSERT', $sql_ary);
+		$result = $this->db->sql_query($sql);
+		$json = (object) [
+			'id' => $id,
+			'link' =>  '/minty/uploads/' . $filespec->get('realname'),
+			'name' => $filespec->get('realname'),
+			'size' => $filespec->get('filesize'),
+			'status' => 'inprogress', // , "inprogress", "uploaded", or "failed")
+			'path'	=> $filespec->get('filename'),
+		];
+		$this->db->sql_freeresult($result);
+		return $json;
+	}
+
+	function getUploadTable() {
+		return $this->getDbPrefix() . self::TABLE_UPLOAD;
+	}
+
+	function getUploadsTable() {
+		return $this->getDbPrefix() . self::TABLE_UPLOADS;
 	}
 
 	function getDbPrefix() {
@@ -119,31 +163,23 @@ class upload_controller {
 	}
 
 	function getBaseDir() {
-		$dir = $this->phpbb_root_path . UPLOAD_BASE;
+		$dir = $this->phpbb_root_path . self::UPLOAD_BASE;
 		mkdir($dir, 0777, true);
 		return $dir;		
 	}
+
+	function getDownloadDirectory() {
+		return '/' . self::UPLOAD_TEMP + '/';
+	}
+
 	function getTempDir() {
-		$tmp = $this->phpbb_root_path . UPLOAD_TEMP;
+		$tmp = $this->phpbb_root_path . self::UPLOAD_TEMP;
 		mkdir($tmp, 0777, true);
 		return $tmp;		
 	}
 
 	function getAllowedExtensions() {
 		return array('jpg', 'jpeg', 'gif', 'png', 'webp');		
-	}
-
-	function triggerAdvancedPointsSystemAction($action, $data) {
-		if ($this->isAdvancedPointsSystemIntegrationEnabled()) {
-			$forum_ids = null;
-			$user_ids = null;
-			$this->points_manager->trigger($action, $user_ids, $data, $forum_ids);
-		}
-	}
-
-	function isAdvancedPointsSystemIntegrationEnabled() {
-		$aps_enabled = (bool) $this->config['minty_seeds_aps_enabled'];
-		return $aps_enabled && $this->points_manager !== null;
 	}
 
 	function isEnabled() {
@@ -155,6 +191,10 @@ class upload_controller {
 
 	function isAdmin() {
 		return (bool)($this->auth->acl_get('a_minty_seeds_admin'));
+	}
+
+	function canAdd() {
+		return $this->isAdmin() || (bool)($this->auth->acl_get('u_minty_seeds_add'));
 	}
 
 	function canAddBreeder() {
