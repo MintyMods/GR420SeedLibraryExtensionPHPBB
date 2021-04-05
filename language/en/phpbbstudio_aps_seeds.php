@@ -30,4 +30,6 @@ $lang = array_merge($lang, array(
 	'MINTY_SEEDS_INSERT_BREEDER_RECORD_DESC'	=> 'This will calculate %1$s when adding new breeder records to the seed library database.',
 	'MINTY_SEEDS_DELETE_BREEDER_RECORD'		=> 'Delete Breeder Record',
 	'MINTY_SEEDS_DELETE_BREEDER_RECORD_DESC'	=> 'This will calculate %1$s when removing breeder records from the seed library database.',
+	'MINTY_SEEDS_UPLOAD_IMAGE'		=> 'Upload Images',
+	'MINTY_SEEDS_UPLOAD_IAMGE_DESC'	=> 'This will calculate %1$s when uploading images to the seed library database.',
 ));

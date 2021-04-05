@@ -1,3 +1,7 @@
 minty_seeds_controller:
     path: /seeds/{name}
     defaults: { _controller: minty.seeds.controller.main:handle }
+
+minty_seeds_controller_upload:
+    path: /seeds/upload/{mode}
+    defaults: { _controller: minty.seeds.controller.upload:handle }

@@ -18,6 +18,23 @@ services:
             - '%core.root_path%'
             - '%core.php_ext%' 
             - '@?phpbbstudio.aps.manager'
+    
+    minty.seeds.controller.upload:
+        class: minty\seeds\controller\upload_controller
+        arguments:
+            - '@auth'
+            - '@user'
+            - '@request'        
+            - '@config'
+            - '@controller.helper'
+            - '@template'
+            - '@language'
+            - '@dbal.conn'
+            - '@files.factory'
+            - '@log'
+            - '%core.root_path%'
+            - '%core.php_ext%' 
+            - '@?phpbbstudio.aps.manager'
 
     minty.seeds.controller.acp:
         class: minty\seeds\controller\acp_controller
@@ -92,3 +109,9 @@ services:
         shared: false
         tags:
             - { name: phpbbstudio.aps.action, order: 5 }
+
+    minty.seeds.aps.action.upload_image:
+        class: minty\seeds\aps\upload_image
+        shared: false
+        tags:
+            - { name: phpbbstudio.aps.action, order: 6 }

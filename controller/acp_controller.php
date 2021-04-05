@@ -44,7 +44,8 @@ class acp_controller {
 				$this->config->set('minty_seeds_enabled', $this->request->variable('minty_seeds_enabled', 0));
 				$this->config->set('minty_seeds_debug', $this->request->variable('minty_seeds_debug', 0));
 				$this->config->set('minty_seeds_title', $this->request->variable('minty_seeds_title', ''));
-				$this->config->set('minty_seeds_aps_enabled', $this->request->variable('minty_seeds_aps_enabled', 0));
+				$this->config->set('minty_seeds_title', $this->request->variable('minty_seeds_title', ''));
+				$this->config->set('minty_seeds_db_prefix', $this->request->variable('minty_seeds_db_prefix', 'phpbb_'));
 				$this->log->add('admin', $this->user->data['user_id'], $this->user->ip, 'LOG_ACP_SEEDS_SETTINGS');
 				trigger_error($this->language->lang('ACP_SEEDS_SETTING_SAVED') . adm_back_link($this->u_action));
 			}
@@ -62,6 +63,7 @@ class acp_controller {
 			'MINTY_SEEDS_DEBUG' => (bool) $this->config['minty_seeds_debug'],
 			'MINTY_SEEDS_VERSION' => $this->config['minty_seeds_version'],				
 			'MINTY_SEEDS_TITLE' => $this->config['minty_seeds_title'],
+			'MINTY_SEEDS_DB_PREFIX' => $this->config['minty_seeds_db_prefix'],
 		));
 	}
 

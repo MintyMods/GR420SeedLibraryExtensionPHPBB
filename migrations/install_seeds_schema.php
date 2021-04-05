@@ -186,7 +186,6 @@ class install_seeds_schema extends \phpbb\db\migration\migration
 					'PRIMARY_KEY'	=> 'seed_id, genetic_id',
 				),
 
-
 				$this->table_prefix . 'minty_sl_users_seeds'	=> array(
 					'COLUMNS'		=> array(
 						'user_id'				=> array('UINT'),
@@ -197,6 +196,7 @@ class install_seeds_schema extends \phpbb\db\migration\migration
 					),
 					'PRIMARY_KEY'	=> 'user_id, seed_id',
 				),
+
 			),
 
 			'add_columns'	=> array(
@@ -236,20 +236,20 @@ class install_seeds_schema extends \phpbb\db\migration\migration
 				),
 			),
 			'drop_tables'		=> array(
-				$this->table_prefix . 'minty_sl_seeds',				
-				$this->table_prefix . 'minty_sl_breeder',
-				$this->table_prefix . 'minty_sl_genetics',
-				$this->table_prefix . 'minty_sl_users_seeds',
-				$this->table_prefix . 'minty_sl_smells',
-				$this->table_prefix . 'minty_sl_tastes',
-				$this->table_prefix . 'minty_sl_effects',
-				$this->table_prefix . 'minty_sl_meta_tags',
-				$this->table_prefix . 'minty_sl_awards',
-				$this->table_prefix . 'minty_sl_smell',
-				$this->table_prefix . 'minty_sl_taste',
-				$this->table_prefix . 'minty_sl_effect',
-				$this->table_prefix . 'minty_sl_meta_tag',
-				$this->table_prefix . 'minty_sl_award',
+				// $this->table_prefix . 'minty_sl_seeds',				
+				// $this->table_prefix . 'minty_sl_breeder',
+				// $this->table_prefix . 'minty_sl_genetics',
+				// $this->table_prefix . 'minty_sl_users_seeds',
+				// $this->table_prefix . 'minty_sl_smells',
+				// $this->table_prefix . 'minty_sl_tastes',
+				// $this->table_prefix . 'minty_sl_effects',
+				// $this->table_prefix . 'minty_sl_meta_tags',
+				// $this->table_prefix . 'minty_sl_awards',
+				// $this->table_prefix . 'minty_sl_smell',
+				// $this->table_prefix . 'minty_sl_taste',
+				// $this->table_prefix . 'minty_sl_effect',
+				// $this->table_prefix . 'minty_sl_meta_tag',
+				// $this->table_prefix . 'minty_sl_award',
 			),
 		);
 	}

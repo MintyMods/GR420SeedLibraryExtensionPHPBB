@@ -1,13 +1,4 @@
 const debug = MINTY_SEEDS.DEBUG;
-$(document).ready(function () {
-  if (isEnabledAndActive()) {
-    if (debug) console.info("Loading Minty Seed Lib");
-    initMintySeedLibData();
-  } else {
-    err('Minty Seed Library Blocked - Insufficient Permissions' );    
-  }
-});
-
 const expire = 3000;
 const labelPosition = "left";
 const labelWidth = 120;
@@ -17,7 +8,7 @@ const GRID_SELECT_URL = "GRID_SELECT_RECORDS";
 const GRID_DELETE_URL = "GRID_DELETE_RECORD";
 const SEED_POST_URL = "minty_sl_seeds";
 const BREEDER_POST_URL = "minty_sl_breeder";
-const BREEDER_UPLOAD_URL = "BREEDER_UPLOAD";
+const BREEDER_UPLOAD_URL = "upload/breeder_upload";
 const BREEDER_SELECT_URL = "BREEDER_SELECT_RECORD";
 const BREEDER_ID = "breeder_id";
 const GENETICS = "minty_sl_genetics";
@@ -45,7 +36,6 @@ const month_options = [
   { value: "nov", content: "November" },
   { value: "dec", content: "December" }
 ];
-
 var seedGrid, seedForm, seedWindow, breederForm, breederWindow;
 var focusedControl = null;
 var fullScreenWindow = false;
@@ -66,7 +56,7 @@ function showAddBreederWindow() {
 }
 
 function buildBreederWindow() {
-  breederWindow = new dhx.Window({ width: WINDOW_WIDTH, height: 380, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
+  breederWindow = new dhx.Window({ width: WINDOW_WIDTH, height: 500, title: "Add New Breeder", modal: true, resizable: true, movable: true, closable: false, header: true, footer: true, });
   breederWindow.footer.data.add([
     { type: "spacer" },
     { id: "breeder_cancel", type: "button", value: "Cancel", view: "flat", color: "secondary", icon: "dxi dxi-close-circle", circle:true, padding: "0px 5px", },
@@ -82,9 +72,7 @@ function buildBreederWindow() {
       }
       case 'breeder_save': {
         if (breederForm.validate()) {
-          breederForm.send(BREEDER_POST_URL, "POST", true).then(breederFormSaved).catch(function (e) {
-            err(e.statusText);
-          });
+          saveBreederForm();
         } else {
           breederForm.setFocus("breeder_name");
           err("Breeder Form Validation Failed");
@@ -96,6 +84,13 @@ function buildBreederWindow() {
   breederWindow.attach(breederForm);
 }
 
+function saveBreederForm() {
+  breederForm.send(BREEDER_POST_URL, "POST", true).then(breederFormSaved).catch(function (e) {
+    err(e.statusText);
+  });  
+}
+
+
 function buildBreederForm() {
   breederForm = new dhx.Form("minty_breeder_form", {
     rows: [
@@ -103,11 +98,32 @@ function buildBreederForm() {
       { id: "breeder_name", type: "input", validation: validateBreeder, required: true, label: "Name", labelPosition, labelWidth, errorMessage: "Breeder name is a required field",  },
       { id: "breeder_desc", type: "textarea", label: "Description", labelPosition, labelWidth, },
       { id: "breeder_url", type: "input", label: "URL", labelPosition, labelWidth, },
-      //{ id: "breeder_logo", type: "simpleVault", singleRequest:true, target: BREEDER_UPLOAD_URL, fieldName: "breeder_logo", label: "Logo", labelInline: true, labelPosition, labelWidth, },
+      { id: "breeder_logo", type: "simpleVault", autosend:true, uploadUrl: BREEDER_UPLOAD_URL, target: BREEDER_UPLOAD_URL, fieldName: "upload", label: "Logo", labelInline: true, labelPosition, labelWidth, },
       {  id: "sponsor_yn", type: "checkbox", label: "Sponsor",labelInline: true, labelPosition, labelWidth, },
     ]
   })
   capitalizeControlValue(breederForm, 'breeder_name');
+  buildBreederFormEvents();
+}
+function buildBreederFormEvents() {
+  let widget = breederForm.getItem("breeder_logo");
+
+  // form.getItem("simplevault").events.on("BeforeValidate", function(value) {
+  //   console.log("BeforeValidate", value);
+  //   return true;
+  // });
+
+
+  widget.events.on("BeforeValidate", function(file) {
+    debugger;
+    widget.send();
+    err("BeforeValidate", file);
+  });
+ widget.events.on("UploadComplete", function(files, value) {
+    msg("UploadComplete", files, value);
+  });
+
+
 }
 
 function breederFormSaved(response) {
@@ -701,8 +717,8 @@ function msg(text, debug) {
   dhx.message({ text, css: "dhx_message--success", icon: "dxi-checkbox-marked-circle", expire });
 }
 
-function err(text, debug) {
-  console.log(text, debug ? debug : '');
+function err(text, debug, extra) {
+  console.log(text, debug, extra);
   dhx.message({ text, css: "dhx_message--error", icon: "dxi-close", expire });
 }
 
@@ -738,3 +754,12 @@ String.prototype.capitalize = function (lower) {
     return a.toUpperCase();
   });
 };
+
+$(document).ready(function () {
+  if (isEnabledAndActive()) {
+    if (debug) console.info("Loading Minty Seed Lib");
+    initMintySeedLibData();
+  } else {
+    err('Minty Seed Library Blocked - Insufficient Permissions' );    
+  }
+});

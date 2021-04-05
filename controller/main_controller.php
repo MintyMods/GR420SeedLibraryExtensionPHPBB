@@ -10,7 +10,6 @@
 
 namespace minty\seeds\controller;
 
-define("TABLE_PREFIX", "phpbb_");
 define("TABLE_SEEDS",  "minty_sl_seeds");
 define("TABLE_BREEDER", "minty_sl_breeder");
 define("TABLE_GENETICS", "minty_sl_genetics");
@@ -75,14 +74,11 @@ class main_controller {
 	public function handle($name) {
 		require_once("./config." . $this->php_ext); 
 		$this->request->enable_super_globals();
-		// $this->language->add_lang('extended_common', 'phpbbstudio/extended');
 		$json = null;
 		if ($name == 'GRID_SELECT_RECORDS') {
 			$json = $this->getGridSelect();	
 		} else if ($name == 'minty_sl_seeds') {
 			$json = $this->processSeedFormPost();		
-		} else if ($name == 'BREEDER_UPLOAD') {
-			// $json = $this->processFileUpload();		
 		} else if ($name == 'minty_sl_breeder') {
 			$json = $this->processBreederFormPost();		
 		} else if ($name == 'breeder_id') {
@@ -132,6 +128,11 @@ class main_controller {
 			$this->points_manager->trigger($action, $user_ids, $data, $forum_ids);
 		}
 	}
+
+	function getDbPrefix() {
+		return $this->config['minty_seeds_db_prefix'];
+	}
+
 	function isAdvancedPointsSystemIntegrationEnabled() {
 		$aps_enabled = (bool) $this->config['minty_seeds_aps_enabled'];
 		return $aps_enabled && $this->points_manager !== null;
@@ -168,7 +169,7 @@ class main_controller {
 
 	function deleteExistingComboRecords($name, $seed_id) {
 		if ($this->canDelete()) {
-			return $this->db->sql_query('DELETE FROM ' . TABLE_PREFIX . $name . ' WHERE seed_id = ' . $seed_id);
+			return $this->db->sql_query('DELETE FROM ' . $this->getDbPrefix().$name . ' WHERE seed_id = ' . $seed_id);
 		}
 	}
 
@@ -179,7 +180,7 @@ class main_controller {
 				'seed_id'		=> $seed_id,
 				$prefix . '_id'	=> $this->parseComboValue($name, $seed_id, $value, $prefix)
 			);
-			$sql = ' INSERT INTO ' . TABLE_PREFIX . $name . $this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = ' INSERT INTO ' . $this->getDbPrefix().$name . $this->db->sql_build_array('INSERT', $sql_ary);
 			$this->db->sql_query($sql);
 		}
 	}
@@ -207,7 +208,7 @@ class main_controller {
 				$prefix . '_name'	=> $parsed,
 				$prefix . '_desc'	=> '** added dynamically by seed id ' . $seed_id . ' **',
 			);
-			$sql = ' INSERT INTO ' . TABLE_PREFIX . 'minty_sl_'.$prefix . 
+			$sql = ' INSERT INTO ' . $this->getDbPrefix() . 'minty_sl_'.$prefix . 
 				$this->db->sql_build_array('INSERT', $sql_ary);
 			$result = $this->db->sql_query($sql);
 			$this->db->sql_freeresult($result);
@@ -218,7 +219,7 @@ class main_controller {
 	function getComboTagId($table, $seed_id, $value, $prefix) {
 		if ($this->canRead()) {
 			$table = substr($table, 0, strlen($table)-1);
-			$sql = ' SELECT ' . $prefix . '_id FROM ' . TABLE_PREFIX . $table . 
+			$sql = ' SELECT ' . $prefix . '_id FROM ' . $this->getDbPrefix() . $table . 
 					' WHERE ' . $prefix . '_name = \'' . $value . '\'';
 			$result = $this->db->sql_query($sql);
 			if ($row = $this->db->sql_fetchrow($result))	{
@@ -231,7 +232,7 @@ class main_controller {
 
 	function getBreedersRecord() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_BREEDER;
+			$sql = ' SELECT * FROM ' . $this->getDbPrefix() . TABLE_BREEDER;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -252,7 +253,7 @@ class main_controller {
 			$seed_name = $this->request->variable('seed_name', '');
 			$breeder_id = $this->request->variable('breeder_id', 0);
 			$sql_ary = $this->buildSqlArrayFromSeedFormRequest($seed_name, $breeder_id);
-			$sql = ' INSERT INTO ' . TABLE_PREFIX.TABLE_SEEDS . $this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = ' INSERT INTO ' . $this->getDbPrefix().TABLE_SEEDS . $this->db->sql_build_array('INSERT', $sql_ary);
 			if ($this->db->sql_query($sql)) {
 				return $this->getSeedRecord($this->getSeedIdFromNameAndBreeder($seed_name, $breeder_id));
 			}
@@ -261,7 +262,7 @@ class main_controller {
 
 	function getSeedRecord($seed_id) {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' WHERE seed_id = ' . $this->db->sql_escape($seed_id);
+			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' WHERE seed_id = ' . $this->db->sql_escape($seed_id);
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$this->db->sql_freeresult($result);
@@ -295,7 +296,7 @@ class main_controller {
 
 	function getSeedIdFromNameAndBreeder($name, $breeder) {
 		if ($this->canRead()) {
-			$sql = ' SELECT seed_id FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' WHERE breeder_id = ' . 
+			$sql = ' SELECT seed_id FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' WHERE breeder_id = ' . 
 				$this->db->sql_escape($breeder) . 
 				' AND seed_name = "' . $this->db->sql_escape($name) . '"';
 			$result = $this->db->sql_query($sql);
@@ -308,7 +309,7 @@ class main_controller {
 
 	function getSmellsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_SMELL;
+			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_SMELL;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -323,7 +324,7 @@ class main_controller {
 
 	function geEffectsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_EFFECT;
+			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_EFFECT;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -338,7 +339,7 @@ class main_controller {
 
 	function getTastesOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_TASTE;
+			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_TASTE;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -353,7 +354,7 @@ class main_controller {
 
 	function getMetaTagsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_META_TAG;	
+			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_META_TAG;	
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -368,7 +369,7 @@ class main_controller {
 
 	function getAwardsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . TABLE_PREFIX.TABLE_AWARD;
+			$sql = ' SELECT * FROM ' . $this->getDbPrefix().TABLE_AWARD;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -383,7 +384,7 @@ class main_controller {
 
 	function getBreederOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT breeder_id AS id, breeder_name AS value FROM ' . TABLE_PREFIX.TABLE_BREEDER;
+			$sql = ' SELECT breeder_id AS id, breeder_name AS value FROM ' . $this->getDbPrefix().TABLE_BREEDER;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -408,7 +409,7 @@ class main_controller {
 						'S.indica, S.sativa, S.ruderalis, S.yeild_indoors, S.yeild_outdoors,' .
 						'S.height_indoors, S.height_outdoors, S.vote_likes,' .
 						'S.vote_dislikes, S.seed_desc, S.forum_url' . 
-					' FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' S, ' . TABLE_PREFIX.TABLE_BREEDER . ' B' .
+					' FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' S, ' . $this->getDbPrefix().TABLE_BREEDER . ' B' .
 					' WHERE S.breeder_id = B.breeder_id';
 
 			$result = $this->db->sql_query_limit($sql, $limit, $from);
@@ -460,7 +461,7 @@ class main_controller {
 		if ($this->canRead()) {
 			$result_list = array();
 			$name = $this->getTablePrefixFromComboName($table);
-			$sql = ' SELECT ' . $name . '_id AS id FROM ' . TABLE_PREFIX.$table . ' WHERE seed_id = ' . $seed_id;
+			$sql = ' SELECT ' . $name . '_id AS id FROM ' . $this->getDbPrefix().$table . ' WHERE seed_id = ' . $seed_id;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = $row['id'];
@@ -473,7 +474,7 @@ class main_controller {
 	function getGeneticDescription($seed_id) {
 		if ($this->canRead()) {
 			$sql = ' SELECT ' . $seed_id . ' AS id, CONCAT(S.seed_name, " - ", B.breeder_name)  AS value' .
-				' FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' S, ' . TABLE_PREFIX.TABLE_BREEDER . ' B' .
+				' FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' S, ' . $this->getDbPrefix().TABLE_BREEDER . ' B' .
 				' WHERE S.breeder_id = B.breeder_id' .
 				' AND S.seed_id = ' . $seed_id;
 			$result = $this->db->sql_query($sql);		
@@ -489,7 +490,7 @@ class main_controller {
 			// @todo sort out paging for this option
 			$result_list = array();
 			$sql = ' SELECT S.seed_id AS id, CONCAT(S.seed_name, " - ", B.breeder_name)  AS value' .
-				' FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' S, ' . TABLE_PREFIX.TABLE_BREEDER . ' B' .
+				' FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' S, ' . $this->getDbPrefix().TABLE_BREEDER . ' B' .
 				' WHERE S.breeder_id = B.breeder_id';
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
@@ -506,7 +507,7 @@ class main_controller {
 	function getComboGeneticOptions($seed_id) {
 		if ($this->canRead()) {
 			$descriptions = array();
-			$sql = ' SELECT genetic_id FROM ' . TABLE_PREFIX.TABLE_GENETICS . ' WHERE seed_id = ' . $seed_id;
+			$sql = ' SELECT genetic_id FROM ' . $this->getDbPrefix().TABLE_GENETICS . ' WHERE seed_id = ' . $seed_id;
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$descriptions[] = $row['genetic_id'];
@@ -514,18 +515,6 @@ class main_controller {
 			$this->db->sql_freeresult($result);
 			return $descriptions;
 		}
-	}
-
-	function processFileUpload() {
-		// $filespec = $this->file_factory->get('files.filespec');
-		// $upload = $this->file_factory->get('files.upload')->set_allowed_extensions(array('jpg', 'jpeg', 'gif', 'png'));
-		// $upload_dir = $this->phpbb_root_path . 'minty_uploads';
-		// $files = $upload->handle_upload('files.types.form', 'file_upload');
-		// $upload_file = $this->request->file('breeder_logo');
-		// if (!empty($upload_file['breeder_logo'])) {
-		// 	$file = $upload->handle_upload('files.types.form', 'breeder_logo');
-		// }
-		// $this->triggerAdvancedPointsSystemAction('IMAGE_UPLOAD', $breeder_id);
 	}
 
 	function processBreederFormPost() {
@@ -544,7 +533,7 @@ class main_controller {
 				'breeder_url'	=> $this->db->sql_escape($url),
 				'sponsor_yn'	=> $sponsor,
 			);
-			$sql = ' INSERT INTO ' . TABLE_PREFIX.TABLE_BREEDER . $this->db->sql_build_array('INSERT', $sql_ary);
+			$sql = ' INSERT INTO ' . $this->getDbPrefix().TABLE_BREEDER . $this->db->sql_build_array('INSERT', $sql_ary);
 			$result = $this->db->sql_query($sql);
 			$this->triggerAdvancedPointsSystemAction('INSERT_BREEDER_RECORD', $breeder_id);
 			$json = (object) [
@@ -559,7 +548,7 @@ class main_controller {
 
 	function getBreederId($name) {
 		if ($this->canRead()) {
-			$sql = ' SELECT breeder_id AS id FROM ' . TABLE_PREFIX.TABLE_BREEDER . 
+			$sql = ' SELECT breeder_id AS id FROM ' . $this->getDbPrefix().TABLE_BREEDER . 
 			' WHERE breeder_name ="' . $this->db->sql_escape($name) . '"';
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
@@ -579,7 +568,7 @@ class main_controller {
 			$seed_name = $this->request->variable('seed_name', '');
 			$breeder_id = $this->request->variable('breeder_id', 0);
 			$sql_ary = $this->buildSqlArrayFromSeedFormRequest($seed_name, $breeder_id);
-			$sql = ' UPDATE ' . TABLE_PREFIX.TABLE_SEEDS . ' SET ' . 
+			$sql = ' UPDATE ' . $this->getDbPrefix().TABLE_SEEDS . ' SET ' . 
 			$this->db->sql_build_array('UPDATE', $sql_ary) . 
 			' WHERE seed_id =' . $seed_id;
 			$this->db->sql_query($sql);
@@ -597,12 +586,12 @@ class main_controller {
 	}
 	
 	function deleteSeedRecord($seed_id) {
-		return $this->db->sql_query('DELETE FROM ' . TABLE_PREFIX.TABLE_SEEDS . ' WHERE seed_id = ' . $seed_id);
+		return $this->db->sql_query('DELETE FROM ' . $this->getDbPrefix().TABLE_SEEDS . ' WHERE seed_id = ' . $seed_id);
 	}
 
 	function getTotalRecordCount() {
 		if ($this->canRead()) {
-			$sql = ' SELECT count(*) AS count FROM ' . TABLE_PREFIX.TABLE_SEEDS;
+			$sql = ' SELECT count(*) AS count FROM ' . $this->getDbPrefix().TABLE_SEEDS;
 			$result = $this->db->sql_query($sql);
 			$row = $this->db->sql_fetchrow($result);
 			$count = $row['count'];
