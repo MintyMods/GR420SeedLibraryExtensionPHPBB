@@ -1,7 +1,7 @@
 /*
 @license
 
-dhtmlxSuite v.7.1.0 Professional
+dhtmlxSuite v.7.1.2 Professional
 
 This software is covered by DHTMLX Enterprise License.
 Usage without proper license is prohibited.
@@ -102,7 +102,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 92);
+/******/ 	return __webpack_require__(__webpack_require__.s = 93);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -112,7 +112,7 @@ return /******/ (function(modules) { // webpackBootstrap
 "use strict";
 /* WEBPACK VAR INJECTION */(function(Promise) {
 Object.defineProperty(exports, "__esModule", { value: true });
-var dom = __webpack_require__(104);
+var dom = __webpack_require__(105);
 exports.el = dom.defineElement;
 exports.sv = dom.defineSvgElement;
 exports.view = dom.defineView;
@@ -608,6 +608,13 @@ function isIE() {
     return ua.includes("MSIE ") || ua.includes("Trident/");
 }
 exports.isIE = isIE;
+function isSafari() {
+    var check = function (str) { return str.test(window.navigator.userAgent); };
+    var chrome = check(/Chrome/);
+    var firefox = check(/Firefox/);
+    return !chrome && !firefox && check(/Safari/);
+}
+exports.isSafari = isSafari;
 function getRealPosition(node) {
     var rects = node.getBoundingClientRect();
     return {
@@ -808,14 +815,14 @@ function __export(m) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(16));
 __export(__webpack_require__(59));
-__export(__webpack_require__(109));
 __export(__webpack_require__(110));
+__export(__webpack_require__(111));
 __export(__webpack_require__(23));
-__export(__webpack_require__(112));
+__export(__webpack_require__(145));
 __export(__webpack_require__(17));
 __export(__webpack_require__(62));
 __export(__webpack_require__(61));
-__export(__webpack_require__(113));
+__export(__webpack_require__(146));
 __export(__webpack_require__(60));
 __export(__webpack_require__(34));
 
@@ -907,14 +914,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var types_1 = __webpack_require__(7);
 function getFormItemCss(item, validate) {
     var _a;
-    var type = item.type, labelPosition = item.labelPosition, required = item.required, disabled = item.disabled, hiddenLabel = item.hiddenLabel, _b = item.css, css = _b === void 0 ? "" : _b, $validationStatus = item.$validationStatus;
+    var labelPosition = item.labelPosition, required = item.required, disabled = item.disabled, hiddenLabel = item.hiddenLabel, _b = item.css, css = _b === void 0 ? "" : _b, $validationStatus = item.$validationStatus;
     var cssStatus = (_a = {},
         _a[types_1.ValidationStatus.pre] = "",
         _a[types_1.ValidationStatus.error] = " dhx_form-group--state_error",
         _a[types_1.ValidationStatus.success] = " dhx_form-group--state_success",
         _a)[$validationStatus] || "";
     var labelPositionCss = labelPosition === "left" ? " dhx_form-group--inline" : "";
-    var requiredCss = required && type !== "select" ? " dhx_form-group--required" : "";
+    var requiredCss = required ? " dhx_form-group--required" : "";
     var disabledCss = disabled ? " dhx_form-group--disabled" : "";
     var labelSrCss = hiddenLabel ? " dhx_form-group--label_sr" : "";
     if (validate) {
@@ -1496,7 +1503,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(144));
+__export(__webpack_require__(125));
 __export(__webpack_require__(66));
 
 
@@ -1917,7 +1924,7 @@ exports.Label = Label;
   } else {}
 })()
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33), __webpack_require__(101).setImmediate))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33), __webpack_require__(102).setImmediate))
 
 /***/ }),
 /* 13 */
@@ -1929,8 +1936,8 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(116));
-__export(__webpack_require__(29));
+__export(__webpack_require__(121));
+__export(__webpack_require__(28));
 
 
 /***/ }),
@@ -1940,7 +1947,7 @@ __export(__webpack_require__(29));
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var FocusManager_1 = __webpack_require__(20);
+var FocusManager_1 = __webpack_require__(18);
 var html_1 = __webpack_require__(3);
 function getHotKeyCode(code) {
     var matches = code.toLowerCase().match(/\w+/g);
@@ -2178,11 +2185,11 @@ function isHtmlEnable(config, col) {
 }
 exports.isHtmlEnable = isHtmlEnable;
 function getTotalWidth(columns) {
-    return columns.reduce(function (total, col) { return !col.hidden && total + (col.$width || 0); }, 0);
+    return columns.reduce(function (total, col) { return total + (col.$width || 0); }, 0);
 }
 exports.getTotalWidth = getTotalWidth;
 function getTotalHeight(rows) {
-    return rows.reduce(function (total, row) { return !row.hidden && total + (row.$height || 0); }, 0);
+    return rows.reduce(function (total, row) { return total + (row.$height || 0); }, 0);
 }
 exports.getTotalHeight = getTotalHeight;
 
@@ -2372,38 +2379,6 @@ exports.hasJsonOrArrayStructure = hasJsonOrArrayStructure;
 
 "use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(119));
-__export(__webpack_require__(120));
-__export(__webpack_require__(121));
-__export(__webpack_require__(64));
-__export(__webpack_require__(35));
-
-
-/***/ }),
-/* 19 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(123));
-__export(__webpack_require__(124));
-__export(__webpack_require__(37));
-
-
-/***/ }),
-/* 20 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
 Object.defineProperty(exports, "__esModule", { value: true });
 var html_1 = __webpack_require__(3);
 var FocusManager = /** @class */ (function () {
@@ -2424,7 +2399,7 @@ exports.focusManager = new FocusManager();
 
 
 /***/ }),
-/* 21 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -2529,11 +2504,15 @@ function countColumns(config, columns) {
                 col.footer[i] = col.footer[i] || { text: "" };
             }
         }
-        col.header.forEach(function (head) {
+        col.header = col.header.map(function (head) {
+            if (typeof head !== "object") {
+                head = { text: head };
+            }
             head.css = head.css || "";
             if (!head.text && !head.css.includes("dhx_cell-empty")) {
                 head.css += " dhx_cell-empty";
             }
+            return head;
         });
         // find header columns indexes
         if (col.header[0].text === "") {
@@ -2549,9 +2528,9 @@ function countColumns(config, columns) {
 }
 exports.countColumns = countColumns;
 function calculatePositions(width, height, scroll, conf) {
-    var columns = conf.columns;
+    var columns = conf.columns || [];
     var columnsLength = columns.length;
-    var rows = conf.data;
+    var rows = conf.data || [];
     var rowsLength = rows.length;
     var maxWidth = -Infinity;
     for (var index = 0; index < columnsLength; index++) {
@@ -2717,12 +2696,10 @@ function toFormat(value, type, format) {
             .split("#")
             .filter(function (i) { return i; });
         value = type === "percent" ? (Number(value) * 100).toString() : value;
-        var isPositive = Number(value) >= 0;
         var trunc = Math.trunc(Number(value)).toString();
         var formatFractionLength = format.match(/0/g) && format.match(/0/g).length;
         var truncTemplate = template.find(function (i) { return !i.includes("0"); });
         result = truncTemplate ? trunc.replace(/(\d)(?=(\d{3})+(\D|$))/g, "$1" + truncTemplate) : trunc;
-        result = isPositive ? result : "-" + result;
         if (formatFractionLength) {
             var delimiter = template.find(function (i) { return i.includes("0"); }).replace(/0+/g, "");
             var truncFractional = value.split(".")[1] || "0";
@@ -2754,6 +2731,38 @@ function toFormat(value, type, format) {
     }
 }
 exports.toFormat = toFormat;
+
+
+/***/ }),
+/* 20 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(141));
+__export(__webpack_require__(142));
+__export(__webpack_require__(143));
+__export(__webpack_require__(75));
+__export(__webpack_require__(43));
+
+
+/***/ }),
+/* 21 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(150));
+__export(__webpack_require__(151));
+__export(__webpack_require__(45));
 
 
 /***/ }),
@@ -3470,41 +3479,6 @@ exports.radarScale = radarScale;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_data_1 = __webpack_require__(4);
-var FileStatus;
-(function (FileStatus) {
-    FileStatus["queue"] = "queue";
-    FileStatus["uploaded"] = "uploaded";
-    FileStatus["failed"] = "failed";
-    FileStatus["inprogress"] = "inprogress";
-})(FileStatus = exports.FileStatus || (exports.FileStatus = {}));
-var UploaderEvents;
-(function (UploaderEvents) {
-    UploaderEvents["uploadBegin"] = "uploadbegin";
-    UploaderEvents["beforeUploadFile"] = "beforeuploadfile";
-    UploaderEvents["uploadFile"] = "uploadfile";
-    UploaderEvents["uploadFail"] = "uploadfail";
-    UploaderEvents["uploadComplete"] = "uploadcomplete";
-    UploaderEvents["uploadProgress"] = "uploadprogress";
-})(UploaderEvents = exports.UploaderEvents || (exports.UploaderEvents = {}));
-var ProgressBarEvents;
-(function (ProgressBarEvents) {
-    ProgressBarEvents["cancel"] = "cancel";
-})(ProgressBarEvents = exports.ProgressBarEvents || (exports.ProgressBarEvents = {}));
-var VaultMode;
-(function (VaultMode) {
-    VaultMode["grid"] = "grid";
-    VaultMode["list"] = "list";
-})(VaultMode = exports.VaultMode || (exports.VaultMode = {}));
-
-
-/***/ }),
-/* 29 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
 var LayoutEvents;
 (function (LayoutEvents) {
     LayoutEvents["beforeShow"] = "beforeShow";
@@ -3536,7 +3510,7 @@ var resizeMode;
 
 
 /***/ }),
-/* 30 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3545,7 +3519,43 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(122));
+__export(__webpack_require__(130));
+__export(__webpack_require__(72));
+
+
+/***/ }),
+/* 30 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ts_data_1 = __webpack_require__(4);
+var FileStatus;
+(function (FileStatus) {
+    FileStatus["queue"] = "queue";
+    FileStatus["uploaded"] = "uploaded";
+    FileStatus["failed"] = "failed";
+    FileStatus["inprogress"] = "inprogress";
+})(FileStatus = exports.FileStatus || (exports.FileStatus = {}));
+var UploaderEvents;
+(function (UploaderEvents) {
+    UploaderEvents["uploadBegin"] = "uploadbegin";
+    UploaderEvents["beforeUploadFile"] = "beforeuploadfile";
+    UploaderEvents["uploadFile"] = "uploadfile";
+    UploaderEvents["uploadFail"] = "uploadfail";
+    UploaderEvents["uploadComplete"] = "uploadcomplete";
+    UploaderEvents["uploadProgress"] = "uploadprogress";
+})(UploaderEvents = exports.UploaderEvents || (exports.UploaderEvents = {}));
+var ProgressBarEvents;
+(function (ProgressBarEvents) {
+    ProgressBarEvents["cancel"] = "cancel";
+})(ProgressBarEvents = exports.ProgressBarEvents || (exports.ProgressBarEvents = {}));
+var VaultMode;
+(function (VaultMode) {
+    VaultMode["grid"] = "grid";
+    VaultMode["list"] = "list";
+})(VaultMode = exports.VaultMode || (exports.VaultMode = {}));
 
 
 /***/ }),
@@ -3558,8 +3568,7 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(171));
-__export(__webpack_require__(78));
+__export(__webpack_require__(149));
 
 
 /***/ }),
@@ -3889,6 +3898,439 @@ exports.ajax = {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var cells_1 = __webpack_require__(36);
+var main_1 = __webpack_require__(15);
+var types_1 = __webpack_require__(9);
+var editors_1 = __webpack_require__(115);
+var html_1 = __webpack_require__(3);
+var data_1 = __webpack_require__(19);
+function handleMouse(rowStart, colStart, conf, type, e) {
+    colStart = html_1.locateNodeByClassName(e.target, "dhx_grid-fixed-cols-wrap") ? 0 : colStart;
+    var target = html_1.locateNodeByClassName(e.target, "dhx_grid-cell");
+    if (!target || !type) {
+        return;
+    }
+    var rowNode = target.parentNode;
+    var bodyNode = rowNode.parentNode;
+    var colIndex = Array.prototype.indexOf.call(rowNode.childNodes, target);
+    var columns = conf.columns.filter(function (col) { return !col.hidden; });
+    var col = columns[colStart + colIndex];
+    var rowIndex = Array.prototype.indexOf.call(bodyNode.childNodes, rowNode);
+    var row = conf.data[rowStart + rowIndex];
+    var systemEvent = type.toLocaleLowerCase().includes("touch");
+    if (systemEvent) {
+        conf._events.fire(type, [row, col, e]);
+    }
+    else {
+        conf.events.fire(type, [row, col, e]);
+    }
+}
+function getHandlers(row, column, conf) {
+    return {
+        onclick: [handleMouse, row, column, conf, types_1.GridEvents.cellClick],
+        onmouseover: [handleMouse, row, column, conf, types_1.GridEvents.cellMouseOver],
+        onmousedown: [handleMouse, row, column, conf, types_1.GridEvents.cellMouseDown],
+        ondblclick: [handleMouse, row, column, conf, types_1.GridEvents.cellDblClick],
+        oncontextmenu: [handleMouse, row, column, conf, types_1.GridEvents.cellRightClick],
+        ontouchstart: [handleMouse, row, column, conf, types_1.GridEvents.cellMouseDown],
+        ontouchmove: [handleMouse, row, column, conf, types_1.GridSystemEvents.cellTouchMove],
+        ontouchend: [handleMouse, row, column, conf, types_1.GridSystemEvents.cellTouchEnd],
+    };
+}
+exports.getHandlers = getHandlers;
+function getColumnHeaderText(col) {
+    var colHeader = col.id;
+    if (col.header && col.header.length) {
+        var i = col.header.length - 1;
+        while (i >= 0) {
+            var headerConf = col.header[i];
+            if (headerConf && headerConf.text) {
+                colHeader = headerConf.text;
+                break;
+            }
+            i -= 1;
+        }
+    }
+    return colHeader;
+}
+function getTreeCell(content, row, col, conf) {
+    var isEditable = conf.$editable && conf.$editable.row === row.id && conf.$editable.col === col.id;
+    var css = "";
+    var cellAlign = col.align ? " dhx_align-" + col.align : "dhx_align-left";
+    if (conf.dragMode && conf.dragItem === "row") {
+        css +=
+            (row.$drophere && !isEditable ? " dhx_grid-cell--drophere" : "") +
+                (row.$dragtarget && !isEditable ? " dhx_grid-cell--dragtarget" : "") +
+                (!isEditable ? " dhx_grid-cell--drag" : "");
+    }
+    var parentPadding = data_1.getTreeCellWidthOffset(row);
+    return dom_1.el(".dhx_grid-cell", {
+        class: "dhx_tree-cell " + (col.$cellCss[row.id] || "") + " " + (row.$items ? "dhx_grid-expand-cell" : "") +
+            (" " + (isEditable ? "dhx_tree-editing-cell" : "") + " " + css) +
+            cellAlign,
+        style: {
+            width: col.$width,
+            height: row.$height,
+            padding: !row.$items ? "0 0 0 " + parentPadding + "px" : 0,
+        },
+        dhx_col_id: col.id,
+        role: "gridcell",
+        "aria-colindex": 1,
+        "aria-label": getColumnHeaderText(col),
+    }, [
+        row.$items
+            ? dom_1.el(".dhx_grid-expand-cell-icon", {
+                class: row.$opened ? "dxi dxi-chevron-up" : "dxi dxi-chevron-down",
+                dhx_id: row.id,
+                role: "button",
+                "aria-label": row.$opened ? "Collapse group" : "Expand group",
+                style: {
+                    padding: row.$level ? "0 0 0 " + (4 + parentPadding) + "px" : "0 0 0 4px",
+                },
+            })
+            : null,
+        dom_1.el(".dhx_tree-cell", {
+            class: cellAlign + ("" + ((conf.autoHeight && " dhx_tree-cell_auto-height") || "")),
+        }, [content]),
+    ]);
+}
+exports.getTreeCell = getTreeCell;
+function getEditorCell(row, col, conf) {
+    return editors_1.getEditor(row, col, conf);
+}
+function getCells(conf) {
+    if (!conf.data || !conf.columns) {
+        return [];
+    }
+    var pos = conf.$positions;
+    var data = conf.data ? conf.data.slice(pos.yStart, pos.yEnd) : [];
+    var columns = conf.columns.slice(pos.xStart, pos.xEnd);
+    return data.map(function (row, index) {
+        var isLastRow = data.length - 1 === index;
+        var rowCss = "";
+        if (conf.rowCss) {
+            rowCss = conf.rowCss(row);
+        }
+        if (row.$css) {
+            rowCss += row.$css;
+        }
+        return dom_1.el(".dhx_grid-row", {
+            style: { height: isLastRow ? row.$height + 1 : row.$height },
+            dhx_id: row.id,
+            class: rowCss,
+            _key: row.id,
+            _flags: dom_1.KEYED_LIST,
+            role: "row",
+            "aria-rowindex": pos.yStart + index + 1,
+        }, row.$customRender
+            ? [row.$customRender(row, conf)]
+            : columns.map(function (col, colIndex) {
+                if (!col.hidden) {
+                    var value = data_1.toFormat(row[col.id], col.type, col.format);
+                    var defaultTemplate = function (text) {
+                        if (typeof text === "boolean" || col.type === "boolean") {
+                            if (typeof text !== "string") {
+                                return "" + Boolean(text);
+                            }
+                        }
+                        return text || text === 0 ? text : "";
+                    };
+                    var content = col.template
+                        ? col.template(value, row, col)
+                        : defaultTemplate(value);
+                    // content can be a domvm node or a string
+                    if (typeof content === "string") {
+                        content = main_1.isHtmlEnable(conf, col)
+                            ? dom_1.el("div.dhx_grid-cell__content", {
+                                role: "button",
+                                "aria-label": "Edit content",
+                                ".innerHTML": content,
+                            })
+                            : content;
+                    }
+                    var css = (((col.$cellCss && col.$cellCss[row.id]) || "") + " dhx_" + col.type + "-cell").replace(/\s+/g, " ");
+                    var colWidth = col.$width;
+                    var isEditable = conf.$editable &&
+                        conf.$editable.row === row.id &&
+                        conf.$editable.col === col.id;
+                    if (isEditable || (col.type === "boolean" && (conf.editable || col.editable))) {
+                        if (!(conf.leftSplit &&
+                            conf.columns.length !== conf.leftSplit &&
+                            conf.columns.indexOf(col) < conf.leftSplit)) {
+                            content = getEditorCell(row, col, conf).toHTML();
+                            css += " dhx_grid-cell__editable";
+                            if (conf.leftSplit === conf.columns.indexOf(col) + 1) {
+                                colWidth -= 1;
+                            }
+                        }
+                    }
+                    if (conf.type === "tree" && conf.firstColId === col.id) {
+                        return getTreeCell(content, row, col, conf);
+                    }
+                    if (conf.dragMode && conf.dragItem === "row") {
+                        css +=
+                            (row.$drophere && !isEditable ? " dhx_grid-cell--drophere" : "") +
+                                (row.$dragtarget && !isEditable ? " dhx_grid-cell--dragtarget" : "") +
+                                (!isEditable ? " dhx_grid-cell--drag" : "");
+                    }
+                    if (col.align) {
+                        css += " dhx_align-" + col.align;
+                    }
+                    if (conf.autoHeight) {
+                        css += " dhx_grid-cell__content_auto-height";
+                    }
+                    return dom_1.el(".dhx_grid-cell", {
+                        class: css,
+                        style: {
+                            width: colWidth,
+                            height: row.$height + "px",
+                        },
+                        _key: col.id,
+                        dhx_col_id: col.id,
+                        role: "gridcell",
+                        "aria-colindex": pos.xStart + colIndex + 1,
+                        "aria-label": getColumnHeaderText(col),
+                    }, [content]);
+                }
+            }));
+    });
+}
+exports.getCells = getCells;
+function getSpans(config, frozen) {
+    var spanCells = [];
+    var columns = config.columns;
+    var rows = config.data;
+    if (!columns.length || !config.spans)
+        return null;
+    var spans = config.spans.sort(function (a, b) {
+        return typeof a.row === "string" && typeof b.row === "string"
+            ? a.row.localeCompare(b.row)
+            : a.row - b.row;
+    });
+    var _loop_1 = function (i) {
+        var row = spans[i].row;
+        var col = spans[i].column;
+        var spanHeight = spans[i].rowspan;
+        var spanWidth = spans[i].colspan;
+        var spanCss = spans[i].css;
+        if (spanHeight === 1) {
+            return "continue";
+        }
+        var colIndex = core_1.findIndex(columns, function (item) { return "" + item.id === "" + col; });
+        var rowIndex = core_1.findIndex(rows, function (item) { return "" + item.id === "" + row; });
+        if (colIndex < 0 || rowIndex < 0) {
+            return "continue";
+        }
+        if (frozen === true &&
+            ((spanWidth || 1) + colIndex > config.leftSplit || colIndex + 1 > config.leftSplit)) {
+            return "continue";
+        }
+        var currCol = columns[colIndex];
+        var currRow = rows[rowIndex];
+        if (currCol.hidden) {
+            return "continue";
+        }
+        var content = spans[i].text ? spans[i].text : currRow[col] === undefined ? "" : currRow[col];
+        var t = function (text, _row, _col) { return (text || text === 0 ? text : ""); };
+        var template = currCol.template || t;
+        content = template(content, currRow, currCol);
+        content =
+            typeof content === "string"
+                ? dom_1.el("div.dhx_span-cell-content", { ".innerHTML": content })
+                : content;
+        var currentTop = 0;
+        for (var index = 0; index < rowIndex; index++) {
+            currentTop += rows[index].$height;
+        }
+        var top_1 = currentTop - 1;
+        var left = 0;
+        for (var s = colIndex - 1; s >= 0; s--) {
+            left += columns[s].$width;
+        }
+        var rowspanWithLastCol = colIndex === columns.length - 1;
+        var colspanWithLastCol = colIndex + spanWidth === columns.length;
+        var css = currCol.header[0].text ? "dhx_span-cell" : "dhx_span-cell dhx_span-cell--title";
+        css += spanCss ? " " + spanCss : "";
+        css += rowIndex === 0 ? " dhx_span-first-row" : "";
+        css += colIndex === 0 ? " dhx_span-first-col" : "";
+        css += rowspanWithLastCol || colspanWithLastCol ? " dhx_span-last-col" : "";
+        css += !spanWidth ? " dhx_span-" + (currCol.type || "string") + "-cell" : " dhx_span-string-cell";
+        css += currCol.align ? " dhx_align-" + currCol.align : " dhx_align-left";
+        var width = spanWidth > 1 ? cells_1.getWidth(columns, spanWidth, colIndex) : currCol.$width;
+        var height = spanHeight > 1 ? cells_1.getHeight(rows, spanHeight, rowIndex) : currRow.$height;
+        spanCells.push(dom_1.el("div", {
+            class: css,
+            style: {
+                width: width,
+                height: height,
+                top: top_1,
+                left: left,
+            },
+            dhx_col_id: col,
+            dhx_id: row,
+            "aria-hidden": "true",
+        }, [content]));
+    };
+    for (var i = 0; i < spans.length; i++) {
+        _loop_1(i);
+    }
+    return spanCells;
+}
+exports.getSpans = getSpans;
+function getShifts(conf) {
+    var columnsLeft = conf.columns.slice(0, conf.$positions.xStart);
+    var rowsTop = conf.data.slice(0, conf.$positions.yStart);
+    return {
+        x: main_1.getTotalWidth(columnsLeft),
+        y: main_1.getTotalHeight(rowsTop),
+    };
+}
+exports.getShifts = getShifts;
+
+
+/***/ }),
+/* 36 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function getWidth(columns, colspan, index) {
+    var cols = columns.filter(function (_a) {
+        var hidden = _a.hidden;
+        return !hidden;
+    });
+    if (!colspan) {
+        return cols[index].$width;
+    }
+    return cols.reduce(function (width, _a, i) {
+        var $width = _a.$width;
+        width += i >= index && i < index + colspan ? $width : 0;
+        return width;
+    }, 0);
+}
+exports.getWidth = getWidth;
+function getHeight(dataRows, rowspan, index) {
+    var rows = dataRows.filter(function (_a) {
+        var hidden = _a.hidden;
+        return !hidden;
+    });
+    if (!rowspan) {
+        return rows[index].$height;
+    }
+    return rows.reduce(function (height, _a, i) {
+        var $height = _a.$height;
+        height += i >= index && i < index + rowspan ? $height : 0;
+        return height;
+    }, 0);
+}
+exports.getHeight = getHeight;
+
+
+/***/ }),
+/* 37 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(119));
+__export(__webpack_require__(70));
+
+
+/***/ }),
+/* 38 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(120));
+__export(__webpack_require__(69));
+
+
+/***/ }),
+/* 39 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(124));
+__export(__webpack_require__(67));
+
+
+/***/ }),
+/* 40 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(132));
+__export(__webpack_require__(71));
+__export(__webpack_require__(41));
+
+
+/***/ }),
+/* 41 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ListEvents;
+(function (ListEvents) {
+    ListEvents["click"] = "click";
+    ListEvents["doubleClick"] = "doubleclick";
+    ListEvents["focusChange"] = "focuschange";
+    ListEvents["beforeEditStart"] = "beforeEditStart";
+    ListEvents["afterEditStart"] = "afterEditStart";
+    ListEvents["beforeEditEnd"] = "beforeEditEnd";
+    ListEvents["afterEditEnd"] = "afterEditEnd";
+    ListEvents["itemRightClick"] = "itemRightClick";
+    ListEvents["itemMouseOver"] = "itemMouseOver";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    ListEvents["contextmenu"] = "contextmenu";
+})(ListEvents = exports.ListEvents || (exports.ListEvents = {}));
+
+
+/***/ }),
+/* 42 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
+    notFound: "Not Found",
+    selectAll: "Select All",
+    unselectAll: "Unselect All",
+    selectedItems: "selected items",
+};
+
+
+/***/ }),
+/* 43 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
 var RealPosition;
 (function (RealPosition) {
     RealPosition["left"] = "left";
@@ -3913,7 +4355,7 @@ var MessageContainerPosition;
 
 
 /***/ }),
-/* 36 */
+/* 44 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3927,7 +4369,7 @@ exports.default = locale;
 
 
 /***/ }),
-/* 37 */
+/* 45 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3948,7 +4390,7 @@ var NavigationBarEvents;
 
 
 /***/ }),
-/* 38 */
+/* 46 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3975,7 +4417,7 @@ exports.default = locale;
 
 
 /***/ }),
-/* 39 */
+/* 47 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -3984,96 +4426,16 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(138));
-__export(__webpack_require__(65));
-__export(__webpack_require__(40));
-
-
-/***/ }),
-/* 40 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ListEvents;
-(function (ListEvents) {
-    ListEvents["click"] = "click";
-    ListEvents["doubleClick"] = "doubleclick";
-    ListEvents["focusChange"] = "focuschange";
-    ListEvents["beforeEditStart"] = "beforeEditStart";
-    ListEvents["afterEditStart"] = "afterEditStart";
-    ListEvents["beforeEditEnd"] = "beforeEditEnd";
-    ListEvents["afterEditEnd"] = "afterEditEnd";
-    ListEvents["itemRightClick"] = "itemRightClick";
-    ListEvents["itemMouseOver"] = "itemMouseOver";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    ListEvents["contextmenu"] = "contextmenu";
-})(ListEvents = exports.ListEvents || (exports.ListEvents = {}));
-
-
-/***/ }),
-/* 41 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(141));
-__export(__webpack_require__(70));
-
-
-/***/ }),
-/* 42 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(142));
-__export(__webpack_require__(69));
-
-
-/***/ }),
-/* 43 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(143));
-__export(__webpack_require__(67));
-
-
-/***/ }),
-/* 44 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(147));
-__export(__webpack_require__(72));
-__export(__webpack_require__(71));
-__export(__webpack_require__(45));
-var en_1 = __webpack_require__(46);
+__export(__webpack_require__(165));
+__export(__webpack_require__(77));
+__export(__webpack_require__(76));
+__export(__webpack_require__(48));
+var en_1 = __webpack_require__(49);
 exports.locale = en_1.default;
 
 
 /***/ }),
-/* 45 */
+/* 48 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4202,7 +4564,7 @@ exports.isHex = isHex;
 
 
 /***/ }),
-/* 46 */
+/* 49 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4219,7 +4581,7 @@ exports.default = en;
 
 
 /***/ }),
-/* 47 */
+/* 50 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4236,8 +4598,8 @@ var __assign = (this && this.__assign) || function () {
     return __assign.apply(this, arguments);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var AxisCreator_1 = __webpack_require__(158);
-var SvgScales_1 = __webpack_require__(73);
+var AxisCreator_1 = __webpack_require__(176);
+var SvgScales_1 = __webpack_require__(78);
 var common_1 = __webpack_require__(8);
 var renderScale = {
     left: SvgScales_1.left,
@@ -4378,7 +4740,7 @@ exports.Scale = Scale;
 
 
 /***/ }),
-/* 48 */
+/* 51 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4398,7 +4760,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = __webpack_require__(8);
-var BaseSeria_1 = __webpack_require__(49);
+var BaseSeria_1 = __webpack_require__(52);
 var ScaleSeria = /** @class */ (function (_super) {
     __extends(ScaleSeria, _super);
     function ScaleSeria() {
@@ -4439,7 +4801,8 @@ var ScaleSeria = /** @class */ (function (_super) {
         this._points.forEach(function (item, index) {
             // scaled values
             item[0] = _this.xScale.point(item[0]) * width || 0;
-            item[1] = _this.yScale.point(item[1]) * height || (_this.config.type === "xbar" ? 0 : height);
+            var pointHeight = _this.yScale.point(item[1]) * height;
+            item[1] = !isNaN(pointHeight) ? pointHeight : _this.config.type === "xbar" ? 0 : height;
         });
     };
     ScaleSeria.prototype._defaultLocator = function (v) {
@@ -4451,7 +4814,7 @@ exports.default = ScaleSeria;
 
 
 /***/ }),
-/* 49 */
+/* 52 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4460,7 +4823,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var types_1 = __webpack_require__(26);
 var common_1 = __webpack_require__(8);
-var line_1 = __webpack_require__(75);
+var line_1 = __webpack_require__(80);
 var BaseSeria = /** @class */ (function () {
     function BaseSeria(_data, config, other) {
         var _this = this;
@@ -4550,13 +4913,8 @@ var BaseSeria = /** @class */ (function () {
     BaseSeria.prototype._defaultLocator = function (_) {
         return [null, null];
     };
-    BaseSeria.prototype._getPointType = function (form, color, showTooltip) {
-        if (showTooltip) {
-            return line_1.getShadeHelper(form, color, line_1.hoverMode);
-        }
-        else {
-            return line_1.getShadeHelper(form, color, line_1.standarMode);
-        }
+    BaseSeria.prototype._getPointType = function (form, color) {
+        return line_1.getShadeHelper(form, color);
     };
     return BaseSeria;
 }());
@@ -4564,7 +4922,7 @@ exports.default = BaseSeria;
 
 
 /***/ }),
-/* 50 */
+/* 53 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4595,7 +4953,7 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var common_1 = __webpack_require__(8);
-var BaseSeria_1 = __webpack_require__(49);
+var BaseSeria_1 = __webpack_require__(52);
 var NoScaleSeria = /** @class */ (function (_super) {
     __extends(NoScaleSeria, _super);
     function NoScaleSeria() {
@@ -4664,7 +5022,7 @@ var NoScaleSeria = /** @class */ (function (_super) {
             paddings: 20,
         };
         this.config = __assign(__assign({}, defaults), config);
-        this._drawPointType = this._getPointType("empty", "none", this.config.tooltip);
+        this._drawPointType = this._getPointType("empty", "none");
         this._valueLocator = common_1.locator(config.value);
         this._textLocator = common_1.locator(config.text);
         if (config.color) {
@@ -4686,7 +5044,7 @@ exports.default = NoScaleSeria;
 
 
 /***/ }),
-/* 51 */
+/* 54 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -4718,7 +5076,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var common_1 = __webpack_require__(8);
-var ScaleSeria_1 = __webpack_require__(48);
+var ScaleSeria_1 = __webpack_require__(51);
 var Line = /** @class */ (function (_super) {
     __extends(Line, _super);
     function Line() {
@@ -4748,7 +5106,7 @@ var Line = /** @class */ (function (_super) {
             svg.push(this._getForm(this._points, this.config, css, width, height));
         }
         if (this.config.pointType) {
-            var point_1 = this._getPointType(this.config.pointType, color, false);
+            var point_1 = this._getPointType(this.config.pointType, color);
             svg = svg.concat(this._points
                 .map(function (p) { return point_1(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); })
                 .map(function (node, index) {
@@ -4804,22 +5162,7 @@ exports.default = Line;
 
 
 /***/ }),
-/* 52 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
-    notFound: "Not Found",
-    selectAll: "Select All",
-    unselectAll: "Unselect All",
-    selectedItems: "selected items",
-};
-
-
-/***/ }),
-/* 53 */
+/* 55 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5124,7 +5467,7 @@ exports.Input = Input;
 
 
 /***/ }),
-/* 54 */
+/* 56 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -5133,354 +5476,14 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(82));
-__export(__webpack_require__(208));
+__export(__webpack_require__(64));
+__export(__webpack_require__(63));
 __export(__webpack_require__(9));
-__export(__webpack_require__(56));
-var Cells_1 = __webpack_require__(55);
+__export(__webpack_require__(36));
+var Cells_1 = __webpack_require__(35);
 exports.getTreeCell = Cells_1.getTreeCell;
-__export(__webpack_require__(21));
+__export(__webpack_require__(19));
 __export(__webpack_require__(15));
-
-
-/***/ }),
-/* 55 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var cells_1 = __webpack_require__(56);
-var main_1 = __webpack_require__(15);
-var types_1 = __webpack_require__(9);
-var editors_1 = __webpack_require__(197);
-var html_1 = __webpack_require__(3);
-var data_1 = __webpack_require__(21);
-function handleMouse(rowStart, colStart, conf, type, e) {
-    colStart = html_1.locateNodeByClassName(e.target, "dhx_grid-fixed-cols-wrap") ? 0 : colStart;
-    var target = html_1.locateNodeByClassName(e.target, "dhx_grid-cell");
-    if (!target || !type) {
-        return;
-    }
-    var rowNode = target.parentNode;
-    var bodyNode = rowNode.parentNode;
-    var colIndex = Array.prototype.indexOf.call(rowNode.childNodes, target);
-    var columns = conf.columns.filter(function (col) { return !col.hidden; });
-    var col = columns[colStart + colIndex];
-    var rowIndex = Array.prototype.indexOf.call(bodyNode.childNodes, rowNode);
-    var row = conf.data[rowStart + rowIndex];
-    var systemEvent = type.toLocaleLowerCase().includes("touch");
-    if (systemEvent) {
-        conf._events.fire(type, [row, col, e]);
-    }
-    else {
-        conf.events.fire(type, [row, col, e]);
-    }
-}
-function getHandlers(row, column, conf) {
-    return {
-        onclick: [handleMouse, row, column, conf, types_1.GridEvents.cellClick],
-        onmouseover: [handleMouse, row, column, conf, types_1.GridEvents.cellMouseOver],
-        onmousedown: [handleMouse, row, column, conf, types_1.GridEvents.cellMouseDown],
-        ondblclick: [handleMouse, row, column, conf, types_1.GridEvents.cellDblClick],
-        oncontextmenu: [handleMouse, row, column, conf, types_1.GridEvents.cellRightClick],
-        ontouchstart: [handleMouse, row, column, conf, types_1.GridEvents.cellMouseDown],
-        ontouchmove: [handleMouse, row, column, conf, types_1.GridSystemEvents.cellTouchMove],
-        ontouchend: [handleMouse, row, column, conf, types_1.GridSystemEvents.cellTouchEnd],
-    };
-}
-exports.getHandlers = getHandlers;
-function getColumnHeaderText(col) {
-    var colHeader = col.id;
-    if (col.header && col.header.length) {
-        var i = col.header.length - 1;
-        while (i >= 0) {
-            var headerConf = col.header[i];
-            if (headerConf && headerConf.text) {
-                colHeader = headerConf.text;
-                break;
-            }
-            i -= 1;
-        }
-    }
-    return colHeader;
-}
-function getTreeCell(content, row, col, conf) {
-    var isEditable = conf.$editable && conf.$editable.row === row.id && conf.$editable.col === col.id;
-    var css = "";
-    var cellAlign = col.align ? " dhx_align-" + col.align : "dhx_align-left";
-    if (conf.dragMode && conf.dragItem === "row") {
-        css +=
-            (row.$drophere && !isEditable ? " dhx_grid-cell--drophere" : "") +
-                (row.$dragtarget && !isEditable ? " dhx_grid-cell--dragtarget" : "") +
-                (!isEditable ? " dhx_grid-cell--drag" : "");
-    }
-    var parentPadding = data_1.getTreeCellWidthOffset(row);
-    return dom_1.el(".dhx_grid-cell", {
-        class: "dhx_tree-cell " + (col.$cellCss[row.id] || "") + " " + (row.$items ? "dhx_grid-expand-cell" : "") +
-            (" " + (isEditable ? "dhx_tree-editing-cell" : "") + " " + css) +
-            cellAlign,
-        style: {
-            width: col.$width,
-            height: row.$height,
-            padding: !row.$items ? "0 0 0 " + parentPadding + "px" : 0,
-        },
-        dhx_col_id: col.id,
-        role: "gridcell",
-        "aria-colindex": 1,
-        "aria-label": getColumnHeaderText(col),
-    }, [
-        row.$items
-            ? dom_1.el(".dhx_grid-expand-cell-icon", {
-                class: row.$opened ? "dxi dxi-chevron-up" : "dxi dxi-chevron-down",
-                dhx_id: row.id,
-                role: "button",
-                "aria-label": row.$opened ? "Collapse group" : "Expand group",
-                style: {
-                    padding: row.$level ? "0 0 0 " + (4 + parentPadding) + "px" : "0 0 0 4px",
-                },
-            })
-            : null,
-        dom_1.el(".dhx_tree-cell", {
-            class: cellAlign + ("" + ((conf.autoHeight && " dhx_tree-cell_auto-height") || "")),
-        }, [content]),
-    ]);
-}
-exports.getTreeCell = getTreeCell;
-function getEditorCell(row, col, conf) {
-    return editors_1.getEditor(row, col, conf);
-}
-function getCells(conf) {
-    if (!conf.data || !conf.columns) {
-        return [];
-    }
-    var pos = conf.$positions;
-    var data = conf.data ? conf.data.slice(pos.yStart, pos.yEnd) : [];
-    var columns = conf.columns.slice(pos.xStart, pos.xEnd);
-    return data.map(function (row, index) {
-        var isLastRow = data.length - 1 === index;
-        var rowCss = "";
-        if (conf.rowCss) {
-            rowCss = conf.rowCss(row);
-        }
-        if (row.$css) {
-            rowCss += row.$css;
-        }
-        return dom_1.el(".dhx_grid-row", {
-            style: { height: isLastRow ? row.$height + 1 : row.$height },
-            dhx_id: row.id,
-            class: rowCss,
-            _key: row.id,
-            _flags: dom_1.KEYED_LIST,
-            role: "row",
-            "aria-rowindex": pos.yStart + index + 1,
-        }, row.$customRender
-            ? [row.$customRender(row, conf)]
-            : columns.map(function (col, colIndex) {
-                if (!col.hidden) {
-                    var value = data_1.toFormat(row[col.id], col.type, col.format);
-                    var defaultTemplate = function (text) {
-                        if (typeof text === "boolean" || col.type === "boolean") {
-                            if (typeof text !== "string") {
-                                return "" + Boolean(text);
-                            }
-                        }
-                        return text || text === 0 ? text : "";
-                    };
-                    var content = core_1.isDefined(value)
-                        ? col.template
-                            ? col.template(value, row, col)
-                            : defaultTemplate(value)
-                        : value;
-                    // content can be a domvm node or a string
-                    if (typeof content === "string") {
-                        content = main_1.isHtmlEnable(conf, col)
-                            ? dom_1.el("div.dhx_grid-cell__content", {
-                                role: "button",
-                                "aria-label": "Edit content",
-                                ".innerHTML": content,
-                            })
-                            : content;
-                    }
-                    var css = (((col.$cellCss && col.$cellCss[row.id]) || "") + " dhx_" + col.type + "-cell").replace(/\s+/g, " ");
-                    var colWidth = col.$width;
-                    var isEditable = conf.$editable &&
-                        conf.$editable.row === row.id &&
-                        conf.$editable.col === col.id;
-                    if (isEditable || (col.type === "boolean" && (conf.editable || col.editable))) {
-                        if (!(conf.leftSplit &&
-                            conf.columns.length !== conf.leftSplit &&
-                            conf.columns.indexOf(col) < conf.leftSplit)) {
-                            content = getEditorCell(row, col, conf).toHTML();
-                            css += " dhx_grid-cell__editable";
-                            if (conf.leftSplit === conf.columns.indexOf(col) + 1) {
-                                colWidth -= 1;
-                            }
-                        }
-                    }
-                    if (conf.type === "tree" && conf.firstColId === col.id) {
-                        return getTreeCell(content, row, col, conf);
-                    }
-                    if (conf.dragMode && conf.dragItem === "row") {
-                        css +=
-                            (row.$drophere && !isEditable ? " dhx_grid-cell--drophere" : "") +
-                                (row.$dragtarget && !isEditable ? " dhx_grid-cell--dragtarget" : "") +
-                                (!isEditable ? " dhx_grid-cell--drag" : "");
-                    }
-                    if (col.align) {
-                        css += " dhx_align-" + col.align;
-                    }
-                    if (conf.autoHeight) {
-                        css += " dhx_grid-cell__content_auto-height";
-                    }
-                    return dom_1.el(".dhx_grid-cell", {
-                        class: css,
-                        style: {
-                            width: colWidth,
-                            height: row.$height + "px",
-                        },
-                        _key: col.id,
-                        dhx_col_id: col.id,
-                        role: "gridcell",
-                        "aria-colindex": pos.xStart + colIndex + 1,
-                        "aria-label": getColumnHeaderText(col),
-                    }, [content]);
-                }
-            }));
-    });
-}
-exports.getCells = getCells;
-function getSpans(config, frozen) {
-    var spanCells = [];
-    var columns = config.columns;
-    var rows = config.data;
-    if (!columns.length || !config.spans)
-        return null;
-    var spans = config.spans.sort(function (a, b) {
-        return typeof a.row === "string" && typeof b.row === "string"
-            ? a.row.localeCompare(b.row)
-            : a.row - b.row;
-    });
-    var _loop_1 = function (i) {
-        var row = spans[i].row;
-        var col = spans[i].column;
-        var spanHeight = spans[i].rowspan;
-        var spanWidth = spans[i].colspan;
-        var spanCss = spans[i].css;
-        if (spanHeight === 1) {
-            return "continue";
-        }
-        var colIndex = core_1.findIndex(columns, function (item) { return "" + item.id === "" + col; });
-        var rowIndex = core_1.findIndex(rows, function (item) { return "" + item.id === "" + row; });
-        if (colIndex < 0 || rowIndex < 0) {
-            return "continue";
-        }
-        if (frozen === true &&
-            ((spanWidth || 1) + colIndex > config.leftSplit || colIndex + 1 > config.leftSplit)) {
-            return "continue";
-        }
-        var currCol = columns[colIndex];
-        var currRow = rows[rowIndex];
-        if (currCol.hidden) {
-            return "continue";
-        }
-        var content = spans[i].text ? spans[i].text : currRow[col] === undefined ? "" : currRow[col];
-        var t = function (text, _row, _col) { return (text || text === 0 ? text : ""); };
-        var template = currCol.template || t;
-        content = template(content, currRow, currCol);
-        content =
-            typeof content === "string"
-                ? dom_1.el("div.dhx_span-cell-content", { ".innerHTML": content })
-                : content;
-        var currentTop = 0;
-        for (var index = 0; index < rowIndex; index++) {
-            currentTop += rows[index].$height;
-        }
-        var top_1 = currentTop - 1;
-        var left = 0;
-        for (var s = colIndex - 1; s >= 0; s--) {
-            left += columns[s].$width;
-        }
-        var rowspanWithLastCol = colIndex === columns.length - 1;
-        var colspanWithLastCol = colIndex + spanWidth === columns.length;
-        var css = currCol.header[0].text ? "dhx_span-cell" : "dhx_span-cell dhx_span-cell--title";
-        css += spanCss ? " " + spanCss : "";
-        css += rowIndex === 0 ? " dhx_span-first-row" : "";
-        css += colIndex === 0 ? " dhx_span-first-col" : "";
-        css += rowspanWithLastCol || colspanWithLastCol ? " dhx_span-last-col" : "";
-        css += !spanWidth ? " dhx_span-" + (currCol.type || "string") + "-cell" : " dhx_span-string-cell";
-        css += currCol.align ? " dhx_align-" + currCol.align : " dhx_align-left";
-        var width = spanWidth > 1 ? cells_1.getWidth(columns, spanWidth, colIndex) : currCol.$width;
-        var height = spanHeight > 1 ? cells_1.getHeight(rows, spanHeight, rowIndex) : currRow.$height;
-        spanCells.push(dom_1.el("div", {
-            class: css,
-            style: {
-                width: width,
-                height: height,
-                top: top_1,
-                left: left,
-            },
-            dhx_col_id: col,
-            dhx_id: row,
-            "aria-hidden": "true",
-        }, [content]));
-    };
-    for (var i = 0; i < spans.length; i++) {
-        _loop_1(i);
-    }
-    return spanCells;
-}
-exports.getSpans = getSpans;
-function getShifts(conf) {
-    var columnsLeft = conf.columns.slice(0, conf.$positions.xStart);
-    var rowsTop = conf.data.slice(0, conf.$positions.yStart);
-    return {
-        x: main_1.getTotalWidth(columnsLeft),
-        y: main_1.getTotalHeight(rowsTop),
-    };
-}
-exports.getShifts = getShifts;
-
-
-/***/ }),
-/* 56 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function getWidth(columns, colspan, index) {
-    var cols = columns.filter(function (_a) {
-        var hidden = _a.hidden;
-        return !hidden;
-    });
-    if (!colspan) {
-        return cols[index].$width;
-    }
-    return cols.reduce(function (width, _a, i) {
-        var $width = _a.$width;
-        width += i >= index && i < index + colspan ? $width : 0;
-        return width;
-    }, 0);
-}
-exports.getWidth = getWidth;
-function getHeight(dataRows, rowspan, index) {
-    var rows = dataRows.filter(function (_a) {
-        var hidden = _a.hidden;
-        return !hidden;
-    });
-    if (!rowspan) {
-        return rows[index].$height;
-    }
-    return rows.reduce(function (height, _a, i) {
-        var $height = _a.$height;
-        height += i >= index && i < index + rowspan ? $height : 0;
-        return height;
-    }, 0);
-}
-exports.getHeight = getHeight;
 
 
 /***/ }),
@@ -5494,8 +5497,8 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(58));
-__export(__webpack_require__(114));
-__export(__webpack_require__(28));
+__export(__webpack_require__(147));
+__export(__webpack_require__(30));
 
 
 /***/ }),
@@ -5509,7 +5512,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var html_1 = __webpack_require__(3);
 var ts_data_1 = __webpack_require__(4);
-var types_1 = __webpack_require__(28);
+var types_1 = __webpack_require__(30);
 var Uploader = /** @class */ (function () {
     function Uploader(config, data, events) {
         if (config === void 0) { config = {}; }
@@ -5808,8 +5811,8 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var events_1 = __webpack_require__(2);
-var loader_1 = __webpack_require__(105);
-var sort_1 = __webpack_require__(108);
+var loader_1 = __webpack_require__(106);
+var sort_1 = __webpack_require__(109);
 var dataproxy_1 = __webpack_require__(23);
 var helpers_1 = __webpack_require__(17);
 var types_1 = __webpack_require__(16);
@@ -6411,7 +6414,7 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var JsonDriver_1 = __webpack_require__(61);
 var CsvDriver_1 = __webpack_require__(62);
-var XMLDriver_1 = __webpack_require__(106);
+var XMLDriver_1 = __webpack_require__(107);
 exports.dataDrivers = {
     json: JsonDriver_1.JsonDriver,
     csv: CsvDriver_1.CsvDriver,
@@ -6504,7 +6507,9 @@ var CsvDriver = /** @class */ (function () {
         var header = data[0]
             ? Object.keys(data[0])
                 .filter(function (key) { return !key.startsWith("$"); })
-                .join(this.config.columnDelimiter)
+                .join(this.config.columnDelimiter) +
+                this.config.columnDelimiter +
+                this.config.rowDelimiter
             : "";
         var readyData = this._serialize(data);
         if (withoutHeader) {
@@ -6538,1757 +6543,174 @@ exports.CsvDriver = CsvDriver;
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-function blockKeys(e) {
-    var active = document.activeElement;
-    if (!active.classList.contains("dhx_alert__confirm-reject") &&
-        !active.classList.contains("dhx_alert__confirm-aply")) {
-        e.preventDefault();
-    }
-}
-function blockScreen(css) {
-    var blocker = document.createElement("div");
-    blocker.className = "dhx_alert__overlay " + (css || "");
-    document.body.appendChild(blocker);
-    document.addEventListener("keydown", blockKeys);
-    return function () {
-        document.body.removeChild(blocker);
-        document.removeEventListener("keydown", blockKeys);
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
     };
-}
-exports.blockScreen = blockScreen;
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Grid_1 = __webpack_require__(64);
+var types_1 = __webpack_require__(9);
+var ts_data_1 = __webpack_require__(4);
+var html_1 = __webpack_require__(3);
+var data_1 = __webpack_require__(19);
+var render_1 = __webpack_require__(65);
+var ProGrid = /** @class */ (function (_super) {
+    __extends(ProGrid, _super);
+    function ProGrid(container, config) {
+        return _super.call(this, container, __assign({ autoHeight: false }, config)) || this;
+    }
+    ProGrid.prototype._setEventHandlers = function () {
+        var _this = this;
+        _super.prototype._setEventHandlers.call(this);
+        this.events.on(types_1.GridEvents.headerCellMouseDown, function (col, e) {
+            if (!e.targetTouches) {
+                _this._dragStartColumn(e, col);
+            }
+            else {
+                _this._touch.timer = setTimeout(function () {
+                    _this._dragStartColumn(e, col);
+                }, _this._touch.duration);
+            }
+        });
+        this._events.on(types_1.GridSystemEvents.headerCellTouchMove, function (_col, e) {
+            _this._touch.start && e.preventDefault();
+            _this._clearTouchTimer();
+        });
+        this._events.on(types_1.GridSystemEvents.headerCellTouchEnd, function () {
+            _this._touch.start = false;
+            _this._clearTouchTimer();
+        });
+        this.events.on(types_1.GridEvents.resize, function () {
+            _this._parseColumns();
+            _this._checkFilters();
+        });
+        this.events.on(types_1.GridEvents.afterResizeEnd, function () {
+            if (_this.config.autoHeight) {
+                _this.config.data = _this.data.map(function (row) {
+                    var height = data_1.getMaxRowHeight(row, _this.config.columns);
+                    row.$height = data_1.getCalculatedRowHeight(height, {
+                        rowHeight: _this.config.rowHeight,
+                        padding: 8,
+                    });
+                    return row;
+                });
+            }
+        });
+        this.events.on(types_1.GridEvents.afterRowResize, function (row, _e, currentHeight) {
+            var _a = _this.data.getItem(row.id), id = _a.id, height = _a.height, $height = _a.$height;
+            if (height && height !== $height) {
+                _this.data.update(id, { height: currentHeight });
+            }
+            _this.data.update(id, { $height: currentHeight }, true);
+            _this.config.data = _this.data.map(function (row) { return row; });
+            _this.paint();
+        });
+        this.events.on(types_1.GridEvents.scroll, function () {
+            _this._lazyLoad();
+        });
+    };
+    ProGrid.prototype._prepareData = function (data) {
+        var _this = this;
+        this._adjustColumns();
+        return data.map(function (row) {
+            if (_this.config.autoHeight && typeof row.height === "undefined") {
+                var height = data_1.getMaxRowHeight(row, _this.config.columns);
+                row.$height =
+                    data_1.getCalculatedRowHeight(height, {
+                        rowHeight: _this.config.rowHeight,
+                        padding: 8,
+                    }) || _this.config.rowHeight;
+            }
+            else {
+                row.$height = row.height || _this.config.rowHeight;
+            }
+            return row;
+        });
+    };
+    ProGrid.prototype._prepareDataFromTo = function (data, from, to) {
+        var _this = this;
+        return data.mapRange(from, to, function (row) {
+            var height = data_1.getMaxRowHeight(row, _this.config.columns);
+            row.$height =
+                data_1.getCalculatedRowHeight(height, {
+                    rowHeight: _this.config.rowHeight,
+                    padding: 8,
+                }) || _this.config.rowHeight;
+            return row;
+        });
+    };
+    ProGrid.prototype._lazyLoad = function () {
+        var _this = this;
+        var _a, _b;
+        var proxy = this.data.dataProxy;
+        if (proxy && proxy.config) {
+            var data = this.data.getRawData(0, -1, null, 2);
+            var renderConfig = render_1.getRenderConfig(this, data, {
+                width: this.config.width,
+                height: this.config.height,
+            });
+            var from_1 = this.data.getIndex((_a = renderConfig.currentRows[0]) === null || _a === void 0 ? void 0 : _a.id.toString());
+            var to_1 = this.data.getIndex((_b = renderConfig.currentRows[renderConfig.currentRows.length - 1]) === null || _b === void 0 ? void 0 : _b.id.toString());
+            if (!this.data.isDataLoaded(from_1, to_1)) {
+                proxy.updateUrl(null, { from: from_1, limit: proxy.config.limit });
+                this.data.load(proxy).then(function () {
+                    _this.config.autoHeight && _this._prepareDataFromTo(_this.data, from_1, to_1);
+                });
+            }
+        }
+    };
+    ProGrid.prototype._getColumnGhost = function (col) {
+        var headerRow = this._container.querySelector(".dhx_header-row");
+        var colHeaderCell = headerRow.querySelector(".dhx_grid-header-cell[dhx_id=\"" + col.id + "\"]");
+        var headerCols = Array.from(headerRow.childNodes);
+        var n = headerCols.indexOf(colHeaderCell) + 1;
+        var colHeaderCells = this._container.querySelectorAll(".dhx_grid-header-cell[dhx_id=\"" + col.id + "\"]");
+        var ghostGridNodes = this._container.querySelectorAll(".dhx_grid_data .dhx_grid-cell:nth-child(" + n + ")");
+        var ghostContainer = document.createElement("div");
+        colHeaderCells.forEach(function (node) { return ghostContainer.appendChild(node.cloneNode(true)); });
+        ghostGridNodes.forEach(function (node) { return ghostContainer.appendChild(node.cloneNode(true)); });
+        return ghostContainer;
+    };
+    ProGrid.prototype._dragStartColumn = function (e, col) {
+        var target = e.target;
+        var testCustom = function (el) { return el.classList.contains("dhx_grid-custom-content-cell"); };
+        var isCustom = testCustom(target.parentElement) || testCustom(target.parentElement.parentElement);
+        if (!isCustom &&
+            (col.draggable || (this.config.dragItem === "column" && col.draggable !== false)) &&
+            !html_1.locateNodeByClassName(e, "dhx_resizer_grip_wrap")) {
+            if (e.targetTouches) {
+                this._touch.start = true;
+            }
+            ts_data_1.dragManager.onMouseDown(e, col.id, [this._getColumnGhost(col)]);
+        }
+    };
+    return ProGrid;
+}(Grid_1.Grid));
+exports.ProGrid = ProGrid;
 
 
 /***/ }),
 /* 64 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(3);
-var types_1 = __webpack_require__(35);
-var DEFAULT_SHOW_DELAY = 750;
-var DEFAULT_HIDE_DELAY = 200;
-function findPosition(targetRect, position, width, height) {
-    var margin = 8; // margin top/bot, left/right
-    var pos;
-    var left;
-    var top;
-    switch (position) {
-        case types_1.Position.center:
-            left = targetRect.left + window.pageXOffset + (targetRect.width - width) / 2;
-            if (left + margin < window.pageXOffset) {
-                left = targetRect.left + window.pageXOffset;
-            }
-            top = targetRect.top + window.pageYOffset + (targetRect.height - height) / 2;
-            pos = types_1.RealPosition.center;
-            return { left: left, top: top, pos: pos };
-        case types_1.Position.right:
-            pos = types_1.RealPosition.right;
-            left = targetRect.right + window.pageXOffset;
-            if (left + width + margin > window.innerWidth + window.pageXOffset) {
-                // set left
-                left = window.pageXOffset + targetRect.left - width;
-                pos = types_1.RealPosition.left;
-            }
-            top = window.pageYOffset + targetRect.top + (targetRect.height - height) / 2;
-            return { left: left, top: top, pos: pos };
-        case types_1.Position.bottom:
-        default:
-            left = window.pageXOffset + targetRect.left + (targetRect.width - width) / 2;
-            if (left + width > window.innerWidth + window.pageXOffset) {
-                left = window.innerWidth + window.pageXOffset - width;
-            }
-            else if (left < 0) {
-                left = 0;
-            }
-            pos = types_1.RealPosition.bottom;
-            top = window.pageYOffset + targetRect.bottom;
-            if (top + height + margin > window.innerHeight + window.pageYOffset) {
-                // set top
-                top = window.pageYOffset + targetRect.top - height;
-                pos = types_1.RealPosition.top;
-            }
-            return { left: left, top: top, pos: pos };
-    }
-}
-exports.findPosition = findPosition;
-// tooltip init
-var tooltipBox = document.createElement("div");
-var tooltipText = document.createElement("span");
-tooltipText.className = "dhx_tooltip__text";
-tooltipBox.appendChild(tooltipText);
-tooltipBox.setAttribute("role", "tooltip");
-tooltipBox.style.position = "absolute";
-var lastNode = null;
-var isActive = false;
-var hideTimeout = null;
-var showTimeout = null;
-var activeListenersDestructor;
-function showTooltip(node, text, position, css, force, htmlEnable) {
-    if (force === void 0) { force = false; }
-    var rects = node.getBoundingClientRect();
-    if (htmlEnable) {
-        tooltipText.innerHTML = text;
-    }
-    else {
-        tooltipText.textContent = text;
-    }
-    document.body.appendChild(tooltipBox);
-    tooltipBox.className = "dhx_widget dhx_tooltip" + (force ? " dhx_tooltip--forced" : "");
-    var _a = tooltipBox.getBoundingClientRect(), width = _a.width, height = _a.height;
-    var _b = findPosition(rects, position, width, height), left = _b.left, top = _b.top, pos = _b.pos;
-    switch (pos) {
-        case types_1.RealPosition.bottom:
-            tooltipBox.style.left = left + "px";
-            tooltipBox.style.top = top + "px";
-            break;
-        case types_1.RealPosition.top:
-            tooltipBox.style.left = left + "px";
-            tooltipBox.style.top = top + "px";
-            break;
-        case types_1.RealPosition.left:
-            tooltipBox.style.left = left + "px";
-            tooltipBox.style.top = top + "px";
-            break;
-        case types_1.RealPosition.right:
-            tooltipBox.style.left = left + "px";
-            tooltipBox.style.top = top + "px";
-            break;
-        case types_1.RealPosition.center:
-            tooltipBox.style.left = left + "px";
-            tooltipBox.style.top = top + "px";
-            break;
-    }
-    tooltipBox.className += " dhx_tooltip--" + pos + " " + (css || "");
-    isActive = true;
-    if (!force) {
-        setTimeout(function () {
-            tooltipBox.className += " dhx_tooltip--animate";
-        });
-    }
-}
-function hideTooltip(delay) {
-    if (lastNode) {
-        hideTimeout = setTimeout(function () {
-            document.body.removeChild(tooltipBox);
-            isActive = false;
-            hideTimeout = null;
-        }, delay || DEFAULT_HIDE_DELAY);
-    }
-}
-function addListeners(node, text, config) {
-    var force = config.force, showDelay = config.showDelay, hideDelay = config.hideDelay, position = config.position, css = config.css, htmlEnable = config.htmlEnable;
-    if (!force) {
-        showTimeout = setTimeout(function () {
-            showTooltip(node, text, position || types_1.Position.bottom, css, false, htmlEnable);
-        }, showDelay || DEFAULT_SHOW_DELAY);
-    }
-    var hide = function () {
-        if (isActive) {
-            hideTooltip(hideDelay);
-        }
-        clearTimeout(showTimeout);
-        node.removeEventListener("mouseleave", hide);
-        node.removeEventListener("blur", hide);
-        document.removeEventListener("mousedown", hide);
-        lastNode = null;
-        activeListenersDestructor = null;
-    };
-    if (force) {
-        showTooltip(node, text, position, css, force, htmlEnable);
-    }
-    node.addEventListener("mouseleave", hide);
-    node.addEventListener("blur", hide);
-    document.addEventListener("mousedown", hide);
-    activeListenersDestructor = hide;
-}
-// default
-function tooltip(text, config) {
-    var node = html_1.toNode(config.node);
-    if (node === lastNode) {
-        return;
-    }
-    if (activeListenersDestructor) {
-        activeListenersDestructor();
-        activeListenersDestructor = null;
-    }
-    lastNode = node;
-    if (hideTimeout) {
-        clearTimeout(hideTimeout);
-        hideTimeout = null;
-        addListeners(node, text, __assign(__assign({}, config), { force: true }));
-    }
-    else {
-        addListeners(node, text, config);
-    }
-}
-exports.tooltip = tooltip;
-function _mousemove(e) {
-    var node = html_1.locateNode(e, "dhx_tooltip_text");
-    if (!node) {
-        return;
-    }
-    tooltip(node.getAttribute("dhx_tooltip_text"), {
-        position: node.getAttribute("dhx_tooltip_position") || types_1.Position.bottom,
-        node: node,
-    });
-}
-function enableTooltip() {
-    document.addEventListener("mousemove", _mousemove);
-}
-exports.enableTooltip = enableTooltip;
-function disableTooltip() {
-    document.removeEventListener("mousemove", _mousemove);
-}
-exports.disableTooltip = disableTooltip;
-
-
-/***/ }),
-/* 65 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(24);
-var ts_data_1 = __webpack_require__(4);
-var Selection = /** @class */ (function () {
-    function Selection(config, data, events) {
-        var _this = this;
-        this.config = config;
-        this.events = events;
-        this._data = data;
-        this._selected = [];
-        this._data.events.on(ts_data_1.DataEvents.removeAll, function () {
-            _this._selected = [];
-        });
-        if (typeof this.config.multiselection === "string") {
-            var types = ["click", "ctrlClick"];
-            if (!types.includes(this.config.multiselection)) {
-                this.config.multiselection = false;
-            }
-        }
-        this._data.events.on(ts_data_1.DataEvents.beforeRemove, function (obj) {
-            _this._nextSelection = null;
-            if (_this._selected.length === 1) {
-                var next = _this._data.getIndex(obj.id);
-                var count = _this._data.getLength();
-                if (count > 1) {
-                    var lastIndex = count == next - 1 ? next - 1 : next + 1;
-                    _this._nextSelection = _this._data.getId(lastIndex);
-                }
-            }
-        });
-        this._data.events.on(ts_data_1.DataEvents.afterRemove, function (obj) {
-            var hasIndex = _this._selected.indexOf(obj.id);
-            if (hasIndex !== -1) {
-                _this._selected.splice(hasIndex, 1);
-            }
-            if (_this._nextSelection) {
-                _this.add(_this._nextSelection);
-                _this._nextSelection = null;
-            }
-        });
-    }
-    Selection.prototype.enable = function () {
-        this.config.disabled = false;
-    };
-    Selection.prototype.disable = function () {
-        this.remove();
-        this.config.disabled = true;
-    };
-    Selection.prototype.getId = function () {
-        if (this.config.multiselection) {
-            return this._selected;
-        }
-        return this._selected[0];
-    };
-    Selection.prototype.getItem = function () {
-        var _this = this;
-        if (this.config.multiselection) {
-            return this._selected.map(function (id) { return _this._data.getItem(id); });
-        }
-        return this._selected.length ? this._data.getItem(this._selected[0]) : null;
-    };
-    Selection.prototype.contains = function (id) {
-        if (id) {
-            return this._selected.includes(id);
-        }
-        return this._selected.length > 0;
-    };
-    Selection.prototype.remove = function (id) {
-        var _this = this;
-        if (id) {
-            this._unselectItem(id);
-        }
-        else {
-            this._selected.forEach(function (selectedId) { return _this._unselectItem(selectedId); });
-            this._selected = [];
-        }
-    };
-    Selection.prototype.add = function (id, isCtrl, isShift, silent) {
-        var _this = this;
-        if (this.config.disabled) {
-            return;
-        }
-        if (typeof id === "undefined") {
-            var unSelected = this._data.serialize().filter(function (_a) {
-                var id = _a.id;
-                return !_this._selected.includes(id);
-            });
-            unSelected.forEach(function (_a) {
-                var id = _a.id;
-                _this._addMulti(id, silent);
-            });
-            return;
-        }
-        var multi = this.config.multiselection;
-        if (isShift && this._selected.length && multi) {
-            this._addMulti(id, silent);
-        }
-        else {
-            this._addSingle(id, multi && (multi !== "ctrlClick" || isCtrl), silent);
-        }
-    };
-    Selection.prototype.destructor = function () {
-        var _this = this;
-        this._selected.forEach(function (selectedId) { return _this._unselectItem(selectedId, true); });
-    };
-    Selection.prototype._addMulti = function (id, silent) {
-        var _a;
-        var last = this._selected[this._selected.length - 1];
-        var i1 = this._data.getIndex(last);
-        var i2 = this._data.getIndex(id);
-        if (i1 > i2) {
-            _a = [i2, i1], i1 = _a[0], i2 = _a[1];
-        }
-        for (i1; i1 <= i2; i1++) {
-            var id_1 = this._data.getId(i1);
-            this._selectItem(id_1, silent);
-        }
-    };
-    Selection.prototype._addSingle = function (id, isCtrl, silent) {
-        var _this = this;
-        if (!isCtrl) {
-            this._selected.forEach(function (selectedId) {
-                if (selectedId != id)
-                    _this._unselectItem(selectedId);
-            });
-        }
-        if (isCtrl && this._selected.includes(id)) {
-            this._unselectItem(id, silent);
-        }
-        else {
-            this._selectItem(id, silent);
-        }
-    };
-    Selection.prototype._selectItem = function (id, silent) {
-        var item = this._data.getItem(id);
-        if (!item || this._data.getMeta(item, "selected"))
-            return;
-        if (!silent && !this.events.fire(types_1.SelectionEvents.beforeSelect, [id]))
-            return;
-        this._selected.push(id);
-        this._data.setMeta(item, "selected", true);
-        if (!silent)
-            this.events.fire(types_1.SelectionEvents.afterSelect, [id]);
-    };
-    Selection.prototype._unselectItem = function (id, silent) {
-        if (!silent && !this.events.fire(types_1.SelectionEvents.beforeUnSelect, [id]))
-            return;
-        this._selected = this._selected.filter(function (selectedId) { return selectedId !== id; });
-        this._data.setMeta(this._data.getItem(id), "selected", false);
-        if (!silent)
-            this.events.fire(types_1.SelectionEvents.afterUnSelect, [id]);
-    };
-    return Selection;
-}());
-exports.Selection = Selection;
-
-
-/***/ }),
-/* 66 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var PopupEvents;
-(function (PopupEvents) {
-    PopupEvents["beforeHide"] = "beforeHide";
-    PopupEvents["beforeShow"] = "beforeShow";
-    PopupEvents["afterHide"] = "afterHide";
-    PopupEvents["afterShow"] = "afterShow";
-    PopupEvents["click"] = "click";
-})(PopupEvents = exports.PopupEvents || (exports.PopupEvents = {}));
-
-
-/***/ }),
-/* 67 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var SliderEvents;
-(function (SliderEvents) {
-    SliderEvents["change"] = "change";
-    SliderEvents["mousedown"] = "mousedown";
-    SliderEvents["mouseup"] = "mouseup";
-})(SliderEvents = exports.SliderEvents || (exports.SliderEvents = {}));
-
-
-/***/ }),
-/* 68 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var locale = {
-    hours: "Hours",
-    minutes: "Minutes",
-    save: "save",
-};
-exports.default = locale;
-
-
-/***/ }),
-/* 69 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var TimepickerEvents;
-(function (TimepickerEvents) {
-    TimepickerEvents["change"] = "change";
-    TimepickerEvents["beforeApply"] = "beforeApply";
-    TimepickerEvents["afterApply"] = "afterApply";
-    TimepickerEvents["beforeClose"] = "beforeClose";
-    TimepickerEvents["afterClose"] = "afterClose";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    TimepickerEvents["apply"] = "apply";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    TimepickerEvents["close"] = "close";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    TimepickerEvents["save"] = "save";
-})(TimepickerEvents = exports.TimepickerEvents || (exports.TimepickerEvents = {}));
-
-
-/***/ }),
-/* 70 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var CalendarEvents;
-(function (CalendarEvents) {
-    CalendarEvents["change"] = "change";
-    CalendarEvents["beforeChange"] = "beforechange";
-    CalendarEvents["modeChange"] = "modeChange";
-    CalendarEvents["monthSelected"] = "monthSelected";
-    CalendarEvents["yearSelected"] = "yearSelected";
-    CalendarEvents["cancelClick"] = "cancelClick";
-    CalendarEvents["dateMouseOver"] = "dateMouseOver";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    CalendarEvents["dateHover"] = "dateHover";
-})(CalendarEvents = exports.CalendarEvents || (exports.CalendarEvents = {}));
-
-
-/***/ }),
-/* 71 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.grayShades = [
-    "#000000",
-    "#4C4C4C",
-    "#666666",
-    "#808080",
-    "#999999",
-    "#B3B3B3",
-    "#CCCCCC",
-    "#E6E6E6",
-    "#F2F2F2",
-    "#FFFFFF",
-];
-exports.palette = [
-    ["#D4DAE4", "#B0B8CD", "#949DB1", "#727A8C", "#5E6677", "#3F4757", "#1D2534"],
-    ["#FFCDD2", "#FE9998", "#F35C4E", "#E94633", "#D73C2D", "#CA3626", "#BB2B1A"],
-    ["#F9E6AD", "#F4D679", "#EDB90F", "#EAA100", "#EA8F00", "#EA7E00", "#EA5D00"],
-    ["#BCE4CE", "#90D2AF", "#33B579", "#36955F", "#247346", "#1D5B38", "#17492D"],
-    ["#BDF0E9", "#92E7DC", "#02D7C5", "#11B3A5", "#018B80", "#026B60", "#024F43"],
-    ["#B3E5FC", "#81D4FA", "#29B6F6", "#039BE5", "#0288D1", "#0277BD", "#01579B"],
-    ["#AEC1FF", "#88A3F9", "#5874CD", "#2349AE", "#163FA2", "#083596", "#002381"],
-    ["#C5C0DA", "#9F97C1", "#7E6BAD", "#584A8F", "#4F4083", "#473776", "#3A265F"],
-    ["#D6BDCC", "#C492AC", "#A9537C", "#963A64", "#81355A", "#6E3051", "#4C2640"],
-    ["#D2C5C1", "#B4A09A", "#826358", "#624339", "#5D4037", "#4E342E", "#3E2723"],
-];
-
-
-/***/ }),
-/* 72 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ColorpickerEvents;
-(function (ColorpickerEvents) {
-    ColorpickerEvents["change"] = "change";
-    ColorpickerEvents["apply"] = "apply";
-    ColorpickerEvents["cancelClick"] = "cancelClick";
-    ColorpickerEvents["modeChange"] = "modeChange";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    ColorpickerEvents["selectClick"] = "selectClick";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    ColorpickerEvents["colorChange"] = "colorChange";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    ColorpickerEvents["viewChange"] = "viewChange";
-})(ColorpickerEvents = exports.ColorpickerEvents || (exports.ColorpickerEvents = {}));
-
-
-/***/ }),
-/* 73 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(8);
-var defaultTextTemplate = function (item) { return item.toString(); };
-var getScaleAriaAttrs = function (axis, text) { return ({
-    role: "graphics-object",
-    "aria-label": axis + "-axis" + (text ? ", " + text : ""),
-}); };
-function bottom(points, config, width, height) {
-    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
-    var template = textTemplate || defaultTextTemplate;
-    var text = [];
-    var extraTittlePadding = 0;
-    if (showText) {
-        extraTittlePadding = textPadding;
-        var canRotate_1 = scaleRotate && !isNaN(scaleRotate);
-        var y_1 = height + textPadding;
-        text = points.map(function (p) {
-            var x = p[0];
-            var transform = canRotate_1 ? "rotate(" + scaleRotate + " " + x + " " + y_1 + ")" : "";
-            var classList = ["scale-text", "top-text"];
-            if (canRotate_1) {
-                var angle = scaleRotate % 360;
-                classList.push(common_1.getClassesForRotateScale("bottom", angle));
-            }
-            return dom_1.sv("text", { x: x, y: y_1, class: classList.join(" "), transform: transform }, [
-                common_1.verticalCenteredText(template(p[1])),
-            ]);
-        });
-    }
-    var id = core_1.uid();
-    var svTitle = null;
-    var mainLine = dom_1.sv("path", {
-        class: "main-scale",
-        d: "M0 " + height + " H" + (width - 0.5),
-        id: id,
-    });
-    if (title) {
-        svTitle = dom_1.sv("text", { dx: width / 2, dy: scalePadding + extraTittlePadding }, [
-            dom_1.sv("textPath", { href: "#" + id, class: "scale-title " }, title),
-        ]);
-    }
-    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("x", title || config.text)), [mainLine, svTitle].concat(text));
-}
-exports.bottom = bottom;
-function bottomGrid(points, width, height, config) {
-    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine, targetValue = config.targetValue;
-    var len = points.length;
-    var gridLines = [];
-    var className = "grid-line " + (dashed ? "dash-line" : "") + " " + (!grid ? "hidden-line" : "");
-    for (var i = 0; i < len; i++) {
-        if (i === 0 && points[i][0] === 0 && !config.hidden) {
-            continue;
-        }
-        if (i === targetLine) {
-            var d_1 = "M" + points[i][0] + " 0 V " + height;
-            var path_1 = dom_1.sv("path", { d: d_1, class: className + " spec-grid-line" });
-            gridLines.push(path_1);
-            continue;
-        }
-        var d = "M" + points[i][0] + " 0 V " + height;
-        var path = dom_1.sv("path", { d: d, class: className, _ref: "line" + Math.round(points[i][0]) });
-        gridLines.push(path);
-        if (i === len - 1 && points[i][0] !== width) {
-            var additionD = "M" + width + " 0 V " + height;
-            var additionPath = dom_1.sv("path", { d: additionD, class: className });
-            gridLines.push(additionPath);
-        }
-    }
-    if (targetValue) {
-        var d = "M" + targetValue * width + " 0 V " + height;
-        var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
-        gridLines.push(path);
-    }
-    return dom_1.sv("g", gridLines);
-}
-exports.bottomGrid = bottomGrid;
-function top(points, config, width, _height) {
-    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
-    var template = textTemplate || defaultTextTemplate;
-    var text = [];
-    var extraTittlePadding = 0;
-    if (showText) {
-        extraTittlePadding = textPadding;
-        var canRotate_2 = scaleRotate && !isNaN(scaleRotate);
-        var y_2 = -textPadding;
-        text = points.map(function (p) {
-            var classList = ["scale-text"];
-            var x = p[0];
-            var transform = canRotate_2 ? "rotate(" + scaleRotate + " " + x + " " + y_2 + ")" : "";
-            if (canRotate_2) {
-                var angle = scaleRotate % 360;
-                classList.push(common_1.getClassesForRotateScale("top", angle));
-            }
-            return dom_1.sv("text", { x: x, y: y_2, class: classList.join(" "), transform: transform }, [
-                common_1.verticalCenteredText(template(p[1])),
-            ]);
-        });
-    }
-    var id = core_1.uid();
-    var mainLine = dom_1.sv("path", { d: "M0 0 H" + width, class: "main-scale", id: id });
-    var svTitle = null;
-    if (title) {
-        svTitle = dom_1.sv("text", { dx: width / 2, dy: -scalePadding - extraTittlePadding }, [
-            dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
-        ]);
-    }
-    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("x", title || config.text)), [mainLine, svTitle].concat(text));
-}
-exports.top = top;
-function topGrid(points, _width, height, config) {
-    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine;
-    var len = points.length;
-    var gridLines = [];
-    var className = "grid-line " + (dashed ? "dash-line" : "") + " " + (!grid ? "hidden-line" : "");
-    for (var i = 0; i < len; i++) {
-        if (i === 0 && points[i][0] === 0 && !config.hidden) {
-            continue;
-        }
-        if (i === targetLine) {
-            var d_2 = "M" + points[i][0] + " 0 V " + height;
-            var path_2 = dom_1.sv("path", { d: d_2, class: className + " spec-grid-line" });
-            gridLines.push(path_2);
-            continue;
-        }
-        var d = "M" + points[i][0] + " 0 V " + height;
-        var path = dom_1.sv("path", { d: d, class: className, _ref: "line" + Math.round(points[i][0]) });
-        gridLines.push(path);
-        if (i === len - 1 && points[i][0] !== 0) {
-            var additionD = "M0 0 V " + height;
-            var additionPath = dom_1.sv("path", { d: additionD, class: className });
-            gridLines.push(additionPath);
-        }
-    }
-    return dom_1.sv("g", gridLines);
-}
-exports.topGrid = topGrid;
-function left(points, config, _width, height) {
-    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
-    var template = textTemplate || defaultTextTemplate;
-    var text = [];
-    var extraTittlePadding = 0;
-    if (showText) {
-        var style_1 = common_1.getFontStyle("scale-text");
-        var maxTextWidth_1 = 0;
-        var canRotate_3 = scaleRotate && !isNaN(scaleRotate);
-        text = points.map(function (p) {
-            var y = p[0];
-            var x = -textPadding;
-            var transform = canRotate_3 ? "rotate(" + scaleRotate + " " + x + " " + y + ")" : "";
-            var classList = ["scale-text"];
-            var scaleText = template(p[1]);
-            if (title) {
-                var textWidth = common_1.getTextWidth(scaleText, style_1);
-                if (maxTextWidth_1 < textWidth) {
-                    maxTextWidth_1 = textWidth;
-                }
-            }
-            if (canRotate_3) {
-                var angle = scaleRotate % 360;
-                classList.push(common_1.getClassesForRotateScale("left", angle));
-            }
-            else {
-                classList.push("end-text");
-            }
-            return dom_1.sv("text", { x: x, y: y, class: classList.join(" "), transform: transform }, [
-                common_1.verticalCenteredText(scaleText),
-            ]);
-        });
-        extraTittlePadding = maxTextWidth_1 + textPadding;
-    }
-    var id = core_1.uid();
-    var mainLine = dom_1.sv("path", {
-        class: "main-scale",
-        d: "M0 " + height + " V 0.5",
-        id: id,
-        _ref: points.length ? "line0" : null,
-    }); // 0.5 instead of 0, coz stroke-linecap: square and dirrent stroke size
-    var svTitle = null;
-    if (title) {
-        svTitle = dom_1.sv("text", { dx: height / 2, dy: -scalePadding - extraTittlePadding }, [
-            dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
-        ]);
-    }
-    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("y", title || config.text)), [mainLine, svTitle].concat(text));
-}
-exports.left = left;
-function leftGrid(points, width, height, config) {
-    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine, targetValue = config.targetValue;
-    var len = points.length;
-    var gridLines = [];
-    var className = "grid-line " + (dashed ? "dash-line" : "");
-    for (var i = 0; i < len; i++) {
-        if (i === 0 && points[i][0] === height && !config.hidden) {
-            continue;
-        }
-        if (targetLine === i) {
-            var d = "M0 " + points[i][0] + " H " + width;
-            var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
-            gridLines.push(path);
-            continue;
-        }
-        if (grid) {
-            var d = "M0 " + points[i][0] + " H " + width;
-            var path = dom_1.sv("path", { d: d, class: className });
-            gridLines.push(path);
-            if (i === len - 1 && points[i][0] !== width) {
-                var additionD = "M0 0 H" + width;
-                var additionPath = dom_1.sv("path", { d: additionD, class: className });
-                gridLines.push(additionPath);
-            }
-        }
-    }
-    if (targetValue) {
-        var d = "M0 " + targetValue * height + " H " + width;
-        var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
-        gridLines.push(path);
-    }
-    return dom_1.sv("g", gridLines);
-}
-exports.leftGrid = leftGrid;
-function right(points, config, width, height) {
-    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
-    var template = textTemplate || defaultTextTemplate;
-    var text = [];
-    var extraTittlePadding = 0;
-    if (showText) {
-        var style_2 = common_1.getFontStyle("scale-text");
-        var maxTextWidth_2 = 0;
-        var canRotate_4 = scaleRotate && !isNaN(scaleRotate);
-        text = points.map(function (p) {
-            var scaleText = template(p[1]);
-            var y = p[0];
-            var x = width + textPadding;
-            var transform = canRotate_4 ? "rotate(" + scaleRotate + " " + x + " " + y + ")" : "";
-            var classList = ["scale-text"];
-            if (title) {
-                var textWidth = common_1.getTextWidth(scaleText, style_2);
-                if (maxTextWidth_2 < textWidth) {
-                    maxTextWidth_2 = textWidth;
-                }
-            }
-            if (canRotate_4) {
-                var angle = scaleRotate % 360;
-                classList.push(common_1.getClassesForRotateScale("right", angle));
-            }
-            else {
-                classList.push("start-text");
-            }
-            return dom_1.sv("text", { x: x, y: y, class: classList.join(" "), transform: transform }, [
-                common_1.verticalCenteredText(scaleText),
-            ]);
-        });
-        extraTittlePadding = textPadding + maxTextWidth_2;
-    }
-    var id = core_1.uid();
-    var mainLine = dom_1.sv("path", {
-        d: "M" + width + " " + height + " V 0",
-        class: "main-scale",
-        id: id,
-        _ref: points.length ? "line0" : null,
-    });
-    var svTitle = null;
-    if (title) {
-        svTitle = dom_1.sv("text", { dx: height / 2, dy: scalePadding + extraTittlePadding }, [
-            dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
-        ]);
-    }
-    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("y", title || config.text)), [mainLine, svTitle].concat(text));
-}
-exports.right = right;
-function rightGrid(points, width, height, config) {
-    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine;
-    var len = points.length;
-    var gridLines = [];
-    var className = "grid-line " + (dashed ? "dash-line" : "");
-    for (var i = 0; i < len; i++) {
-        if (i === 0 && points[i][0] === height && !config.hidden) {
-            continue;
-        }
-        if (targetLine === i) {
-            var d = "M0 " + points[i][0] + " H " + width;
-            var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
-            gridLines.push(path);
-            continue;
-        }
-        if (grid) {
-            var d = "M0 " + points[i][0] + " H " + width;
-            var path = dom_1.sv("path", { d: d, class: className });
-            gridLines.push(path);
-            if (i === len - 1 && points[i][0] !== width) {
-                var additionD = "M0 0 H" + width;
-                var additionPath = dom_1.sv("path", { d: additionD, class: className });
-                gridLines.push(additionPath);
-            }
-        }
-    }
-    return dom_1.sv("g", gridLines);
-}
-exports.rightGrid = rightGrid;
-
-
-/***/ }),
-/* 74 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(8);
-var ScaleSeria_1 = __webpack_require__(48);
-var Area = /** @class */ (function (_super) {
-    __extends(Area, _super);
-    function Area() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Area.prototype.paint = function (width, height, prev) {
-        _super.prototype.paint.call(this, width, height);
-        var getChartAriaAttrs = function (cfg) { return ({
-            "aria-label": "chart " + (cfg.value || ""),
-        }); };
-        var svg = [];
-        this._form(width, height, svg, prev);
-        this._markers(svg);
-        return dom_1.sv("g", __assign({ class: "seria", _key: this.id }, getChartAriaAttrs(this.config)), svg);
-    };
-    Area.prototype.paintformAndMarkers = function (width, height, prev) {
-        _super.prototype.paint.call(this, width, height);
-        var svg = [];
-        var markers = [];
-        this._form(width, height, svg, prev);
-        this._markers(markers);
-        return [
-            dom_1.sv("g", { class: "seria", _key: this.id }, svg),
-            dom_1.sv("g", { class: "seria_markers", _key: this.id + "_markers" }, markers),
-        ];
-    };
-    Area.prototype._markers = function (svg) {
-        var _this = this;
-        if (this.config.pointType) {
-            var color = this.config.pointColor || this.config.color;
-            var point_1 = this._getPointType(this.config.pointType, color, false);
-            svg.push.apply(svg, this._points.map(function (p) { return point_1(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); }));
-        }
-    };
-    Area.prototype._form = function (width, height, svg, prev) {
-        var css = "chart " + this.config.type + " " + (this.config.css || "") + " " + (this.config.dashed ? "dash-line" : "");
-        var _a = this.config, id = _a.id, fill = _a.fill, alpha = _a.alpha, color = _a.color, strokeWidth = _a.strokeWidth;
-        var points = this._points;
-        var last = points[points.length - 1];
-        var d = "";
-        if (prev) {
-            // bottom line in stacked area
-            for (var i = prev.length - 1; i >= 0; i--) {
-                var item = prev[i];
-                d += i === points.length - 1 ? "M" + item[0] + " " + item[1] + " " : "L" + item[0] + " " + item[1] + " ";
-            }
-            // top line in stacked area
-            d +=
-                points.map(function (item, index) { return (!index ? "V " + item[1] : "L " + item[0] + " " + item[1]); }).join(" ") +
-                    "Z";
-        }
-        else {
-            d +=
-                points
-                    .map(function (item, index) {
-                    return index ? "L" + item[0] + " " + item[1] : "M0 " + height + " L0 " + item[1] + " L" + item[0] + " " + item[1];
-                })
-                    .join(" ") + ("L" + width + " " + last[1] + " V " + height);
-        }
-        if (strokeWidth) {
-            var len_1 = points.length - 1;
-            var strokePadding_1 = function (index) { return (index === len_1 ? -0.5 : index ? 0 : 0.5); };
-            var line = points
-                .map(function (item, index) {
-                return index
-                    ? "L" + (item[0] + strokePadding_1(index)) + " " + item[1]
-                    : "M0 " + item[1] + " L0 " + (item[1] + strokePadding_1(index)) + " L" + (item[0] +
-                        strokePadding_1(index)) + " " + item[1];
-            })
-                .join(" ") + ("L" + width + " " + last[1]);
-            var linePath = dom_1.sv("path", {
-                d: line,
-                "stroke-width": strokeWidth,
-                stroke: color,
-                fill: "none",
-                class: css,
-            });
-            svg.push(linePath);
-        }
-        var path = dom_1.sv("path", {
-            id: "seria" + id,
-            d: d,
-            class: css,
-            fill: fill,
-            _ref: id,
-            "fill-opacity": alpha,
-            stroke: "none",
-        });
-        svg.push(path);
-        return svg;
-    };
-    Area.prototype._setDefaults = function (config) {
-        var defaults = {
-            alpha: 0.3,
-            strokeWidth: 2,
-            fill: config.color || "#5E83BA",
-            color: "#5E83BA",
-            active: true,
-            tooltip: true,
-            pointType: "empty",
-        };
-        this.config = __assign(__assign({}, defaults), config);
-        var showTooltip = this.config.tooltip;
-        var point = this.config.pointType;
-        var color = this.config.pointColor || this.config.color;
-        if (point) {
-            this._drawPointType = this._getPointType(point, color, showTooltip);
-        }
-    };
-    return Area;
-}(ScaleSeria_1.default));
-exports.default = Area;
-
-
-/***/ }),
-/* 75 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(8);
-function hoverMode(cfg) {
-    // cfg.fill = cfg.stroke; ??
-    return cfg;
-}
-exports.hoverMode = hoverMode;
-function standarMode(cfg) {
-    return cfg;
-}
-exports.standarMode = standarMode;
-var forms = {
-    circle: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            cx: x,
-            cy: y,
-            r: 4,
-            class: "figure point-circle",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("circle", mode(config));
-    },
-    rect: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            x: x - 4,
-            y: y - 4,
-            width: 8,
-            height: 8,
-            class: "figure point-rect",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("rect", mode(config));
-    },
-    rhombus: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            points: x - 5 + "," + y + " " + x + "," + (y + 5) + " " + (x + 5) + "," + y + " " + x + "," + (y - 5),
-            class: "figure point-rhombus",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("polygon", mode(config));
-    },
-    triangle: function (color, fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            points: x + "," + (y - 5) + " " + (x + 5) + "," + (y + 5) + " " + (x - 5) + "," + (y + 5),
-            class: "figure point-triangle",
-            fill: fill,
-            stroke: color,
-            "stroke-width": 2,
-        };
-        return dom_1.sv("polygon", mode(config));
-    },
-    simpleCircle: function (color, _fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            cx: x,
-            cy: y,
-            r: 3,
-            class: "figure point-simple-circle",
-            fill: color,
-        };
-        return dom_1.sv("circle", mode(config));
-    },
-    simpleRect: function (color, _fill, _alpha, x, y, id, mode) {
-        var config = {
-            _ref: id,
-            x: x - 3,
-            y: y - 3,
-            width: 6,
-            height: 6,
-            class: "figure point-simple-rect",
-            fill: color,
-        };
-        return dom_1.sv("rect", mode(config));
-    },
-    empty: function () {
-        return null;
-    },
-};
-var formsHTML = {
-    circle: function (color, fill, _alpha, x, y, id) {
-        return "<circle class=\"figure point-circle\" _ref=\"" + id + "\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"4\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
-    },
-    rect: function (color, fill, _alpha, x, y, id) {
-        return "<rect _ref=\"" + id + "\" x=\"" + (x - 4) + "\" y=\"" + (y -
-            4) + "\" width=\"8\" height=\"8\" class=\"figure point-rect\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
-    },
-    rhombus: function (color, fill, _alpha, x, y, id) {
-        return "<polygon _ref=\"" + id + "\" points=\"" + (x - 5) + "," + y + " " + x + "," + (y + 5) + " " + (x + 5) + "," + y + " " + x + "," + (y -
-            5) + "\" class=\"figure point-rhombus\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
-    },
-    triangle: function (color, fill, _alpha, x, y, id) {
-        return "<polygon _ref=\"" + id + "\" points=\"" + x + "," + (y - 5) + " " + (x + 5) + "," + (y + 5) + " " + (x - 5) + "," + (y +
-            5) + "\" class=\"figure point-triangle\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
-    },
-    simpleCircle: function (color, _fill, _alpha, x, y, id) {
-        return "<circle _ref=\"" + id + "\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"3\" class=\"figure point-simple-circle\" fill=\"" + color + "\"/>";
-    },
-    simpleRect: function (color, _fill, _alpha, x, y, id) {
-        return "<rect _ref=\"id\" x=\"" + (x - 3) + "\" y=\"" + (y -
-            3) + "\" width=\"6\" height=\"6\" class=\"figure point-simple-rect\" fill=\"" + color + "\"/>";
-    },
-    empty: function () {
-        return null;
-    },
-};
-function getHelper(type) {
-    var helper = forms[type.toString()];
-    if (!helper) {
-        throw new Error("unknown point type");
-    }
-    return helper;
-}
-exports.getHelper = getHelper;
-function getHTMLHelper(type) {
-    var helper = formsHTML[type.toString()];
-    if (!helper) {
-        throw new Error("unknown point type");
-    }
-    return helper;
-}
-exports.getHTMLHelper = getHTMLHelper;
-function getShadeHelper(type, color, mode) {
-    var helper = getHelper(type);
-    color = color || "none";
-    var shade = common_1.getColorShade(color, 0.2);
-    return function (x, y, id) {
-        return helper(color, shade, "", x, y, id, mode);
-    };
-}
-exports.getShadeHelper = getShadeHelper;
-function getShadeHTMLHelper(type, color) {
-    var helper = getHTMLHelper(type);
-    color = color || "none";
-    var shade = common_1.getColorShade(color, 0.2);
-    return function (x, y, id) {
-        return helper(color, shade, "", x, y, id);
-    };
-}
-exports.getShadeHTMLHelper = getShadeHTMLHelper;
-
-
-/***/ }),
-/* 76 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(8);
-var ScaleSeria_1 = __webpack_require__(48);
-var Bar = /** @class */ (function (_super) {
-    __extends(Bar, _super);
-    function Bar() {
-        var _this = _super !== null && _super.apply(this, arguments) || this;
-        _this._shift = 0;
-        return _this;
-    }
-    Bar.prototype.addScale = function (type, scale) {
-        _super.prototype.addScale.call(this, type, scale);
-        scale.addPadding();
-    };
-    Bar.prototype.seriesShift = function (shift) {
-        this._shift = shift;
-        return this.config.barWidth;
-    };
-    Bar.prototype.paint = function (width, height, prev) {
-        _super.prototype.paint.call(this, width, height);
-        var getChartAriaAttrs = function (cfg) { return ({
-            "aria-label": "chart " + (cfg.value || ""),
-        }); };
-        if (!this.config.active) {
-            return null;
-        }
-        var svg = [];
-        if (this._gradient) {
-            svg.push(dom_1.sv("defs", [this._gradient()]));
-        }
-        var css = "chart " + this.config.type + " " + (this.config.css || "") + " " + (this.config.dashed ? "dash-line" : "");
-        var form = this._getForm(this._points, css, width, height, prev);
-        svg = svg.concat(form);
-        return dom_1.sv("g", __assign({ class: "seria", _key: this.id }, getChartAriaAttrs(this.config)), svg);
-    };
-    Bar.prototype.getTooltipType = function (_id, _x, y) {
-        if (this.config.baseLine !== undefined && this._baseLinePosition < y) {
-            return "bot";
-        }
-        return "top";
-    };
-    Bar.prototype._getClosestDist = function (x, y, px, py) {
-        if (this.config.stacked && y < py) {
-            return Infinity;
-        }
-        return Math.abs(x - px);
-    };
-    Bar.prototype._path = function (item, prev) {
-        item[0] += this._shift;
-        return "\nM " + (item[0] - this.config.barWidth / 2) + " " + prev + "\nV " + item[1] + "\nh " + this.config.barWidth + "\nV " + prev;
-    };
-    Bar.prototype._base = function (height) {
-        var baseLine = this.config.baseLine;
-        return (this._baseLinePosition =
-            baseLine !== undefined ? this.yScale.point(baseLine) * height : height - 1);
-    };
-    Bar.prototype._text = function (item, prev, rotate) {
-        var x = item[0];
-        var y = (prev + item[1]) / 2;
-        var canRotate = rotate && !isNaN(rotate);
-        return {
-            x: x,
-            y: y,
-            class: "bar-text",
-            transform: canRotate ? "rotate(" + rotate + " " + x + " " + y + ")" : "",
-        };
-    };
-    Bar.prototype._getForm = function (points, css, _width, height, prev) {
-        var _this = this;
-        var getPointAriaLabel = function (barType, item, baseLine) {
-            if (baseLine === void 0) { baseLine = 0; }
-            var x = item[3];
-            var yStart = baseLine;
-            var yEnd = item[4];
-            if (baseLine > yEnd) {
-                yStart = yEnd;
-                yEnd = baseLine;
-            }
-            return barType === "xbar"
-                ? "bar y=" + x + ", x from " + yStart + " to " + yEnd
-                : "bar x=" + x + ", y from " + yStart + " to " + yEnd;
-        };
-        var getPointAriaAttrs = function (barType, item, baseLine) { return ({
-            role: "graphics-symbol",
-            "aria-roledescription": "bar",
-            "aria-label": getPointAriaLabel(barType, item, baseLine),
-        }); };
-        var _a = this.config, baseLine = _a.baseLine, fill = _a.fill, alpha = _a.alpha, showText = _a.showText, showTextTemplate = _a.showTextTemplate, showTextRotate = _a.showTextRotate;
-        var svg = [];
-        var base = this._base(height);
-        var getPrev = function (index) { return (!prev ? base : prev[index][1]); };
-        var series = points.map(function (item, index) {
-            return dom_1.sv("path", __assign({ _key: "seria" + _this.config.id + index, _ref: common_1.calcPointRef(item[2], _this.config.id), d: _this._path(item, getPrev(index)), class: css, fill: fill, onclick: [_this._handlers.onmousemove, item[2], _this.config.id], onmousemove: [_this._handlers.onmousemove, item[2], _this.config.id], onmouseleave: [_this._handlers.onmouseleave, item[2], _this.config.id], "fill-opacity": alpha }, getPointAriaAttrs(_this.config.type, item, baseLine)));
-        });
-        svg.push.apply(svg, series);
-        if ((showText || showTextTemplate || showTextRotate) && showText !== false) {
-            var isWrite_1 = function (item, index) { return Math.abs(getPrev(index) - item[1]) > 16; }; // hide text, where height < 16
-            var text = points.map(function (item, index) {
-                var value = _this._getText(item);
-                return isWrite_1(item, index)
-                    ? dom_1.sv("text", __assign(__assign({}, _this._text(item, getPrev(index), showTextRotate)), { "aria-hidden": "true" }), [
-                        showTextTemplate
-                            ? common_1.verticalCenteredText(showTextTemplate(value))
-                            : common_1.verticalCenteredText(value),
-                    ])
-                    : null;
-            });
-            svg.push.apply(svg, text);
-        }
-        return svg;
-    };
-    Bar.prototype._getText = function (item) {
-        return item[4].toString();
-    };
-    Bar.prototype._setDefaults = function (config) {
-        var defaults = {
-            barWidth: 30,
-            alpha: 1,
-            active: true,
-            tooltip: true,
-            pointType: "empty",
-        };
-        this.config = __assign(__assign({}, defaults), config);
-        var showTooltip = this.config.tooltip;
-        var point = this.config.pointType;
-        var color = this.config.pointColor || this.config.color;
-        if (point) {
-            this.config.pointType = point;
-            this._drawPointType = this._getPointType(point, color, showTooltip);
-        }
-        if (this.config.gradient) {
-            var id_1 = "gradient" + core_1.uid();
-            var gradient_1 = this.config.gradient(this.config.fill);
-            this._gradient = function () { return common_1.linearGradient(gradient_1, id_1); };
-            this.config.fill = "url(#" + id_1 + ")";
-        }
-    };
-    return Bar;
-}(ScaleSeria_1.default));
-exports.default = Bar;
-
-
-/***/ }),
-/* 77 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function spline(initPoints, link) {
-    var len = initPoints.length;
-    var points;
-    if (len < 3) {
-        points = initPoints;
-    }
-    else {
-        var p0 = initPoints[0];
-        var p1 = initPoints[0];
-        var p2 = initPoints[1];
-        var p3 = initPoints[2];
-        points = [initPoints[0].slice(0, 2)];
-        for (var i = 1; i < len; i++) {
-            points.push([
-                (-p0[0] + 6 * p1[0] + p2[0]) / 6,
-                (-p0[1] + 6 * p1[1] + p2[1]) / 6,
-                (p1[0] + 6 * p2[0] - p3[0]) / 6,
-                (p1[1] + 6 * p2[1] - p3[1]) / 6,
-                p2[0],
-                p2[1],
-            ]);
-            p0 = p1;
-            p1 = p2;
-            p2 = p3;
-            p3 = initPoints[i + 2] || p3;
-        }
-    }
-    var d = "";
-    for (var i = 0; i < points.length; i++) {
-        var point = points[i];
-        var n = point.length;
-        if (!i) {
-            d += link ? "L" : "M";
-            d += n === 5 ? point[0] + " " + point[1] : point[n - 2] + " " + point[n - 1];
-        }
-        else if (n > 5) {
-            d += "C" + point[0] + " " + point[1] + "\n\t\t\t\t" + point[2] + " " + point[3] + "\n\t\t\t\t" + point[4] + " " + point[5];
-        }
-        else if (n === 5) {
-            d += "L" + point[0] + " " + point[1];
-        }
-        else {
-            d += "S" + point[0] + " " + point[1] + "\n\t\t\t\t" + point[2] + " " + point[3];
-        }
-    }
-    return d;
-}
-exports.default = spline;
-
-
-/***/ }),
-/* 78 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ComboboxEvents;
-(function (ComboboxEvents) {
-    ComboboxEvents["change"] = "change";
-    ComboboxEvents["open"] = "open";
-    ComboboxEvents["input"] = "input";
-    ComboboxEvents["beforeClose"] = "beforeClose";
-    ComboboxEvents["afterClose"] = "afterClose";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    ComboboxEvents["close"] = "close";
-})(ComboboxEvents = exports.ComboboxEvents || (exports.ComboboxEvents = {}));
-var ComboState;
-(function (ComboState) {
-    ComboState[ComboState["default"] = 0] = "default";
-    ComboState[ComboState["error"] = 1] = "error";
-    ComboState[ComboState["success"] = 2] = "success";
-})(ComboState = exports.ComboState || (exports.ComboState = {}));
-
-
-/***/ }),
-/* 79 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var DataViewEvents;
-(function (DataViewEvents) {
-    DataViewEvents["click"] = "click";
-    DataViewEvents["doubleClick"] = "doubleclick";
-    DataViewEvents["focusChange"] = "focuschange";
-    DataViewEvents["beforeEditStart"] = "beforeEditStart";
-    DataViewEvents["afterEditStart"] = "afterEditStart";
-    DataViewEvents["beforeEditEnd"] = "beforeEditEnd";
-    DataViewEvents["afterEditEnd"] = "afterEditEnd";
-    DataViewEvents["itemRightClick"] = "itemRightClick";
-    DataViewEvents["itemMouseOver"] = "itemMouseOver";
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    DataViewEvents["contextmenu"] = "contextmenu";
-})(DataViewEvents = exports.DataViewEvents || (exports.DataViewEvents = {}));
-
-
-/***/ }),
-/* 80 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(2);
-var helper_1 = __webpack_require__(6);
-var ts_popup_1 = __webpack_require__(10);
-var types_1 = __webpack_require__(7);
-var label_1 = __webpack_require__(11);
-var core_1 = __webpack_require__(1);
-var Checkbox = /** @class */ (function (_super) {
-    __extends(Checkbox, _super);
-    function Checkbox(container, config) {
-        if (config === void 0) { config = {}; }
-        var _this = _super.call(this, container, config) || this;
-        _this.events = new events_1.EventSystem();
-        _this._isValid = true;
-        _this._propsItem = [
-            "required",
-            "label",
-            "labelWidth",
-            "labelPosition",
-            "hiddenLabel",
-            "helpMessage",
-            "preMessage",
-            "successMessage",
-            "errorMessage",
-            "text",
-        ];
-        _this._props = __spreadArrays(helper_1.baseProps, _this._propsItem);
-        _this._initView(config);
-        _this._initHandlers();
-        var render = function () { return _this._draw(); };
-        _this.mount(container, dom_1.create({ render: render }));
-        return _this;
-    }
-    Checkbox.prototype.setProperties = function (propertyConfig, silent) {
-        if (silent === void 0) { silent = false; }
-        if (!propertyConfig ||
-            core_1.isEmptyObj(propertyConfig) ||
-            (!silent && !this.events.fire(types_1.ItemEvent.beforeChangeProperties, [this.getProperties()])))
-            return;
-        for (var key in propertyConfig) {
-            if (this._props.includes(key)) {
-                this.config[key] = propertyConfig[key];
-            }
-        }
-        !silent && this.events.fire(types_1.ItemEvent.afterChangeProperties, [this.getProperties()]);
-        this.paint();
-    };
-    Checkbox.prototype.getProperties = function () {
-        var obj = {};
-        for (var key in this.config) {
-            if (this._props.includes(key)) {
-                obj[key] = this.config[key];
-            }
-        }
-        return obj;
-    };
-    Checkbox.prototype.show = function () {
-        var hidden = this.config.hidden;
-        if (!hidden || !this.events.fire(types_1.ItemEvent.beforeShow, [this.getValue()])) {
-            return;
-        }
-        this.config.hidden = false;
-        this.events.fire(types_1.ItemEvent.afterShow, [this.getValue()]);
-    };
-    Checkbox.prototype.hide = function (init) {
-        var hidden = this.config.hidden;
-        if ((hidden && !init) || !this.events.fire(types_1.ItemEvent.beforeHide, [this.getValue(), init])) {
-            return;
-        }
-        this.config.hidden = true;
-        this.events.fire(types_1.ItemEvent.afterHide, [this.getValue(), init]);
-    };
-    Checkbox.prototype.isVisible = function () {
-        return !this.config.hidden;
-    };
-    Checkbox.prototype.disable = function () {
-        this.config.disabled = true;
-        this.paint();
-    };
-    Checkbox.prototype.enable = function () {
-        this.config.disabled = false;
-        this.paint();
-    };
-    Checkbox.prototype.isDisabled = function () {
-        return this.config.disabled;
-    };
-    Checkbox.prototype.validate = function (silent) {
-        if (silent === void 0) { silent = false; }
-        if (!silent && !this.events.fire(types_1.ItemEvent.beforeValidate, [this.getValue()]))
-            return;
-        if (this.config.required || this.config.$required) {
-            this._isValid = !!this.config.checked;
-        }
-        if (!silent) {
-            this.config.$validationStatus = this._isValid ? types_1.ValidationStatus.success : types_1.ValidationStatus.error;
-            this.events.fire(types_1.ItemEvent.afterValidate, [this.getValue(), this._isValid]);
-        }
-        return this._isValid;
-    };
-    Checkbox.prototype.clearValidate = function () {
-        this.config.$validationStatus = types_1.ValidationStatus.pre;
-        this.paint();
-    };
-    Checkbox.prototype.setValue = function (checked, silent) {
-        if (silent === void 0) { silent = false; }
-        if (typeof checked === "undefined" || checked === this.config.checked)
-            return;
-        this.config.checked = !!checked;
-        if (!silent) {
-            this.events.fire(types_1.ItemEvent.change, [this.getValue()]);
-            helper_1.isVerify(this.config) && this.validate();
-        }
-    };
-    Checkbox.prototype.getValue = function () {
-        var _a = this.config, value = _a.value, checked = _a.checked;
-        return value ? (checked ? value : "") : !!checked;
-    };
-    Checkbox.prototype.clear = function (silent) {
-        if (!this.config.checked)
-            return;
-        this.config.checked = false;
-        if (!silent) {
-            this.events.fire(types_1.ItemEvent.change, [this.getValue()]);
-        }
-    };
-    Checkbox.prototype.destructor = function () {
-        this.events.clear();
-        this.unmount();
-    };
-    Checkbox.prototype.focus = function () {
-        var _this = this;
-        dom_1.awaitRedraw().then(function () {
-            _this.getRootView().refs.input.el.focus();
-        });
-    };
-    Checkbox.prototype.isChecked = function () {
-        return !!this.config.checked;
-    };
-    Checkbox.prototype._initView = function (config) {
-        var _this = this;
-        this._inGroup = this.config.$group;
-        if (!this._inGroup) {
-            this.config = {
-                type: config.type,
-                id: config.id,
-                name: config.name,
-                disabled: false,
-                required: false,
-                label: "",
-                labelWidth: "",
-                labelPosition: "top",
-                hiddenLabel: false,
-                helpMessage: "",
-                preMessage: "",
-                successMessage: "",
-                errorMessage: "",
-                width: "content",
-                height: "content",
-                padding: 0,
-            };
-            for (var key in config) {
-                if (key !== "id" && key !== "type" && key !== "name") {
-                    this.config[key] = config[key];
-                }
-            }
-            if (this.config.helpMessage) {
-                this._helper = new ts_popup_1.Popup({
-                    css: "dhx_tooltip dhx_tooltip--forced dhx_tooltip--light",
-                });
-                this._helper.attachHTML(this.config.helpMessage);
-            }
-            this._handlers = {
-                showHelper: function (e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    _this._helper.show(e.target, {
-                        mode: _this.config.labelPosition === "left" ? "bottom" : "right",
-                    });
-                },
-                onchange: function (e) {
-                    _this.config.checked = e.target.checked;
-                    _this.events.fire(types_1.ItemEvent.change, [_this.getValue()]);
-                    helper_1.isVerify(_this.config) && _this.validate();
-                },
-            };
-        }
-        else {
-            this.config = {
-                type: config.type,
-                id: config.id,
-                text: "",
-                width: "content",
-                height: "content",
-                padding: 0,
-            };
-            for (var key in config) {
-                if (key !== "id" && key !== "type" && key !== "name") {
-                    this.config[key] = config[key];
-                }
-            }
-            this._handlers = {
-                onchange: function (e) {
-                    _this.config.checked = e.target.checked;
-                    _this.events.fire(types_1.ItemEvent.change, [_this.getValue()]);
-                    helper_1.isVerify(_this.config) && _this.validate();
-                },
-            };
-        }
-        if (this.config.hidden) {
-            dom_1.awaitRedraw().then(function () {
-                _this.hide(true);
-            });
-        }
-    };
-    Checkbox.prototype._initHandlers = function () {
-        var _this = this;
-        this.events.on(types_1.ItemEvent.change, function () { return _this.paint(); });
-        this.events.on(types_1.ItemEvent.afterValidate, function () {
-            _this.config.$validationStatus = _this._isValid ? types_1.ValidationStatus.success : types_1.ValidationStatus.error;
-            _this.paint();
-        });
-    };
-    Checkbox.prototype._draw = function () {
-        var _a = this.config, id = _a.id, value = _a.value, checked = _a.checked, disabled = _a.disabled, name = _a.name, required = _a.required, $required = _a.$required, text = _a.text, label = _a.label, labelWidth = _a.labelWidth, helpMessage = _a.helpMessage;
-        return dom_1.el("label.dhx_checkbox.dhx_form-group.dhx_form-group--checkbox", {
-            class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config) || !!$required),
-        }, !this._inGroup
-            ? [
-                label || labelWidth || helpMessage || required ? this._drawLabel() : null,
-                dom_1.el(".dhx_checkbox__container", [
-                    dom_1.el(".dhx_checkbox__holder", [
-                        dom_1.el("input.dhx_checkbox__input", {
-                            type: "checkbox",
-                            id: id,
-                            value: value,
-                            name: name,
-                            disabled: disabled,
-                            checked: checked,
-                            onchange: this._handlers.onchange,
-                            required: required,
-                            _ref: "input",
-                            "aria-label": label || "checkbox " + (text || ""),
-                            "aria-describedby": helpMessage
-                                ? "dhx_label__help_" + (id || this._uid)
-                                : null,
-                        }),
-                        dom_1.el("span.dhx_checkbox__visual-input"),
-                        dom_1.el("span.dhx_text", [text]),
-                    ]),
-                    required &&
-                        helper_1.getValidationMessage(this.config) &&
-                        dom_1.el("span.dhx_input__caption", helper_1.getValidationMessage(this.config)),
-                ]),
-            ]
-            : [
-                dom_1.el(".dhx_checkbox__holder", [
-                    dom_1.el("input.dhx_checkbox__input", {
-                        type: "checkbox",
-                        id: id,
-                        value: value || "",
-                        name: name || "",
-                        disabled: disabled,
-                        checked: checked,
-                        onchange: this._handlers.onchange,
-                        required: required,
-                        _ref: "input",
-                    }),
-                    dom_1.el("span.dhx_checkbox__visual-input"),
-                    dom_1.el("span.dhx_text", [text]),
-                ]),
-            ]);
-    };
-    return Checkbox;
-}(label_1.Label));
-exports.Checkbox = Checkbox;
-
-
-/***/ }),
-/* 81 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
-    simpleVaultText: "Drag & drop files or folders here or",
-    simpleVaultLabel: "browse files",
-};
-
-
-/***/ }),
-/* 82 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -8325,18 +6747,18 @@ var core_1 = __webpack_require__(1);
 var KeyManager_1 = __webpack_require__(14);
 var view_1 = __webpack_require__(5);
 var ts_data_1 = __webpack_require__(4);
-var Exporter_1 = __webpack_require__(195);
-var data_1 = __webpack_require__(21);
+var Exporter_1 = __webpack_require__(113);
+var data_1 = __webpack_require__(19);
 var main_1 = __webpack_require__(15);
-var Selection_1 = __webpack_require__(196);
+var Selection_1 = __webpack_require__(114);
 var types_1 = __webpack_require__(9);
-var render_1 = __webpack_require__(83);
+var render_1 = __webpack_require__(65);
 var date_1 = __webpack_require__(22);
-var content_1 = __webpack_require__(205);
-var columnsResizer_1 = __webpack_require__(206);
-var ts_message_1 = __webpack_require__(18);
-var keys_1 = __webpack_require__(207);
-var FocusManager_1 = __webpack_require__(20);
+var content_1 = __webpack_require__(139);
+var columnsResizer_1 = __webpack_require__(140);
+var ts_message_1 = __webpack_require__(20);
+var keys_1 = __webpack_require__(144);
+var FocusManager_1 = __webpack_require__(18);
 var Grid = /** @class */ (function (_super) {
     __extends(Grid, _super);
     function Grid(container, config) {
@@ -8438,19 +6860,21 @@ var Grid = /** @class */ (function (_super) {
             },
             onmouseover: {
                 ".dhx_grid-cell": function (e) {
-                    var row = _this.data.getItem(e.path[1].getAttribute("dhx_id"));
+                    var row = _this.data.getItem(e.composedPath()[1].getAttribute("dhx_id"));
                     var column = _this._getColumn(e.target.getAttribute("dhx_col_id"));
                     showCellTooltip(row, column, e.target);
                 },
                 ".dhx_grid-cell:not(.dhx_tree-cell) .dhx_grid-cell__content, .dhx_tree-cell :not(.dhx_grid-cell__content)": function (e) {
-                    var row = _this.data.getItem(e.path[2].getAttribute("dhx_id"));
-                    var column = _this._getColumn(e.path[1].getAttribute("dhx_col_id"));
+                    var path = e.composedPath();
+                    var row = _this.data.getItem(path[2].getAttribute("dhx_id"));
+                    var column = _this._getColumn(path[1].getAttribute("dhx_col_id"));
                     showCellTooltip(row, column, e.target);
                 },
                 ".dhx_grid-cell.dhx_tree-cell .dhx_grid-cell__content": function (e) {
-                    var row = _this.data.getItem(e.path[3].getAttribute("dhx_id"));
-                    var column = _this._getColumn(e.path[2].getAttribute("dhx_col_id"));
-                    showCellTooltip(row, column, e.path[2]);
+                    var path = e.composedPath();
+                    var row = _this.data.getItem(path[3].getAttribute("dhx_id"));
+                    var column = _this._getColumn(path[2].getAttribute("dhx_col_id"));
+                    showCellTooltip(row, column, path[2]);
                 },
                 ".dhx_span-cell:not(.dhx_grid-header-cell)": function (e) {
                     var row = _this.data.getItem(e.target.getAttribute("dhx_id"));
@@ -8494,15 +6918,16 @@ var Grid = /** @class */ (function (_super) {
                     }
                 },
                 ".dhx_grid-header-cell-text_content": function (e) {
-                    var column = _this._getColumn(e.path[1].getAttribute("dhx_id"));
+                    var path = e.composedPath();
+                    var column = _this._getColumn(path[1].getAttribute("dhx_id"));
                     if (column && main_1.isTooltip(_this.config, column)) {
-                        var value = (e.path[2].querySelector(".dhx_grid-header-cell-text_content") &&
-                            e.path[2].querySelector(".dhx_grid-header-cell-text_content").textContent) ||
+                        var value = (path[2].querySelector(".dhx_grid-header-cell-text_content") &&
+                            path[2].querySelector(".dhx_grid-header-cell-text_content").textContent) ||
                             "";
                         value &&
                             ts_message_1.tooltip(value, {
                                 css: "dhx_grid_tooltip",
-                                node: e.path[1],
+                                node: path[1],
                                 htmlEnable: main_1.isHtmlEnable(_this.config, column),
                             });
                     }
@@ -8565,6 +6990,7 @@ var Grid = /** @class */ (function (_super) {
     Grid.prototype.setColumns = function (columns) {
         this.config.columns = columns;
         this._parseColumns();
+        this._adjustColumns();
         this._checkFilters();
         this._checkMarks();
         this.paint();
@@ -8616,7 +7042,7 @@ var Grid = /** @class */ (function (_super) {
         if (!this.events.fire(types_1.GridEvents.beforeColumnShow, [column]))
             return;
         column.hidden = false;
-        this.config.$totalWidth += column.width;
+        this.config.$totalWidth += column.$width;
         var filter = this._hiddenFilters && this._hiddenFilters[column.id];
         if (filter) {
             this._activeFilters[column.id] = filter;
@@ -8634,7 +7060,7 @@ var Grid = /** @class */ (function (_super) {
         if (!this.events.fire(types_1.GridEvents.beforeColumnHide, [column]))
             return;
         column.hidden = true;
-        this.config.$totalWidth -= column.width;
+        this.config.$totalWidth -= column.$width;
         var filter = this._activeFilters && this._activeFilters[column.id];
         if (filter) {
             if (!this._hiddenFilters) {
@@ -8703,6 +7129,7 @@ var Grid = /** @class */ (function (_super) {
         var gridBody = this.getRootView().refs.grid_body.el;
         gridBody.scrollLeft = typeof x === "number" ? x : gridBody.scrollLeft;
         gridBody.scrollTop = typeof y === "number" ? y : gridBody.scrollTop;
+        this.paint();
     };
     Grid.prototype.scrollTo = function (row, col) {
         var selectedCell = this.selection.getCell();
@@ -8720,7 +7147,7 @@ var Grid = /** @class */ (function (_super) {
         var rows = this.data.getRawData(0, -1);
         var rowInd = core_1.findIndex(rows, function (_a) {
             var id = _a.id;
-            return id === row;
+            return id.toString() === row;
         });
         var y = main_1.getTotalHeight(rows.slice(0, rowInd));
         var scrollState = this.getScrollState();
@@ -8846,7 +7273,8 @@ var Grid = /** @class */ (function (_super) {
         col.header.forEach(function (cell) {
             if (cell.content) {
                 var filterEl = _this.content[cell.content].element[colId];
-                filter = cell.content === "comboFilter" ? filterEl : filterEl.el;
+                filter =
+                    cell.content === "comboFilter" ? filterEl : _this.getRootView().refs[colId + "_filter"].el;
             }
         });
         return filter;
@@ -8893,8 +7321,10 @@ var Grid = /** @class */ (function (_super) {
                 return;
             }
             if (status === "setPage") {
-                _this.scrollTo(_this.data.getId(obj[0]), _this.config.columns[0].id.toString());
-                _this._render();
+                dom_1.awaitRedraw().then(function () {
+                    _this.scrollTo(_this.data.getId(obj[0]), _this.config.columns[0].id.toString());
+                    _this._render();
+                });
                 return;
             }
             if (id) {
@@ -9520,7 +7950,7 @@ exports.Grid = Grid;
 
 
 /***/ }),
-/* 83 */
+/* 65 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9539,11 +7969,11 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var html_1 = __webpack_require__(3);
-var data_1 = __webpack_require__(21);
+var data_1 = __webpack_require__(19);
 var main_1 = __webpack_require__(15);
-var Cells_1 = __webpack_require__(55);
-var FixedCols_1 = __webpack_require__(204);
-var FixedRows_1 = __webpack_require__(84);
+var Cells_1 = __webpack_require__(35);
+var FixedCols_1 = __webpack_require__(138);
+var FixedRows_1 = __webpack_require__(73);
 var core_1 = __webpack_require__(1);
 var BORDERS = 2;
 function getRenderConfig(obj, data, wrapperSizes) {
@@ -9633,12 +8063,14 @@ function getContentHeight(renderConfig, isSticky, wrapperSizes) {
             : contentHeight - renderConfig.footerHeight
         : contentHeight);
 }
-function applyAutoWidth(config, wrapperSizes, firstApply) {
+function applyAutoWidth(config, wrapperSizes, firstApply, resizer) {
     if (firstApply === void 0) { firstApply = true; }
+    if (resizer === void 0) { resizer = false; }
     var scrollbarY = config.$totalHeight >= wrapperSizes.height - config.headerRowHeight ? html_1.getScrollbarWidth() : 0;
     var newTotalWidth = wrapperSizes.width - BORDERS - scrollbarY;
-    var growingColumns = config.columns.filter(function (col) { return !col.hidden && !col.width && !col.$fixed && main_1.isAutoWidth(config, col); });
-    var nonGrowingColumnsWidth = main_1.getTotalWidth(config.columns.filter(function (col) { return col.width || col.$fixed || !main_1.isAutoWidth(config, col); }));
+    var columns = config.columns.filter(function (col) { return !col.hidden; });
+    var growingColumns = columns.filter(function (col) { return !col.width && !col.$fixed && main_1.isAutoWidth(config, col); });
+    var nonGrowingColumnsWidth = main_1.getTotalWidth(columns.filter(function (col) { return col.width || col.$fixed || !main_1.isAutoWidth(config, col); }));
     var fullGravity = growingColumns.reduce(function (gravity, col) { return gravity + (col.gravity || 1); }, 0);
     if (newTotalWidth < config.$totalWidth) {
         var growingColumnsWidth_1 = growingColumns.reduce(function (width, col) { return width + (col.maxWidth || col.$width); }, 0);
@@ -9671,11 +8103,13 @@ function applyAutoWidth(config, wrapperSizes, firstApply) {
             }
             else if (wrongMin) {
                 nonGrowingColumnsWidth += col.$width - newWidth;
-                col.$fixed = true;
+                if (resizer)
+                    col.$fixed = true;
             }
             else if (wrongMax) {
                 col.$width = col.maxWidth;
-                col.$fixed = true;
+                if (resizer)
+                    col.$fixed = true;
             }
             if (!firstApply && col.$fixed) {
                 delete col.$fixed;
@@ -9724,7 +8158,7 @@ function render(vm, obj, htmlEvents, selection, uid) {
     // TODO: Remove scroll
     if (main_1.isAutoWidth(config)) {
         applyAutoWidth(config, wrapperSizes);
-        config.$totalWidth = main_1.getTotalWidth(config.columns);
+        config.$totalWidth = main_1.getTotalWidth(config.columns.filter(function (col) { return !col.hidden; }));
     }
     config.width = wrapperSizes.width;
     config.height = wrapperSizes.height;
@@ -9762,7 +8196,13 @@ function render(vm, obj, htmlEvents, selection, uid) {
         "aria-rowcount": renderConfig.data.length,
         "aria-colcount": config.columns.filter(function (col) { return !col.hidden; }).length,
     }, [
-        dom_1.resizer(function () { return obj.paint(); }),
+        dom_1.resizer(function (changeWith) {
+            if (main_1.isAutoWidth(obj.config) && !!changeWith) {
+                config.$totalWidth = 0;
+                applyAutoWidth(config, wrapperSizes, true, true);
+            }
+            return obj.paint();
+        }),
         dom_1.el(".dhx_grid-content", {
             style: __assign({}, wrapperSizes),
             onclick: htmlEvents.onclick,
@@ -9794,7 +8234,286 @@ exports.render = render;
 
 
 /***/ }),
-/* 84 */
+/* 66 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var PopupEvents;
+(function (PopupEvents) {
+    PopupEvents["beforeHide"] = "beforeHide";
+    PopupEvents["beforeShow"] = "beforeShow";
+    PopupEvents["afterHide"] = "afterHide";
+    PopupEvents["afterShow"] = "afterShow";
+    PopupEvents["click"] = "click";
+})(PopupEvents = exports.PopupEvents || (exports.PopupEvents = {}));
+
+
+/***/ }),
+/* 67 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var SliderEvents;
+(function (SliderEvents) {
+    SliderEvents["change"] = "change";
+    SliderEvents["mousedown"] = "mousedown";
+    SliderEvents["mouseup"] = "mouseup";
+})(SliderEvents = exports.SliderEvents || (exports.SliderEvents = {}));
+
+
+/***/ }),
+/* 68 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var locale = {
+    hours: "Hours",
+    minutes: "Minutes",
+    save: "Save",
+};
+exports.default = locale;
+
+
+/***/ }),
+/* 69 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var TimepickerEvents;
+(function (TimepickerEvents) {
+    TimepickerEvents["change"] = "change";
+    TimepickerEvents["beforeApply"] = "beforeApply";
+    TimepickerEvents["afterApply"] = "afterApply";
+    TimepickerEvents["beforeClose"] = "beforeClose";
+    TimepickerEvents["afterClose"] = "afterClose";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    TimepickerEvents["apply"] = "apply";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    TimepickerEvents["close"] = "close";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    TimepickerEvents["save"] = "save";
+})(TimepickerEvents = exports.TimepickerEvents || (exports.TimepickerEvents = {}));
+
+
+/***/ }),
+/* 70 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var CalendarEvents;
+(function (CalendarEvents) {
+    CalendarEvents["change"] = "change";
+    CalendarEvents["beforeChange"] = "beforechange";
+    CalendarEvents["modeChange"] = "modeChange";
+    CalendarEvents["monthSelected"] = "monthSelected";
+    CalendarEvents["yearSelected"] = "yearSelected";
+    CalendarEvents["cancelClick"] = "cancelClick";
+    CalendarEvents["dateMouseOver"] = "dateMouseOver";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    CalendarEvents["dateHover"] = "dateHover";
+})(CalendarEvents = exports.CalendarEvents || (exports.CalendarEvents = {}));
+
+
+/***/ }),
+/* 71 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = __webpack_require__(24);
+var ts_data_1 = __webpack_require__(4);
+var Selection = /** @class */ (function () {
+    function Selection(config, data, events) {
+        var _this = this;
+        this.config = config;
+        this.events = events;
+        this._data = data;
+        this._selected = [];
+        this._data.events.on(ts_data_1.DataEvents.removeAll, function () {
+            _this._selected = [];
+        });
+        if (typeof this.config.multiselection === "string") {
+            var types = ["click", "ctrlClick"];
+            if (!types.includes(this.config.multiselection)) {
+                this.config.multiselection = false;
+            }
+        }
+        this._data.events.on(ts_data_1.DataEvents.beforeRemove, function (obj) {
+            _this._nextSelection = null;
+            if (_this._selected.length === 1) {
+                var next = _this._data.getIndex(obj.id);
+                var count = _this._data.getLength();
+                if (count > 1) {
+                    var lastIndex = count == next - 1 ? next - 1 : next + 1;
+                    _this._nextSelection = _this._data.getId(lastIndex);
+                }
+            }
+        });
+        this._data.events.on(ts_data_1.DataEvents.afterRemove, function (obj) {
+            var hasIndex = _this._selected.indexOf(obj.id);
+            if (hasIndex !== -1) {
+                _this._selected.splice(hasIndex, 1);
+            }
+            if (_this._nextSelection) {
+                _this.add(_this._nextSelection);
+                _this._nextSelection = null;
+            }
+        });
+    }
+    Selection.prototype.enable = function () {
+        this.config.disabled = false;
+    };
+    Selection.prototype.disable = function () {
+        this.remove();
+        this.config.disabled = true;
+    };
+    Selection.prototype.getId = function () {
+        if (this.config.multiselection) {
+            return this._selected;
+        }
+        return this._selected[0];
+    };
+    Selection.prototype.getItem = function () {
+        var _this = this;
+        if (this.config.multiselection) {
+            return this._selected.map(function (id) { return _this._data.getItem(id); });
+        }
+        return this._selected.length ? this._data.getItem(this._selected[0]) : null;
+    };
+    Selection.prototype.contains = function (id) {
+        if (id) {
+            return this._selected.includes(id);
+        }
+        return this._selected.length > 0;
+    };
+    Selection.prototype.remove = function (id) {
+        var _this = this;
+        if (id) {
+            this._unselectItem(id);
+        }
+        else {
+            this._selected.forEach(function (selectedId) { return _this._unselectItem(selectedId); });
+            this._selected = [];
+        }
+    };
+    Selection.prototype.add = function (id, isCtrl, isShift, silent) {
+        var _this = this;
+        if (this.config.disabled) {
+            return;
+        }
+        if (typeof id === "undefined") {
+            var unSelected = this._data.serialize().filter(function (_a) {
+                var id = _a.id;
+                return !_this._selected.includes(id);
+            });
+            unSelected.forEach(function (_a) {
+                var id = _a.id;
+                _this._addMulti(id, silent);
+            });
+            return;
+        }
+        var multi = this.config.multiselection;
+        if (isShift && this._selected.length && multi) {
+            this._addMulti(id, silent);
+        }
+        else {
+            this._addSingle(id, multi && (multi !== "ctrlClick" || isCtrl), silent);
+        }
+    };
+    Selection.prototype.destructor = function () {
+        var _this = this;
+        this._selected.forEach(function (selectedId) { return _this._unselectItem(selectedId, true); });
+    };
+    Selection.prototype._addMulti = function (id, silent) {
+        var _a;
+        var last = this._selected[this._selected.length - 1];
+        var i1 = this._data.getIndex(last);
+        var i2 = this._data.getIndex(id);
+        if (i1 > i2) {
+            _a = [i2, i1], i1 = _a[0], i2 = _a[1];
+        }
+        for (i1; i1 <= i2; i1++) {
+            var id_1 = this._data.getId(i1);
+            this._selectItem(id_1, silent);
+        }
+    };
+    Selection.prototype._addSingle = function (id, isCtrl, silent) {
+        var _this = this;
+        if (!isCtrl) {
+            this._selected.forEach(function (selectedId) {
+                if (selectedId != id)
+                    _this._unselectItem(selectedId);
+            });
+        }
+        if (isCtrl && this._selected.includes(id)) {
+            this._unselectItem(id, silent);
+        }
+        else {
+            this._selectItem(id, silent);
+        }
+    };
+    Selection.prototype._selectItem = function (id, silent) {
+        var item = this._data.getItem(id);
+        if (!item || this._data.getMeta(item, "selected"))
+            return;
+        if (!silent && !this.events.fire(types_1.SelectionEvents.beforeSelect, [id]))
+            return;
+        this._selected.push(id);
+        this._data.setMeta(item, "selected", true);
+        if (!silent)
+            this.events.fire(types_1.SelectionEvents.afterSelect, [id]);
+    };
+    Selection.prototype._unselectItem = function (id, silent) {
+        if (!silent && !this.events.fire(types_1.SelectionEvents.beforeUnSelect, [id]))
+            return;
+        this._selected = this._selected.filter(function (selectedId) { return selectedId !== id; });
+        this._data.setMeta(this._data.getItem(id), "selected", false);
+        if (!silent)
+            this.events.fire(types_1.SelectionEvents.afterUnSelect, [id]);
+    };
+    return Selection;
+}());
+exports.Selection = Selection;
+
+
+/***/ }),
+/* 72 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ComboboxEvents;
+(function (ComboboxEvents) {
+    ComboboxEvents["change"] = "change";
+    ComboboxEvents["open"] = "open";
+    ComboboxEvents["input"] = "input";
+    ComboboxEvents["beforeClose"] = "beforeClose";
+    ComboboxEvents["afterClose"] = "afterClose";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    ComboboxEvents["close"] = "close";
+})(ComboboxEvents = exports.ComboboxEvents || (exports.ComboboxEvents = {}));
+var ComboState;
+(function (ComboState) {
+    ComboState[ComboState["default"] = 0] = "default";
+    ComboState[ComboState["error"] = 1] = "error";
+    ComboState[ComboState["success"] = 2] = "success";
+})(ComboState = exports.ComboState || (exports.ComboState = {}));
+
+
+/***/ }),
+/* 73 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -9819,7 +8538,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var cells_1 = __webpack_require__(56);
+var cells_1 = __webpack_require__(36);
 var main_1 = __webpack_require__(15);
 var types_1 = __webpack_require__(9);
 function handleMouse(col, config, type, e) {
@@ -9864,28 +8583,32 @@ function getColumnHeaderText(col) {
     }
     return colHeader;
 }
-function getCustomContentCell(cell, column, config, rowName, css, colIndex) {
+function getCustomContentCell(cell, column, config, rowName, css, colIndex, rowIndex) {
     if (css === void 0) { css = ""; }
     var rowHeight = config[rowName + "RowHeight"] || 40;
     var type = column.type ? "dhx_" + column.type + "-cell" : "dhx_string_cell";
     // TODO: over with index of filter inside of header or footer
     var content = config.content[cell.content] && config.content[cell.content].toHtml(column, config);
+    var cellRow = {};
+    config.columns.forEach(function (col) {
+        var hasContent = !!config.content[col[rowName][rowIndex].content];
+        cellRow[col.id] =
+            (hasContent && config.content[col[rowName][rowIndex].content].toHtml(col, config)) ||
+                col[rowName][rowIndex].text;
+    });
     return dom_1.el(".dhx_grid-" + rowName + "-cell.dhx_grid-custom-content-cell." + type, __assign(__assign({ class: css, style: {
             width: column.$width,
             height: rowHeight + "px",
         } }, getHandlers(column, rowName, config)), { dhx_id: column.id, role: "gridcell", "aria-colindex": colIndex, "aria-label": getColumnHeaderText(column) }), [
         content &&
-            (typeof content === "string"
+            (typeof content === "string" || typeof content === "number"
                 ? dom_1.el("div", {
                     class: "dhx_grid-footer-cell-text",
                     role: "presentation",
-                }, [
-                    dom_1.el("span", {
-                        ".innerHTML": column.template
-                            ? column.template(content, cell.row, column)
-                            : content,
-                    }),
-                ])
+                    ".innerHTML": column.template && typeof content === "string"
+                        ? column.template(content, cellRow, column)
+                        : content,
+                })
                 : content),
     ]);
 }
@@ -9956,7 +8679,7 @@ function getRows(config, rowsConfig) {
                 css += " dhx_align-" + cell.align;
             }
             if (cell.content) {
-                return getCustomContentCell(cell, column, config, rowName, css, colIndex);
+                return getCustomContentCell(cell, column, config, rowName, css, colIndex, j);
             }
             var cellAria = {
                 role: "columnheader",
@@ -10136,7 +8859,1472 @@ exports.getFixedRows = getFixedRows;
 
 
 /***/ }),
+/* 74 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function blockKeys(e) {
+    var active = document.activeElement;
+    if (!active.classList.contains("dhx_alert__confirm-reject") &&
+        !active.classList.contains("dhx_alert__confirm-aply")) {
+        e.preventDefault();
+    }
+}
+function blockScreen(css) {
+    var blocker = document.createElement("div");
+    blocker.className = "dhx_alert__overlay " + (css || "");
+    document.body.appendChild(blocker);
+    document.addEventListener("keydown", blockKeys);
+    return function () {
+        document.body.removeChild(blocker);
+        document.removeEventListener("keydown", blockKeys);
+    };
+}
+exports.blockScreen = blockScreen;
+
+
+/***/ }),
+/* 75 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var html_1 = __webpack_require__(3);
+var types_1 = __webpack_require__(43);
+var DEFAULT_SHOW_DELAY = 750;
+var DEFAULT_HIDE_DELAY = 200;
+function findPosition(targetRect, position, width, height) {
+    var margin = 8; // margin top/bot, left/right
+    var pos;
+    var left;
+    var top;
+    switch (position) {
+        case types_1.Position.center:
+            left = targetRect.left + window.pageXOffset + (targetRect.width - width) / 2;
+            if (left + margin < window.pageXOffset) {
+                left = targetRect.left + window.pageXOffset;
+            }
+            top = targetRect.top + window.pageYOffset + (targetRect.height - height) / 2;
+            pos = types_1.RealPosition.center;
+            return { left: left, top: top, pos: pos };
+        case types_1.Position.right:
+            pos = types_1.RealPosition.right;
+            left = targetRect.right + window.pageXOffset;
+            if (left + width + margin > window.innerWidth + window.pageXOffset) {
+                // set left
+                left = window.pageXOffset + targetRect.left - width;
+                pos = types_1.RealPosition.left;
+            }
+            top = window.pageYOffset + targetRect.top + (targetRect.height - height) / 2;
+            return { left: left, top: top, pos: pos };
+        case types_1.Position.bottom:
+        default:
+            left = window.pageXOffset + targetRect.left + (targetRect.width - width) / 2;
+            if (left + width > window.innerWidth + window.pageXOffset) {
+                left = window.innerWidth + window.pageXOffset - width;
+            }
+            else if (left < 0) {
+                left = 0;
+            }
+            pos = types_1.RealPosition.bottom;
+            top = window.pageYOffset + targetRect.bottom;
+            if (top + height + margin > window.innerHeight + window.pageYOffset) {
+                // set top
+                top = window.pageYOffset + targetRect.top - height;
+                pos = types_1.RealPosition.top;
+            }
+            return { left: left, top: top, pos: pos };
+    }
+}
+exports.findPosition = findPosition;
+// tooltip init
+var tooltipBox = document.createElement("div");
+var tooltipText = document.createElement("span");
+tooltipText.className = "dhx_tooltip__text";
+tooltipBox.appendChild(tooltipText);
+tooltipBox.setAttribute("role", "tooltip");
+tooltipBox.style.position = "absolute";
+var lastNode = null;
+var isActive = false;
+var hideTimeout = null;
+var showTimeout = null;
+var activeListenersDestructor;
+function showTooltip(node, text, position, css, force, htmlEnable) {
+    if (force === void 0) { force = false; }
+    var rects = node.getBoundingClientRect();
+    if (htmlEnable) {
+        tooltipText.innerHTML = text;
+    }
+    else {
+        tooltipText.textContent = text;
+    }
+    document.body.appendChild(tooltipBox);
+    tooltipBox.className = "dhx_widget dhx_tooltip" + (force ? " dhx_tooltip--forced" : "");
+    var _a = tooltipBox.getBoundingClientRect(), width = _a.width, height = _a.height;
+    var _b = findPosition(rects, position, width, height), left = _b.left, top = _b.top, pos = _b.pos;
+    switch (pos) {
+        case types_1.RealPosition.bottom:
+            tooltipBox.style.left = left + "px";
+            tooltipBox.style.top = top + "px";
+            break;
+        case types_1.RealPosition.top:
+            tooltipBox.style.left = left + "px";
+            tooltipBox.style.top = top + "px";
+            break;
+        case types_1.RealPosition.left:
+            tooltipBox.style.left = left + "px";
+            tooltipBox.style.top = top + "px";
+            break;
+        case types_1.RealPosition.right:
+            tooltipBox.style.left = left + "px";
+            tooltipBox.style.top = top + "px";
+            break;
+        case types_1.RealPosition.center:
+            tooltipBox.style.left = left + "px";
+            tooltipBox.style.top = top + "px";
+            break;
+    }
+    tooltipBox.className += " dhx_tooltip--" + pos + " " + (css || "");
+    isActive = true;
+    if (!force) {
+        setTimeout(function () {
+            tooltipBox.className += " dhx_tooltip--animate";
+        });
+    }
+}
+function hideTooltip(delay) {
+    if (lastNode) {
+        hideTimeout = setTimeout(function () {
+            document.body.removeChild(tooltipBox);
+            isActive = false;
+            hideTimeout = null;
+        }, delay || DEFAULT_HIDE_DELAY);
+    }
+}
+function addListeners(node, text, config) {
+    var force = config.force, showDelay = config.showDelay, hideDelay = config.hideDelay, position = config.position, css = config.css, htmlEnable = config.htmlEnable;
+    if (!force) {
+        showTimeout = setTimeout(function () {
+            showTooltip(node, text, position || types_1.Position.bottom, css, false, htmlEnable);
+        }, showDelay || DEFAULT_SHOW_DELAY);
+    }
+    var hide = function () {
+        if (isActive) {
+            hideTooltip(hideDelay);
+        }
+        clearTimeout(showTimeout);
+        node.removeEventListener("mouseleave", hide);
+        node.removeEventListener("blur", hide);
+        document.removeEventListener("mousedown", hide);
+        lastNode = null;
+        activeListenersDestructor = null;
+    };
+    if (force) {
+        showTooltip(node, text, position, css, force, htmlEnable);
+    }
+    node.addEventListener("mouseleave", hide);
+    node.addEventListener("blur", hide);
+    document.addEventListener("mousedown", hide);
+    activeListenersDestructor = hide;
+}
+// default
+function tooltip(text, config) {
+    var node = html_1.toNode(config.node);
+    if (node === lastNode) {
+        return;
+    }
+    if (activeListenersDestructor) {
+        activeListenersDestructor();
+        activeListenersDestructor = null;
+    }
+    lastNode = node;
+    if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        hideTimeout = null;
+        addListeners(node, text, __assign(__assign({}, config), { force: true }));
+    }
+    else {
+        addListeners(node, text, config);
+    }
+}
+exports.tooltip = tooltip;
+function _mousemove(e) {
+    var node = html_1.locateNode(e, "dhx_tooltip_text");
+    if (!node) {
+        return;
+    }
+    tooltip(node.getAttribute("dhx_tooltip_text"), {
+        position: node.getAttribute("dhx_tooltip_position") || types_1.Position.bottom,
+        node: node,
+    });
+}
+function enableTooltip() {
+    document.addEventListener("mousemove", _mousemove);
+}
+exports.enableTooltip = enableTooltip;
+function disableTooltip() {
+    document.removeEventListener("mousemove", _mousemove);
+}
+exports.disableTooltip = disableTooltip;
+
+
+/***/ }),
+/* 76 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.grayShades = [
+    "#000000",
+    "#4C4C4C",
+    "#666666",
+    "#808080",
+    "#999999",
+    "#B3B3B3",
+    "#CCCCCC",
+    "#E6E6E6",
+    "#F2F2F2",
+    "#FFFFFF",
+];
+exports.palette = [
+    ["#D4DAE4", "#B0B8CD", "#949DB1", "#727A8C", "#5E6677", "#3F4757", "#1D2534"],
+    ["#FFCDD2", "#FE9998", "#F35C4E", "#E94633", "#D73C2D", "#CA3626", "#BB2B1A"],
+    ["#F9E6AD", "#F4D679", "#EDB90F", "#EAA100", "#EA8F00", "#EA7E00", "#EA5D00"],
+    ["#BCE4CE", "#90D2AF", "#33B579", "#36955F", "#247346", "#1D5B38", "#17492D"],
+    ["#BDF0E9", "#92E7DC", "#02D7C5", "#11B3A5", "#018B80", "#026B60", "#024F43"],
+    ["#B3E5FC", "#81D4FA", "#29B6F6", "#039BE5", "#0288D1", "#0277BD", "#01579B"],
+    ["#AEC1FF", "#88A3F9", "#5874CD", "#2349AE", "#163FA2", "#083596", "#002381"],
+    ["#C5C0DA", "#9F97C1", "#7E6BAD", "#584A8F", "#4F4083", "#473776", "#3A265F"],
+    ["#D6BDCC", "#C492AC", "#A9537C", "#963A64", "#81355A", "#6E3051", "#4C2640"],
+    ["#D2C5C1", "#B4A09A", "#826358", "#624339", "#5D4037", "#4E342E", "#3E2723"],
+];
+
+
+/***/ }),
+/* 77 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ColorpickerEvents;
+(function (ColorpickerEvents) {
+    ColorpickerEvents["change"] = "change";
+    ColorpickerEvents["apply"] = "apply";
+    ColorpickerEvents["cancelClick"] = "cancelClick";
+    ColorpickerEvents["modeChange"] = "modeChange";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    ColorpickerEvents["selectClick"] = "selectClick";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    ColorpickerEvents["colorChange"] = "colorChange";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    ColorpickerEvents["viewChange"] = "viewChange";
+})(ColorpickerEvents = exports.ColorpickerEvents || (exports.ColorpickerEvents = {}));
+
+
+/***/ }),
+/* 78 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(8);
+var defaultTextTemplate = function (item) { return item.toString(); };
+var getScaleAriaAttrs = function (axis, text) { return ({
+    role: "graphics-object",
+    "aria-label": axis + "-axis" + (text ? ", " + text : ""),
+}); };
+function bottom(points, config, width, height) {
+    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
+    var template = textTemplate || defaultTextTemplate;
+    var text = [];
+    var extraTittlePadding = 0;
+    if (showText) {
+        extraTittlePadding = textPadding;
+        var canRotate_1 = scaleRotate && !isNaN(scaleRotate);
+        var y_1 = height + textPadding;
+        text = points.map(function (p) {
+            var x = p[0];
+            var transform = canRotate_1 ? "rotate(" + scaleRotate + " " + x + " " + y_1 + ")" : "";
+            var classList = ["scale-text", "top-text"];
+            if (canRotate_1) {
+                var angle = scaleRotate % 360;
+                classList.push(common_1.getClassesForRotateScale("bottom", angle));
+            }
+            return dom_1.sv("text", { x: x, y: y_1, class: classList.join(" "), transform: transform }, [
+                common_1.verticalCenteredText(template(p[1])),
+            ]);
+        });
+    }
+    var id = core_1.uid();
+    var svTitle = null;
+    var mainLine = dom_1.sv("path", {
+        class: "main-scale",
+        d: "M0 " + height + " H" + (width - 0.5),
+        id: id,
+    });
+    if (title) {
+        svTitle = dom_1.sv("text", { dx: width / 2, dy: scalePadding + extraTittlePadding }, [
+            dom_1.sv("textPath", { href: "#" + id, class: "scale-title " }, title),
+        ]);
+    }
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("x", title || config.text)), [mainLine, svTitle].concat(text));
+}
+exports.bottom = bottom;
+function bottomGrid(points, width, height, config) {
+    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine, targetValue = config.targetValue;
+    var len = points.length;
+    var gridLines = [];
+    var className = "grid-line " + (dashed ? "dash-line" : "") + " " + (!grid ? "hidden-line" : "");
+    for (var i = 0; i < len; i++) {
+        if (i === 0 && points[i][0] === 0 && !config.hidden) {
+            continue;
+        }
+        if (i === targetLine) {
+            var d_1 = "M" + points[i][0] + " 0 V " + height;
+            var path_1 = dom_1.sv("path", { d: d_1, class: className + " spec-grid-line" });
+            gridLines.push(path_1);
+            continue;
+        }
+        var d = "M" + points[i][0] + " 0 V " + height;
+        var path = dom_1.sv("path", { d: d, class: className, _ref: "line" + Math.round(points[i][0]) });
+        gridLines.push(path);
+        if (i === len - 1 && points[i][0] !== width) {
+            var additionD = "M" + width + " 0 V " + height;
+            var additionPath = dom_1.sv("path", { d: additionD, class: className });
+            gridLines.push(additionPath);
+        }
+    }
+    if (targetValue) {
+        var d = "M" + targetValue * width + " 0 V " + height;
+        var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
+        gridLines.push(path);
+    }
+    return dom_1.sv("g", gridLines);
+}
+exports.bottomGrid = bottomGrid;
+function top(points, config, width, _height) {
+    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
+    var template = textTemplate || defaultTextTemplate;
+    var text = [];
+    var extraTittlePadding = 0;
+    if (showText) {
+        extraTittlePadding = textPadding;
+        var canRotate_2 = scaleRotate && !isNaN(scaleRotate);
+        var y_2 = -textPadding;
+        text = points.map(function (p) {
+            var classList = ["scale-text"];
+            var x = p[0];
+            var transform = canRotate_2 ? "rotate(" + scaleRotate + " " + x + " " + y_2 + ")" : "";
+            if (canRotate_2) {
+                var angle = scaleRotate % 360;
+                classList.push(common_1.getClassesForRotateScale("top", angle));
+            }
+            return dom_1.sv("text", { x: x, y: y_2, class: classList.join(" "), transform: transform }, [
+                common_1.verticalCenteredText(template(p[1])),
+            ]);
+        });
+    }
+    var id = core_1.uid();
+    var mainLine = dom_1.sv("path", { d: "M0 0 H" + width, class: "main-scale", id: id });
+    var svTitle = null;
+    if (title) {
+        svTitle = dom_1.sv("text", { dx: width / 2, dy: -scalePadding - extraTittlePadding }, [
+            dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
+        ]);
+    }
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("x", title || config.text)), [mainLine, svTitle].concat(text));
+}
+exports.top = top;
+function topGrid(points, _width, height, config) {
+    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine;
+    var len = points.length;
+    var gridLines = [];
+    var className = "grid-line " + (dashed ? "dash-line" : "") + " " + (!grid ? "hidden-line" : "");
+    for (var i = 0; i < len; i++) {
+        if (i === 0 && points[i][0] === 0 && !config.hidden) {
+            continue;
+        }
+        if (i === targetLine) {
+            var d_2 = "M" + points[i][0] + " 0 V " + height;
+            var path_2 = dom_1.sv("path", { d: d_2, class: className + " spec-grid-line" });
+            gridLines.push(path_2);
+            continue;
+        }
+        var d = "M" + points[i][0] + " 0 V " + height;
+        var path = dom_1.sv("path", { d: d, class: className, _ref: "line" + Math.round(points[i][0]) });
+        gridLines.push(path);
+        if (i === len - 1 && points[i][0] !== 0) {
+            var additionD = "M0 0 V " + height;
+            var additionPath = dom_1.sv("path", { d: additionD, class: className });
+            gridLines.push(additionPath);
+        }
+    }
+    return dom_1.sv("g", gridLines);
+}
+exports.topGrid = topGrid;
+function left(points, config, _width, height) {
+    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
+    var template = textTemplate || defaultTextTemplate;
+    var text = [];
+    var extraTittlePadding = 0;
+    if (showText) {
+        var style_1 = common_1.getFontStyle("scale-text");
+        var maxTextWidth_1 = 0;
+        var canRotate_3 = scaleRotate && !isNaN(scaleRotate);
+        text = points.map(function (p) {
+            var y = p[0];
+            var x = -textPadding;
+            var transform = canRotate_3 ? "rotate(" + scaleRotate + " " + x + " " + y + ")" : "";
+            var classList = ["scale-text"];
+            var scaleText = template(p[1]);
+            if (title) {
+                var textWidth = common_1.getTextWidth(scaleText, style_1);
+                if (maxTextWidth_1 < textWidth) {
+                    maxTextWidth_1 = textWidth;
+                }
+            }
+            if (canRotate_3) {
+                var angle = scaleRotate % 360;
+                classList.push(common_1.getClassesForRotateScale("left", angle));
+            }
+            else {
+                classList.push("end-text");
+            }
+            return dom_1.sv("text", { x: x, y: y, class: classList.join(" "), transform: transform }, [
+                common_1.verticalCenteredText(scaleText),
+            ]);
+        });
+        extraTittlePadding = maxTextWidth_1 + textPadding;
+    }
+    var id = core_1.uid();
+    var mainLine = dom_1.sv("path", {
+        class: "main-scale",
+        d: "M0 " + height + " V 0.5",
+        id: id,
+        _ref: points.length ? "line0" : null,
+    }); // 0.5 instead of 0, coz stroke-linecap: square and dirrent stroke size
+    var svTitle = null;
+    if (title) {
+        svTitle = dom_1.sv("text", { dx: height / 2, dy: -scalePadding - extraTittlePadding }, [
+            dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
+        ]);
+    }
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("y", title || config.text)), [mainLine, svTitle].concat(text));
+}
+exports.left = left;
+function leftGrid(points, width, height, config) {
+    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine, targetValue = config.targetValue;
+    var len = points.length;
+    var gridLines = [];
+    var className = "grid-line " + (dashed ? "dash-line" : "");
+    for (var i = 0; i < len; i++) {
+        if (i === 0 && points[i][0] === height && !config.hidden) {
+            continue;
+        }
+        if (targetLine === i) {
+            var d = "M0 " + points[i][0] + " H " + width;
+            var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
+            gridLines.push(path);
+            continue;
+        }
+        if (grid) {
+            var d = "M0 " + points[i][0] + " H " + width;
+            var path = dom_1.sv("path", { d: d, class: className });
+            gridLines.push(path);
+            if (i === len - 1 && points[i][0] !== width) {
+                var additionD = "M0 0 H" + width;
+                var additionPath = dom_1.sv("path", { d: additionD, class: className });
+                gridLines.push(additionPath);
+            }
+        }
+    }
+    if (targetValue) {
+        var d = "M0 " + targetValue * height + " H " + width;
+        var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
+        gridLines.push(path);
+    }
+    return dom_1.sv("g", gridLines);
+}
+exports.leftGrid = leftGrid;
+function right(points, config, width, height) {
+    var title = config.title, textPadding = config.textPadding, scalePadding = config.scalePadding, textTemplate = config.textTemplate, showText = config.showText, scaleRotate = config.scaleRotate;
+    var template = textTemplate || defaultTextTemplate;
+    var text = [];
+    var extraTittlePadding = 0;
+    if (showText) {
+        var style_2 = common_1.getFontStyle("scale-text");
+        var maxTextWidth_2 = 0;
+        var canRotate_4 = scaleRotate && !isNaN(scaleRotate);
+        text = points.map(function (p) {
+            var scaleText = template(p[1]);
+            var y = p[0];
+            var x = width + textPadding;
+            var transform = canRotate_4 ? "rotate(" + scaleRotate + " " + x + " " + y + ")" : "";
+            var classList = ["scale-text"];
+            if (title) {
+                var textWidth = common_1.getTextWidth(scaleText, style_2);
+                if (maxTextWidth_2 < textWidth) {
+                    maxTextWidth_2 = textWidth;
+                }
+            }
+            if (canRotate_4) {
+                var angle = scaleRotate % 360;
+                classList.push(common_1.getClassesForRotateScale("right", angle));
+            }
+            else {
+                classList.push("start-text");
+            }
+            return dom_1.sv("text", { x: x, y: y, class: classList.join(" "), transform: transform }, [
+                common_1.verticalCenteredText(scaleText),
+            ]);
+        });
+        extraTittlePadding = textPadding + maxTextWidth_2;
+    }
+    var id = core_1.uid();
+    var mainLine = dom_1.sv("path", {
+        d: "M" + width + " " + height + " V 0",
+        class: "main-scale",
+        id: id,
+        _ref: points.length ? "line0" : null,
+    });
+    var svTitle = null;
+    if (title) {
+        svTitle = dom_1.sv("text", { dx: height / 2, dy: scalePadding + extraTittlePadding }, [
+            dom_1.sv("textPath", { href: "#" + id, class: "scale-title" }, title),
+        ]);
+    }
+    return dom_1.sv("g", __assign({}, getScaleAriaAttrs("y", title || config.text)), [mainLine, svTitle].concat(text));
+}
+exports.right = right;
+function rightGrid(points, width, height, config) {
+    var dashed = config.dashed, grid = config.grid, targetLine = config.targetLine;
+    var len = points.length;
+    var gridLines = [];
+    var className = "grid-line " + (dashed ? "dash-line" : "");
+    for (var i = 0; i < len; i++) {
+        if (i === 0 && points[i][0] === height && !config.hidden) {
+            continue;
+        }
+        if (targetLine === i) {
+            var d = "M0 " + points[i][0] + " H " + width;
+            var path = dom_1.sv("path", { d: d, class: className + " spec-grid-line" });
+            gridLines.push(path);
+            continue;
+        }
+        if (grid) {
+            var d = "M0 " + points[i][0] + " H " + width;
+            var path = dom_1.sv("path", { d: d, class: className });
+            gridLines.push(path);
+            if (i === len - 1 && points[i][0] !== width) {
+                var additionD = "M0 0 H" + width;
+                var additionPath = dom_1.sv("path", { d: additionD, class: className });
+                gridLines.push(additionPath);
+            }
+        }
+    }
+    return dom_1.sv("g", gridLines);
+}
+exports.rightGrid = rightGrid;
+
+
+/***/ }),
+/* 79 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(8);
+var ScaleSeria_1 = __webpack_require__(51);
+var Area = /** @class */ (function (_super) {
+    __extends(Area, _super);
+    function Area() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Area.prototype.paint = function (width, height, prev) {
+        _super.prototype.paint.call(this, width, height);
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.value || ""),
+        }); };
+        var svg = [];
+        this._form(width, height, svg, prev);
+        this._markers(svg);
+        return dom_1.sv("g", __assign({ class: "seria", _key: this.id }, getChartAriaAttrs(this.config)), svg);
+    };
+    Area.prototype.paintformAndMarkers = function (width, height, prev) {
+        _super.prototype.paint.call(this, width, height);
+        var svg = [];
+        var markers = [];
+        this._form(width, height, svg, prev);
+        this._markers(markers);
+        return [
+            dom_1.sv("g", { class: "seria", _key: this.id }, svg),
+            dom_1.sv("g", { class: "seria_markers", _key: this.id + "_markers" }, markers),
+        ];
+    };
+    Area.prototype._markers = function (svg) {
+        var _this = this;
+        if (this.config.pointType) {
+            var color = this.config.pointColor || this.config.color;
+            var point_1 = this._getPointType(this.config.pointType, color);
+            svg.push.apply(svg, this._points.map(function (p) { return point_1(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); }));
+        }
+    };
+    Area.prototype._form = function (width, height, svg, prev) {
+        var css = "chart " + this.config.type + " " + (this.config.css || "") + " " + (this.config.dashed ? "dash-line" : "");
+        var _a = this.config, id = _a.id, fill = _a.fill, alpha = _a.alpha, color = _a.color, strokeWidth = _a.strokeWidth;
+        var points = this._points;
+        var last = points[points.length - 1];
+        var d = "";
+        if (prev) {
+            // bottom line in stacked area
+            for (var i = prev.length - 1; i >= 0; i--) {
+                var item = prev[i];
+                d += i === points.length - 1 ? "M" + item[0] + " " + item[1] + " " : "L" + item[0] + " " + item[1] + " ";
+            }
+            // top line in stacked area
+            d +=
+                points.map(function (item, index) { return (!index ? "V " + item[1] : "L " + item[0] + " " + item[1]); }).join(" ") +
+                    "Z";
+        }
+        else {
+            d +=
+                points
+                    .map(function (item, index) {
+                    return index ? "L" + item[0] + " " + item[1] : "M0 " + height + " L0 " + item[1] + " L" + item[0] + " " + item[1];
+                })
+                    .join(" ") + ("L" + width + " " + last[1] + " V " + height);
+        }
+        if (strokeWidth) {
+            var len_1 = points.length - 1;
+            var strokePadding_1 = function (index) { return (index === len_1 ? -0.5 : index ? 0 : 0.5); };
+            var line = points
+                .map(function (item, index) {
+                return index
+                    ? "L" + (item[0] + strokePadding_1(index)) + " " + item[1]
+                    : "M0 " + item[1] + " L0 " + (item[1] + strokePadding_1(index)) + " L" + (item[0] +
+                        strokePadding_1(index)) + " " + item[1];
+            })
+                .join(" ") + ("L" + width + " " + last[1]);
+            var linePath = dom_1.sv("path", {
+                d: line,
+                "stroke-width": strokeWidth,
+                stroke: color,
+                fill: "none",
+                class: css,
+            });
+            svg.push(linePath);
+        }
+        var path = dom_1.sv("path", {
+            id: "seria" + id,
+            d: d,
+            class: css,
+            fill: fill,
+            _ref: id,
+            "fill-opacity": alpha,
+            stroke: "none",
+        });
+        svg.push(path);
+        return svg;
+    };
+    Area.prototype._setDefaults = function (config) {
+        var defaults = {
+            alpha: 0.3,
+            strokeWidth: 2,
+            fill: config.color || "#5E83BA",
+            color: "#5E83BA",
+            active: true,
+            tooltip: true,
+            pointType: "empty",
+        };
+        this.config = __assign(__assign({}, defaults), config);
+        var point = this.config.pointType;
+        var color = this.config.pointColor || this.config.color;
+        if (point) {
+            this._drawPointType = this._getPointType(point, color);
+        }
+    };
+    return Area;
+}(ScaleSeria_1.default));
+exports.default = Area;
+
+
+/***/ }),
+/* 80 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(8);
+var forms = {
+    circle: function (color, fill, _alpha, x, y, id) {
+        var config = {
+            _ref: id,
+            cx: x,
+            cy: y,
+            r: 4,
+            class: "figure point-circle",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("circle", config);
+    },
+    rect: function (color, fill, _alpha, x, y, id) {
+        var config = {
+            _ref: id,
+            x: x - 4,
+            y: y - 4,
+            width: 8,
+            height: 8,
+            class: "figure point-rect",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("rect", config);
+    },
+    rhombus: function (color, fill, _alpha, x, y, id) {
+        var config = {
+            _ref: id,
+            points: x - 5 + "," + y + " " + x + "," + (y + 5) + " " + (x + 5) + "," + y + " " + x + "," + (y - 5),
+            class: "figure point-rhombus",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("polygon", config);
+    },
+    triangle: function (color, fill, _alpha, x, y, id) {
+        var config = {
+            _ref: id,
+            points: x + "," + (y - 5) + " " + (x + 5) + "," + (y + 5) + " " + (x - 5) + "," + (y + 5),
+            class: "figure point-triangle",
+            fill: fill,
+            stroke: color,
+            "stroke-width": 2,
+        };
+        return dom_1.sv("polygon", config);
+    },
+    simpleCircle: function (color, _fill, _alpha, x, y, id) {
+        var config = {
+            _ref: id,
+            cx: x,
+            cy: y,
+            r: 3,
+            class: "figure point-simple-circle",
+            fill: color,
+        };
+        return dom_1.sv("circle", config);
+    },
+    simpleRect: function (color, _fill, _alpha, x, y, id) {
+        var config = {
+            _ref: id,
+            x: x - 3,
+            y: y - 3,
+            width: 6,
+            height: 6,
+            class: "figure point-simple-rect",
+            fill: color,
+        };
+        return dom_1.sv("rect", config);
+    },
+    empty: function () {
+        return null;
+    },
+};
+var formsHTML = {
+    circle: function (color, fill, _alpha, x, y, id) {
+        return "<circle class=\"figure point-circle\" _ref=\"" + id + "\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"4\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    rect: function (color, fill, _alpha, x, y, id) {
+        return "<rect _ref=\"" + id + "\" x=\"" + (x - 4) + "\" y=\"" + (y -
+            4) + "\" width=\"8\" height=\"8\" class=\"figure point-rect\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    rhombus: function (color, fill, _alpha, x, y, id) {
+        return "<polygon _ref=\"" + id + "\" points=\"" + (x - 5) + "," + y + " " + x + "," + (y + 5) + " " + (x + 5) + "," + y + " " + x + "," + (y -
+            5) + "\" class=\"figure point-rhombus\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    triangle: function (color, fill, _alpha, x, y, id) {
+        return "<polygon _ref=\"" + id + "\" points=\"" + x + "," + (y - 5) + " " + (x + 5) + "," + (y + 5) + " " + (x - 5) + "," + (y +
+            5) + "\" class=\"figure point-triangle\" fill=\"" + fill + "\" stroke=\"" + color + "\" stroke-width=\"2\"/>";
+    },
+    simpleCircle: function (color, _fill, _alpha, x, y, id) {
+        return "<circle _ref=\"" + id + "\" cx=\"" + x + "\" cy=\"" + y + "\" r=\"3\" class=\"figure point-simple-circle\" fill=\"" + color + "\"/>";
+    },
+    simpleRect: function (color, _fill, _alpha, x, y, id) {
+        return "<rect _ref=\"id\" x=\"" + (x - 3) + "\" y=\"" + (y -
+            3) + "\" width=\"6\" height=\"6\" class=\"figure point-simple-rect\" fill=\"" + color + "\"/>";
+    },
+    empty: function () {
+        return null;
+    },
+};
+function getHelper(type) {
+    var helper = forms[type.toString()];
+    if (!helper) {
+        throw new Error("unknown point type");
+    }
+    return helper;
+}
+exports.getHelper = getHelper;
+function getHTMLHelper(type) {
+    var helper = formsHTML[type.toString()];
+    if (!helper) {
+        throw new Error("unknown point type");
+    }
+    return helper;
+}
+exports.getHTMLHelper = getHTMLHelper;
+function getShadeHelper(type, color) {
+    var helper = getHelper(type);
+    color = color || "none";
+    var shade = common_1.getColorShade(color, 0.2);
+    return function (x, y, id) {
+        return helper(color, shade, "", x, y, id);
+    };
+}
+exports.getShadeHelper = getShadeHelper;
+function getShadeHTMLHelper(type, color) {
+    var helper = getHTMLHelper(type);
+    color = color || "none";
+    var shade = common_1.getColorShade(color, 0.2);
+    return function (x, y, id) {
+        return helper(color, shade, "", x, y, id);
+    };
+}
+exports.getShadeHTMLHelper = getShadeHTMLHelper;
+
+
+/***/ }),
+/* 81 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(8);
+var ScaleSeria_1 = __webpack_require__(51);
+var Bar = /** @class */ (function (_super) {
+    __extends(Bar, _super);
+    function Bar() {
+        var _this = _super !== null && _super.apply(this, arguments) || this;
+        _this._shift = 0;
+        return _this;
+    }
+    Bar.prototype.addScale = function (type, scale) {
+        _super.prototype.addScale.call(this, type, scale);
+        scale.addPadding();
+    };
+    Bar.prototype.seriesShift = function (shift) {
+        this._shift = shift;
+        return this.config.barWidth;
+    };
+    Bar.prototype.paint = function (width, height, prev) {
+        _super.prototype.paint.call(this, width, height);
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.value || ""),
+        }); };
+        if (!this.config.active) {
+            return null;
+        }
+        var svg = [];
+        if (this._gradient) {
+            svg.push(dom_1.sv("defs", [this._gradient()]));
+        }
+        var css = "chart " + this.config.type + " " + (this.config.css || "") + " " + (this.config.dashed ? "dash-line" : "");
+        var form = this._getForm(this._points, css, width, height, prev);
+        svg = svg.concat(form);
+        return dom_1.sv("g", __assign({ class: "seria", _key: this.id }, getChartAriaAttrs(this.config)), svg);
+    };
+    Bar.prototype.getTooltipType = function (_id, _x, y) {
+        if (this.config.baseLine !== undefined && this._baseLinePosition < y) {
+            return "bot";
+        }
+        return "top";
+    };
+    Bar.prototype._getClosestDist = function (x, y, px, py) {
+        if (this.config.stacked && y < py) {
+            return Infinity;
+        }
+        return Math.abs(x - px);
+    };
+    Bar.prototype._path = function (item, prev) {
+        item[0] += this._shift;
+        return "\nM " + (item[0] - this.config.barWidth / 2) + " " + prev + "\nV " + item[1] + "\nh " + this.config.barWidth + "\nV " + prev;
+    };
+    Bar.prototype._base = function (height) {
+        var baseLine = this.config.baseLine;
+        return (this._baseLinePosition =
+            baseLine !== undefined ? this.yScale.point(baseLine) * height : height - 1);
+    };
+    Bar.prototype._text = function (item, prev, rotate) {
+        var x = item[0];
+        var y = (prev + item[1]) / 2;
+        var canRotate = rotate && !isNaN(rotate);
+        return {
+            x: x,
+            y: y,
+            class: "bar-text",
+            transform: canRotate ? "rotate(" + rotate + " " + x + " " + y + ")" : "",
+        };
+    };
+    Bar.prototype._getForm = function (points, css, _width, height, prev) {
+        var _this = this;
+        var getPointAriaLabel = function (barType, item, baseLine) {
+            if (baseLine === void 0) { baseLine = 0; }
+            var x = item[3];
+            var yStart = baseLine;
+            var yEnd = item[4];
+            if (baseLine > yEnd) {
+                yStart = yEnd;
+                yEnd = baseLine;
+            }
+            return barType === "xbar"
+                ? "bar y=" + x + ", x from " + yStart + " to " + yEnd
+                : "bar x=" + x + ", y from " + yStart + " to " + yEnd;
+        };
+        var getPointAriaAttrs = function (barType, item, baseLine) { return ({
+            role: "graphics-symbol",
+            "aria-roledescription": "bar",
+            "aria-label": getPointAriaLabel(barType, item, baseLine),
+        }); };
+        var _a = this.config, baseLine = _a.baseLine, fill = _a.fill, alpha = _a.alpha, showText = _a.showText, showTextTemplate = _a.showTextTemplate, showTextRotate = _a.showTextRotate;
+        var svg = [];
+        var base = this._base(height);
+        var getPrev = function (index) { return (!prev ? base : prev[index][1]); };
+        var series = points.map(function (item, index) {
+            return dom_1.sv("path", __assign({ _key: "seria" + _this.config.id + index, _ref: common_1.calcPointRef(item[2], _this.config.id), d: _this._path(item, getPrev(index)), class: css, fill: fill, onclick: [_this._handlers.onmousemove, item[2], _this.config.id], onmousemove: [_this._handlers.onmousemove, item[2], _this.config.id], onmouseleave: [_this._handlers.onmouseleave, item[2], _this.config.id], "fill-opacity": alpha }, getPointAriaAttrs(_this.config.type, item, baseLine)));
+        });
+        svg.push.apply(svg, series);
+        if ((showText || showTextTemplate || showTextRotate) && showText !== false) {
+            var isWrite_1 = function (item, index) { return Math.abs(getPrev(index) - item[1]) > 16; }; // hide text, where height < 16
+            var text = points.map(function (item, index) {
+                var value = _this._getText(item);
+                return isWrite_1(item, index)
+                    ? dom_1.sv("text", __assign(__assign({}, _this._text(item, getPrev(index), showTextRotate)), { "aria-hidden": "true" }), [
+                        showTextTemplate
+                            ? common_1.verticalCenteredText(showTextTemplate(value))
+                            : common_1.verticalCenteredText(value),
+                    ])
+                    : null;
+            });
+            svg.push.apply(svg, text);
+        }
+        return svg;
+    };
+    Bar.prototype._getText = function (item) {
+        return item[4].toString();
+    };
+    Bar.prototype._setDefaults = function (config) {
+        var defaults = {
+            barWidth: 30,
+            alpha: 1,
+            active: true,
+            tooltip: true,
+            pointType: "empty",
+        };
+        this.config = __assign(__assign({}, defaults), config);
+        var point = this.config.pointType;
+        var color = this.config.pointColor || this.config.color;
+        if (point) {
+            this.config.pointType = point;
+            this._drawPointType = this._getPointType(point, color);
+        }
+        if (this.config.gradient) {
+            var id_1 = "gradient" + core_1.uid();
+            var gradient_1 = this.config.gradient(this.config.fill);
+            this._gradient = function () { return common_1.linearGradient(gradient_1, id_1); };
+            this.config.fill = "url(#" + id_1 + ")";
+        }
+    };
+    return Bar;
+}(ScaleSeria_1.default));
+exports.default = Bar;
+
+
+/***/ }),
+/* 82 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function spline(initPoints, link) {
+    var len = initPoints.length;
+    var points;
+    if (len < 3) {
+        points = initPoints;
+    }
+    else {
+        var p0 = initPoints[0];
+        var p1 = initPoints[0];
+        var p2 = initPoints[1];
+        var p3 = initPoints[2];
+        points = [initPoints[0].slice(0, 2)];
+        for (var i = 1; i < len; i++) {
+            points.push([
+                (-p0[0] + 6 * p1[0] + p2[0]) / 6,
+                (-p0[1] + 6 * p1[1] + p2[1]) / 6,
+                (p1[0] + 6 * p2[0] - p3[0]) / 6,
+                (p1[1] + 6 * p2[1] - p3[1]) / 6,
+                p2[0],
+                p2[1],
+            ]);
+            p0 = p1;
+            p1 = p2;
+            p2 = p3;
+            p3 = initPoints[i + 2] || p3;
+        }
+    }
+    var d = "";
+    for (var i = 0; i < points.length; i++) {
+        var point = points[i];
+        var n = point.length;
+        if (!i) {
+            d += link ? "L" : "M";
+            d += n === 5 ? point[0] + " " + point[1] : point[n - 2] + " " + point[n - 1];
+        }
+        else if (n > 5) {
+            d += "C" + point[0] + " " + point[1] + "\n\t\t\t\t" + point[2] + " " + point[3] + "\n\t\t\t\t" + point[4] + " " + point[5];
+        }
+        else if (n === 5) {
+            d += "L" + point[0] + " " + point[1];
+        }
+        else {
+            d += "S" + point[0] + " " + point[1] + "\n\t\t\t\t" + point[2] + " " + point[3];
+        }
+    }
+    return d;
+}
+exports.default = spline;
+
+
+/***/ }),
+/* 83 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var DataViewEvents;
+(function (DataViewEvents) {
+    DataViewEvents["click"] = "click";
+    DataViewEvents["doubleClick"] = "doubleclick";
+    DataViewEvents["focusChange"] = "focuschange";
+    DataViewEvents["beforeEditStart"] = "beforeEditStart";
+    DataViewEvents["afterEditStart"] = "afterEditStart";
+    DataViewEvents["beforeEditEnd"] = "beforeEditEnd";
+    DataViewEvents["afterEditEnd"] = "afterEditEnd";
+    DataViewEvents["itemRightClick"] = "itemRightClick";
+    DataViewEvents["itemMouseOver"] = "itemMouseOver";
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    DataViewEvents["contextmenu"] = "contextmenu";
+})(DataViewEvents = exports.DataViewEvents || (exports.DataViewEvents = {}));
+
+
+/***/ }),
+/* 84 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var events_1 = __webpack_require__(2);
+var helper_1 = __webpack_require__(6);
+var ts_popup_1 = __webpack_require__(10);
+var types_1 = __webpack_require__(7);
+var label_1 = __webpack_require__(11);
+var core_1 = __webpack_require__(1);
+var Checkbox = /** @class */ (function (_super) {
+    __extends(Checkbox, _super);
+    function Checkbox(container, config) {
+        if (config === void 0) { config = {}; }
+        var _this = _super.call(this, container, config) || this;
+        _this.events = new events_1.EventSystem();
+        _this._isValid = true;
+        _this._propsItem = [
+            "required",
+            "label",
+            "labelWidth",
+            "labelPosition",
+            "hiddenLabel",
+            "helpMessage",
+            "preMessage",
+            "successMessage",
+            "errorMessage",
+            "text",
+        ];
+        _this._props = __spreadArrays(helper_1.baseProps, _this._propsItem);
+        _this._initView(config);
+        _this._initHandlers();
+        var render = function () { return _this._draw(); };
+        _this.mount(container, dom_1.create({ render: render }));
+        return _this;
+    }
+    Checkbox.prototype.setProperties = function (propertyConfig, silent) {
+        if (silent === void 0) { silent = false; }
+        if (!propertyConfig ||
+            core_1.isEmptyObj(propertyConfig) ||
+            (!silent && !this.events.fire(types_1.ItemEvent.beforeChangeProperties, [this.getProperties()])))
+            return;
+        for (var key in propertyConfig) {
+            if (this._props.includes(key)) {
+                this.config[key] = propertyConfig[key];
+            }
+        }
+        !silent && this.events.fire(types_1.ItemEvent.afterChangeProperties, [this.getProperties()]);
+        this.paint();
+    };
+    Checkbox.prototype.getProperties = function () {
+        var obj = {};
+        for (var key in this.config) {
+            if (this._props.includes(key)) {
+                obj[key] = this.config[key];
+            }
+        }
+        return obj;
+    };
+    Checkbox.prototype.show = function () {
+        var hidden = this.config.hidden;
+        if (!hidden || !this.events.fire(types_1.ItemEvent.beforeShow, [this.getValue()])) {
+            return;
+        }
+        this.config.hidden = false;
+        this.events.fire(types_1.ItemEvent.afterShow, [this.getValue()]);
+    };
+    Checkbox.prototype.hide = function (init) {
+        var hidden = this.config.hidden;
+        if ((hidden && !init) || !this.events.fire(types_1.ItemEvent.beforeHide, [this.getValue(), init])) {
+            return;
+        }
+        this.config.hidden = true;
+        this.events.fire(types_1.ItemEvent.afterHide, [this.getValue(), init]);
+    };
+    Checkbox.prototype.isVisible = function () {
+        return !this.config.hidden;
+    };
+    Checkbox.prototype.disable = function () {
+        this.config.disabled = true;
+        this.paint();
+    };
+    Checkbox.prototype.enable = function () {
+        this.config.disabled = false;
+        this.paint();
+    };
+    Checkbox.prototype.isDisabled = function () {
+        return this.config.disabled;
+    };
+    Checkbox.prototype.validate = function (silent) {
+        if (silent === void 0) { silent = false; }
+        if (!silent && !this.events.fire(types_1.ItemEvent.beforeValidate, [this.getValue()]))
+            return;
+        if (this.config.required || this.config.$required) {
+            this._isValid = !!this.config.checked;
+        }
+        if (!silent) {
+            this.config.$validationStatus = this._isValid ? types_1.ValidationStatus.success : types_1.ValidationStatus.error;
+            this.events.fire(types_1.ItemEvent.afterValidate, [this.getValue(), this._isValid]);
+        }
+        return this._isValid;
+    };
+    Checkbox.prototype.clearValidate = function () {
+        this.config.$validationStatus = types_1.ValidationStatus.pre;
+        this.paint();
+    };
+    Checkbox.prototype.setValue = function (checked, silent) {
+        if (silent === void 0) { silent = false; }
+        if (typeof checked === "undefined" || checked === this.config.checked)
+            return;
+        this.config.checked = !!checked;
+        if (!silent) {
+            this.events.fire(types_1.ItemEvent.change, [this.getValue()]);
+            helper_1.isVerify(this.config) && this.validate();
+        }
+    };
+    Checkbox.prototype.getValue = function () {
+        var _a = this.config, value = _a.value, checked = _a.checked;
+        return value ? (checked ? value : "") : !!checked;
+    };
+    Checkbox.prototype.clear = function (silent) {
+        if (!this.config.checked)
+            return;
+        this.config.checked = false;
+        if (!silent) {
+            this.events.fire(types_1.ItemEvent.change, [this.getValue()]);
+        }
+    };
+    Checkbox.prototype.destructor = function () {
+        this.events.clear();
+        this.unmount();
+    };
+    Checkbox.prototype.focus = function () {
+        var _this = this;
+        dom_1.awaitRedraw().then(function () {
+            _this.getRootView().refs.input.el.focus();
+        });
+    };
+    Checkbox.prototype.isChecked = function () {
+        return !!this.config.checked;
+    };
+    Checkbox.prototype._initView = function (config) {
+        var _this = this;
+        this._inGroup = this.config.$group;
+        if (!this._inGroup) {
+            this.config = {
+                type: config.type,
+                id: config.id,
+                name: config.name,
+                disabled: false,
+                required: false,
+                label: "",
+                labelWidth: "",
+                labelPosition: "top",
+                hiddenLabel: false,
+                helpMessage: "",
+                preMessage: "",
+                successMessage: "",
+                errorMessage: "",
+                width: "content",
+                height: "content",
+                padding: 0,
+            };
+            for (var key in config) {
+                if (key !== "id" && key !== "type" && key !== "name") {
+                    this.config[key] = config[key];
+                }
+            }
+            if (this.config.helpMessage) {
+                this._helper = new ts_popup_1.Popup({
+                    css: "dhx_tooltip dhx_tooltip--forced dhx_tooltip--light",
+                });
+                this._helper.attachHTML(this.config.helpMessage);
+            }
+            this._handlers = {
+                showHelper: function (e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    _this._helper.show(e.target, {
+                        mode: _this.config.labelPosition === "left" ? "bottom" : "right",
+                    });
+                },
+                onchange: function (e) {
+                    _this.config.checked = e.target.checked;
+                    _this.events.fire(types_1.ItemEvent.change, [_this.getValue()]);
+                    helper_1.isVerify(_this.config) && _this.validate();
+                },
+            };
+        }
+        else {
+            this.config = {
+                type: config.type,
+                id: config.id,
+                text: "",
+                width: "content",
+                height: "content",
+                padding: 0,
+            };
+            for (var key in config) {
+                if (key !== "id" && key !== "type" && key !== "name") {
+                    this.config[key] = config[key];
+                }
+            }
+            this._handlers = {
+                onchange: function (e) {
+                    _this.config.checked = e.target.checked;
+                    _this.events.fire(types_1.ItemEvent.change, [_this.getValue()]);
+                    helper_1.isVerify(_this.config) && _this.validate();
+                },
+            };
+        }
+        if (this.config.hidden) {
+            dom_1.awaitRedraw().then(function () {
+                _this.hide(true);
+            });
+        }
+    };
+    Checkbox.prototype._initHandlers = function () {
+        var _this = this;
+        this.events.on(types_1.ItemEvent.change, function () { return _this.paint(); });
+        this.events.on(types_1.ItemEvent.afterValidate, function () {
+            _this.config.$validationStatus = _this._isValid ? types_1.ValidationStatus.success : types_1.ValidationStatus.error;
+            _this.paint();
+        });
+    };
+    Checkbox.prototype._draw = function () {
+        var _a = this.config, id = _a.id, value = _a.value, checked = _a.checked, disabled = _a.disabled, name = _a.name, required = _a.required, $required = _a.$required, text = _a.text, label = _a.label, labelWidth = _a.labelWidth, helpMessage = _a.helpMessage;
+        return dom_1.el("label.dhx_checkbox.dhx_form-group.dhx_form-group--checkbox", {
+            class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config) || !!$required),
+        }, !this._inGroup
+            ? [
+                label || labelWidth || helpMessage || required ? this._drawLabel() : null,
+                dom_1.el(".dhx_checkbox__container", [
+                    dom_1.el(".dhx_checkbox__holder", [
+                        dom_1.el("input.dhx_checkbox__input", {
+                            type: "checkbox",
+                            id: id,
+                            value: value,
+                            name: name,
+                            disabled: disabled,
+                            checked: checked,
+                            onchange: this._handlers.onchange,
+                            required: required,
+                            _ref: "input",
+                            "aria-label": label || "checkbox " + (text || ""),
+                            "aria-describedby": helpMessage
+                                ? "dhx_label__help_" + (id || this._uid)
+                                : null,
+                        }),
+                        dom_1.el("span.dhx_checkbox__visual-input"),
+                        dom_1.el("span.dhx_text", [text]),
+                    ]),
+                    required &&
+                        helper_1.getValidationMessage(this.config) &&
+                        dom_1.el("span.dhx_input__caption", helper_1.getValidationMessage(this.config)),
+                ]),
+            ]
+            : [
+                dom_1.el(".dhx_checkbox__holder", [
+                    dom_1.el("input.dhx_checkbox__input", {
+                        type: "checkbox",
+                        id: id,
+                        value: value || "",
+                        name: name || "",
+                        disabled: disabled,
+                        checked: checked,
+                        onchange: this._handlers.onchange,
+                        required: required,
+                        _ref: "input",
+                    }),
+                    dom_1.el("span.dhx_checkbox__visual-input"),
+                    dom_1.el("span.dhx_text", [text]),
+                ]),
+            ]);
+    };
+    return Checkbox;
+}(label_1.Label));
+exports.Checkbox = Checkbox;
+
+
+/***/ }),
 /* 85 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.default = {
+    simpleVaultText: "Drag & drop files or folders here or",
+    simpleVaultLabel: "browse files",
+};
+
+
+/***/ }),
+/* 86 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10154,7 +10342,7 @@ var SidebarEvents;
 
 
 /***/ }),
-/* 86 */
+/* 87 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10171,7 +10359,7 @@ var TabbarEvents;
 
 
 /***/ }),
-/* 87 */
+/* 88 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10296,7 +10484,7 @@ exports.default = new Editor();
 
 
 /***/ }),
-/* 88 */
+/* 89 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10330,7 +10518,7 @@ var TreeEvents;
 
 
 /***/ }),
-/* 89 */
+/* 90 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10340,12 +10528,12 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(224));
+__export(__webpack_require__(92));
 __export(__webpack_require__(91));
-__export(__webpack_require__(90));
 
 
 /***/ }),
-/* 90 */
+/* 91 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10484,7 +10672,7 @@ exports.TreeGridCollection = TreeGridCollection;
 
 
 /***/ }),
-/* 91 */
+/* 92 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10500,19 +10688,19 @@ var TreeGridEvents;
 
 
 /***/ }),
-/* 92 */
+/* 93 */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(93);
 __webpack_require__(94);
 __webpack_require__(95);
 __webpack_require__(96);
 __webpack_require__(97);
-module.exports = __webpack_require__(98);
+__webpack_require__(98);
+module.exports = __webpack_require__(99);
 
 
 /***/ }),
-/* 93 */
+/* 94 */
 /***/ (function(module, exports) {
 
 Object.values = Object.values
@@ -10547,10 +10735,43 @@ Object.values = Object.values
             return result;
         }
     };
+if (!Object.assign) {
+    Object.defineProperty(Object, "assign", {
+        enumerable: false,
+        configurable: true,
+        writable: true,
+        value: function (target) {
+            "use strict";
+            var args = [];
+            for (var _i = 1; _i < arguments.length; _i++) {
+                args[_i - 1] = arguments[_i];
+            }
+            if (target === undefined || target === null) {
+                throw new TypeError("Cannot convert first argument to object");
+            }
+            var to = Object(target);
+            for (var i = 0; i < args.length; i++) {
+                var nextSource = args[i];
+                if (nextSource === undefined || nextSource === null) {
+                    continue;
+                }
+                var keysArray = Object.keys(Object(nextSource));
+                for (var nextIndex = 0, len = keysArray.length; nextIndex < len; nextIndex++) {
+                    var nextKey = keysArray[nextIndex];
+                    var desc = Object.getOwnPropertyDescriptor(nextSource, nextKey);
+                    if (desc !== undefined && desc.enumerable) {
+                        to[nextKey] = nextSource[nextKey];
+                    }
+                }
+            }
+            return to;
+        },
+    });
+}
 
 
 /***/ }),
-/* 94 */
+/* 95 */
 /***/ (function(module, exports) {
 
 /* eslint-disable prefer-rest-params */
@@ -10662,7 +10883,7 @@ if (!Array.prototype.findIndex) {
 
 
 /***/ }),
-/* 95 */
+/* 96 */
 /***/ (function(module, exports) {
 
 if (!String.prototype.includes) {
@@ -10725,7 +10946,7 @@ if (!String.prototype.padEnd) {
 
 
 /***/ }),
-/* 96 */
+/* 97 */
 /***/ (function(module, exports) {
 
 /* eslint-disable @typescript-eslint/no-this-alias */
@@ -10782,10 +11003,26 @@ if (!Object.entries) {
         return reduce(Object.keys(O), function (e, k) { return concat(e, typeof k === "string" && isEnumerable(O, k) ? [[k, O[k]]] : []); }, []);
     };
 }
+// Source: https://gist.github.com/rockinghelvetica/00b9f7b5c97a16d3de75ba99192ff05c
+if (!Event.prototype.composedPath) {
+    Event.prototype.composedPath = function () {
+        if (this.path) {
+            return this.path;
+        }
+        var target = this.target;
+        this.path = [];
+        while (target.parentNode !== null) {
+            this.path.push(target);
+            target = target.parentNode;
+        }
+        this.path.push(document, window);
+        return this.path;
+    };
+}
 
 
 /***/ }),
-/* 97 */
+/* 98 */
 /***/ (function(module, exports) {
 
 Math.sign =
@@ -10800,7 +11037,7 @@ Math.sign =
 
 
 /***/ }),
-/* 98 */
+/* 99 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10809,30 +11046,30 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(99));
+__export(__webpack_require__(100));
 // HELPERS
 var ts_data_1 = __webpack_require__(4);
 exports.dataDrivers = ts_data_1.dataDriversPro;
 exports.LazyDataProxy = ts_data_1.LazyDataProxy;
-var ts_treegrid_1 = __webpack_require__(89);
+var ts_treegrid_1 = __webpack_require__(90);
 exports.TreeGridCollection = ts_treegrid_1.TreeGridCollection;
-var ts_grid_1 = __webpack_require__(54);
+var ts_grid_1 = __webpack_require__(56);
 exports.Grid = ts_grid_1.ProGrid;
 var ts_pagination_1 = __webpack_require__(225);
 exports.Pagination = ts_pagination_1.Pagination;
 // WIDGETS
-var ts_treegrid_2 = __webpack_require__(89);
+var ts_treegrid_2 = __webpack_require__(90);
 exports.TreeGrid = ts_treegrid_2.TreeGrid;
 
 
 /***/ }),
-/* 99 */
+/* 100 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-__webpack_require__(100);
+__webpack_require__(101);
 // HELPERS
 /* tslint:disable */
 var CssManager_1 = __webpack_require__(32);
@@ -10853,23 +11090,23 @@ exports.ajax = ts_data_1.ajax;
 // WIDGETS
 var ts_layout_1 = __webpack_require__(13);
 exports.Layout = ts_layout_1.Layout;
-var ts_list_1 = __webpack_require__(39);
+var ts_list_1 = __webpack_require__(40);
 exports.List = ts_list_1.List;
-var ts_calendar_1 = __webpack_require__(41);
+var ts_calendar_1 = __webpack_require__(37);
 exports.Calendar = ts_calendar_1.Calendar;
-var ts_colorpicker_1 = __webpack_require__(44);
+var ts_colorpicker_1 = __webpack_require__(47);
 exports.Colorpicker = ts_colorpicker_1.Colorpicker;
-var ts_chart_1 = __webpack_require__(150);
+var ts_chart_1 = __webpack_require__(168);
 exports.Chart = ts_chart_1.Chart;
-var ts_combobox_1 = __webpack_require__(31);
+var ts_combobox_1 = __webpack_require__(29);
 exports.Combobox = ts_combobox_1.Combobox;
-var ts_dataview_1 = __webpack_require__(175);
+var ts_dataview_1 = __webpack_require__(189);
 exports.DataView = ts_dataview_1.DataView;
-var ts_form_1 = __webpack_require__(179);
+var ts_form_1 = __webpack_require__(193);
 exports.Form = ts_form_1.Form;
-var ts_grid_1 = __webpack_require__(54);
+var ts_grid_1 = __webpack_require__(56);
 exports.Grid = ts_grid_1.Grid;
-var ts_message_1 = __webpack_require__(18);
+var ts_message_1 = __webpack_require__(20);
 exports.message = ts_message_1.message;
 exports.alert = ts_message_1.alert;
 exports.confirm = ts_message_1.confirm;
@@ -10885,24 +11122,24 @@ var ts_ribbon_1 = __webpack_require__(212);
 exports.Ribbon = ts_ribbon_1.Ribbon;
 var ts_sidebar_1 = __webpack_require__(214);
 exports.Sidebar = ts_sidebar_1.Sidebar;
-var ts_slider_1 = __webpack_require__(43);
+var ts_slider_1 = __webpack_require__(39);
 exports.Slider = ts_slider_1.Slider;
 var ts_tabbar_1 = __webpack_require__(216);
 exports.Tabbar = ts_tabbar_1.Tabbar;
-var ts_timepicker_1 = __webpack_require__(42);
+var ts_timepicker_1 = __webpack_require__(38);
 exports.Timepicker = ts_timepicker_1.Timepicker;
-var ts_toolbar_1 = __webpack_require__(30);
+var ts_toolbar_1 = __webpack_require__(31);
 exports.Toolbar = ts_toolbar_1.Toolbar;
 var ts_tree_1 = __webpack_require__(218);
 exports.Tree = ts_tree_1.Tree;
 var ts_window_1 = __webpack_require__(220);
 exports.Window = ts_window_1.Window;
 // TOOLS
-var ts_colorpicker_2 = __webpack_require__(44);
-var en_1 = __webpack_require__(36);
+var ts_colorpicker_2 = __webpack_require__(47);
+var en_1 = __webpack_require__(44);
 var date_1 = __webpack_require__(22);
-var en_2 = __webpack_require__(52);
-var en_3 = __webpack_require__(81);
+var en_2 = __webpack_require__(42);
+var en_3 = __webpack_require__(85);
 var en_4 = __webpack_require__(68);
 var w = window;
 exports.i18n = w.dhx && w.dhx.i18n ? w.dhx.i18 : {};
@@ -10921,13 +11158,13 @@ exports.i18n.timepicker = exports.i18n.timepicker || en_4.default;
 
 
 /***/ }),
-/* 100 */
+/* 101 */
 /***/ (function(module, exports, __webpack_require__) {
 
 // extracted by mini-css-extract-plugin
 
 /***/ }),
-/* 101 */
+/* 102 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global) {var scope = (typeof global !== "undefined" && global) ||
@@ -10983,7 +11220,7 @@ exports._unrefActive = exports.active = function(item) {
 };
 
 // setimmediate attaches itself to the global object
-__webpack_require__(102);
+__webpack_require__(103);
 // On some exotic environments, it's not clear which object `setimmediate` was
 // able to install onto.  Search each possibility in the same order as the
 // `setimmediate` library.
@@ -10997,7 +11234,7 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33)))
 
 /***/ }),
-/* 102 */
+/* 103 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /* WEBPACK VAR INJECTION */(function(global, process) {(function (global, undefined) {
@@ -11187,10 +11424,10 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
     attachTo.clearImmediate = clearImmediate;
 }(typeof self === "undefined" ? typeof global === "undefined" ? this : global : self));
 
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33), __webpack_require__(103)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(33), __webpack_require__(104)))
 
 /***/ }),
-/* 103 */
+/* 104 */
 /***/ (function(module, exports) {
 
 // shim for using process in browser
@@ -11380,7 +11617,7 @@ process.umask = function() { return 0; };
 
 
 /***/ }),
-/* 104 */
+/* 105 */
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -13321,7 +13558,7 @@ return nano;
 
 
 /***/ }),
-/* 105 */
+/* 106 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13505,13 +13742,13 @@ exports.Loader = Loader;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 106 */
+/* 107 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var xml_1 = __webpack_require__(107);
+var xml_1 = __webpack_require__(108);
 var ARRAY_NAME = "items";
 var ITEM_NAME = "item";
 // convert xml tag to js object, all subtags and attributes are mapped to the properties of result object
@@ -13645,7 +13882,7 @@ exports.XMLDriver = XMLDriver;
 
 
 /***/ }),
-/* 107 */
+/* 108 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13685,7 +13922,7 @@ exports.jsonToXML = jsonToXML;
 
 
 /***/ }),
-/* 108 */
+/* 109 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -13737,7 +13974,7 @@ exports.Sort = Sort;
 
 
 /***/ }),
-/* 109 */
+/* 110 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14335,7 +14572,7 @@ exports.TreeCollection = TreeCollection;
 
 
 /***/ }),
-/* 110 */
+/* 111 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14353,9 +14590,10 @@ var __assign = (this && this.__assign) || function () {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var html_1 = __webpack_require__(3);
-var CollectionStore_1 = __webpack_require__(111);
+var CollectionStore_1 = __webpack_require__(112);
 var types_1 = __webpack_require__(16);
 var helpers_1 = __webpack_require__(17);
+var ProGrid_1 = __webpack_require__(63);
 function getPosition(e) {
     var y = e.clientY;
     var element = html_1.locateNode(e);
@@ -14648,6 +14886,32 @@ var DragManager = /** @class */ (function () {
             grid.paint();
             return;
         }
+        else if (isColumnDrag && from.component instanceof ProGrid_1.ProGrid && to.component instanceof ProGrid_1.ProGrid) {
+            var grid = from.component;
+            var nextGrid_1 = to.component;
+            var currentCols = grid.config.columns.map(function (c) { return (__assign({}, c)); });
+            var sourceIndex = currentCols.findIndex(function (c) { return c.id === from.id; });
+            var nextGridCols = nextGrid_1.config.columns.map(function (c) { return (__assign({}, c)); });
+            var componentIndex = nextGridCols.findIndex(function (c) { return c.id === to.id; });
+            var isIdExsist = nextGridCols.findIndex(function (item) { return item.id === from.id; });
+            var copyId_1 = isIdExsist >= 0 ? from.id + "_copy" : from.id;
+            var currentColumnData_1 = [];
+            grid.data.forEach(function (item) {
+                var _a;
+                currentColumnData_1.push((_a = {}, _a[copyId_1] = item[from.id], _a));
+            });
+            nextGrid_1.data.forEach(function (item, index) {
+                nextGrid_1.data.update(item.id, __assign(__assign({}, item), currentColumnData_1[index]));
+            });
+            var col = currentCols.splice(sourceIndex, 1)[0];
+            col.id = copyId_1;
+            nextGridCols.splice(componentIndex, 0, col);
+            nextGrid_1.setColumns(nextGridCols);
+            nextGrid_1.paint();
+            grid.setColumns(currentCols);
+            grid.paint();
+            return;
+        }
         switch (behaviour) {
             case "child":
                 break;
@@ -14766,7 +15030,7 @@ exports.dragManager = dhx.dragManager;
 
 
 /***/ }),
-/* 111 */
+/* 112 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -14793,168 +15057,11 @@ exports.collectionStore = dhx.collectionStore;
 
 
 /***/ }),
-/* 112 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(Promise) {
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var dataproxy_1 = __webpack_require__(23);
-var core_1 = __webpack_require__(1);
-var ajax_1 = __webpack_require__(34);
-var LazyDataProxy = /** @class */ (function (_super) {
-    __extends(LazyDataProxy, _super);
-    function LazyDataProxy(url, config) {
-        var _this = _super.call(this, url) || this;
-        _this.config = core_1.extend({
-            from: 0,
-            limit: 50,
-            delay: 50,
-            prepare: 0,
-        }, config);
-        _this.updateUrl(url, { from: _this.config.from, limit: _this.config.limit });
-        return _this;
-    }
-    LazyDataProxy.prototype.load = function () {
-        var _this = this;
-        return new Promise(function (resolve) {
-            if (!_this._timeout) {
-                ajax_1.ajax.get(_this.url, { responseType: "text" }).then(resolve);
-                _this._cooling = true;
-                _this._timeout = setTimeout(function () {
-                    return;
-                });
-            }
-            else {
-                clearTimeout(_this._timeout);
-                _this._timeout = setTimeout(function () {
-                    ajax_1.ajax.get(_this.url, { responseType: "text" }).then(resolve);
-                    _this._cooling = true;
-                }, _this.config.delay);
-                if (_this._cooling) {
-                    resolve(null);
-                    _this._cooling = false;
-                }
-            }
-        });
-    };
-    return LazyDataProxy;
-}(dataproxy_1.DataProxy));
-exports.LazyDataProxy = LazyDataProxy;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
-
-/***/ }),
 /* 113 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-Object.defineProperty(exports, "__esModule", { value: true });
-var events_1 = __webpack_require__(2);
-var types_1 = __webpack_require__(24);
-var types_2 = __webpack_require__(16);
-var Selection = /** @class */ (function () {
-    function Selection(config, data, events) {
-        var _this = this;
-        this.events = events || new events_1.EventSystem(this);
-        this._data = data;
-        this.config = config;
-        this._data.events.on(types_2.DataEvents.removeAll, function () {
-            _this._selected = null;
-        });
-        this._data.events.on(types_2.DataEvents.change, function () {
-            if (_this._selected) {
-                var near = _this._data.getNearId(_this._selected);
-                if (near !== _this._selected) {
-                    _this._selected = null;
-                    if (near) {
-                        _this.add(near);
-                    }
-                }
-            }
-        });
-    }
-    Selection.prototype.getId = function () {
-        return this._selected;
-    };
-    Selection.prototype.getItem = function () {
-        if (this._selected) {
-            return this._data.getItem(this._selected);
-        }
-        return null;
-    };
-    Selection.prototype.remove = function (id) {
-        id = id || this._selected;
-        if (!id) {
-            return true;
-        }
-        if (this.events.fire(types_1.SelectionEvents.beforeUnSelect, [id])) {
-            this._data.update(id, { $selected: false }, true);
-            this._selected = null;
-            this.events.fire(types_1.SelectionEvents.afterUnSelect, [id]);
-            return true;
-        }
-        return false;
-    };
-    Selection.prototype.add = function (id) {
-        if (this._selected === id || !!this.config.disabled || !this._data.exists(id)) {
-            return;
-        }
-        this.remove();
-        this._addSingle(id);
-    };
-    Selection.prototype.enable = function () {
-        this.config.disabled = false;
-    };
-    Selection.prototype.disable = function () {
-        this.remove();
-        this.config.disabled = true;
-    };
-    Selection.prototype._addSingle = function (id) {
-        if (this.events.fire(types_1.SelectionEvents.beforeSelect, [id])) {
-            this._selected = id;
-            this._data.update(id, { $selected: true }, true);
-            this.events.fire(types_1.SelectionEvents.afterSelect, [id]);
-        }
-    };
-    return Selection;
-}());
-exports.Selection = Selection;
-
-
-/***/ }),
-/* 114 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 var __assign = (this && this.__assign) || function () {
     __assign = Object.assign || function(t) {
         for (var s, i = 1, n = arguments.length; i < n; i++) {
@@ -14974,464 +15081,554 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(2);
-var html_1 = __webpack_require__(3);
-var scrollView_1 = __webpack_require__(115);
-var view_1 = __webpack_require__(5);
+var main_1 = __webpack_require__(15);
 var ts_data_1 = __webpack_require__(4);
-var ts_layout_1 = __webpack_require__(13);
-var ts_message_1 = __webpack_require__(18);
-var ts_toolbar_1 = __webpack_require__(30);
-var ts_navbar_1 = __webpack_require__(19);
-var en_1 = __webpack_require__(38);
-var types_1 = __webpack_require__(28);
-var Uploader_1 = __webpack_require__(58);
-var configs_1 = __webpack_require__(134);
-var helper_1 = __webpack_require__(135);
-var ProgressBar_1 = __webpack_require__(136);
-var ReadStackPreview_1 = __webpack_require__(137);
-var Vault = /** @class */ (function (_super) {
-    __extends(Vault, _super);
-    function Vault(container, config) {
-        if (config === void 0) { config = {}; }
-        var _this = _super.call(this, null, core_1.extend({
-            mode: types_1.VaultMode.list,
-            toolbar: true,
-            updateFromResponse: true,
-            scaleFactor: 4,
-            customScroll: true,
-            uploader: {},
-            progressBar: {},
-        }, config)) || this;
-        if (!_this.config.toolbar) {
-            _this.config.uploader.autosend = true;
-        }
-        if (config.data) {
-            _this.data = config.data;
-            _this.events = config.data.events;
-            _this.events.context = _this;
-        }
-        else {
-            _this.events = new events_1.EventSystem(_this);
-            _this.data = new ts_data_1.DataCollection({}, _this.events);
-        }
-        _this.data.config.init = function (obj) {
-            obj.status = obj.status || types_1.FileStatus.uploaded;
-            if (obj.file) {
-                obj.size = obj.file.size;
-                obj.name = obj.file.name;
-            }
-            else {
-                obj.size = obj.size || 0;
-                obj.name = obj.name || "";
-            }
-            if (_this.config.mode === types_1.VaultMode.grid && obj.file && helper_1.isImage(obj)) {
-                _this._readStack.add(obj, _this.uploader.config.autosend);
-            }
-            return obj;
-        };
-        _this._readStack = new ReadStackPreview_1.ReadStackPreview(_this.data);
-        _this.uploader = new Uploader_1.Uploader(_this.config.uploader, _this.data, _this.events);
-        _this._scrollView = new scrollView_1.ScrollView(function () { return _this._vaultView.getRootView(); });
-        _this._progressBar = new ProgressBar_1.ProgressBar(_this.events, _this.config.progressBar);
-        _this.events.on(types_1.UploaderEvents.uploadProgress, function (progress, current, total) {
-            return _this._progressBar.setState(progress, { current: current, total: total });
-        });
-        _this._initHandlers();
-        _this._initUI(container);
-        _this._initEvents();
-        return _this;
+var core_1 = __webpack_require__(1);
+function fillArray(arr, value) {
+    for (var i = 0; i < arr.length; i++) {
+        arr[i] = value;
     }
-    Vault.prototype.destructor = function () {
-        this.toolbar.destructor();
-        this._readStack.stop();
-        this.uploader.unlinkDropArea();
-        this.uploader.abort();
+    return arr;
+}
+var Exporter = /** @class */ (function () {
+    function Exporter(_view) {
+        this._view = _view;
+    }
+    Exporter.prototype.xlsx = function (config) {
+        return this._export(config);
     };
-    Vault.prototype.getRootView = function () {
-        return this._layout.getRootView();
-    };
-    Vault.prototype._initUI = function (container) {
-        var _this = this;
-        var cfg = this.config.toolbar ? configs_1.layoutConfig : configs_1.layoutConfigWithoutTopbar;
-        cfg.on = this._getDragEvents();
-        var layout = (this._layout = new ts_layout_1.Layout(container, cfg));
-        var toolbar = (this.toolbar = new ts_toolbar_1.Toolbar(null, {
-            css: "vault-toolbar",
-        }));
-        this.toolbar.data.parse([
-            {
-                id: "add",
-                tooltip: en_1.default.add,
-                type: "button",
-                icon: "dxi-plus",
-            },
-            {
-                id: "upload",
-                tooltip: en_1.default.upload,
-                type: "button",
-                icon: "dxi icon-upload",
-            },
-            {
-                id: "spacer",
-                type: "spacer",
-            },
-            {
-                id: "remove-all",
-                tooltip: en_1.default.clearAll,
-                type: "button",
-                icon: "dxi-delete-forever",
-            },
-        ]);
-        this._hideUploadAndDeleteButtons();
-        this._vaultView = view_1.toViewLike(dom_1.create({ render: function () { return _this._draw(); } }));
-        if (this.config.toolbar) {
-            layout.getCell("topbar").attach(toolbar);
-        }
-        layout.getCell("vault").attach(this._vaultView);
-    };
-    Vault.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            onclick: {
-                ".action-add": function () { return _this.uploader.selectFile(); },
-                ".action-remove-file": function (e) {
-                    var id = html_1.locate(e);
-                    if (!id) {
-                        return;
-                    }
-                    _this.data.update(id, { $toRemove: true });
-                    setTimeout(function () {
-                        _this.data.update(id, { $toRemove: false }, true);
-                        _this.data.remove(id);
-                    }, 200);
-                },
-            },
-            onmouseover: {
-                ".action-download": function (e) {
-                    ts_message_1.tooltip(en_1.default.download, {
-                        node: e.target,
-                        position: ts_message_1.Position.bottom,
-                    });
-                },
-                ".action-remove-file": function (e) {
-                    ts_message_1.tooltip(en_1.default.clear, {
-                        node: e.target,
-                        position: ts_message_1.Position.bottom,
-                    });
-                },
-                ".title-content, .dhx-file-name": function (e) {
-                    var id = html_1.locate(e);
-                    var item = _this.data.getItem(id);
-                    ts_message_1.tooltip(item.name, {
-                        node: e.target,
-                        position: ts_message_1.Position.bottom,
-                        css: "tooltip-light",
-                    });
-                },
-            },
-        };
-    };
-    Vault.prototype._getDragEvents = function () {
-        var _this = this;
-        var rect = {
-            left: null,
-            top: null,
-            width: null,
-            height: null,
-        };
-        return {
-            dragleave: function (e) {
-                if (!_this._canDrop) {
-                    return;
-                }
-                if (e.pageX > rect.left + rect.width - 1 ||
-                    e.pageX < rect.left ||
-                    e.pageY > rect.top + rect.height - 1 ||
-                    e.pageY < rect.top) {
-                    _this._canDrop = false;
-                    if (_this.config.toolbar) {
-                        _this._layout.getCell("topbar").show();
-                    }
-                    _this._layout.config.css = "vault-layout";
-                    _this._layout.paint();
-                }
-            },
-            dragenter: function (e) {
-                e.preventDefault();
-                if (_this.uploader.isActive || _this._canDrop) {
-                    return;
-                }
-                var types = e.dataTransfer.types;
-                for (var _i = 0, types_2 = types; _i < types_2.length; _i++) {
-                    var type = types_2[_i];
-                    if (type !== "Files" && type !== "application/x-moz-file") {
-                        _this._canDrop = false;
-                        return;
-                    }
-                }
-                _this._canDrop = true;
-                var clientRect = _this.getRootView().node.el.getBoundingClientRect();
-                rect.left = clientRect.left + window.pageXOffset;
-                rect.top = clientRect.top + window.pageYOffset;
-                rect.width = clientRect.width;
-                rect.height = clientRect.height;
-                _this._canDrop = true;
-                if (_this.config.toolbar) {
-                    _this._layout.getCell("topbar").hide();
-                }
-                _this._layout.config.css = "vault-layout dhx-dragin";
-                _this._layout.paint();
-            },
-            dragover: function (e) {
-                e.preventDefault();
-            },
-            drop: function (e) {
-                e.preventDefault();
-                if (!_this._canDrop) {
-                    return;
-                }
-                var dataTransfer = e.dataTransfer;
-                _this.uploader.parseFiles(dataTransfer);
-                _this._canDrop = false;
-                if (_this.config.toolbar) {
-                    _this._layout.getCell("topbar").show();
-                }
-                _this._layout.config.css = "vault-layout";
-                _this._layout.paint();
-            },
-        };
-    };
-    Vault.prototype._hideUploadAndDeleteButtons = function () {
-        this.toolbar.hide(["upload", "remove-all"]);
-    };
-    Vault.prototype._showUploadAndDeleteButtons = function () {
-        if (this.uploader.config.autosend) {
-            this.toolbar.show("remove-all");
+    Exporter.prototype.csv = function (config) {
+        if (config === void 0) { config = {}; }
+        config = __assign({
+            asFile: true,
+            rowDelimiter: "\n",
+            columnDelimiter: ",",
+            skipHeader: 0,
+        }, config);
+        var csv;
+        if ("getRoot" in this._view.data && config.flat) {
+            csv = this.getFlatCSV(config);
         }
         else {
-            this.toolbar.show(["upload", "remove-all"]);
+            csv = this._getCSV(config);
         }
+        var name = config.name || "grid_export";
+        if (config.asFile) {
+            core_1.downloadFile(csv, name + ".csv", "text/csv");
+        }
+        return csv;
     };
-    Vault.prototype._initEvents = function () {
+    Exporter.prototype._export = function (config) {
+        if (config === void 0) { config = {}; }
+        var configCols = this._view.config.columns.filter(function (i) { return !i.hidden; });
+        var rowsIndexMap = {};
+        var headers = main_1.transpose(configCols.map(function (col) { return col.header.map(function (level) { return level.text || " "; }); }));
+        var columns = [];
+        var uniqStyles = {
+            default: {
+                color: "#000000",
+                background: "#FFFFFF",
+                fontSize: 14,
+            },
+        };
+        var cells = [];
+        var columnsIndexMap = {};
+        var data = this._view.data.serialize().map(function (row, i) {
+            rowsIndexMap[row.id] = i;
+            var rowData = configCols.map(function (col, k) {
+                columnsIndexMap[col.id] = k;
+                return main_1.removeHTMLTags(row[col.id]);
+            });
+            return rowData;
+        });
+        var footer = [];
+        var content = this._view.content;
+        var _loop_1 = function (col) {
+            if (col.footer) {
+                var id_1 = col.id;
+                var columnData = this_1._view.data.serialize().reduce(function (items, item) {
+                    if (item[id_1] !== undefined && item[id_1] !== "" && !isNaN(item[id_1])) {
+                        items.push(parseFloat(item[id_1]));
+                    }
+                    return items;
+                }, []);
+                var roots = columnData;
+                if (this_1._view.config.type === "tree") {
+                    var datacollection_1 = this_1._view.data;
+                    var data_1 = datacollection_1.serialize();
+                    roots = data_1.reduce(function (total, item) {
+                        if (item.$level === 0) {
+                            if (item[id_1] !== undefined && item[id_1] !== "" && !isNaN(item[id_1])) {
+                                total.push(parseFloat(item[id_1]) || 0);
+                            }
+                            else {
+                                var value_1 = 0;
+                                datacollection_1.eachChild(item.id, function (cell) {
+                                    if (!datacollection_1.haveItems(cell.id)) {
+                                        value_1 += parseFloat(cell[id_1]);
+                                    }
+                                });
+                                total.push(value_1);
+                            }
+                        }
+                        return total;
+                    }, []);
+                }
+                if (col.footer[0].content) {
+                    var val = content[col.footer[0].content].calculate(columnData, roots);
+                    footer.push(val);
+                }
+                else {
+                    footer.push(col.footer[0].css || col.footer[0].text || " ");
+                }
+            }
+            columns.push({ width: col.width });
+            for (var key in col.$cellCss) {
+                var colStyle = col.$cellCss[key];
+                var colStyleHash = colStyle
+                    .split("")
+                    .reduce(function (h, letter) {
+                    var hh = (h << 5) - h + letter.charCodeAt(0);
+                    return Math.abs(hh & hh);
+                }, 0)
+                    .toString();
+                if (!uniqStyles[colStyleHash]) {
+                    var cont = document.body;
+                    var css = main_1.getStyleByClass(colStyle, cont, "dhx_grid-row", uniqStyles.default);
+                    if (css) {
+                        uniqStyles[colStyleHash] = css;
+                    }
+                }
+                if (uniqStyles[colStyleHash]) {
+                    cells.push([rowsIndexMap[key], configCols.indexOf(col), colStyleHash]);
+                }
+            }
+        };
+        var this_1 = this;
+        for (var _i = 0, configCols_1 = configCols; _i < configCols_1.length; _i++) {
+            var col = configCols_1[_i];
+            _loop_1(col);
+        }
+        if (footer.length) {
+            data.push(footer);
+        }
+        var exportData = {
+            name: config.name || "data",
+            columns: columns,
+            header: headers,
+            data: data,
+            styles: {
+                cells: cells,
+                css: uniqStyles,
+            },
+        };
+        if (config.url) {
+            var form_1 = document.createElement("form");
+            form_1.setAttribute("target", "_blank");
+            form_1.setAttribute("action", config.url);
+            form_1.setAttribute("method", "POST");
+            form_1.style.visibility = "hidden";
+            var input = document.createElement("textarea");
+            input.setAttribute("name", "data");
+            input.value = JSON.stringify(exportData);
+            form_1.appendChild(input);
+            document.body.appendChild(form_1);
+            form_1.submit();
+            setTimeout(function () {
+                form_1.parentNode.removeChild(form_1);
+            }, 100);
+        }
+        return exportData;
+    };
+    Exporter.prototype.getFlatCSV = function (config) {
+        var treeData = this._view.data;
+        var root = treeData.getRoot();
+        var firstCol = this._view.config.columns[0];
+        var maxLevel = treeData.getMaxLevel();
+        var getParentsChain = function (item, data) {
+            var parents = [];
+            for (var i = 0; i <= maxLevel; i++) {
+                if (item && item[firstCol.id]) {
+                    parents[item.$level] = item[firstCol.id];
+                    var parent_1 = data.getParent(item.id, true);
+                    if (parent_1 && parent_1.id) {
+                        item = parent_1;
+                    }
+                    else {
+                        item = null;
+                    }
+                }
+                else {
+                    parents[i] = "";
+                }
+            }
+            return parents;
+        };
+        var total = "";
+        treeData.eachChild(root, function (item) {
+            var parents = getParentsChain(item, treeData).join(config.columnDelimiter);
+            total +=
+                parents +
+                    Object.keys(item).reduce(function (values, key, i) {
+                        if (key !== "id" && key !== "parent" && !key.startsWith("$") && i !== 0) {
+                            return values + config.columnDelimiter + (item[key] === null ? "" : item[key]);
+                        }
+                        return values;
+                    }, "");
+            total += config.rowDelimiter;
+        });
+        var exportData = this._export(config);
+        // [dirty]
+        var emptyHeaders = fillArray(new Array(maxLevel + 1), "");
+        var headers = exportData.header.map(function (header) {
+            header.splice.apply(header, __spreadArrays([0, 1], emptyHeaders));
+            return header;
+        });
+        var head = new ts_data_1.CsvDriver(config).serialize(headers, true) + config.rowDelimiter;
+        return head + total;
+    };
+    Exporter.prototype._getCSV = function (config) {
+        var exportData = this._export(config);
+        var headers = exportData.header;
+        var driver = new ts_data_1.CsvDriver(config);
+        var head = driver.serialize(headers, true);
+        var readyData = driver.serialize(exportData.data, true);
+        return head + readyData;
+    };
+    return Exporter;
+}());
+exports.Exporter = Exporter;
+
+
+/***/ }),
+/* 114 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var core_1 = __webpack_require__(1);
+var ts_data_1 = __webpack_require__(4);
+var events_1 = __webpack_require__(2);
+var types_1 = __webpack_require__(9);
+var Selection = /** @class */ (function () {
+    function Selection(grid, config, events) {
+        var types = ["cell", "row", "complex"];
+        this._grid = grid;
+        this.config = config;
+        this._selectedCell = undefined;
+        this._oldSelectedCell = undefined;
+        this._selectedCells = [];
+        this._type = types.includes(this._grid.config.selection) ? this._grid.config.selection : "complex";
+        this._multiselection = grid.config.multiselection && this._type !== "complex";
+        this.events = events || new events_1.EventSystem(this);
+        this._init();
+    }
+    Selection.prototype.setCell = function (row, col, ctrlUp, shiftUp) {
         var _this = this;
-        this.data.events.on(ts_data_1.DataEvents.change, function () {
-            if (!_this.data.getLength()) {
-                _this._hideUploadAndDeleteButtons();
+        if (ctrlUp === void 0) { ctrlUp = false; }
+        if (shiftUp === void 0) { shiftUp = false; }
+        if (this.config.disabled ||
+            this._grid.config.$editable ||
+            (!this._multiselection &&
+                this._oldSelectedCell &&
+                this._oldSelectedCell.row.id === ((row && row.id) || row) &&
+                this._oldSelectedCell.column.id === ((col && col.id) || col)) ||
+            (this._multiselection &&
+                this._selectedCells.length === 1 &&
+                this._selectedCells[0].row.id === ((row && row.id) || row) &&
+                this._selectedCells[0].column.id === ((col && col.id) || col))) {
+            return;
+        }
+        if ((this._multiselection && !ctrlUp && !shiftUp) || !this._multiselection) {
+            this._selectedCells.length && this._removeCells();
+        }
+        if (this._multiselection &&
+            this._type === "cell" &&
+            this._selectedCells.find(function (item) {
+                return item.row.id === ((row && row.id) || row) && item.column.id === ((col && col.id) || col);
+            })) {
+            this.removeCell((row && row.id) || row, (col && col.id) || col);
+            return;
+        }
+        var oldSelectedCell = this._oldSelectedCell ? this._oldSelectedCell : undefined;
+        row = this._grid.data.getItem((row && row.id) || row);
+        var colums = this._grid.config.columns.filter(function (col) { return !col.hidden; });
+        if (!col) {
+            col = colums[0];
+        }
+        col = this._grid.getColumn(col.id || col);
+        if (!col || !row) {
+            return;
+        }
+        col = col.id ? col : this._grid.getColumn(col);
+        if (!this.events.fire(types_1.GridSelectionEvents.beforeSelect, [row, col]))
+            return;
+        this._selectedCell = { row: row, column: col };
+        this.events.fire(types_1.GridSelectionEvents.afterSelect, [row, col]);
+        if (this._multiselection && shiftUp && oldSelectedCell) {
+            this._oldSelectedCell = oldSelectedCell;
+        }
+        else {
+            this._oldSelectedCell = this._selectedCell;
+        }
+        if (this._multiselection) {
+            if (shiftUp && !ctrlUp && this._selectedCells.length > 0) {
+                var startRowIndex = this._grid.data.getIndex(this._oldSelectedCell.row.id);
+                var endRowIndex = this._grid.data.getIndex(row.id);
+                if (startRowIndex > endRowIndex) {
+                    var temp = startRowIndex;
+                    startRowIndex = endRowIndex;
+                    endRowIndex = temp;
+                }
+                this._selectedCells = [this._oldSelectedCell];
+                if (this._type === "cell") {
+                    var columnsIds = colums.map(function (e) { return e.id; });
+                    var startColIndex = columnsIds.indexOf(oldSelectedCell.column.id);
+                    var endColIndex = columnsIds.indexOf(col.id);
+                    if (startColIndex !== -1 && endColIndex !== -1) {
+                        if (startColIndex > endColIndex) {
+                            var temp = startColIndex;
+                            startColIndex = endColIndex;
+                            endColIndex = temp;
+                        }
+                        var columns_1 = colums.slice(startColIndex, endColIndex + 1);
+                        this._grid.data.mapRange(startRowIndex, endRowIndex, function (item) {
+                            columns_1.forEach(function (column) {
+                                var cell = { row: item, column: column };
+                                if (_this._findIndex(cell) === -1) {
+                                    _this._selectedCells.push(cell);
+                                }
+                            });
+                        });
+                    }
+                }
+                else {
+                    this._grid.data.mapRange(startRowIndex, endRowIndex, function (item) {
+                        var cell = { row: item, column: col };
+                        if (_this._findIndex(cell) === -1) {
+                            _this._selectedCells.push(cell);
+                        }
+                    });
+                }
+            }
+            else if (ctrlUp && !shiftUp) {
+                var cellIndex = this._findIndex();
+                if (cellIndex === -1) {
+                    this._selectedCells.push({
+                        row: this._selectedCell.row,
+                        column: this._selectedCell.column,
+                    });
+                }
+                else {
+                    this._selectedCells.length > 1 && this._selectedCells.splice(cellIndex, 1);
+                }
             }
             else {
-                _this._showUploadAndDeleteButtons();
+                this._selectedCells = [this._selectedCell];
             }
-            _this._vaultView.paint();
-        });
-        this.events.on(types_1.UploaderEvents.uploadBegin, function () {
-            if (_this.config.toolbar) {
-                _this._layout.getCell("topbar").attach(_this._progressBar);
-            }
-        });
-        this.events.on(types_1.UploaderEvents.uploadComplete, function () {
-            if (_this.config.mode === types_1.VaultMode.grid && _this.uploader.config.autosend) {
-                _this._readStack.read();
-            }
-            if (_this.config.toolbar) {
-                _this._layout.getCell("topbar").attach(_this.toolbar);
-            }
-        });
-        this.toolbar.events.on(ts_navbar_1.NavigationBarEvents.click, function (id) {
-            switch (id) {
-                case "add":
-                    _this.uploader.selectFile();
-                    break;
-                case "remove-all":
-                    _this.data.removeAll();
-                    break;
-                case "upload":
-                    _this.uploader.send();
-                    break;
-            }
-        });
-        this.events.on(types_1.ProgressBarEvents.cancel, function () {
-            _this.uploader.abort();
-            _this._vaultView.paint();
+        }
+        else {
+            this._selectedCells = [this._selectedCell];
+        }
+        dom_1.awaitRedraw().then(function () {
+            _this._grid.paint();
         });
     };
-    Vault.prototype._draw = function () {
-        var isEmpty = !this.data.getLength();
-        var files = this.config.mode === types_1.VaultMode.grid ? this._drawGrid() : this._drawList();
-        return dom_1.el("div", __assign(__assign({ class: "vault dhx_widget" + (this._canDrop ? " drop-here" : "") }, this._handlers), { dhx_widget_id: this._uid }), [
-            this._canDrop || isEmpty
-                ? this._drawDropableArea()
-                : this.config.customScroll
-                    ? this._scrollView.render(files)
-                    : files,
-        ]);
+    Selection.prototype.getCell = function () {
+        return this._selectedCell;
     };
-    Vault.prototype._getFileActions = function (file) {
-        var defaultActions = [];
-        var hoverActions = [];
-        var actions = [dom_1.el(".dhx-default-actions", defaultActions), dom_1.el(".dhx-hover-actions", hoverActions)];
-        if (file.status === types_1.FileStatus.inprogress) {
-            return actions;
-        }
-        if (file.status !== types_1.FileStatus.failed && file.link) {
-            var link = (this.config.downloadURL || "") + file.link;
-            var downloadName = link
-                .split("/")
-                .pop()
-                .split("?")[0];
-            var download = dom_1.el("a", {
-                download: downloadName,
-                class: "download-link",
-                href: link,
-            }, [dom_1.el(".icon-btn.dxi.dxi-download.action-download")]);
-            hoverActions.push(download);
-        }
-        var remove = dom_1.el(".icon-btn.dxi.dxi-delete-forever.action-remove-file");
-        hoverActions.push(remove);
-        if (file.status === types_1.FileStatus.failed) {
-            var warn = dom_1.el(".dxi.dxi-alert-circle.warning-status");
-            defaultActions.push(warn);
-        }
-        if (file.status === types_1.FileStatus.uploaded) {
-            var uploadComplete = dom_1.el(".dxi.dxi-checkbox-marked-circle.uploaded-status");
-            defaultActions.push(uploadComplete);
-        }
-        return actions;
+    Selection.prototype.getCells = function () {
+        return this._selectedCells;
     };
-    Vault.prototype._drawList = function () {
+    Selection.prototype.toHTML = function () {
         var _this = this;
-        return dom_1.el(".dhx-files-block.dhx-webkit-scroll", this.data.map(function (item) {
-            var isError = item.status === types_1.FileStatus.failed && item.request;
-            var inProgress = item.status === types_1.FileStatus.inprogress;
-            var inQueue = item.status === types_1.FileStatus.queue;
-            var notUploaded = item.status !== types_1.FileStatus.uploaded;
-            return dom_1.el("div", {
-                class: "dhx-file-item" +
-                    (item.$toRemove ? " to-remove" : "") +
-                    (inQueue ? " in-queue" : ""),
-                dhx_id: item.id,
-                _key: item.id,
-            }, [
-                dom_1.el(".dhx-file-icon", [
-                    dom_1.el("div", {
-                        class: "dhx-file-type " +
-                            helper_1.getFileClassName(item) +
-                            (notUploaded ? " not-loaded" : ""),
-                    }),
-                ]),
-                dom_1.el(".dhx-file-title", [
-                    dom_1.el(".dhx-title-content", item.name),
-                    dom_1.el(".dhx-file-info", [
-                        isError && dom_1.el(".warn-message", item.request.statusText || en_1.default.error),
-                        inProgress
-                            ? dom_1.el(".progress-value", (item.progress * 100).toFixed(1) + "%")
-                            : dom_1.el(".dhx-size" + ((isError && ".dhx-size-error") || ""), helper_1.getBasis(item.size)),
-                    ]),
-                ]),
-                inProgress &&
-                    dom_1.el(".dhx-download-progress", {
-                        style: {
-                            width: (item.progress * 100).toFixed(1) + "%",
-                        },
-                    }),
-                !inProgress && dom_1.el(".dhx-file-action", _this._getFileActions(item)),
-            ]);
-        }));
+        if (this._isUnselected()) {
+            return;
+        }
+        if (this._multiselection) {
+            var selection_1 = [];
+            this._selectedCells.forEach(function (cell, index, array) {
+                selection_1.push(_this._toHTML(cell.row, cell.column, index === array.length - 1 || _this._type === "cell"));
+            });
+            return selection_1;
+        }
+        else {
+            return this._toHTML(this._selectedCell.row, this._selectedCell.column, true);
+        }
     };
-    Vault.prototype._drawDropableArea = function () {
-        return dom_1.el(".dhx-dropable-area.drop-files-here", [
-            dom_1.el(".dhx-big-icon-block", [
-                dom_1.el(".dxi.icon-upload"),
-            ]),
-            !this._canDrop && dom_1.el(".drop-area-bold-text", en_1.default.dragAndDrop),
-            !this._canDrop && dom_1.el(".drop-area-bold-text", en_1.default.filesOrFoldersHere),
-            !this._canDrop && dom_1.el(".drop-area-light-text", en_1.default.or),
-            !this._canDrop && dom_1.el("button.dhx_btn.dhx_btn--flat.dhx_btn--small.action-add", en_1.default.browse),
-        ]);
+    Selection.prototype.disable = function () {
+        this.removeCell();
+        this.config.disabled = true;
+        this._grid.paint();
     };
-    Vault.prototype._drawGrid = function () {
+    Selection.prototype.enable = function () {
+        this.config.disabled = false;
+        this._grid.paint();
+    };
+    Selection.prototype.removeCell = function (rowId, colId) {
         var _this = this;
-        return dom_1.el("div", {
-            class: "dhx-files-grid dhx-webkit-scroll",
+        if (rowId && colId && this._type === "cell") {
+            var cell = this._selectedCells.find(function (_a) {
+                var row = _a.row, column = _a.column;
+                return row.id === rowId && column.id === colId;
+            });
+            cell && this._removeCell(cell.row, cell.column);
+        }
+        else if (rowId) {
+            var cells = this._selectedCells.filter(function (_a) {
+                var row = _a.row;
+                return row.id === rowId;
+            });
+            cells.forEach(function (_a) {
+                var row = _a.row, column = _a.column;
+                _this._removeCell(row, column);
+            });
+        }
+        else {
+            this._removeCells();
+        }
+        dom_1.awaitRedraw().then(function () {
+            _this._grid.paint();
+        });
+    };
+    Selection.prototype._removeCell = function (row, col) {
+        if (!row || !col || !row.id || !col.id)
+            return;
+        if (!this.events.fire(types_1.GridSelectionEvents.beforeUnSelect, [row, col]))
+            return;
+        var index = this._selectedCells.findIndex(function (item) { return item.row.id === row.id && item.column.id === col.id; });
+        this._selectedCells.splice(index, 1);
+        if (this._selectedCell &&
+            col.id === this._selectedCell.column.id &&
+            row.id === this._selectedCell.row.id) {
+            this._selectedCell = this._selectedCells[this._selectedCells.length - 1] || undefined;
+        }
+        this.events.fire(types_1.GridSelectionEvents.afterUnSelect, [row, col]);
+    };
+    Selection.prototype._removeCells = function () {
+        var _this = this;
+        this._selectedCells.forEach(function (item) {
+            _this._removeCell(item && item.row, item && item.column);
+        });
+        this._selectedCells.length && this._removeCells();
+    };
+    Selection.prototype._init = function () {
+        var _this = this;
+        this._grid.events.on(types_1.GridEvents.cellClick, function (row, col, e) {
+            _this.setCell(row, col, e.ctrlKey || e.metaKey, e.shiftKey);
+        });
+        this._grid.data.events.on(ts_data_1.DataEvents.beforeRemove, function (item) {
+            if (item && _this._selectedCell && _this._selectedCell.row) {
+                var index = _this._grid.data.getIndex(String(_this._selectedCell.row.id));
+                var id = _this._grid.data.getId(index + 1);
+                if (id) {
+                    _this.setCell(id);
+                }
+                else {
+                    var newId = _this._grid.data.getId(index - 1);
+                    if (newId) {
+                        _this.setCell(newId);
+                    }
+                }
+                _this._grid.paint();
+            }
+        });
+    };
+    Selection.prototype._toHTML = function (row, column, last) {
+        if (last === void 0) { last = false; }
+        var colums = this._grid.config.columns.filter(function (col) { return !col.hidden; });
+        var fixedCols = this._grid.config.leftSplit ? colums.slice(0, this._grid.config.leftSplit) : [];
+        var fixedColsIds = fixedCols.map(function (col) { return col.id; });
+        var fixedColsWidth = fixedCols.reduce(function (total, coll) { return (total += coll.$width); }, 0);
+        var fixedCell;
+        var cellRect = this._grid.getCellRect(row.id, column.id);
+        var scrollState = this._grid.getScrollState();
+        if (fixedColsIds.includes(column.id) && last) {
+            fixedCell = dom_1.el(".dhx_grid-selected-cell", {
+                style: {
+                    width: this._grid.config.leftSplit === fixedColsIds.indexOf(column.id) + 1
+                        ? cellRect.width - 1
+                        : cellRect.width,
+                    height: cellRect.height,
+                    top: cellRect.y,
+                    left: cellRect.x + scrollState.x,
+                    position: "absolute",
+                    zIndex: 10,
+                },
+            });
+        }
+        var isBehindFixedCols = fixedCols.length && fixedColsWidth > cellRect.x - scrollState.x;
+        var width = cellRect.width;
+        if (isBehindFixedCols) {
+            width -= fixedColsWidth - (cellRect.x - scrollState.x);
+        }
+        var totalWidth = this._grid.config.$totalWidth;
+        return dom_1.el(".dhx_grid-selection", {
+            style: {
+                zIndex: fixedCell ||
+                    this._grid.config.selection === "row" ||
+                    this._grid.config.selection === "complex"
+                    ? 20
+                    : 10,
+            },
         }, [
-            dom_1.el(".dhx-grid-content", this.data.map(function (item) {
-                var inProgress = item.status === types_1.FileStatus.inprogress;
-                var inQueue = item.status === types_1.FileStatus.queue;
-                var isError = item.status === types_1.FileStatus.failed;
-                return dom_1.el("div", {
-                    class: "dhx-file-grid-item" +
-                        (inProgress ? " in-progress" : "") +
-                        (item.$toRemove ? " to-remove" : "") +
-                        (inQueue ? " in-queue" : "") +
-                        (isError ? " failed" : ""),
-                    dhx_id: item.id,
-                    _key: item.id,
-                }, [
-                    dom_1.el(".dhx-preview-wrapper", __spreadArrays([
-                        item.preview
-                            ? dom_1.el(".dhx-server-file-preview", [dom_1.el("img", { src: item.preview })])
-                            : item.image
-                                ? dom_1.el("canvas", {
-                                    width: 98 * _this.config.scaleFactor,
-                                    height: 98 * _this.config.scaleFactor,
-                                    _hooks: {
-                                        didInsert: function (node) {
-                                            var _a = helper_1.calculateCover(item.image), dx = _a.dx, dy = _a.dy, sx = _a.sx, sy = _a.sy, sHeight = _a.sHeight, sWidth = _a.sWidth;
-                                            var ctx = node.el.getContext("2d");
-                                            ctx.drawImage(item.image, sx, sy, sWidth, sHeight, dx, dy, 98 * _this.config.scaleFactor, 98 * _this.config.scaleFactor);
-                                        },
-                                    },
-                                })
-                                : dom_1.el("div", {
-                                    class: "dhx-file-preview dhx-file-type " +
-                                        helper_1.getFileClassName(item),
-                                }),
-                        inProgress && _this._drawCircle(item.progress)
-                    ], _this._getFileActions(item), [
-                        dom_1.el(".dhx-file-info", [
-                            isError &&
-                                dom_1.el(".warn-message", item.request.statusText || en_1.default.error),
-                            !inProgress &&
-                                dom_1.el(".dhx-size" + ((isError && ".dhx-size-error") || ""), helper_1.getBasis(item.size)),
-                        ]),
-                    ])),
-                    dom_1.el(".dhx-file-name", helper_1.truncateWord(item.name)),
-                ]);
-            })),
+            (this._type === "row" || this._type === "complex") &&
+                dom_1.el(".dhx_grid-selected-row", {
+                    style: {
+                        width: fixedCols.length ? totalWidth - scrollState.x : totalWidth,
+                        height: cellRect.height - 1,
+                        top: cellRect.y,
+                        left: fixedCols.length ? scrollState.x : 0,
+                        position: "absolute",
+                    },
+                }),
+            ((this._type === "cell" || this._type === "complex") && fixedCell) ||
+                ((this._type === "cell" || this._type === "complex") &&
+                    last &&
+                    dom_1.el(".dhx_grid-selected-cell", {
+                        style: {
+                            width: width,
+                            height: cellRect.height - 1,
+                            top: cellRect.y,
+                            left: isBehindFixedCols ? fixedColsWidth + scrollState.x : cellRect.x,
+                            position: "absolute",
+                            display: width > 0 ? "flex" : "none",
+                            borderLeft: isBehindFixedCols ? "none" : null,
+                        },
+                    })),
         ]);
     };
-    Vault.prototype._drawCircle = function (progress) {
-        return dom_1.el(".progress-layout", [
-            dom_1.el(".progress-amount", (progress * 100).toFixed(1) + "%"),
-            dom_1.sv("svg", {
-                xmlns: "http://www.w3.org/2000/svg",
-                class: "progress-circle",
-                viewBox: "0 0 60 60",
-            }, [
-                dom_1.sv("circle", {
-                    cx: 30,
-                    cy: 30,
-                    r: 28,
-                    "stroke-width": 4,
-                    class: "progress-bar-background",
-                }),
-                dom_1.sv("circle.active-circle", {
-                    cx: 30,
-                    cy: 30,
-                    r: 28,
-                    "stroke-width": 4,
-                    "stroke-dasharray": "175.9 175.9",
-                    "stroke-dashoffset": (1 - progress) * 175.9,
-                    class: "progress-bar-active",
-                }),
-            ]),
-        ]);
+    Selection.prototype._isUnselected = function () {
+        return (!this._selectedCell ||
+            !this._selectedCell.row ||
+            !this._selectedCell.column ||
+            this._selectedCells.length === 0);
     };
-    return Vault;
-}(view_1.View));
-exports.Vault = Vault;
+    Selection.prototype._findIndex = function (cell) {
+        var _this = this;
+        if (cell === void 0) { cell = this._selectedCell; }
+        var cellIndex = -1;
+        this._selectedCells.some(function (element, index) {
+            if (_this._type === "cell") {
+                if (core_1.compare(element.row, cell.row) && core_1.compare(element.column, cell.column)) {
+                    cellIndex = index;
+                    return true;
+                }
+            }
+            else if (_this._type === "row") {
+                if (core_1.compare(element.row, cell.row)) {
+                    cellIndex = index;
+                    return true;
+                }
+            }
+        });
+        return cellIndex;
+    };
+    return Selection;
+}());
+exports.Selection = Selection;
 
 
 /***/ }),
@@ -15441,205 +15638,72 @@ exports.Vault = Vault;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(3);
-var ScrollView = /** @class */ (function () {
-    function ScrollView(getRootView, config) {
-        var _a;
-        var _this = this;
-        if (config === void 0) { config = {}; }
-        this.config = core_1.extend({
-            speed: 20,
-        }, config);
-        this._wheelName = html_1.isIE() ? "onmousewheel" : "onwheel";
-        this._getRootView = getRootView;
-        this._scrollTop = 0;
-        this._runnerTop = 0;
-        this._runnerHeight = 0;
-        this._visibleArea = 1;
-        this._scrollWidth = html_1.getScrollbarWidth();
-        this._handlers = (_a = {
-                onscroll: function () {
-                    _this._update();
-                }
-            },
-            _a[this._wheelName] = function (e) {
-                e.preventDefault();
-                var sign = (e.deltaY || -e.wheelDelta) > 0 ? 1 : -1;
-                var delta = sign * _this.config.speed;
-                var area = _this._getRefs().area;
-                var maxBottom = area.scrollHeight - _this._runnerHeight;
-                var newScrollTop = _this._scrollTop + delta;
-                if (newScrollTop < 0) {
-                    area.scrollTop = 0;
-                }
-                else if (newScrollTop > maxBottom) {
-                    area.scrollTop = maxBottom;
-                }
-                else {
-                    area.scrollTop = newScrollTop;
-                }
-                _this._update();
-            },
-            _a.onmousedownRunner = function (mouseDownEv) {
-                mouseDownEv.preventDefault();
-                var _a = _this._getRefs(), area = _a.area, runner = _a.runner;
-                var rect = area.getBoundingClientRect();
-                var top = rect.top + window.pageYOffset;
-                var bottom = rect.bottom + window.pageYOffset;
-                var maxBottom = area.scrollHeight - _this._runnerHeight;
-                var delta = mouseDownEv.pageY - runner.getBoundingClientRect().top - window.pageYOffset;
-                var mouseMove = function (e) {
-                    var y = e.pageY - delta;
-                    if (y <= top) {
-                        area.scrollTop = 0;
-                    }
-                    else if (y > bottom) {
-                        area.scrollTop = maxBottom;
-                    }
-                    else {
-                        area.scrollTop = (y - top) / _this._visibleArea;
-                    }
-                    _this._update();
-                };
-                var mouseUp = function () {
-                    document.removeEventListener("mousemove", mouseMove);
-                    document.removeEventListener("mouseup", mouseUp);
-                    document.body.classList.remove("dhx-no-select");
-                };
-                document.body.classList.add("dhx-no-select");
-                document.addEventListener("mousemove", mouseMove);
-                document.addEventListener("mouseup", mouseUp);
-            },
-            _a.onmousedownTrack = function (e) {
-                if (e.target.classList.contains("scroll-runner")) {
-                    return;
-                }
-                e.preventDefault();
-                var area = _this._getRefs().area;
-                var top = e.target.getBoundingClientRect().top + window.pageYOffset;
-                var maxBottom = area.scrollHeight - _this._runnerHeight;
-                var y = e.pageY;
-                var updateScroll = function () {
-                    var scrollTop;
-                    if (y < top + _this._runnerTop) {
-                        scrollTop = _this._scrollTop - area.clientHeight;
-                        if (scrollTop < 0) {
-                            scrollTop = 0;
-                        }
-                    }
-                    else if (y > top + _this._runnerTop + _this._runnerHeight) {
-                        scrollTop = _this._scrollTop + area.clientHeight;
-                        if (scrollTop > maxBottom) {
-                            scrollTop = maxBottom;
-                        }
-                    }
-                    else {
-                        return;
-                    }
-                    area.scrollTop = scrollTop;
-                    _this._update();
-                };
-                updateScroll();
-                var mousePressed = setInterval(updateScroll, 100);
-                var mouseUp = function () {
-                    document.removeEventListener("mouseup", mouseUp);
-                    window.clearInterval(mousePressed); // typescript bug
-                };
-                document.addEventListener("mouseup", mouseUp);
-            },
-            _a);
+var types_1 = __webpack_require__(9);
+var InputEditor_1 = __webpack_require__(116);
+var SelectEditor_1 = __webpack_require__(117);
+var DateEditor_1 = __webpack_require__(118);
+var CheckboxEditor_1 = __webpack_require__(128);
+var ComboboxEditor_1 = __webpack_require__(129);
+var TextAreaEditor_1 = __webpack_require__(137);
+var lastEditor = {
+    cell: {
+        row: null,
+        col: null,
+    },
+    editor: null,
+    gridId: null,
+};
+var editHandler;
+function getEditor(row, col, conf) {
+    var type = col.type === "boolean" ? "checkbox" : conf.$editable.editorType;
+    if (typeof type === "undefined")
+        type = conf.autoHeight ? "textarea" : "input";
+    if (lastEditor.cell.row === row.id &&
+        lastEditor.cell.col === col.id &&
+        lastEditor.gridId === conf.gridId) {
+        return lastEditor.editor;
     }
-    ScrollView.prototype.render = function (element) {
-        var _a;
-        var _this = this;
-        if (this._scrollWidth === 0) {
-            return element;
-        }
-        return dom_1.el(".scroll-view-wrapper", {
-            style: {
-                width: "100%",
-                height: "100%",
-                overflow: "hidden",
-                position: "relative",
+    if (type !== "checkbox") {
+        lastEditor = {
+            cell: {
+                row: row.id,
+                col: col.id,
             },
-        }, [
-            dom_1.el(".scroll-view", {
-                onscroll: this._handlers.onscroll,
-                _ref: "scroll-view",
-                _hooks: {
-                    didInsert: function () {
-                        _this._update();
-                    },
-                    didRecycle: function () {
-                        _this._update();
-                    },
+            editor: lastEditor.editor,
+            gridId: conf.gridId,
+        };
+    }
+    if (!editHandler) {
+        editHandler = function () {
+            lastEditor = {
+                cell: {
+                    row: null,
+                    col: null,
                 },
-                style: {
-                    height: "100%",
-                    width: "calc(100% + " + this._scrollWidth + "px)",
-                    overflowY: "scroll",
-                    "-ms-overflow-style": "scrollbar",
-                },
-            }, [element]),
-            dom_1.el(".y-scroll", (_a = {
-                    onmousedown: this._handlers.onmousedownTrack
-                },
-                _a[this._wheelName] = this._handlers[this._wheelName],
-                _a.style = {
-                    width: "10px",
-                    height: "100%",
-                    right: 0,
-                    top: 0,
-                    position: "absolute",
-                },
-                _a), [
-                dom_1.el(".scroll-runner", {
-                    _ref: "scroll-runner",
-                    onmousedown: this._handlers.onmousedownRunner,
-                    style: {
-                        height: this._runnerHeight + "px",
-                        right: "2px",
-                        top: this._runnerTop,
-                        width: "6px",
-                        position: "absolute",
-                    },
-                }),
-            ]),
-        ]);
-    };
-    ScrollView.prototype._update = function () {
-        var refs = this._getRefs();
-        if (!refs) {
-            return;
-        }
-        var area = refs.area, runner = refs.runner;
-        this._visibleArea = area.clientHeight / area.scrollHeight;
-        this._scrollTop = area.scrollTop;
-        this._runnerTop = this._scrollTop * this._visibleArea;
-        if (this._visibleArea < 1) {
-            this._runnerHeight = area.clientHeight * this._visibleArea;
-        }
-        else {
-            this._runnerHeight = 0;
-        }
-        // update dom
-        runner.style.top = this._runnerTop + "px";
-        runner.style.height = this._runnerHeight + "px";
-    };
-    ScrollView.prototype._getRefs = function () {
-        var rootView = this._getRootView();
-        if (rootView.refs && rootView.refs["scroll-view"] && rootView.refs["scroll-runner"]) {
-            return {
-                area: rootView.refs["scroll-view"].el,
-                runner: rootView.refs["scroll-runner"].el,
+                editor: null,
+                gridId: null,
             };
-        }
-    };
-    return ScrollView;
-}());
-exports.ScrollView = ScrollView;
+        };
+        conf.events.on(types_1.GridEvents.afterEditEnd, editHandler);
+    }
+    switch (type) {
+        case "input":
+            return (lastEditor.editor = new InputEditor_1.InputEditor(row, col, conf));
+        case "textarea":
+            return (lastEditor.editor = new TextAreaEditor_1.TextAreaEditor(row, col, conf));
+        case "select":
+            return (lastEditor.editor = new SelectEditor_1.SelectEditor(row, col, conf));
+        case "datePicker":
+            return (lastEditor.editor = new DateEditor_1.DateEditor(row, col, conf));
+        case "checkbox":
+            return new CheckboxEditor_1.CheckboxEditor(row, col, conf);
+        case "combobox":
+            return (lastEditor.editor = new ComboboxEditor_1.ComboboxEditor(row, col, conf));
+        default:
+            return (lastEditor.editor = new InputEditor_1.InputEditor(row, col, conf));
+    }
+}
+exports.getEditor = getEditor;
 
 
 /***/ }),
@@ -15648,3334 +15712,48 @@ exports.ScrollView = ScrollView;
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
 Object.defineProperty(exports, "__esModule", { value: true });
-var Cell_1 = __webpack_require__(117);
-var types_1 = __webpack_require__(29);
 var dom_1 = __webpack_require__(0);
-var Layout = /** @class */ (function (_super) {
-    __extends(Layout, _super);
-    function Layout(parent, config) {
-        var _this = _super.call(this, parent, config) || this;
-        // root layout
-        _this._root = _this.config.parent || _this;
-        _this._all = {};
-        _this._parseConfig();
-        if (_this.config.activeTab) {
-            _this.config.activeView = _this.config.activeTab;
-        }
-        // Need replace to tabbar
-        if (_this.config.views) {
-            _this.config.activeView = _this.config.activeView || _this._cells[0].id;
-            _this._isViewLayout = true;
-        }
-        if (!config.parent) {
-            var view = dom_1.create({ render: function () { return _this.toVDOM(); } }, _this);
-            _this.mount(parent, view);
-        }
-        return _this;
-    }
-    Layout.prototype.destructor = function () {
-        this.forEach(function (cell) {
-            if (cell.getWidget() && typeof cell.getWidget().destructor === "function") {
-                cell.getWidget().destructor();
-            }
-        });
-        _super.prototype.destructor.call(this);
-    };
-    Layout.prototype.toVDOM = function () {
-        if (this._isViewLayout) {
-            var roots = [this.getCell(this.config.activeView).toVDOM()];
-            return _super.prototype.toVDOM.call(this, roots);
-        }
-        var nodes = [];
-        this._inheritTypes();
-        this._cells.forEach(function (cell) {
-            var node = cell.toVDOM();
-            if (Array.isArray(node)) {
-                nodes = nodes.concat(node);
-            }
-            else {
-                nodes.push(node);
-            }
-        });
-        return _super.prototype.toVDOM.call(this, nodes);
-    };
-    Layout.prototype.removeCell = function (id) {
-        if (!this.events.fire(types_1.LayoutEvents.beforeRemove, [id])) {
-            return;
-        }
-        var root = this.config.parent || this;
-        if (root !== this) {
-            return root.removeCell(id);
-        }
-        // this === root layout
-        var view = this.getCell(id);
-        if (view) {
-            var parent_1 = view.getParent();
-            delete this._all[id];
-            parent_1._cells = parent_1._cells.filter(function (cell) { return cell.id !== id; });
-            parent_1.paint();
-        }
-        this.events.fire(types_1.LayoutEvents.afterRemove, [id]);
-    };
-    Layout.prototype.addCell = function (config, index) {
-        if (index === void 0) { index = -1; }
-        if (!this.events.fire(types_1.LayoutEvents.beforeAdd, [config.id])) {
-            return;
-        }
-        var view = this._createCell(config);
-        if (index < 0) {
-            index = this._cells.length + index + 1;
-        }
-        this._cells.splice(index, 0, view);
-        this.paint();
-        if (!this.events.fire(types_1.LayoutEvents.afterAdd, [config.id])) {
-            return;
-        }
-    };
-    Layout.prototype.getId = function (index) {
-        if (index < 0) {
-            index = this._cells.length + index;
-        }
-        return this._cells[index] ? this._cells[index].id : undefined;
-    };
-    Layout.prototype.getRefs = function (name) {
-        return this._root.getRootView().refs[name];
-    };
-    Layout.prototype.getCell = function (id) {
-        return this._root._all[id];
-    };
-    Layout.prototype.forEach = function (cb, parent, level) {
-        if (level === void 0) { level = Infinity; }
-        if (!this._haveCells(parent) || level < 1) {
-            return;
-        }
-        var array;
-        if (parent) {
-            array = this._root._all[parent]._cells;
-        }
-        else {
-            array = this._root._cells;
-        }
-        for (var index = 0; index < array.length; index++) {
-            var cell = array[index];
-            cb.call(this, cell, index, array);
-            if (this._haveCells(cell.id)) {
-                cell.forEach(cb, cell.id, --level);
-            }
-        }
-    };
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    Layout.prototype.cell = function (id) {
-        return this.getCell(id);
-    };
-    Layout.prototype._getCss = function (content) {
-        var layoutCss = this._xLayout ? "dhx_layout-columns" : "dhx_layout-rows";
-        var directionCss = this.config.align ? " " + layoutCss + "--" + this.config.align : "";
-        if (content) {
-            return (layoutCss +
-                " dhx_layout-cell" +
-                (this.config.align ? " dhx_layout-cell--" + this.config.align : ""));
-        }
-        else {
-            var cellCss = this.config.parent ? _super.prototype._getCss.call(this) : "dhx_widget dhx_layout";
-            var fullModeCss = this.config.parent ? "" : " dhx_layout-cell";
-            return cellCss + (this.config.full ? fullModeCss : " " + layoutCss) + directionCss;
-        }
-    };
-    Layout.prototype._parseConfig = function () {
-        var _this = this;
-        var config = this.config;
-        var cells = config.rows || config.cols || config.views || [];
-        this._xLayout = !config.rows;
-        this._cells = cells.map(function (a) { return _this._createCell(a); });
-    };
-    Layout.prototype._createCell = function (cell) {
-        var view;
-        if (cell.rows || cell.cols || cell.views) {
-            cell.parent = this._root;
-            view = new Layout(this, cell);
-        }
-        else {
-            view = new Cell_1.Cell(this, cell);
-        }
-        // FIxME
-        this._root._all[view.id] = view;
-        if (cell.init) {
-            cell.init(view, cell);
-        }
-        return view;
-    };
-    Layout.prototype._haveCells = function (id) {
-        if (id) {
-            var array = this._root._all[id];
-            return array._cells && array._cells.length > 0;
-        }
-        return Object.keys(this._all).length > 0;
-    };
-    Layout.prototype._inheritTypes = function (obj) {
-        var _this = this;
-        if (obj === void 0) { obj = this._cells; }
-        if (Array.isArray(obj)) {
-            obj.forEach(function (cell) { return _this._inheritTypes(cell); });
-        }
-        else {
-            var cellConfig = obj.config;
-            if (cellConfig.rows || cellConfig.cols) {
-                var viewParent = obj.getParent();
-                if (!cellConfig.type && viewParent) {
-                    if (viewParent.config.type) {
-                        cellConfig.type = viewParent.config.type;
-                    }
-                    else {
-                        this._inheritTypes(viewParent);
-                    }
-                }
-            }
-        }
-    };
-    return Layout;
-}(Cell_1.Cell));
-exports.Layout = Layout;
-
-
-/***/ }),
-/* 117 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = __webpack_require__(9);
 var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var view_1 = __webpack_require__(5);
-var types_1 = __webpack_require__(29);
-var helpers_1 = __webpack_require__(118);
-var events_1 = __webpack_require__(2);
-var CssManager_1 = __webpack_require__(32);
-var Cell = /** @class */ (function (_super) {
-    __extends(Cell, _super);
-    function Cell(parent, config) {
-        var _this = _super.call(this, parent, config) || this;
-        _this._disabled = [];
-        var p = parent;
-        if (p && p.isVisible) {
-            _this._parent = p;
-        }
-        if (_this._parent && _this._parent.events) {
-            _this.events = _this._parent.events;
-        }
-        else {
-            _this.events = new events_1.EventSystem(_this);
-        }
-        _this._cssManager = new CssManager_1.CssManager();
-        _this.config.full =
-            _this.config.full === undefined
-                ? Boolean(_this.config.header ||
-                    _this.config.collapsable ||
-                    _this.config.headerHeight ||
-                    _this.config.headerIcon ||
-                    _this.config.headerImage)
-                : _this.config.full;
-        _this._initHandlers();
-        _this.id = _this.config.id || core_1.uid();
-        return _this;
-    }
-    Cell.prototype.paint = function () {
-        if (this.isVisible()) {
-            var view = this.getRootView();
-            if (view) {
-                view.redraw();
-            }
-            else {
-                this._parent.paint();
-            }
-        }
-    };
-    Cell.prototype.isVisible = function () {
-        // top level node
-        if (!this._parent) {
-            if (this._container && this._container.tagName) {
-                return true;
-            }
-            return Boolean(this.getRootNode());
-        }
-        // check active view in case of multiview
-        var active = this._parent.config.activeView;
-        if (active && active !== this.id) {
-            return false;
-        }
-        // check that all parents of the cell are visible as well
-        return !this.config.hidden && (!this._parent || this._parent.isVisible());
-    };
-    Cell.prototype.hide = function () {
-        if (!this.events.fire(types_1.LayoutEvents.beforeHide, [this.id])) {
-            return;
-        }
-        this.config.hidden = true;
-        if (this._parent && this._parent.paint) {
-            this._parent.paint();
-        }
-        this.events.fire(types_1.LayoutEvents.afterHide, [this.id]);
-    };
-    Cell.prototype.show = function () {
-        if (!this.events.fire(types_1.LayoutEvents.beforeShow, [this.id])) {
-            return;
-        }
-        if (this._parent && this._parent.config && this._parent.config.activeView !== undefined) {
-            this._parent.config.activeView = this.id;
-        }
-        else {
-            this.config.hidden = false;
-        }
-        if (this._parent && !this._parent.isVisible()) {
-            this._parent.show();
-        }
-        this.paint();
-        this.events.fire(types_1.LayoutEvents.afterShow, [this.id]);
-    };
-    Cell.prototype.expand = function () {
-        if (!this.events.fire(types_1.LayoutEvents.beforeExpand, [this.id])) {
-            return;
-        }
-        this.config.collapsed = false;
-        this.events.fire(types_1.LayoutEvents.afterExpand, [this.id]);
-        this.paint();
-    };
-    Cell.prototype.collapse = function () {
-        if (!this.events.fire(types_1.LayoutEvents.beforeCollapse, [this.id])) {
-            return;
-        }
-        this.config.collapsed = true;
-        this.events.fire(types_1.LayoutEvents.afterCollapse, [this.id]);
-        this.paint();
-    };
-    Cell.prototype.toggle = function () {
-        if (this.config.collapsed) {
-            this.expand();
-        }
-        else {
-            this.collapse();
-        }
-    };
-    Cell.prototype.getParent = function () {
-        return this._parent;
-    };
-    Cell.prototype.destructor = function () {
-        this.config = null;
-        this.unmount();
-    };
-    Cell.prototype.getWidget = function () {
-        return this._ui;
-    };
-    Cell.prototype.getCellView = function () {
-        return this._parent && this._parent.getRefs(this._uid);
-    };
-    Cell.prototype.attach = function (name, config) {
-        this.config.html = null;
-        if (typeof name === "object") {
-            this._ui = name;
-        }
-        else if (typeof name === "string") {
-            this._ui = new window.dhx[name](null, config);
-        }
-        else if (typeof name === "function") {
-            if (name.prototype instanceof view_1.View) {
-                this._ui = new name(null, config);
-            }
-            else {
-                this._ui = {
-                    getRootView: function () {
-                        return name(config);
-                    },
-                };
-            }
-        }
-        this.paint();
-        return this._ui;
-    };
-    Cell.prototype.attachHTML = function (html) {
-        this.config.html = html;
-        this.paint();
-    };
-    Cell.prototype.toVDOM = function (nodes) {
-        var _a;
-        if (this.config === null) {
-            this.config = {};
-        }
-        if (this.config.hidden) {
-            return;
-        }
-        var style = this._calculateStyle();
-        var stylePadding = core_1.isDefined(this.config.padding)
-            ? !isNaN(Number(this.config.padding))
-                ? { padding: this.config.padding + "px" }
-                : { padding: this.config.padding }
-            : "";
-        var fullStyle = this.config.full || this.config.html ? style : __assign(__assign({}, style), stylePadding);
-        var cssClassName = this._cssManager.add(fullStyle, "dhx_cell-style__" + this._uid);
-        var kids;
-        if (!this.config.html) {
-            if (this._ui) {
-                var view = this._ui.getRootView();
-                if (view.render) {
-                    view = dom_1.inject(view);
-                }
-                kids = [view];
-            }
-            else {
-                kids = nodes || null;
-            }
-        }
-        var resizer = this.config.resizable && !this._isLastCell() && !this.config.collapsed
-            ? dom_1.el(".dhx_layout-resizer." +
-                (this._isXDirection() ? "dhx_layout-resizer--x" : "dhx_layout-resizer--y"), __assign(__assign({}, this._resizerHandlers), { _ref: "resizer_" + this._uid }), [
-                dom_1.el("span.dhx_layout-resizer__icon", {
-                    class: "dxi " +
-                        (this._isXDirection() ? "dxi-dots-vertical" : "dxi-dots-horizontal"),
-                }),
-            ])
-            : null;
-        var handlers = {};
-        if (this.config.on) {
-            for (var key in this.config.on) {
-                handlers["on" + key] = this.config.on[key];
-            }
-        }
-        var typeClass = "";
-        var isParent = this.config.cols || this.config.rows;
-        if (this.config.type && isParent) {
-            switch (this.config.type) {
-                case "line":
-                    typeClass = " dhx_layout-line";
-                    break;
-                case "wide":
-                    typeClass = " dhx_layout-wide";
-                    break;
-                case "space":
-                    typeClass = " dhx_layout-space";
-                    break;
-                default:
-                    break;
-            }
-        }
-        var cell = dom_1.el("div", __assign(__assign((_a = { _key: this._uid, _ref: this._uid }, _a["aria-label"] = this.config.id ? "tab-content-" + this.config.id : null, _a), handlers), { class: this._getCss(false) +
-                (this.config.css ? " " + this.config.css : "") +
-                (fullStyle ? " " + cssClassName : "") +
-                (this.config.collapsed ? " dhx_layout-cell--collapsed" : "") +
-                (this.config.resizable ? " dhx_layout-cell--resizable" : "") +
-                (this.config.type && !this.config.full ? typeClass : "") }), this.config.full
-            ? [
-                dom_1.el("div", {
-                    tabindex: this.config.collapsable ? "0" : "-1",
-                    class: "dhx_layout-cell-header" +
-                        (this._isXDirection()
-                            ? " dhx_layout-cell-header--col"
-                            : " dhx_layout-cell-header--row") +
-                        (this.config.collapsable ? " dhx_layout-cell-header--collapseble" : "") +
-                        (this.config.collapsed ? " dhx_layout-cell-header--collapsed" : "") +
-                        (((this.getParent() || {}).config || {}).isAccordion
-                            ? " dhx_layout-cell-header--accordion"
-                            : ""),
-                    style: {
-                        height: this.config.headerHeight,
-                    },
-                    onclick: this._handlers.toggle,
-                    onkeydown: this._handlers.enterCollapse,
-                }, [
-                    this.config.headerIcon &&
-                        dom_1.el("span.dhx_layout-cell-header__icon", {
-                            class: this.config.headerIcon,
-                        }),
-                    this.config.headerImage &&
-                        dom_1.el(".dhx_layout-cell-header__image-wrapper", [
-                            dom_1.el("img", {
-                                src: this.config.headerImage,
-                                class: "dhx_layout-cell-header__image",
-                            }),
-                        ]),
-                    this.config.header &&
-                        dom_1.el("h3.dhx_layout-cell-header__title", this.config.header),
-                    this.config.collapsable
-                        ? dom_1.el("div.dhx_layout-cell-header__collapse-icon", {
-                            class: this._getCollapseIcon(),
-                        })
-                        : dom_1.el("div.dhx_layout-cell-header__collapse-icon", {
-                            class: "dxi dxi-empty",
-                        }),
-                ]),
-                !this.config.collapsed
-                    ? dom_1.el("div", {
-                        style: __assign(__assign({}, stylePadding), { height: "calc(100% - " + (this.config.headerHeight || 37) + "px)" }),
-                        ".innerHTML": this.config.html,
-                        class: this._getCss(true) +
-                            " dhx_layout-cell-content" +
-                            (this.config.type ? typeClass : ""),
-                    }, kids)
-                    : null,
-            ]
-            : this.config.html &&
-                !(this.config.rows &&
-                    this.config.cols &&
-                    this.config.views)
-                ? [
-                    dom_1.el(".dhx_layout-cell-content", {
-                        ".innerHTML": this.config.html,
-                        style: stylePadding,
-                    }),
-                ]
-                : kids);
-        return resizer ? [cell, resizer] : cell;
-    };
-    Cell.prototype._getCss = function (_content) {
-        return "dhx_layout-cell";
-    };
-    Cell.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            enterCollapse: function (e) {
-                if (e.keyCode === 13) {
-                    _this._handlers.toggle();
-                }
-            },
-            collapse: function () {
-                if (!_this.config.collapsable) {
-                    return;
-                }
-                _this.collapse();
-            },
-            expand: function () {
-                if (!_this.config.collapsable) {
-                    return;
-                }
-                _this.expand();
-            },
-            toggle: function () {
-                if (!_this.config.collapsable) {
-                    return;
-                }
-                _this.toggle();
-            },
-        };
-        var blockOpts = {
-            left: null,
-            top: null,
-            isActive: false,
-            range: null,
-            xLayout: null,
-            nextCell: null,
-            size: null,
-            resizerLength: null,
-            mode: null,
-            percentsum: null,
-            margin: null,
-        };
-        var resizeMove = function (event) {
-            if (!blockOpts.isActive) {
-                return;
-            }
-            var clientX = event.targetTouches ? event.targetTouches[0].clientX : event.clientX;
-            var clientY = event.targetTouches ? event.targetTouches[0].clientY : event.clientY;
-            var newValue = blockOpts.xLayout
-                ? clientX - blockOpts.range.min + window.pageXOffset
-                : clientY - blockOpts.range.min + window.pageYOffset;
-            var prop = blockOpts.xLayout ? "width" : "height";
-            if (newValue < 0) {
-                newValue = blockOpts.resizerLength / 2;
-            }
-            else if (newValue > blockOpts.size) {
-                newValue = blockOpts.size - blockOpts.resizerLength;
-            }
-            switch (blockOpts.mode) {
-                case types_1.resizeMode.pixels:
-                    _this.config[prop] = newValue - blockOpts.resizerLength / 2 + "px";
-                    blockOpts.nextCell.config[prop] =
-                        blockOpts.size - newValue - blockOpts.resizerLength / 2 + "px";
-                    break;
-                case types_1.resizeMode.mixedpx1:
-                    _this.config[prop] = newValue - blockOpts.resizerLength / 2 + "px";
-                    break;
-                case types_1.resizeMode.mixedpx2:
-                    blockOpts.nextCell.config[prop] =
-                        blockOpts.size - newValue - blockOpts.resizerLength / 2 + "px";
-                    break;
-                case types_1.resizeMode.percents:
-                    _this.config[prop] = (newValue / blockOpts.size) * blockOpts.percentsum + "%";
-                    blockOpts.nextCell.config[prop] =
-                        ((blockOpts.size - newValue) / blockOpts.size) * blockOpts.percentsum + "%";
-                    break;
-                case types_1.resizeMode.mixedperc1:
-                    _this.config[prop] = (newValue / blockOpts.size) * blockOpts.percentsum + "%";
-                    break;
-                case types_1.resizeMode.mixedperc2:
-                    blockOpts.nextCell.config[prop] =
-                        ((blockOpts.size - newValue) / blockOpts.size) * blockOpts.percentsum + "%";
-                    break;
-                case types_1.resizeMode.unknown:
-                    _this.config[prop] = newValue - blockOpts.resizerLength / 2 + "px";
-                    blockOpts.nextCell.config[prop] =
-                        blockOpts.size - newValue - blockOpts.resizerLength / 2 + "px";
-                    _this.config.$fixed = true;
-                    break;
-            }
-            _this.paint();
-            _this.events.fire(types_1.LayoutEvents.resize, [_this.id]);
-        };
-        var resizeEnd = function (event) {
-            blockOpts.isActive = false;
-            document.body.classList.remove("dhx_no-select--resize");
-            if (!event.targetTouches) {
-                document.removeEventListener("mouseup", resizeEnd);
-                document.removeEventListener("mousemove", resizeMove);
-            }
-            else {
-                document.removeEventListener("touchend", resizeEnd);
-                document.removeEventListener("touchmove", resizeMove);
-            }
-            _this.events.fire(types_1.LayoutEvents.afterResizeEnd, [_this.id]);
-        };
-        var resizeStart = function (event) {
-            event.targetTouches && event.preventDefault();
-            if (event.which === 3) {
-                return;
-            }
-            if (blockOpts.isActive) {
-                resizeEnd(event);
-            }
-            if (!_this.events.fire(types_1.LayoutEvents.beforeResizeStart, [_this.id])) {
-                return;
-            }
-            document.body.classList.add("dhx_no-select--resize");
-            var block = _this.getCellView();
-            var nextCell = _this._getNextCell();
-            var nextBlock = nextCell.getCellView();
-            var resizerBlock = _this._getResizerView();
-            var blockOffsets = block.el.getBoundingClientRect();
-            var resizerOffsets = resizerBlock.el.getBoundingClientRect();
-            var nextBlockOffsets = nextBlock.el.getBoundingClientRect();
-            blockOpts.xLayout = _this._isXDirection();
-            blockOpts.left = blockOffsets.left + window.pageXOffset;
-            blockOpts.top = blockOffsets.top + window.pageYOffset;
-            blockOpts.margin = helpers_1.getMarginSize(_this.getParent().config, blockOpts.xLayout);
-            blockOpts.range = helpers_1.getBlockRange(blockOffsets, nextBlockOffsets, blockOpts.xLayout);
-            blockOpts.size = blockOpts.range.max - blockOpts.range.min - blockOpts.margin;
-            blockOpts.isActive = true;
-            blockOpts.nextCell = nextCell;
-            blockOpts.resizerLength = blockOpts.xLayout ? resizerOffsets.width : resizerOffsets.height;
-            blockOpts.mode = helpers_1.getResizeMode(blockOpts.xLayout, _this.config, nextCell.config);
-            if (blockOpts.mode === types_1.resizeMode.percents) {
-                var field = blockOpts.xLayout ? "width" : "height";
-                blockOpts.percentsum =
-                    parseFloat(_this.config[field].slice(0, -1)) +
-                        parseFloat(nextCell.config[field].slice(0, -1));
-            }
-            if (blockOpts.mode === types_1.resizeMode.mixedperc1) {
-                var field = blockOpts.xLayout ? "width" : "height";
-                blockOpts.percentsum =
-                    (1 / (blockOffsets[field] / (blockOpts.size - blockOpts.resizerLength))) *
-                        parseFloat(_this.config[field].slice(0, -1));
-            }
-            if (blockOpts.mode === types_1.resizeMode.mixedperc2) {
-                var field = blockOpts.xLayout ? "width" : "height";
-                blockOpts.percentsum =
-                    (1 / (nextBlockOffsets[field] / (blockOpts.size - blockOpts.resizerLength))) *
-                        parseFloat(nextCell.config[field]);
-            }
-        };
-        this._resizerHandlers = {
-            onmousedown: function (e) {
-                resizeStart(e);
-                document.addEventListener("mouseup", resizeEnd);
-                document.addEventListener("mousemove", resizeMove);
-            },
-            ontouchstart: function (e) {
-                resizeStart(e);
-                document.addEventListener("touchend", resizeEnd);
-                document.addEventListener("touchmove", resizeMove);
-            },
-            ondragstart: function (e) { return e.preventDefault(); },
-        };
-    };
-    Cell.prototype._getCollapseIcon = function () {
-        if (this._isXDirection() && this.config.collapsed) {
-            return "dxi dxi-chevron-right";
-        }
-        if (this._isXDirection() && !this.config.collapsed) {
-            return "dxi dxi-chevron-left";
-        }
-        if (!this._isXDirection() && this.config.collapsed) {
-            return "dxi dxi-chevron-up";
-        }
-        if (!this._isXDirection() && !this.config.collapsed) {
-            return "dxi dxi-chevron-down";
-        }
-    };
-    Cell.prototype._isLastCell = function () {
-        var parent = this._parent;
-        return parent && parent._cells.indexOf(this) === parent._cells.length - 1;
-    };
-    Cell.prototype._getNextCell = function () {
-        var parent = this._parent;
-        var index = parent._cells.indexOf(this);
-        return parent._cells[index + 1];
-    };
-    Cell.prototype._getResizerView = function () {
-        return this._parent.getRefs("resizer_" + this._uid);
-    };
-    Cell.prototype._isXDirection = function () {
-        return this._parent && this._parent._xLayout;
-    };
-    Cell.prototype._calculateStyle = function () {
-        var config = this.config;
-        if (!config) {
-            return;
-        }
-        var style = {};
-        var autoWidth = false;
-        var autoHeight = false;
-        if (!isNaN(Number(config.width)))
-            config.width = config.width + "px";
-        if (!isNaN(Number(config.height)))
-            config.height = config.height + "px";
-        if (!isNaN(Number(config.minWidth)))
-            config.minWidth = config.minWidth + "px";
-        if (!isNaN(Number(config.minHeight)))
-            config.minHeight = config.minHeight + "px";
-        if (!isNaN(Number(config.maxWidth)))
-            config.maxWidth = config.maxWidth + "px";
-        if (!isNaN(Number(config.maxHeight)))
-            config.maxHeight = config.maxHeight + "px";
-        if (config.width === "content")
-            autoWidth = true;
-        if (config.height === "content")
-            autoHeight = true;
-        var _a = config, width = _a.width, height = _a.height, cols = _a.cols, rows = _a.rows, minWidth = _a.minWidth, minHeight = _a.minHeight, maxWidth = _a.maxWidth, maxHeight = _a.maxHeight, gravity = _a.gravity, collapsed = _a.collapsed, $fixed = _a.$fixed;
-        var gravityNumber = Math.sign(gravity) === -1 ? 0 : gravity;
-        if (typeof gravity === "boolean") {
-            gravityNumber = gravity ? 1 : 0;
-        }
-        var fixed = typeof gravity === "boolean" ? !gravity : Math.sign(gravity) === -1;
-        if (this._isXDirection()) {
-            if ($fixed || width || (gravity === undefined && (minWidth || maxWidth))) {
-                fixed = true;
-            }
-        }
-        else {
-            if ($fixed || height || (gravity === undefined && (minHeight || maxHeight))) {
-                fixed = true;
-            }
-        }
-        var grow = fixed ? 0 : gravityNumber || 1;
-        var fillSpace = this._isXDirection() ? "x" : "y";
-        if (minWidth !== undefined)
-            style.minWidth = minWidth;
-        if (minHeight !== undefined)
-            style.minHeight = minHeight;
-        if (maxWidth !== undefined)
-            style.maxWidth = maxWidth;
-        if (maxHeight !== undefined)
-            style.maxHeight = maxHeight;
-        if (this._parent === undefined && !fillSpace !== undefined) {
-            fillSpace = true;
-        }
-        if (width !== undefined && width !== "content") {
-            style.width = width;
-        }
-        else {
-            if (fillSpace === true) {
-                style.width = "100%";
-            }
-            else if (fillSpace === "x") {
-                if (autoWidth) {
-                    style.flex = "0 0 auto";
-                }
-                else {
-                    var isAuto = this._isXDirection() ? "1px" : "auto";
-                    style.flex = grow + " " + (cols || rows ? "0 " + isAuto : "1 auto");
-                }
-            }
-        }
-        if (height !== undefined && height !== "content") {
-            style.height = height;
-        }
-        else {
-            if (fillSpace === true) {
-                style.height = "100%";
-            }
-            else if (fillSpace === "y") {
-                if (autoHeight) {
-                    style.flex = "0 0 auto";
-                }
-                else {
-                    var isAuto = !this._isXDirection() ? "1px" : "auto";
-                    style.flex = grow + " " + (cols || rows ? "0 " + isAuto : "1 auto");
-                }
-            }
-        }
-        if (fillSpace === true && config.width === undefined && config.height === undefined) {
-            style.flex = grow + " 1 auto";
-        }
-        if (collapsed) {
-            if (this._isXDirection()) {
-                style.width = "auto";
-            }
-            else {
-                style.height = "auto";
-            }
-            style.flex = "0 0 auto";
-        }
-        return style;
-    };
-    return Cell;
-}(view_1.View));
-exports.Cell = Cell;
-
-
-/***/ }),
-/* 118 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(29);
-function getResizeMode(isXLayout, conf1, conf2) {
-    var field = isXLayout ? "width" : "height";
-    var is1perc = conf1[field] && conf1[field].includes("%");
-    var is2perc = conf2[field] && conf2[field].includes("%");
-    var is1px = conf1[field] && conf1[field].includes("px");
-    var is2px = conf2[field] && conf2[field].includes("px");
-    if (is1perc && is2perc) {
-        return types_1.resizeMode.percents;
-    }
-    if (is1px && is2px) {
-        return types_1.resizeMode.pixels;
-    }
-    if (is1px && !is2px) {
-        return types_1.resizeMode.mixedpx1;
-    }
-    if (is2px && !is1px) {
-        return types_1.resizeMode.mixedpx2;
-    }
-    if (is1perc) {
-        return types_1.resizeMode.mixedperc1;
-    }
-    if (is2perc) {
-        return types_1.resizeMode.mixedperc2;
-    }
-    return types_1.resizeMode.unknown;
-}
-exports.getResizeMode = getResizeMode;
-function getBlockRange(block1, block2, isXLayout) {
-    if (isXLayout === void 0) { isXLayout = true; }
-    if (isXLayout) {
-        return {
-            min: block1.left + window.pageXOffset,
-            max: block2.right + window.pageXOffset,
-        };
-    }
-    return {
-        min: block1.top + window.pageYOffset,
-        max: block2.bottom + window.pageYOffset,
-    };
-}
-exports.getBlockRange = getBlockRange;
-function getMarginSize(config, xLayout) {
-    if (!config) {
-        return 0;
-    }
-    if (config.type === "space" || (config.type === "wide" && xLayout)) {
-        return 10;
-    }
-    return 0;
-}
-exports.getMarginSize = getMarginSize;
-
-
-/***/ }),
-/* 119 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var html_1 = __webpack_require__(3);
-var types_1 = __webpack_require__(35);
-var nodeTimeout = new WeakMap();
-var containers = new Map();
-function createMessageContainer(parent, position) {
-    var messageContainer = document.createElement("div");
-    messageContainer.setAttribute("data-position", position);
-    messageContainer.className =
-        "dhx_message-container " +
-            "dhx_message-container--" +
-            position +
-            (parent === document.body ? " dhx_message-container--in-body" : "");
-    return messageContainer;
-}
-function onExpire(node, fromClick) {
-    if (fromClick) {
-        clearTimeout(nodeTimeout.get(node));
-    }
-    var container = node.parentNode;
-    var position = container.getAttribute("data-position");
-    var parent = container.parentNode;
-    var messageContainerInfo = containers.get(parent);
-    if (!messageContainerInfo) {
-        return;
-    }
-    var positionInfo = messageContainerInfo[position];
-    if (!positionInfo) {
-        return;
-    }
-    var stack = positionInfo.stack;
-    var index = stack.indexOf(node);
-    if (index !== -1) {
-        container.removeChild(node);
-        stack.splice(index, 1);
-        if (stack.length === 0) {
-            parent.removeChild(container);
-        }
-        return;
-    }
-}
-function message(props) {
-    var _a;
-    if (typeof props === "string") {
-        props = { text: props };
-    }
-    props.position = props.position || types_1.MessageContainerPosition.topRight;
-    var messageBox = document.createElement("div");
-    messageBox.className = "dhx_widget dhx_message " + (props.css || "");
-    messageBox.setAttribute("role", "alert");
-    props.text && messageBox.setAttribute("aria-describedby", "dhx_alert__content");
-    if (props.html) {
-        messageBox.innerHTML = props.html;
-    }
-    else {
-        messageBox.innerHTML = "<span class=\"dhx_message__text\">" + props.text + "</span>\n\t\t" + (props.icon ? "<span class=\"dhx_message__icon dxi " + props.icon + "\"></span>" : "");
-    }
-    var parent = props.node ? html_1.toNode(props.node) : document.body;
-    var position = getComputedStyle(parent).position;
-    if (position === "static") {
-        parent.style.position = "relative";
-    }
-    var messageContainerInfo = containers.get(parent);
-    if (!messageContainerInfo) {
-        containers.set(parent, (_a = {},
-            _a[props.position] = {
-                stack: [],
-                container: createMessageContainer(parent, props.position),
-            },
-            _a));
-    }
-    else if (!messageContainerInfo[props.position]) {
-        messageContainerInfo[props.position] = {
-            stack: [],
-            container: createMessageContainer(parent, props.position),
-        };
-    }
-    var _b = containers.get(parent)[props.position], stack = _b.stack, container = _b.container;
-    if (stack.length === 0) {
-        parent.appendChild(container);
-    }
-    stack.push(messageBox);
-    container.appendChild(messageBox);
-    if (props.expire) {
-        var timeout = setTimeout(function () { return onExpire(messageBox); }, props.expire);
-        nodeTimeout.set(messageBox, timeout);
-    }
-    messageBox.onclick = function () { return onExpire(messageBox, true); };
-}
-exports.message = message;
-
-
-/***/ }),
-/* 120 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(Promise) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var en_1 = __webpack_require__(36);
-var common_1 = __webpack_require__(63);
-function alert(props) {
-    var apply = props.buttons && props.buttons[0] ? props.buttons[0] : en_1.default.apply;
-    var unblock = common_1.blockScreen(props.blockerCss);
-    return new Promise(function (res) {
-        var alertBox = document.createElement("div");
-        alertBox.setAttribute("role", "alert");
-        alertBox.setAttribute("aria-modal", "true");
-        props.text && alertBox.setAttribute("aria-describedby", "dhx_alert__content");
-        props.header && alertBox.setAttribute("aria-labelledby", "dhx_alert__header");
-        alertBox.className = "dhx_widget dhx_alert " + (props.css || "");
-        var closeAlert = function (e) {
-            if (e.key === "Escape" || e.key === "Esc" || e.key === " ") {
-                e.preventDefault();
-                alertBox.querySelector("button").click();
-            }
-        };
-        alertBox.innerHTML = "\n\t\t\t" + (props.header ? "<div id=\"dhx_alert__header\" class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t\t" + (props.text ? "<div id=\"dhx_alert__content\" class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button type=\"button\" aria-label=\"confirm\" class=\"dhx_alert__apply-button dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
-        document.body.appendChild(alertBox);
-        alertBox.querySelector(".dhx_alert__apply-button").focus();
-        alertBox.querySelector("button").addEventListener("click", function () {
-            unblock();
-            document.body.removeChild(alertBox);
-            res(true);
-        });
-        alertBox.addEventListener("keydown", closeAlert);
-    });
-}
-exports.alert = alert;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
-
-/***/ }),
-/* 121 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-/* WEBPACK VAR INJECTION */(function(Promise) {
-Object.defineProperty(exports, "__esModule", { value: true });
-var en_1 = __webpack_require__(36);
-var common_1 = __webpack_require__(63);
-function confirm(props) {
-    props.buttonsAlignment = props.buttonsAlignment || "right";
-    var apply = props.buttons && props.buttons[1] ? props.buttons[1] : en_1.default.apply;
-    var reject = props.buttons && props.buttons[0] ? props.buttons[0] : en_1.default.reject;
-    var unblock = common_1.blockScreen(props.blockerCss);
-    return new Promise(function (res) {
-        var confirmBox = document.createElement("div");
-        confirmBox.setAttribute("role", "alertdialog");
-        confirmBox.setAttribute("aria-modal", "true");
-        props.text && confirmBox.setAttribute("aria-describedby", "dhx_alert__content");
-        props.header && confirmBox.setAttribute("aria-labelledby", "dhx_alert__header");
-        var focusItem;
-        var answer = function (val) {
-            unblock();
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            confirmBox.removeEventListener("click", clickHandler);
-            // eslint-disable-next-line @typescript-eslint/no-use-before-define
-            document.removeEventListener("keydown", closeConfirm);
-            document.body.removeChild(confirmBox);
-            res(val);
-        };
-        var clickHandler = function (e) {
-            if (e.target.tagName === "BUTTON") {
-                answer(e.target.classList.contains("dhx_alert__confirm-aply"));
-            }
-        };
-        var closeConfirm = function (e) {
-            if (e.key === "Escape" || e.key === "Esc") {
-                confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
-                answer(e.target.classList.contains("dhx_alert__confirm-reject"));
-            }
-            else if (e.key === "Tab") {
-                if (focusItem === "aply") {
-                    focusItem = "reject";
-                    confirmBox.querySelector(".dhx_alert__confirm-reject").focus();
-                }
-                else {
-                    focusItem = "aply";
-                    confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
-                }
-                e.preventDefault();
-            }
-        };
-        confirmBox.className = "dhx_widget dhx_alert dhx_alert--confirm" + (props.css ? " " + props.css : "");
-        confirmBox.innerHTML = "\n\t\t" + (props.header ? "<div class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t" + (props.text ? "<div class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button type=\"button\" aria-label=\"reject\" class=\"dhx_alert__confirm-reject dhx_button dhx_button--view_link dhx_button--color_primary dhx_button--size_medium\">" + reject + "</button>\n\t\t\t\t<button type=\"button\"  aria-label=\"aply\"class=\"dhx_alert__confirm-aply dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
-        document.body.appendChild(confirmBox);
-        focusItem = "aply";
-        confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
-        confirmBox.addEventListener("click", clickHandler);
-        document.addEventListener("keydown", closeConfirm);
-    });
-}
-exports.confirm = confirm;
-
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
-
-/***/ }),
-/* 122 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(3);
-var ts_message_1 = __webpack_require__(18);
-var ts_navbar_1 = __webpack_require__(19);
-var Toolbar = /** @class */ (function (_super) {
-    __extends(Toolbar, _super);
-    function Toolbar(element, config) {
-        var _this = _super.call(this, element, core_1.extend({
-            navigationType: "click",
-        }, config)) || this;
-        _this._currentRoot = null;
-        var render = function () { return _this._draw(element); };
-        _this.mount(element, dom_1.create({ render: render }));
-        return _this;
-    }
-    Toolbar.prototype.getState = function (id) {
-        if (id && !this.data.getItem(id.toString())) {
-            return;
-        }
-        var state = {};
-        this.data.eachChild(this.data.getRoot(), function (item) {
-            if (item.twoState && !item.group) {
-                state[item.id] = item.active;
-            }
-            else if (item.type === "input" || item.type === "selectButton") {
-                state[item.id] = item.value;
-            }
-        }, false);
-        for (var key in this._groups) {
-            if (this._groups[key].active) {
-                state[key] = this._groups[key].active;
-            }
-        }
-        if (id) {
-            return state[id];
-        }
-        return state;
-    };
-    Toolbar.prototype.setState = function (state) {
-        for (var key in state) {
-            if (this._groups && this._groups[key]) {
-                if (this._groups[key].active) {
-                    this.data.update(this._groups[key].active, { active: false });
-                    this._groups[key].active = state[key];
-                    this.data.update(state[key], { active: true });
-                }
-            }
-            else {
-                var item = this.data.getItem(key);
-                if (item.type === "input" || item.type === "selectButton") {
-                    this.data.update(key, { value: state[key] });
-                }
-                else {
-                    this.data.update(key, { active: state[key] });
-                }
-            }
-        }
-    };
-    Toolbar.prototype._customHandlers = function () {
-        var _this = this;
-        return {
-            input: function (e) {
-                var id = html_1.locate(e);
-                _this.data.update(id, { value: e.target.value });
-            },
-            tooltip: function (e) {
-                var elem = html_1.locateNode(e);
-                if (!elem) {
-                    return;
-                }
-                var id = elem.getAttribute("dhx_id");
-                var item = _this.data.getItem(id);
-                if (item.tooltip) {
-                    ts_message_1.tooltip(item.tooltip, {
-                        node: elem,
-                        position: ts_message_1.Position.bottom,
-                    });
-                }
-            },
-        };
-    };
-    Toolbar.prototype._getFactory = function () {
-        return ts_navbar_1.createFactory({
-            widget: this,
-            defaultType: "navItem",
-            allowedTypes: [
-                "button",
-                "imageButton",
-                "selectButton",
-                "navItem",
-                "menuItem",
-                "separator",
-                "spacer",
-                "title",
-                "input",
-                "customHTML",
-                "customHTMLButton",
-            ],
-            widgetName: "toolbar",
-        });
-    };
-    Toolbar.prototype._draw = function (element) {
-        var _this = this;
-        var getAriaAttrs = function (element) { return ({
-            role: "toolbar",
-            "aria-label": element || "",
-        }); };
-        return dom_1.el("nav.dhx_widget.dhx_toolbar", {
-            class: this.config.css ? this.config.css : "",
-        }, [
-            dom_1.el("ul.dhx_navbar.dhx_navbar--horizontal", __assign(__assign({ dhx_widget_id: this._uid, tabindex: 0 }, getAriaAttrs(element)), { onclick: this._handlers.onclick, onmousedown: this._handlers.onmousedown, oninput: this._handlers.input, onmouseover: this._handlers.tooltip, _hooks: {
-                    didInsert: function (node) {
-                        node.el.addEventListener("keyup", function (e) {
-                            if (e.which !== 9) {
-                                return;
-                            }
-                            var elem = html_1.locateNode(document.activeElement);
-                            if (!elem) {
-                                return;
-                            }
-                            var id = elem.getAttribute("dhx_id");
-                            var item = _this.data.getItem(id);
-                            if (item.tooltip) {
-                                ts_message_1.tooltip(item.tooltip, {
-                                    node: elem,
-                                    position: ts_message_1.Position.bottom,
-                                    force: true,
-                                });
-                            }
-                        }, true);
-                    },
-                } }), this.data.map(function (item) { return _this._factory(item); }, this.data.getRoot(), false)),
-        ]);
-    };
-    Toolbar.prototype._getMode = function (item, root) {
-        return item.id === root ? "bottom" : "right";
-    };
-    Toolbar.prototype._close = function (e) {
-        this._activePosition = null;
-        this._currentRoot = null;
-        _super.prototype._close.call(this, e);
-    };
-    Toolbar.prototype._setRoot = function (id) {
-        if (this.data.getParent(id) === this.data.getRoot()) {
-            this._currentRoot = id;
-        }
-    };
-    return Toolbar;
-}(ts_navbar_1.Navbar));
-exports.Toolbar = Toolbar;
-
-
-/***/ }),
-/* 123 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(2);
-var html_1 = __webpack_require__(3);
-var KeyManager_1 = __webpack_require__(14);
-var view_1 = __webpack_require__(5);
-var ts_data_1 = __webpack_require__(4);
-var types_1 = __webpack_require__(37);
-function addInGroups(groups, item) {
-    if (groups[item.group]) {
-        if (item.active) {
-            groups[item.group].active = item.id;
-        }
-        groups[item.group].elements.push(item.id);
-    }
-    else {
-        groups[item.group] = {
-            active: item.active ? item.id : null,
-            elements: [item.id],
-        };
-    }
-}
-var Navbar = /** @class */ (function (_super) {
-    __extends(Navbar, _super);
-    function Navbar(element, config) {
-        var _this = _super.call(this, element, core_1.extend({}, config)) || this;
-        _this._isContextMenu = false;
-        _this._documentHaveListener = false;
-        _this._rootItem = {};
-        if (Array.isArray(_this.config.data)) {
-            _this.events = new events_1.EventSystem(_this);
-            _this.data = new ts_data_1.TreeCollection({}, _this.events);
-        }
-        else if (_this.config.data && _this.config.data.events) {
-            _this.data = _this.config.data;
-            _this.events = _this.data.events;
-            _this.events.context = _this;
-        }
-        else {
-            _this.events = new events_1.EventSystem(_this);
-            _this.data = new ts_data_1.TreeCollection({}, _this.events);
-        }
-        _this._documentClick = function (e) {
-            if (_this._documentHaveListener) {
-                var element_1 = html_1.locateNode(e);
-                var supportsTouch = "ontouchstart" in window || navigator.msMaxTouchPoints;
-                document.removeEventListener("click", _this._documentClick);
-                _this._documentHaveListener = false;
-                if ((supportsTouch && !element_1) || !_this._isContextMenu) {
-                    _this._close(e);
-                }
-            }
-        };
-        _this._currentRoot = _this.data.getRoot();
-        _this._factory = _this._getFactory();
-        _this._initHandlers();
-        _this._init();
-        _this._keyManager = new KeyManager_1.KeyManager(function (_, focusId) { return focusId === _this._uid; });
-        _this._initEvents();
-        if (Array.isArray(_this.config.data)) {
-            _this.data.parse(_this.config.data);
-        }
-        return _this;
-    }
-    Navbar.prototype.paint = function () {
-        _super.prototype.paint.call(this);
-        this._vpopups.redraw();
-    };
-    Navbar.prototype.disable = function (ids) {
-        var _this = this;
-        if (typeof ids !== "undefined") {
-            this._setProp(ids, "disabled", true);
-        }
-        else {
-            this.data.forEach(function (_a) {
-                var id = _a.id;
-                return _this._setProp(id, "disabled", true);
-            });
-        }
-    };
-    Navbar.prototype.enable = function (ids) {
-        var _this = this;
-        if (typeof ids !== "undefined") {
-            this._setProp(ids, "disabled", false);
-        }
-        else {
-            this.data.forEach(function (_a) {
-                var id = _a.id;
-                return _this._setProp(id, "disabled", false);
-            });
-        }
-    };
-    Navbar.prototype.isDisabled = function (id) {
-        var item = this.data.getItem(id);
-        if (item) {
-            return item.disabled || false;
-        }
-    };
-    Navbar.prototype.show = function (ids) {
-        var _this = this;
-        if (typeof ids !== "undefined") {
-            this._setProp(ids, "hidden", false);
-        }
-        else {
-            this.data.forEach(function (_a) {
-                var id = _a.id;
-                return _this._setProp(id, "hidden", false);
-            });
-        }
-    };
-    Navbar.prototype.hide = function (ids) {
-        var _this = this;
-        if (typeof ids !== "undefined") {
-            this._setProp(ids, "hidden", true);
-        }
-        else {
-            this.data.forEach(function (_a) {
-                var id = _a.id;
-                return _this._setProp(id, "hidden", true);
-            });
-        }
-    };
-    Navbar.prototype.destructor = function () {
-        this.events.clear();
-        this._keyManager.destructor();
-        !!this._vpopups.node && this._vpopups.unmount();
-        this.unmount();
-    };
-    Navbar.prototype.select = function (id, unselect) {
-        var _this = this;
-        if (unselect === void 0) { unselect = true; }
-        if (!id) {
-            throw new Error("Function argument cannot be empty, for more info check documentation https://docs.dhtmlx.com");
-        }
-        unselect && this.unselect();
-        this.data.update(id, { active: true });
-        this.data.eachParent(id, function (parent) {
-            _this.data.update(parent.id, { active: true });
-        });
-    };
-    Navbar.prototype.unselect = function (id) {
-        var _this = this;
-        if (!id) {
-            this.data.forEach(function (item) {
-                _this.data.update(item.id, { active: false });
-            });
-        }
-        else {
-            this.data.update(id, { active: false });
-            this.data.eachChild(id, function (parent) {
-                _this.data.update(parent.id, { active: false });
-            });
-        }
-    };
-    Navbar.prototype.isSelected = function (id) {
-        if (!id || !this.data.getItem(id)) {
-            return;
-        }
-        return !!this.data.getItem(id).active;
-    };
-    Navbar.prototype.getSelected = function () {
-        var selected = [];
-        this.data.forEach(function (item) {
-            item.active && selected.push(item.id);
-        });
-        return selected;
-    };
-    Navbar.prototype._customHandlers = function () {
-        return {};
-    };
-    Navbar.prototype._close = function (e) {
-        var _this = this;
-        if (!this._popupActive || !this.events.fire(types_1.NavigationBarEvents.beforeHide, [this._activeMenu, e])) {
-            return;
-        }
-        if (this._activeParents) {
-            this._activeParents.forEach(function (parentId) { return _this.data.exists(parentId) && _this.data.update(parentId, { $activeParent: false }); });
-        }
-        if (this.config.navigationType === "click") {
-            this._isActive = false;
-        }
-        clearTimeout(this._currentTimeout);
-        this._popupActive = false;
-        this._activeMenu = null;
-        this.events.fire(types_1.NavigationBarEvents.afterHide, [e]);
-        this.paint();
-    };
-    Navbar.prototype._init = function () {
-        var _this = this;
-        var render = function () {
-            return dom_1.el("div", {
-                dhx_widget_id: _this._uid,
-                class: (_this._isContextMenu ? " dhx_context-menu" : "") + " " + (_this.config.css
-                    ? _this.config.css
-                        .split(" ")
-                        .map(function (i) { return i + "--context-menu"; })
-                        .join(" ")
-                    : ""),
-                onmousemove: _this._handlers.onmousemove,
-                onmouseleave: _this._handlers.onmouseleave,
-                onclick: _this._handlers.onclick,
-                onmousedown: _this._handlers.onmousedown,
-            }, _this._drawPopups());
-        };
-        this._vpopups = dom_1.create({
-            render: render,
-        });
-        this._vpopups.mount(document.body);
-    };
-    Navbar.prototype._initHandlers = function () {
-        var _this = this;
-        /*
-            for navigation type click:
-            first click open menu, _isActive = true
-            after navigation use mousemove
-            can be closed after outer click or menu leaf item click
-        */
-        this._isActive = this.config.navigationType !== "click";
-        this._handlers = __assign({ onmousemove: function (e) {
-                if (!_this._isActive) {
-                    return;
-                }
-                var elem = html_1.locateNode(e);
-                if (!elem) {
-                    return;
-                }
-                var id = elem.getAttribute("dhx_id");
-                if (_this._activeMenu !== id) {
-                    if (_this.data.haveItems(id)) {
-                        var position = html_1.getRealPosition(elem);
-                        _this.data.update(id, { $position: position }, false);
-                    }
-                    _this._activeItemChange(id, e);
-                }
-            }, onmouseleave: function (e) {
-                if (_this.config.navigationType !== "click") {
-                    // maybe all time when mouse leave close menu
-                    if (_this._popupActive) {
-                        var element = html_1.locateNode(e, "dhx_id", "relatedTarget");
-                        if (element) {
-                            var id = element.getAttribute("dhx_id");
-                            if (!_this.data.getItem(id)) {
-                                _this._close(e);
-                            }
-                        }
-                        else {
-                            _this._close(e);
-                        }
-                    }
-                    _this._activeItemChange(null, e);
-                }
-            }, onclick: function (e) {
-                var element = html_1.locateNode(e);
-                if (!element) {
-                    return;
-                }
-                var id = element.getAttribute("dhx_id");
-                if (_this.isDisabled(id)) {
-                    return;
-                }
-                var item = _this.data.getItem(id);
-                if (item.multiClick) {
-                    return;
-                }
-                if (_this.data.haveItems(id)) {
-                    if (id === _this._currentRoot) {
-                        return;
-                    }
-                    if (!_this._isActive) {
-                        _this._isActive = true;
-                    }
-                    _this._setRoot(id);
-                    var position = html_1.getRealPosition(element);
-                    _this.data.update(id, { $position: position }, false);
-                    _this._activeItemChange(id, e);
-                }
-                else {
-                    switch (item.type) {
-                        case "input":
-                        case "title":
-                            break;
-                        case "menuItem":
-                        case "selectButton":
-                            _this._onMenuItemClick(id, e);
-                            break;
-                        case "imageButton":
-                        case "button":
-                        case "customButton":
-                        case "customHTML":
-                        case "navItem":
-                            if (item.twoState) {
-                                _this.data.update(item.id, { active: !item.active });
-                            }
-                            _this.events.fire(types_1.NavigationBarEvents.click, [id, e]);
-                            _this._close(e);
-                            break;
-                        default:
-                            _this._close(e);
-                    }
-                }
-            }, onmousedown: function (e) {
-                var element = html_1.locateNode(e);
-                if (!element) {
-                    return;
-                }
-                var id = element.getAttribute("dhx_id");
-                var item = _this.data.getItem(id);
-                if (!item.multiClick) {
-                    return;
-                }
-                var fireTime = 365;
-                var timeout;
-                var fireAction = function () {
-                    _this.events.fire(types_1.NavigationBarEvents.click, [id, e]);
-                    if (fireTime > 50) {
-                        fireTime -= 55;
-                    }
-                    timeout = setTimeout(fireAction, fireTime);
-                };
-                var mouseup = function () {
-                    clearTimeout(timeout);
-                    document.removeEventListener("mouseup", mouseup);
-                };
-                fireAction();
-                document.addEventListener("mouseup", mouseup);
-            } }, this._customHandlers());
-    };
-    Navbar.prototype._initEvents = function () {
-        var _this = this;
-        var timeout = null;
-        this.data.events.on(types_1.DataEvents.change, function () {
-            _this.paint();
-            if (timeout) {
-                clearTimeout(timeout);
-            }
-            timeout = setTimeout(function () {
-                var groups = {};
-                _this.data.eachChild(_this.data.getRoot(), function (item) {
-                    if (item.group) {
-                        item.twoState = true;
-                        addInGroups(groups, item);
-                    }
-                }, true);
-                _this._groups = groups;
-                _this._resetHotkeys();
-                timeout = null;
-                _this.paint();
-            }, 100);
-        });
-        this.events.on(types_1.NavigationBarEvents.click, function (id) {
-            var item = _this.data.getItem(id);
-            var parent = _this.data.getItem(item.parent);
-            if (parent && parent.type === "selectButton") {
-                _this.data.update(item.parent, { value: item.value, icon: item.icon });
-            }
-            if (item.group) {
-                var group = _this._groups[item.group];
-                if (group.active) {
-                    _this.data.update(group.active, { active: false });
-                }
-                group.active = item.id;
-                _this.data.update(item.id, { active: true });
-            }
-        });
-        this._customInitEvents();
-    };
-    Navbar.prototype._getMode = function (item, root, _active) {
-        if (_active === void 0) { _active = false; }
-        return item.parent === root ? "bottom" : "right";
-    };
-    Navbar.prototype._drawMenuItems = function (id, asMenuItem) {
-        var _this = this;
-        if (asMenuItem === void 0) { asMenuItem = true; }
-        return this.data.map(function (item) { return _this._factory(item, asMenuItem); }, id, false);
-    };
-    Navbar.prototype._setRoot = function (_id) {
-        return; // need only for toolbar
-    };
-    Navbar.prototype._getParents = function (id, root) {
-        var parentIds = [];
-        var afterRoot = false;
-        var currentItem = this.data.getItem(id);
-        var disabled = currentItem && currentItem.disabled;
-        this.data.eachParent(id, function (item) {
-            if (item.id === root) {
-                parentIds.push(item.id);
-                afterRoot = true;
-            }
-            else if (!afterRoot) {
-                parentIds.push(item.id);
-            }
-        }, !disabled);
-        if (this._isContextMenu && this._activePosition) {
-            parentIds.push(root);
-        }
-        return parentIds;
-    };
-    Navbar.prototype._listenOuterClick = function () {
-        if (this._documentHaveListener) {
-            return;
-        }
-        document.addEventListener("click", this._documentClick, true);
-        this._documentHaveListener = true;
-    };
-    Navbar.prototype._customInitEvents = function () {
-        return;
-    };
-    Navbar.prototype._drawPopups = function () {
-        var _this = this;
-        var id = this._activeMenu;
-        if (!this._isContextMenu && !id) {
-            return null;
-        }
-        var root = this._currentRoot;
-        if (this._isContextMenu && !this._activePosition) {
-            return null;
-        }
-        var parentIds = this._getParents(id, root);
-        this._activeParents = parentIds;
-        parentIds.forEach(function (parentId) {
-            return _this.data.exists(parentId) && _this.data.update(parentId, { $activeParent: true }, false);
-        });
-        return parentIds
-            .map(function (itemId) {
-            if (!_this.data.haveItems(itemId)) {
-                return null;
-            }
-            var getAriaAttrs = function (item) { return ({
-                role: "menu",
-                "aria-labeledby": item.id,
-                "aria-live": "polite",
-            }); };
-            var item = _this.data.getItem(itemId) || _this._rootItem; // for root item
-            _this._popupActive = true;
-            return dom_1.el("ul", __assign({ class: "dhx_widget dhx_menu" + (_this.config.menuCss ? " " + _this.config.menuCss : ""), _key: itemId, _hooks: {
-                    didInsert: function (vnode) {
-                        var _a = vnode.el.getBoundingClientRect(), width = _a.width, height = _a.height;
-                        var position = _this._isContextMenu && _this._activePosition && itemId === root
-                            ? _this._activePosition
-                            : item.$position;
-                        var mode = _this._getMode(item, root, position === _this._activePosition);
-                        var style = html_1.calculatePosition(position, {
-                            mode: mode,
-                            width: width,
-                            height: height,
-                        });
-                        item.$style = style;
-                        vnode.patch({ style: style });
-                    },
-                    didRecycle: function (_, vnode) {
-                        if (_this._isContextMenu && _this._activePosition && itemId === root) {
-                            var _a = vnode.el.getBoundingClientRect(), width = _a.width, height = _a.height;
-                            var style = html_1.calculatePosition(_this._activePosition, {
-                                mode: _this._getMode(item, root, true),
-                                width: width,
-                                height: height,
-                            });
-                            item.$style = style;
-                            vnode.patch({ style: style });
-                        }
-                    },
-                }, tabindex: 0, style: item.$style || {
-                    position: "absolute",
-                } }, getAriaAttrs(item)), _this._drawMenuItems(itemId));
-        })
-            .reverse();
-    };
-    Navbar.prototype._onMenuItemClick = function (id, e) {
-        var item = this.data.getItem(id);
-        if (item.disabled) {
-            return;
-        }
-        if (item.twoState) {
-            this.data.update(item.id, { active: !item.active });
-        }
-        this.events.fire(types_1.NavigationBarEvents.click, [id, e]);
-        this._close(e);
-    };
-    Navbar.prototype._activeItemChange = function (id, e) {
-        var _this = this;
-        if (this._activeParents) {
-            var parentIds_1 = this._getParents(id, this._currentRoot);
-            this._activeParents.forEach(function (parentId) {
-                if (_this.data.exists(parentId) && !parentIds_1.includes(parentId)) {
-                    _this.data.update(parentId, { $activeParent: false }, false);
-                }
-            });
-        }
-        if (id && !this._documentHaveListener) {
-            this._listenOuterClick();
-        }
-        if (id && this.data.haveItems(id)) {
-            if (this._activeMenu !== id || !this._popupActive) {
-                this.events.fire(types_1.NavigationBarEvents.openMenu, [id]);
-            }
-            clearTimeout(this._currentTimeout);
-            this.paint();
-        }
-        else {
-            clearTimeout(this._currentTimeout);
-            this._currentTimeout = setTimeout(function () { return _this.paint(); }, 400);
-        }
-        this._activeMenu = id;
-    };
-    Navbar.prototype._resetHotkeys = function () {
-        var _this = this;
-        this._keyManager.removeHotKey(null, this);
-        this.data.map(function (item) {
-            if (item.hotkey) {
-                _this._keyManager.addHotKey(item.hotkey, function () { return _this._onMenuItemClick(item.id, null); });
-            }
-        });
-    };
-    Navbar.prototype._setProp = function (id, key, value) {
-        var _a;
-        var _this = this;
-        if (Array.isArray(id)) {
-            id.forEach(function (itemId) {
-                var _a;
-                return _this.data.update(itemId, (_a = {}, _a[key] = value, _a));
-            });
-        }
-        else {
-            this.data.update(id, (_a = {}, _a[key] = value, _a));
-        }
-    };
-    return Navbar;
-}(view_1.View));
-exports.Navbar = Navbar;
-
-
-/***/ }),
-/* 124 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var button_1 = __webpack_require__(125);
-var navItem_1 = __webpack_require__(126);
-var customHTMLButton_1 = __webpack_require__(127);
-var imageButton_1 = __webpack_require__(128);
-var input_1 = __webpack_require__(129);
-var menuItem_1 = __webpack_require__(130);
-var separator_1 = __webpack_require__(131);
-var spacer_1 = __webpack_require__(132);
-var title_1 = __webpack_require__(133);
-var helpers_1 = __webpack_require__(25);
-function itemfactory(item, events, widgetName, props) {
-    switch (item.type) {
-        case "navItem":
-        case "selectButton":
-            return navItem_1.navItem(item, widgetName, props.collapsed);
-        case "button":
-            return button_1.button(item, widgetName);
-        case "title":
-            return title_1.title(item, widgetName);
-        case "separator":
-            return separator_1.separator(item, widgetName);
-        case "spacer":
-            return spacer_1.spacer(item, widgetName);
-        case "input":
-            return input_1.input(item, events, widgetName);
-        case "imageButton":
-            return imageButton_1.imageButton(item, widgetName);
-        case "menuItem":
-            return menuItem_1.menuItem(item, widgetName, props.asMenuItem);
-        case "customHTMLButton":
-            return customHTMLButton_1.customHTMLButton(item, widgetName, props.asMenuItem);
-        case "block":
-        default:
-            throw new Error("unknown item type " + item.type);
-    }
-}
-function normalizeOpenIcon(widgetName, item, data) {
-    switch (widgetName) {
-        case "sidebar":
-        case "context-menu":
-            item.$openIcon = "right";
-            break;
-        case "toolbar":
-            if (item.parent === data.getRoot()) {
-                item.$openIcon = "right";
-            }
-            else {
-                item.$openIcon = "bottom";
-            }
-            break;
-        case "menu":
-            if (item.parent !== this.data.getRoot()) {
-                item.$openIcon = "right";
-            }
-            break;
-        case "ribbon": {
-            var parent_1 = data.getItem(item.parent);
-            if (parent_1 && item.type !== "block") {
-                if (parent_1.type === "block") {
-                    item.$openIcon = "bottom";
-                }
-                else {
-                    item.$openIcon = "right";
-                }
-            }
-            break;
-        }
-    }
-}
-function createFactory(_a) {
-    var defaultType = _a.defaultType, allowedTypes = _a.allowedTypes, widgetName = _a.widgetName, widget = _a.widget;
-    var allowedSet = new Set();
-    for (var _i = 0, allowedTypes_1 = allowedTypes; _i < allowedTypes_1.length; _i++) {
-        var type = allowedTypes_1[_i];
-        allowedSet.add(type);
-    }
-    var config = widget.config, events = widget.events, data = widget.data;
-    return function (item, asMenuItem) {
-        if (item.hidden) {
-            return null;
-        }
-        if (!item.type || item.type === "button" || item.type === "navItem" || item.type === "menuItem") {
-            if (!item.value && !item.icon && !item.html) {
-                return null;
-            }
-        }
-        item.type = item.type || defaultType;
-        if (allowedSet && !allowedSet.has(item.type)) {
-            item.type = defaultType;
-        }
-        if (item.type === "imageButton" && widgetName !== "ribbon") {
-            item.active = false;
-        }
-        if (asMenuItem && item.type !== "spacer" && item.type !== "separator" && item.type !== "customHTML") {
-            item.type = "menuItem";
-        }
-        if (data.haveItems(item.id)) {
-            normalizeOpenIcon(widgetName, item, data);
-        }
-        if (widgetName === "toolbar" && item.items) {
-            item.items.forEach(function (element) {
-                if (!element.type) {
-                    element.type = "menuItem";
-                }
-            });
-        }
-        var itemVNode = item.type !== "customHTML" &&
-            itemfactory(item, events, widgetName, {
-                asMenuItem: asMenuItem,
-                collapsed: widgetName !== "sidebar" || config.collapsed,
-            });
-        return helpers_1.navbarComponentMixin(widgetName, item, asMenuItem, itemVNode);
-    };
-}
-exports.createFactory = createFactory;
-
-
-/***/ }),
-/* 125 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(25);
-function button(item, widgetName) {
-    var getAriaAttrs = function (item) {
-        var isItemActivated = item.active || item.$activeParent;
-        var attrs = {
-            "aria-disabled": item.disabled ? "true" : "false",
-            "aria-label": item.value || item.tooltip || item.id || "" + (" " + (item.count || "")),
-        };
-        if (item.items) {
-            // as menu
-            attrs["id"] = item.id;
-            attrs["aria-haspopup"] = "menu"; // menu has hot keys, listbox doesn't have
-            if (isItemActivated) {
-                attrs["aria-expanded"] = "true";
-            }
-        }
-        return attrs;
-    };
-    var isIconButton = item.icon && !item.value;
-    var counterClass = isIconButton ? " dhx_navbar-count--absolute" : " dhx_navbar-count--button-inline";
-    return dom_1.el("button.dhx_button", __assign({ class: helpers_1.getNavbarButtonCSS(item, widgetName), dhx_id: item.id, disabled: item.disabled, type: "button" }, getAriaAttrs(item)), [
-        item.icon ? helpers_1.getIcon(item.icon, "button") : null,
-        item.html
-            ? dom_1.el("div.dhx_button__text", { ".innerHTML": item.html })
-            : item.value && dom_1.el("span.dhx_button__text", item.value),
-        item.count > 0 && helpers_1.getCount(item, counterClass, isIconButton),
-        item.value && item.$openIcon
-            ? dom_1.el("span.dhx_button__icon.dhx_button__icon--menu.dxi.dxi-menu-right", {
-                "aria-hidden": "true",
-            })
-            : null,
-        item.loading &&
-            dom_1.el("span.dhx_button__loading", {
-                "aria-hidden": "true",
-            }, [dom_1.el("span.dhx_button__loading-icon.dxi.dxi-loading")]),
-    ]);
-}
-exports.button = button;
-
-
-/***/ }),
-/* 126 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(25);
-function navItem(item, widgetName, collapsed) {
-    var getAriaAttrs = function (item) {
-        var attrs = {
-            "aria-disabled": item.disabled ? "true" : "false",
-            "aria-label": item.value || " ",
-        };
-        var isItemActivated = item.active || item.$activeParent;
-        if (item.type === "selectButton" || item.items) {
-            attrs["id"] = item.id;
-            attrs["aria-haspopup"] = "menu"; // menu has hot keys, listbox doesn't have
-            if (isItemActivated) {
-                attrs["aria-expanded"] = "true";
-            }
-        }
-        else {
-            if (item.twoState || isItemActivated) {
-                attrs["aria-pressed"] = isItemActivated ? "true" : "false";
-            }
-            if (!item.value && item.icon && item.tooltip) {
-                attrs["aria-label"] = item.tooltip + " " + (item.count || "");
-            }
-        }
-        return attrs;
-    };
-    var baseClass = " dhx_" + widgetName + "-button";
-    return dom_1.el("button", __assign({ class: "dhx_button" +
-            baseClass +
-            (item.active || item.$activeParent ? baseClass + "--active" : "") +
-            (item.disabled ? baseClass + "--disabled" : "") +
-            (item.$openIcon ? baseClass + "--select" : "") +
-            (item.circle ? baseClass + "--circle" : "") +
-            (item.size ? " " + baseClass + "--" + item.size : "") +
-            (!item.value && item.icon ? baseClass + "--icon" : "") +
-            (item.css ? " " + item.css : ""), dhx_id: item.id, disabled: item.disabled, type: "button" }, getAriaAttrs(item)), [
-        item.icon &&
-            dom_1.el("span", {
-                class: item.icon + baseClass + "__icon",
-                "aria-hidden": "true",
-            }),
-        item.html &&
-            dom_1.el("div", {
-                class: baseClass.trim() + "__html",
-                ".innerHTML": item.html,
-            }),
-        !item.html &&
-            item.value &&
-            dom_1.el("span", {
-                class: baseClass.trim() + "__text",
-            }, item.value),
-        item.count > 0 && helpers_1.getCount(item, baseClass + "__count", collapsed),
-        item.$openIcon &&
-            dom_1.el("span.dxi.dxi-menu-right", {
-                class: baseClass + "__caret",
-                "aria-hidden": "true",
-            }),
-    ]);
-}
-exports.navItem = navItem;
-
-
-/***/ }),
-/* 127 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-function customHTMLButton(item, widgetName, asMenuItem) {
-    var getAriaAttrs = function (item) {
-        var attrs = {
-            "aria-disabled": item.disabled ? "true" : "false",
-        };
-        if (item.twoState || item.active || item.$activeParent) {
-            attrs["aria-pressed"] = item.active || item.$activeParent ? "true" : "false";
-        }
-        return attrs;
-    };
-    var baseClass = asMenuItem ? " dhx_button dhx_menu-button" : " dhx_button dhx_nav-menu-button";
-    return dom_1.el("button", __assign({ class: "dhx_custom-button" + baseClass + (item.$activeParent ? baseClass + "--active" : ""), dhx_id: item.id, type: "button", ".innerHTML": item.html }, getAriaAttrs(item)), item.html ? "" : item.value);
-}
-exports.customHTMLButton = customHTMLButton;
-
-
-/***/ }),
-/* 128 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(25);
-function imageButton(item, widgetName) {
-    var getAriaAttrs = function (item) {
-        var attrs = {
-            "aria-disabled": item.disabled ? "true" : "false",
-        };
-        if (item.twoState || item.active) {
-            attrs["aria-pressed"] = item.active ? "true" : "false";
-        }
-        if (!item.value && item.src && item.tooltip) {
-            attrs["aria-label"] = item.tooltip + " " + (item.count || "");
-        }
-        return attrs;
-    };
-    var baseClass = "dhx_" + widgetName + "-button-image";
-    var isRibbon = widgetName === "ribbon";
-    return dom_1.el("button.dhx_button", __assign({ class: baseClass +
-            (item.size ? " " + baseClass + "--" + item.size : "") +
-            (!item.value && item.src ? " " + baseClass + "--icon" : "") +
-            (isRibbon && item.$openIcon ? " " + baseClass + "--select" : "") +
-            (item.active ? " " + baseClass + "--active" : ""), dhx_id: item.id, type: "button" }, getAriaAttrs(item)), [
-        isRibbon &&
-            item.value &&
-            item.$openIcon &&
-            dom_1.el("span.dxi.dxi-menu-right", {
-                class: baseClass + "__caret",
-                "aria-hidden": "true",
-            }),
-        item.html
-            ? dom_1.el("div", {
-                class: baseClass + "__text",
-                ".innerHTML": item.html,
-            })
-            : item.value &&
-                dom_1.el("span", {
-                    class: baseClass + "__text",
-                }, item.value),
-        item.src &&
-            dom_1.el("span", {
-                class: baseClass + "__image",
-                style: { backgroundImage: "url(" + item.src + ")" },
-                role: "presentation",
-            }),
-        item.count > 0 && helpers_1.getCount(item, baseClass + "__count", true),
-    ]);
-}
-exports.imageButton = imageButton;
-
-
-/***/ }),
-/* 129 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(37);
-function onBlur(events, id) {
-    events.fire(types_1.NavigationBarEvents.inputBlur, [id]);
-}
-function onFocus(events, id) {
-    events.fire(types_1.NavigationBarEvents.inputFocus, [id]);
-}
-function input(item, events, widgetName) {
-    return dom_1.el(".dhx_form-group.dhx_form-group--no-message-holder.dhx_form-group--label_sr" +
-        (".dhx_" + widgetName + "__input"), {
-        style: {
-            width: item.width ? item.width : "200px",
-        },
-        role: "presentation",
-    }, [
-        item.label && dom_1.el("label.dhx_label", { for: item.id }, item.label),
-        dom_1.el(".dhx_input__wrapper", {
-            role: "presentation",
-        }, [
-            dom_1.el("input.dhx_input", {
-                placeholder: item.placeholder,
-                class: item.icon ? "dhx_input--icon-padding" : "",
-                value: item.value,
-                disabled: item.disabled,
-                onblur: [onBlur, events, item.id],
-                onfocus: [onFocus, events, item.id],
-                dhx_id: item.id,
-                _hooks: {
-                    didInsert: function (node) {
-                        if (events) {
-                            events.fire(types_1.NavigationBarEvents.inputCreated, [item.id, node.el]);
-                        }
-                    },
-                },
-                _key: item.id,
-                "aria-label": item.label ||
-                    item.helpMessage ||
-                    "type " + (item.placeholder ? "text like " + item.placeholder : "text"),
-            }),
-            item.icon
-                ? dom_1.el(".dhx_input__icon", {
-                    class: item.icon,
-                    "aria-hidden": "true",
-                })
-                : null,
-        ]),
-    ]);
-}
-exports.input = input;
-
-
-/***/ }),
-/* 130 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var helpers_1 = __webpack_require__(25);
-function menuItem(item, widgetName, asMenuItem) {
-    var getAriaAttrs = function (item) {
-        var attrs = {
-            role: "menuitem",
-            "aria-disabled": item.disabled ? "true" : "false",
-        };
-        if (item.items) {
-            attrs["aria-haspopup"] = "true";
-        }
-        return attrs;
-    };
-    var baseClass = asMenuItem ? " dhx_menu-button" : " dhx_nav-menu-button";
-    return dom_1.el("button", __assign({ class: "dhx_button" +
-            baseClass +
-            (item.disabled ? baseClass + "--disabled" : "") +
-            (item.active || item.$activeParent ? baseClass + "--active" : ""), disabled: item.disabled, dhx_id: item.id, type: "button" }, getAriaAttrs(item)), asMenuItem
-        ? [
-            item.icon || item.value || item.html
-                ? dom_1.el("span.dhx_menu-button__block.dhx_menu-button__block--left", [
-                    item.icon &&
-                        dom_1.el("span.dhx_menu-button__icon", {
-                            class: item.icon,
-                        }),
-                    item.html
-                        ? dom_1.el("div.dhx_menu-button__text", { ".innerHTML": item.html })
-                        : item.value && dom_1.el("span.dhx_menu-button__text", item.value),
-                ])
-                : null,
-            item.count > 0 || item.hotkey || item.items
-                ? dom_1.el("span.dhx_menu-button__block.dhx_menu-button__block--right", [
-                    item.count > 0 && helpers_1.getCount(item, " dhx_menu-button__count", false),
-                    item.hotkey && dom_1.el("span.dhx_menu-button__hotkey", item.hotkey),
-                    item.items && dom_1.el("span.dhx_menu-button__caret.dxi.dxi-menu-right"),
-                ])
-                : null,
-        ]
-        : [
-            item.icon &&
-                dom_1.el("span.dhx_menu-button__icon", {
-                    class: item.icon,
-                }),
-            item.html
-                ? dom_1.el("div.dhx_menu-button__text", { ".innerHTML": item.html })
-                : item.value && dom_1.el("span.dhx_nav-menu-button__text", item.value),
-        ]);
-}
-exports.menuItem = menuItem;
-
-
-/***/ }),
-/* 131 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function separator(item, widgetName) {
-    return null;
-}
-exports.separator = separator;
-
-
-/***/ }),
-/* 132 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function spacer(item, widgetName) {
-    return null;
-}
-exports.spacer = spacer;
-
-
-/***/ }),
-/* 133 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-function title(item, widgetName) {
-    return dom_1.el("span", {
-        class: "dhx_navbar-title" + " dhx_navbar-title--" + widgetName,
-        dhx_id: item.id,
-        ".innerHTML": item.html,
-        "aria-label": item.value || "",
-    }, !item.html ? item.value : null);
-}
-exports.title = title;
-
-
-/***/ }),
-/* 134 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.layoutConfig = {
-    css: "vault-layout",
-    rows: [
-        {
-            id: "topbar",
-            css: "vault-topbar",
-        },
-        {
-            id: "vault",
-            css: "vault-file-grid",
-        },
-    ],
-};
-exports.layoutConfigWithoutTopbar = {
-    css: "vault-layout",
-    rows: [
-        {
-            id: "vault",
-            css: "vault-file-grid",
-        },
-    ],
-};
-
-
-/***/ }),
-/* 135 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var en_1 = __webpack_require__(38);
-var basis = ["byte", "kilobyte", "megabyte", "gigabyte"];
-function getBasis(size, current) {
-    if (size === void 0) { size = 0; }
-    if (current === void 0) { current = 0; }
-    return size < 1024
-        ? size + " " + en_1.default[basis[current]]
-        : this.getBasis(Math.round(size / 1024), current + 1);
-}
-exports.getBasis = getBasis;
-var MAX_WORD_LENGTH = 13;
-function truncateWord(word, len) {
-    if (len === void 0) { len = MAX_WORD_LENGTH; }
-    var start;
-    var end;
-    if (word.length <= len) {
-        return word;
-    }
-    var dotIndex = word.lastIndexOf(".");
-    if (dotIndex === -1) {
-        end = word.substr(word.length - 4);
-        start = word.substr(0, len - 7);
-    }
-    else {
-        var endStartFrom = dotIndex - 3;
-        end = word.substr(endStartFrom);
-        start = word.substr(0, len - (word.length - endStartFrom));
-    }
-    return start + "..." + end;
-}
-exports.truncateWord = truncateWord;
-function calculateCover(image) {
-    var width = image.width, height = image.height;
-    var imageAspectRatio = width / height;
-    var sHeight;
-    var sWidth;
-    var sx;
-    var sy;
-    if (imageAspectRatio > 1) {
-        // width > height
-        sWidth = height;
-        sHeight = height;
-        sx = (width - sWidth) / 2;
-        sy = 0;
-    }
-    else if (imageAspectRatio < 1) {
-        // width < height
-        sWidth = width;
-        sHeight = width;
-        sx = 0;
-        sy = (height - sHeight) / 2;
-    }
-    else {
-        // width == height
-        sHeight = width;
-        sWidth = width;
-        sx = 0;
-        sy = 0;
-    }
-    return {
-        sx: sx,
-        sy: sy,
-        sWidth: sWidth,
-        sHeight: sHeight,
-        dx: 0,
-        dy: 0,
-    };
-}
-exports.calculateCover = calculateCover;
-var FileType;
-(function (FileType) {
-    FileType["image"] = "image";
-    FileType["video"] = "video";
-    FileType["archive"] = "archive";
-    FileType["table"] = "table";
-    FileType["document"] = "document";
-    FileType["presentation"] = "presentation";
-    FileType["application"] = "application";
-    FileType["web"] = "web";
-    FileType["apple"] = "apple";
-    FileType["pdf"] = "pdf";
-    FileType["psd"] = "psd";
-    FileType["audio"] = "audio";
-    FileType["other"] = "other";
-    FileType["text"] = "text";
-})(FileType = exports.FileType || (exports.FileType = {}));
-function getMimeAndExtension(fileWrapper) {
-    var extension = fileWrapper.name.split(".").pop() || "none";
-    var mime = fileWrapper.file ? fileWrapper.file.type : "";
-    return {
-        extension: extension,
-        mime: mime,
-    };
-}
-function getFileType(extension, mime) {
-    switch (extension) {
-        case "jpg":
-        case "jpeg":
-        case "gif":
-        case "png":
-        case "bmp":
-        case "tiff":
-        case "pcx":
-        case "svg":
-        case "ico":
-            return FileType.image;
-        case "avi":
-        case "mpg":
-        case "mpeg":
-        case "rm":
-        case "move":
-        case "mov":
-        case "mkv":
-        case "flv":
-        case "f4v":
-        case "mp4":
-        case "3gp":
-        case "wmv":
-        case "webm":
-        case "vob":
-            return FileType.video;
-        case "rar":
-        case "zip":
-        case "tar":
-        case "tgz":
-        case "arj":
-        case "gzip":
-        case "bzip2":
-        case "7z":
-        case "ace":
-        case "apk":
-        case "deb":
-        case "zipx":
-        case "cab":
-        case "tar-gz":
-        case "rpm":
-        case "xar":
-            return FileType.archive;
-        case "xlr":
-        case "xls":
-        case "xlsm":
-        case "xlsx":
-        case "ods":
-        case "csv":
-        case "tsv":
-            return FileType.table;
-        case "doc":
-        case "docx":
-        case "docm":
-        case "dot":
-        case "dotx":
-        case "odt":
-        case "wpd":
-        case "wps":
-        case "pages":
-            return FileType.document;
-        case "wav":
-        case "aiff":
-        case "au":
-        case "mp3":
-        case "aac":
-        case "wma":
-        case "ogg":
-        case "flac":
-        case "ape":
-        case "wv":
-        case "m4a":
-        case "mid":
-        case "midi":
-            return FileType.audio;
-        case "pot":
-        case "potm":
-        case "potx":
-        case "pps":
-        case "ppsm":
-        case "ppsx":
-        case "ppt":
-        case "pptx":
-        case "pptm":
-        case "odp":
-            return FileType.presentation;
-        case "html":
-        case "htm":
-        case "eml":
-            return FileType.web;
-        case "exe":
-            return FileType.application;
-        case "dmg":
-            return FileType.apple;
-        case "pdf":
-        case "ps":
-        case "eps":
-            return FileType.pdf;
-        case "psd":
-            return FileType.psd;
-        case "txt":
-        case "djvu":
-        case "nfo":
-        case "xml":
-            return FileType.text;
-        default: {
-            var type = mime.split("/")[0];
-            switch (type) {
-                case "image":
-                    return FileType.image;
-                case "audio":
-                    return FileType.audio;
-                case "video":
-                    return FileType.video;
-                default:
-                    return FileType.other;
-            }
-        }
-    }
-}
-exports.getFileType = getFileType;
-function getFileClassName(fileWrapper) {
-    var _a = getMimeAndExtension(fileWrapper), mime = _a.mime, extension = _a.extension;
-    return getFileType(extension, mime) + " extension-" + extension;
-}
-exports.getFileClassName = getFileClassName;
-function isImage(fileWrapper) {
-    var _a = getMimeAndExtension(fileWrapper), mime = _a.mime, extension = _a.extension;
-    var fileType = getFileType(extension, mime);
-    return fileType === FileType.image;
-}
-exports.isImage = isImage;
-
-
-/***/ }),
-/* 136 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var view_1 = __webpack_require__(5);
-var en_1 = __webpack_require__(38);
-var types_1 = __webpack_require__(28);
-var ProgressBar = /** @class */ (function (_super) {
-    __extends(ProgressBar, _super);
-    function ProgressBar(events, config) {
-        var _this = _super.call(this, null, config) || this;
-        _this.events = events;
-        _this._progress = 0;
-        var render = function () { return _this._draw(); };
-        _this.mount(null, dom_1.create({
-            render: render,
-        }));
-        _this._abortUpload = function () {
-            _this.events.fire(types_1.ProgressBarEvents.cancel);
-        };
-        return _this;
-    }
-    ProgressBar.prototype.setState = function (progress, extra) {
-        this._progress = progress;
-        if (this.config.template) {
-            this._progressText = this.config.template(progress, extra);
-        }
-        else {
-            this._progressText = this._progress.toFixed(1) + "%";
-        }
-        this.paint();
-    };
-    ProgressBar.prototype._draw = function () {
-        return dom_1.el(".progress-bar", {
-            _key: this._uid,
-        }, [
-            dom_1.el(".progress-indicator", {
-                style: {
-                    width: this._progress + "%",
-                },
-            }),
-            dom_1.el(".progress-text", {
-                ".innerHTML": this._progressText,
-            }),
-            dom_1.el("button", {
-                class: "dhx_btn dhx_btn--flat dhx_btn_small action-abort-all",
-                onclick: this._abortUpload,
-            }, en_1.default.cancel),
-        ]);
-    };
-    return ProgressBar;
-}(view_1.View));
-exports.ProgressBar = ProgressBar;
-
-
-/***/ }),
-/* 137 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var ReadStackPreview = /** @class */ (function () {
-    function ReadStackPreview(data) {
-        this._readerStack = [];
-        this._isActive = false;
-        this._data = data;
-    }
-    ReadStackPreview.prototype.add = function (fileWrapper, wait) {
-        if (wait === void 0) { wait = false; }
-        this._readerStack.push(fileWrapper);
-        if (!wait) {
-            this.read();
-        }
-    };
-    ReadStackPreview.prototype.read = function () {
-        var _this = this;
-        if (!this._readerStack.length || this._isActive) {
-            return;
-        }
-        var fileWrapper = this._readerStack.shift();
-        this._isActive = true;
-        var reader = new FileReader();
-        reader.readAsDataURL(fileWrapper.file);
-        reader.onload = function (e) {
-            var image = new Image();
-            image.src = e.target.result;
-            image.onload = function () {
-                if (_this._data.exists(fileWrapper.id)) {
-                    _this._data.update(fileWrapper.id, { image: image });
-                }
-                _this._isActive = false;
-                _this.read();
-            };
-        };
-        reader.onerror = function () {
-            _this._isActive = false;
-            _this.read();
-        };
-    };
-    ReadStackPreview.prototype.stop = function () {
-        this._readerStack = [];
-    };
-    return ReadStackPreview;
-}());
-exports.ReadStackPreview = ReadStackPreview;
-
-
-/***/ }),
-/* 138 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var ts_data_1 = __webpack_require__(4);
-var dom_1 = __webpack_require__(0);
-var KeyManager_1 = __webpack_require__(14);
-var FocusManager_1 = __webpack_require__(20);
-var types_1 = __webpack_require__(24);
-var view_1 = __webpack_require__(5);
-var Selection_1 = __webpack_require__(65);
-var html_1 = __webpack_require__(3);
-var types_2 = __webpack_require__(40);
-var editors_1 = __webpack_require__(139);
-exports.MOVE_UP = 1;
-exports.MOVE_DOWN = 2;
-var List = /** @class */ (function (_super) {
-    __extends(List, _super);
-    function List(node, config) {
-        if (config === void 0) { config = {}; }
-        var _this = this;
-        var itemHeight = config.itemHeight || (config.virtual ? 37 : null);
-        if (itemHeight && typeof itemHeight === "number") {
-            itemHeight = itemHeight.toString() + "px";
-        }
-        _this = _super.call(this, node, core_1.extend({
-            itemHeight: itemHeight,
-            keyNavigation: true,
-            editable: false,
-            selection: true,
-        }, config)) || this;
-        _this._touch = {
-            duration: 350,
-            dblDuration: 300,
-            timer: null,
-            start: false,
-            timeStamp: null,
-        };
-        // init data colleciton and link events between widget and data
-        var data = _this.config.data;
-        if (!(data instanceof ts_data_1.DataCollection)) {
-            _this.data = new ts_data_1.DataCollection({});
-            _this.events = _this.data.events;
-            if (data)
-                _this.data.parse(data);
-        }
-        else {
-            // [TODO] deprecate in favor of raw data input
-            _this.data = data;
-            _this.events = data.events;
-        }
-        _this.selection = new Selection_1.Selection({
-            disabled: !_this.config.selection,
-            multiselection: _this.config.multiselection,
-        }, _this.data, _this.events);
-        if (_this.config.keyNavigation) {
-            _this.keyManager = new KeyManager_1.KeyManager(function (e, focusId) {
-                return focusId === _this._uid && (!_this._edited || (_this._edited && e.key !== "escape"));
-            });
-            _this._initHotKey();
-            FocusManager_1.focusManager.setFocusId(_this._uid);
-        }
-        _this.events.on(ts_data_1.DataEvents.change, function (_, status, item) {
-            if (status === "setPage") {
-                _this.showItem(_this.data.getId(item[0]));
-            }
-            _this.paint();
-        });
-        _this.events.on(types_1.SelectionEvents.afterUnSelect, function () { return _this.paint(); });
-        _this.events.on(types_1.SelectionEvents.afterSelect, function () { return _this.paint(); });
-        _this.events.on(types_2.ListEvents.afterEditEnd, _this.editEnd.bind(_this));
-        var drop = function (value) { return function (info) {
-            _this.data.setMeta(_this.data.getItem(info.target), "drop", value);
-            _this.paint();
-        }; };
-        _this.events.on(ts_data_1.DragEvents.canDrop, drop(true));
-        _this.events.on(ts_data_1.DragEvents.cancelDrop, drop(false));
-        var drag = function (value) { return function (info) {
-            info.source.map(function (id) { return _this.data.setMeta(_this.data.getItem(id), "drag", value); });
-            _this.paint();
-        }; };
-        _this.events.on(ts_data_1.DragEvents.dragStart, drag(true));
-        _this.events.on(ts_data_1.DragEvents.afterDrag, drag(false));
-        _this._handlers = {
-            onmousedown: function (e) {
-                _this._dragStart(e);
-            },
-            ontouchstart: function (e) {
-                _this._touch.timer = setTimeout(function () {
-                    _this._dragStart(e);
-                }, _this._touch.duration);
-                if (!_this._touch.timeStamp) {
-                    _this._touch.timeStamp = +e.timeStamp.toFixed();
-                }
-                else {
-                    var dblTap = _this._touch.dblDuration >= _this._touch.timeStamp - +e.timeStamp.toFixed();
-                    if (dblTap) {
-                        e.preventDefault();
-                        _this._dblClick(e);
-                    }
-                    _this._touch.timeStamp = null;
-                }
-                setTimeout(function () {
-                    _this._touch.timeStamp = null;
-                }, _this._touch.dblDuration);
-            },
-            ontouchmove: function (e) {
-                _this._touch.start && e.preventDefault();
-                _this._clearTouchTimer();
-            },
-            ontouchend: function () {
-                _this._touch.start = false;
-                _this._clearTouchTimer();
-            },
-            ondragstart: function () { return (_this.config.dragMode && !_this._edited ? false : null); },
-            oncontextmenu: function (e) {
-                var id = html_1.locate(e);
-                if (!id) {
-                    return;
-                }
-                _this.events.fire(types_2.ListEvents.itemRightClick, [id, e]);
-            },
-            onclick: function (e) {
-                var id = html_1.locate(e);
-                if (!id) {
-                    return;
-                }
-                _this.selection.add(id, e.ctrlKey || e.metaKey, e.shiftKey);
-                _this.events.fire(types_2.ListEvents.click, [id, e]);
-                _this._focus = id;
-                _this.paint();
-            },
-            ondblclick: function (e) {
-                _this._dblClick(e);
-            },
-            onscroll: function (e) {
-                if (_this.config.virtual) {
-                    _this._topOffset = e.target.scrollTop;
-                    _this._visibleHeight = e.target.offsetHeight;
-                    _this.paint();
-                }
-            },
-            onmouseover: function (e) {
-                var id = html_1.locate(e);
-                if (!id) {
-                    return;
-                }
-                var prevId = html_1.locate(e.relatedTarget);
-                if (id !== prevId)
-                    _this.events.fire(types_2.ListEvents.itemMouseOver, [id, e]);
-            },
-        };
-        var evs = _this.config.eventHandlers;
-        if (evs) {
-            for (var _i = 0, _a = Object.entries(evs); _i < _a.length; _i++) {
-                var _b = _a[_i], event_name = _b[0], events = _b[1];
-                _this._handlers[event_name] = html_1.eventHandler(function (e) { return html_1.locate(e); }, events, _this._handlers[event_name]);
-            }
-        }
-        if (_this.config.dragMode) {
-            ts_data_1.dragManager.setItem(_this._uid, _this);
-        }
-        // defaults for virtual rendering
-        _this._topOffset = _this._visibleHeight = 0;
-        var view = dom_1.create({
-            render: function () { return _this._renderList(); },
-            hooks: {
-                didMount: function (vm) {
-                    if (_this.config.virtual)
-                        _this._visibleHeight = vm.node.el.offsetHeight;
-                },
-                didRedraw: function (vm) { return _this._didRedraw(vm); },
-            },
-        });
-        _this.mount(node, view);
-        return _this;
-    }
-    List.prototype._didRedraw = function (vm) {
-        // do nothing
-    };
-    List.prototype._dblClick = function (e) {
-        var id = html_1.locate(e);
-        if (!id) {
-            return;
-        }
-        if (this.config.editable) {
-            this.editItem(id);
-        }
-        this.events.fire(types_2.ListEvents.doubleClick, [id, e]);
-    };
-    List.prototype._clearTouchTimer = function () {
-        if (this._touch.timer) {
-            clearTimeout(this._touch.timer);
-            this._touch.timer = null;
-        }
-    };
-    List.prototype._dragStart = function (e) {
-        var _this = this;
-        this._touch.start = true;
-        var itemsForGhost = [];
-        var item = html_1.locateNode(e, "dhx_id");
-        var itemId = item && item.getAttribute("dhx_id");
-        var selectionIds = this.selection.getId();
-        if (this.config.multiselection && selectionIds instanceof Array) {
-            selectionIds.map(function (id) {
-                if (id !== itemId && _this.getRootView().refs[id]) {
-                    itemsForGhost.push(_this.getRootView().refs[id].el);
-                }
-            });
-            selectionIds = __spreadArrays(selectionIds);
-        }
-        return this.config.dragMode && !this._edited
-            ? ts_data_1.dragManager.onMouseDown(e, selectionIds || [itemId], itemsForGhost)
-            : null;
-    };
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    List.prototype.disableSelection = function () {
-        this.selection.disable();
-    };
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    List.prototype.enableSelection = function () {
-        this.selection.enable();
-    };
-    List.prototype.editItem = function (id) {
-        this._edited = id;
-        if (!this.data.getItem(this._edited) || !this.events.fire(types_2.ListEvents.beforeEditStart, [id])) {
-            this._edited = null;
-            return;
-        }
-        this._getHotkeys();
-        this.paint();
-        this.events.fire(types_2.ListEvents.afterEditStart, [id]);
-    };
-    // [TODO] maybe better name
-    List.prototype.editEnd = function (value, id) {
-        if (this._edited) {
-            if (value !== null) {
-                var item = this.data.getItem(id);
-                this.data.update(id, __assign(__assign({}, item), { value: value }));
-            }
-            this._edited = null;
-            this.paint();
-        }
-    };
-    /*
-        Focus API allows to mark item as active one, but not selected yet
-        Used by keyboard navigation
-    */
-    List.prototype.getFocusItem = function () {
-        return this.data.getItem(this._focus);
-    };
-    List.prototype.setFocus = function (id) {
-        if (this._focus != id && this.data.exists(id)) {
-            this._focus = id;
-            this.showItem(id);
-            this.events.fire(types_2.ListEvents.focusChange, [this.data.getIndex(this._focus), this._focus]);
-            this.paint();
-        }
-    };
-    List.prototype.getFocus = function () {
-        return this._focus;
-    };
-    List.prototype.destructor = function () {
-        this.keyManager.destructor();
-        this.selection.destructor();
-        this.unmount();
-    };
-    List.prototype.showItem = function (id) {
-        var rootView = this.getRootView();
-        if (!rootView || !rootView.node || !rootView.node.el || typeof id === "undefined") {
-            return;
-        }
-        var listEl = this.getRootNode();
-        if (!listEl) {
-            return;
-        }
-        var virtual = this.config.virtual;
-        var index = this.data.getIndex(id);
-        var currentPage = Math.floor(index / listEl.children.length) || 0;
-        var el = listEl.children[index - listEl.children.length * currentPage];
-        if (!virtual && !el)
-            return;
-        var height = virtual ? parseInt(this.config.itemHeight) : el.clientHeight;
-        var top = virtual ? index * height : el.offsetTop;
-        if (top >= listEl.scrollTop + listEl.clientHeight - height) {
-            listEl.scrollTo(0, top - listEl.clientHeight + height);
-        }
-        else if (top < listEl.scrollTop) {
-            listEl.scrollTo(0, top);
-        }
-    };
-    List.prototype._renderItem = function (item, index) {
-        var itemHeight = this.config.itemHeight;
-        if (item.$empty) {
-            return dom_1.el("li", {
-                class: "dhx_list-item",
-                style: {
-                    height: itemHeight,
-                },
-            });
-        }
-        var html = (this.config.template && this.config.template(item)) || item.html;
-        var focus = item.id === this._focus;
-        if (item.id === this._edited) {
-            var editor = editors_1.getEditor(item, this);
-            return editor.toHTML();
-        }
-        var mx = this.data.getMetaMap(item);
-        var node = __assign(__assign(__assign(__assign({}, this._events), { class: "dhx_list-item" +
-                (mx && mx.selected ? " dhx_list-item--selected" : "") +
-                (focus ? " dhx_list-item--focus" : "") +
-                (mx && mx.drop && !this._edited ? " dhx_list-item--drophere" : "") +
-                (mx && mx.drag && !this._edited ? " dhx_list-item--dragtarget" : "") +
-                (this.config.dragMode && !this._edited ? " dhx_list-item--drag" : "") +
-                (item.css ? " " + item.css : ""), dhx_id: item.id, _ref: item.id.toString(), style: {
-                height: itemHeight,
-            }, _key: item.id, ".innerHTML": html }), this.getItemAriaAttrs(this, item)), { tabindex: focus ? 0 : -1 });
-        if (html) {
-            node[".innerHTML"] = html;
-            return dom_1.el("li", node);
-        }
-        else {
-            node.class += " dhx_list-item--text";
-            return dom_1.el("li", node, item.text || item.value);
-        }
-    };
-    List.prototype._renderList = function () {
-        var _this = this;
-        var range = this._getRange();
-        // mapRange
-        var data = this.data.getRawData(range[0], range[1]);
-        var kids = data.map(function (obj, index) { return _this._renderItem(obj, index); });
-        if (this.config.virtual) {
-            kids = __spreadArrays([
-                dom_1.el(".div", { style: { height: range[2] + "px" } })
-            ], kids, [
-                dom_1.el(".div", { style: { height: range[3] + "px" } }),
-            ]);
-        }
-        return dom_1.el("ul.dhx_widget.dhx_list", __assign(__assign({ style: {
-                "min-height": this.config.itemHeight,
-                "max-height": this.config.height,
-                position: "relative",
-            }, class: (this.config.css ? this.config.css : "") +
-                (this.config.multiselection && this.selection.getItem() ? " dhx_no-select--pointer" : ""), dhx_widget_id: this._uid }, this._handlers), this.getListAriaAttrs(this.config, this.data.getLength())), kids);
-    };
-    List.prototype.moveFocus = function (mode, step) {
-        var length = this.data.getLength();
-        if (!length) {
-            return;
-        }
-        var id = this._focus;
-        var index = id ? this.data.getIndex(id) : -1;
-        step = step || 1;
-        if (mode === exports.MOVE_DOWN) {
-            id = this.data.getId(Math.min(index + step, length - 1));
-        }
-        else if (mode === exports.MOVE_UP) {
-            id = this.data.getId(Math.max(index - step, 0));
-        }
-        this.setFocus(id);
-    };
-    List.prototype._getRange = function () {
-        if (this.config.virtual) {
-            var overscanCount = 5;
-            var visibleHeight = this._visibleHeight || parseInt(this.config.height);
-            var itemHeight = parseInt(this.config.itemHeight);
-            var total = this.data.getLength();
-            var totalHeight = this.data.getLength() * itemHeight;
-            var position = this._topOffset;
-            // correct value to be in [0, total-visible] range
-            position = Math.max(0, Math.min(position, totalHeight - visibleHeight));
-            var index = Math.floor(position / itemHeight);
-            var count = Math.min(total - index, Math.floor(visibleHeight / itemHeight) + overscanCount);
-            this._topOffset = position;
-            return [index, count + index, index * itemHeight, totalHeight - itemHeight * (count + index)];
-        }
-        else {
-            return [0, -1, 0, 0];
-        }
-    };
-    List.prototype._getHotkeys = function () {
-        var _this = this;
-        return {
-            arrowDown: function (e) {
-                _this.moveFocus(exports.MOVE_DOWN);
-                e.preventDefault();
-            },
-            arrowUp: function (e) {
-                _this.moveFocus(exports.MOVE_UP);
-                e.preventDefault();
-            },
-            escape: function () {
-                _this.editEnd(null);
-            },
-            enter: function (e) {
-                _this.selection.add(_this._focus);
-                _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
-            },
-            "shift+enter": function (e) {
-                _this.selection.add(_this._focus, false, true);
-                _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
-            },
-            "ctrl+enter": function (e) {
-                _this.selection.add(_this._focus, true, false);
-                _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
-            },
-            "ctrl+a": function (e) {
-                if (_this.config.multiselection) {
-                    e.preventDefault();
-                    _this.selection.remove();
-                    var ids = _this.data.map(function (i) { return i.id; });
-                    ids.forEach(function (id) {
-                        if (_this.config.multiselection === "ctrlClick") {
-                            _this.selection.add(id, true);
-                        }
-                        else {
-                            _this.selection.add(id);
-                        }
-                    });
-                }
-            },
-        };
-    };
-    List.prototype._initHotKey = function () {
-        var handlers = this._getHotkeys();
-        for (var key in handlers) {
-            this.keyManager.addHotKey(key, handlers[key]);
-        }
-        for (var key in this.config.hotkeys) {
-            this.keyManager.addHotKey(key, this.config.hotkeys[key]);
-        }
-    };
-    List.prototype.getItemAriaAttrs = function (context, item) {
-        var getAriaGrabbed = function (context, item) {
-            return context.config.dragMode && !context._edited
-                ? { "aria-grabbed": Boolean(item.$dragtarget && !context._edited).toString() }
-                : {};
-        };
-        var getAriaRoleDescription = function (context) {
-            return context.config.editable
-                ? {
-                    "aria-roledescription": "" + (context._edited ? "Press Enter to stop editing" : "Double click to edit content"),
-                }
-                : {};
-        };
-        return __assign(__assign({ role: "option", "aria-selected": item.$selected ? "true" : "false" }, getAriaGrabbed(context, item)), getAriaRoleDescription(context));
-    };
-    List.prototype.getListAriaAttrs = function (config, dataLength) {
-        return {
-            role: "listbox",
-            "aria-label": "Listbox " + (config.title || "") + ", count of options = " + dataLength + "." + (config.editable ? " Content is editable." : ""),
-            "aria-multiselectable": config.selection && config.multiselection ? "true" : "false",
-            "aria-readonly": config.editable ? "false" : "true",
-        };
-    };
-    return List;
-}(view_1.View));
-exports.List = List;
-
-
-/***/ }),
-/* 139 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var InputEditor_1 = __webpack_require__(140);
-function getEditor(item, list) {
-    return new InputEditor_1.InputEditor(item, list);
-}
-exports.getEditor = getEditor;
-
-
-/***/ }),
-/* 140 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(40);
 var InputEditor = /** @class */ (function () {
-    function InputEditor(item, list) {
-        var _this = this;
-        this._list = list;
-        this._config = list.config;
-        this._item = item;
-        this._list.events.on(types_1.ListEvents.focusChange, function (index, id) {
-            if (_this._mode && id !== _this._item.id) {
-                _this.endEdit();
-            }
-        });
+    function InputEditor(row, col, config) {
+        this._config = config;
+        this._cell = { row: row, col: col };
         this._initHandlers();
     }
-    InputEditor.prototype.endEdit = function () {
-        if (this._input) {
-            var value = this._input.value;
-            if (this._list.events.fire(types_1.ListEvents.beforeEditEnd, [value, this._item.id])) {
-                this._input.removeEventListener("blur", this._handlers.onBlur);
-                this._input.removeEventListener("change", this._handlers.onChange);
-                this._handlers = {};
-                this._mode = false;
-                this._list.events.fire(types_1.ListEvents.afterEditEnd, [value, this._item.id]);
+    InputEditor.prototype.endEdit = function (withoutSave) {
+        var value;
+        if (!withoutSave) {
+            value = this._input.value;
+        }
+        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
+            this._input.removeEventListener("blur", this._handlers.onBlur);
+            this._input.removeEventListener("change", this._handlers.onChange);
+            if (this._cell.col.type !== "string" && core_1.isNumeric(value)) {
+                value = parseFloat(value);
             }
-            else {
-                this._input.focus();
-            }
+            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
+        }
+        else {
+            this._input.focus();
         }
     };
     InputEditor.prototype.toHTML = function () {
-        this._mode = true;
-        var itemHeight = this._config.itemHeight;
-        return dom_1.el(".dhx_input__wrapper", { role: "presentation" }, [
-            dom_1.el("div.dhx_input__container", { role: "presentation" }, [
-                dom_1.el("input.dhx_input", {
-                    class: this._item.css ? " " + this._item.css : "",
-                    style: {
-                        height: itemHeight,
-                        width: "100%",
-                        padding: "8px, 12px",
-                    },
-                    _hooks: {
-                        didInsert: this._handlers.didInsert,
-                    },
-                    _key: this._item.id,
-                    dhx_id: this._item.id,
-                }),
-            ]),
-        ]);
+        var content = this._cell.row[this._cell.col.id];
+        if (this._input) {
+            content = this._input.value;
+        }
+        this._config.$editable.editor = this;
+        return dom_1.el("input.dhx_cell-editor.dhx_cell-editor__input", {
+            _hooks: {
+                didInsert: this._handlers.didInsert,
+            },
+            _key: "cell_editor",
+            dhx_id: "cell_editor",
+            value: content,
+        });
     };
     InputEditor.prototype._initHandlers = function () {
         var _this = this;
@@ -18990,7 +15768,6 @@ var InputEditor = /** @class */ (function () {
                 var input = node.el;
                 _this._input = input;
                 input.focus();
-                input.value = _this._item.value;
                 input.setSelectionRange(0, input.value.length);
                 input.addEventListener("change", _this._handlers.onChange);
                 input.addEventListener("blur", _this._handlers.onBlur);
@@ -19003,7 +15780,194 @@ exports.InputEditor = InputEditor;
 
 
 /***/ }),
-/* 141 */
+/* 117 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var types_1 = __webpack_require__(9);
+var SelectEditor = /** @class */ (function () {
+    function SelectEditor(row, col, config) {
+        this._config = config;
+        this._cell = { row: row, col: col };
+        this._initHandlers();
+    }
+    SelectEditor.prototype.endEdit = function (withoutSave) {
+        var value;
+        if (!withoutSave) {
+            value = this._input.value;
+        }
+        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
+            this._input.removeEventListener("blur", this._handlers.onBlur);
+            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
+        }
+        else {
+            this._input.focus();
+        }
+    };
+    SelectEditor.prototype.toHTML = function () {
+        var content = this._cell.col.options || [];
+        var selected = this._cell.row[this._cell.col.id];
+        if (this._input) {
+            selected = this._input.options[this._input.selectedIndex].value;
+        }
+        var options = content.map(function (item) {
+            return dom_1.el("option", {
+                selected: item === selected,
+            }, item);
+        });
+        this._config.$editable.editor = this;
+        return dom_1.el("select.dhx_cell-editor.dhx_cell-editor__select", {
+            _hooks: {
+                didInsert: this._handlers.didInsert,
+            },
+            _key: "cell_editor",
+            dhx_id: "cell_editor",
+        }, options);
+    };
+    SelectEditor.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            onBlur: function () {
+                _this.endEdit();
+            },
+            didInsert: function (node) {
+                var input = node.el;
+                _this._input = input;
+                input.focus();
+                input.addEventListener("blur", _this._handlers.onBlur);
+            },
+        };
+    };
+    return SelectEditor;
+}());
+exports.SelectEditor = SelectEditor;
+
+
+/***/ }),
+/* 118 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var types_1 = __webpack_require__(9);
+var ts_calendar_1 = __webpack_require__(37);
+var date_1 = __webpack_require__(22);
+var ts_popup_1 = __webpack_require__(10);
+var DateEditor = /** @class */ (function () {
+    function DateEditor(row, col, config) {
+        var _this = this;
+        this._config = config;
+        this._cell = { row: row, col: col };
+        this._calendar = new ts_calendar_1.Calendar(null, { dateFormat: col.format });
+        var value = this._cell.row[this._cell.col.id];
+        var format = this._calendar.config.dateFormat;
+        if (date_1.stringToDate(value, format, true) || value instanceof Date) {
+            this._calendar.setValue(value);
+            this._value = this._calendar.getValue();
+            this._cell.row[this._cell.col.id] = this._value;
+        }
+        this._popup = new ts_popup_1.Popup({ css: "dhx_widget--bordered" });
+        this._popup.attach(this._calendar);
+        this._calendar.events.on(ts_calendar_1.CalendarEvents.change, function () {
+            _this.endEdit(false, true);
+        });
+        this._popup.events.on(ts_popup_1.PopupEvents.afterHide, function () {
+            _this.endEdit();
+        });
+        this._initHandlers();
+    }
+    DateEditor.prototype.endEdit = function (withoutSave, calendarChange) {
+        if (!this._handlers) {
+            return;
+        }
+        var format = this._calendar.config.dateFormat;
+        var value = this._cell.row[this._cell.col.id];
+        if (!withoutSave) {
+            if (value instanceof Date || calendarChange) {
+                this._value = this._calendar.getValue();
+                this._input.value = this._value;
+                this._popup.hide();
+                return;
+            }
+            else if (date_1.stringToDate(this._input.value, format, true) &&
+                this._input.value.length === value.length) {
+                this._value = this._input.value;
+            }
+        }
+        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [this._value, this._cell.row, this._cell.col])) {
+            this._input.removeEventListener("focus", this._handlers.onFocus);
+            this._input.removeEventListener("change", this._handlers.onChange);
+            document.removeEventListener("mousedown", this._handlers.onOuterClick);
+            this._popup.destructor();
+            this._calendar.destructor();
+            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            this._config.events.fire(types_1.GridEvents.afterEditEnd, [this._value, this._cell.row, this._cell.col]);
+        }
+        else {
+            this._input.focus();
+        }
+    };
+    DateEditor.prototype.toHTML = function () {
+        var value = this._cell.row[this._cell.col.id];
+        this._config.$editable.editor = this;
+        document.addEventListener("mousedown", this._handlers.onOuterClick);
+        return dom_1.el("input.dhx_cell-editor.dhx_cell-editor__input.dhx_cell-editor__datepicker", {
+            _hooks: {
+                didInsert: this._handlers.didInsert,
+            },
+            _key: "cell_editor",
+            dhx_id: "cell_editor",
+            value: value,
+        });
+    };
+    DateEditor.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            onFocus: function () {
+                dom_1.awaitRedraw().then(function () {
+                    _this._popup.show(_this._input, {
+                        centering: true,
+                        mode: "bottom",
+                    });
+                });
+            },
+            onChange: function () {
+                _this.endEdit();
+            },
+            onOuterClick: function (e) {
+                if (e.target instanceof Node) {
+                    var isInput = _this._input && _this._input.contains(e.target);
+                    var isPopup = _this._popup &&
+                        _this._popup.getRootNode() &&
+                        _this._popup.getRootNode().contains(e.target);
+                    if (!(isInput || isPopup)) {
+                        _this._popup.hide();
+                    }
+                }
+            },
+            didInsert: function (node) {
+                var input = node.el;
+                _this._input = input;
+                _this._input.addEventListener("focus", _this._handlers.onFocus);
+                _this._input.addEventListener("change", _this._handlers.onChange);
+                input.focus();
+                input.setSelectionRange(input.value.length, input.value.length);
+            },
+        };
+    };
+    return DateEditor;
+}());
+exports.DateEditor = DateEditor;
+
+
+/***/ }),
+/* 119 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19044,8 +16008,8 @@ var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
 var events_1 = __webpack_require__(2);
 var view_1 = __webpack_require__(5);
-var ts_timepicker_1 = __webpack_require__(42);
-var helper_1 = __webpack_require__(146);
+var ts_timepicker_1 = __webpack_require__(38);
+var helper_1 = __webpack_require__(127);
 var date_1 = __webpack_require__(22);
 var types_1 = __webpack_require__(70);
 var Calendar = /** @class */ (function (_super) {
@@ -19649,7 +16613,7 @@ exports.Calendar = Calendar;
 
 
 /***/ }),
-/* 142 */
+/* 120 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19684,9 +16648,9 @@ var dom_1 = __webpack_require__(0);
 var events_1 = __webpack_require__(2);
 var view_1 = __webpack_require__(5);
 var ts_layout_1 = __webpack_require__(13);
-var ts_slider_1 = __webpack_require__(43);
+var ts_slider_1 = __webpack_require__(39);
 var en_1 = __webpack_require__(68);
-var helper_1 = __webpack_require__(145);
+var helper_1 = __webpack_require__(126);
 var types_1 = __webpack_require__(69);
 function validate(value, max) {
     if (isNaN(value)) {
@@ -19867,7 +16831,7 @@ var Timepicker = /** @class */ (function (_super) {
         layout.getCell("minute-slider").attach(mSlider);
         if (this.config.controls) {
             var save = function () {
-                return dom_1.el("button.dhx_timepicker__button-save.dhx_button.dhx_button--view_flat.dhx_button--color_primary.dhx_button--size_medium.dhx_button--circle.dhx_button--width_full", { onclick: _this._outerHandlers.save }, en_1.default.save);
+                return dom_1.el("button.dhx_timepicker__button-save.dhx_button.dhx_button--view_flat.dhx_button--color_primary.dhx_button--size_small.dhx_button--circle.dhx_button--width_full", { onclick: _this._outerHandlers.save }, en_1.default.save);
             };
             var close_1 = function () {
                 return dom_1.el("button.dhx_timepicker__button-close.dhx_button.dhx_button--view_link.dhx_button--size_medium.dhx_button--view_link.dhx_button--color_secondary.dhx_button--icon.dhx_button--circle", {
@@ -19977,7 +16941,894 @@ exports.Timepicker = Timepicker;
 
 
 /***/ }),
-/* 143 */
+/* 121 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Cell_1 = __webpack_require__(122);
+var types_1 = __webpack_require__(28);
+var dom_1 = __webpack_require__(0);
+var Layout = /** @class */ (function (_super) {
+    __extends(Layout, _super);
+    function Layout(parent, config) {
+        var _this = _super.call(this, parent, config) || this;
+        // root layout
+        _this._root = _this.config.parent || _this;
+        _this._all = {};
+        _this._parseConfig();
+        if (_this.config.activeTab) {
+            _this.config.activeView = _this.config.activeTab;
+        }
+        // Need replace to tabbar
+        if (_this.config.views) {
+            _this.config.activeView = _this.config.activeView || _this._cells[0].id;
+            _this._isViewLayout = true;
+        }
+        if (!config.parent) {
+            var view = dom_1.create({ render: function () { return _this.toVDOM(); } }, _this);
+            _this.mount(parent, view);
+        }
+        return _this;
+    }
+    Layout.prototype.destructor = function () {
+        this.forEach(function (cell) {
+            if (cell.getWidget() && typeof cell.getWidget().destructor === "function") {
+                cell.getWidget().destructor();
+            }
+        });
+        _super.prototype.destructor.call(this);
+    };
+    Layout.prototype.toVDOM = function () {
+        if (this._isViewLayout) {
+            var roots = [this.getCell(this.config.activeView).toVDOM()];
+            return _super.prototype.toVDOM.call(this, roots);
+        }
+        var nodes = [];
+        this._inheritTypes();
+        this._cells.forEach(function (cell) {
+            var node = cell.toVDOM();
+            if (Array.isArray(node)) {
+                nodes = nodes.concat(node);
+            }
+            else {
+                nodes.push(node);
+            }
+        });
+        return _super.prototype.toVDOM.call(this, nodes);
+    };
+    Layout.prototype.removeCell = function (id) {
+        if (!this.events.fire(types_1.LayoutEvents.beforeRemove, [id])) {
+            return;
+        }
+        var root = this.config.parent || this;
+        if (root !== this) {
+            return root.removeCell(id);
+        }
+        // this === root layout
+        var view = this.getCell(id);
+        if (view) {
+            var parent_1 = view.getParent();
+            delete this._all[id];
+            parent_1._cells = parent_1._cells.filter(function (cell) { return cell.id !== id; });
+            parent_1.paint();
+        }
+        this.events.fire(types_1.LayoutEvents.afterRemove, [id]);
+    };
+    Layout.prototype.addCell = function (config, index) {
+        if (index === void 0) { index = -1; }
+        if (!this.events.fire(types_1.LayoutEvents.beforeAdd, [config.id])) {
+            return;
+        }
+        var view = this._createCell(config);
+        if (index < 0) {
+            index = this._cells.length + index + 1;
+        }
+        this._cells.splice(index, 0, view);
+        this.paint();
+        if (!this.events.fire(types_1.LayoutEvents.afterAdd, [config.id])) {
+            return;
+        }
+    };
+    Layout.prototype.getId = function (index) {
+        if (index < 0) {
+            index = this._cells.length + index;
+        }
+        return this._cells[index] ? this._cells[index].id : undefined;
+    };
+    Layout.prototype.getRefs = function (name) {
+        return this._root.getRootView().refs[name];
+    };
+    Layout.prototype.getCell = function (id) {
+        return this._root._all[id];
+    };
+    Layout.prototype.forEach = function (cb, parent, level) {
+        if (level === void 0) { level = Infinity; }
+        if (!this._haveCells(parent) || level < 1) {
+            return;
+        }
+        var array;
+        if (parent) {
+            array = this._root._all[parent]._cells;
+        }
+        else {
+            array = this._root._cells;
+        }
+        for (var index = 0; index < array.length; index++) {
+            var cell = array[index];
+            cb.call(this, cell, index, array);
+            if (this._haveCells(cell.id)) {
+                cell.forEach(cb, cell.id, --level);
+            }
+        }
+    };
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    Layout.prototype.cell = function (id) {
+        return this.getCell(id);
+    };
+    Layout.prototype._getCss = function (content) {
+        var layoutCss = this._xLayout ? "dhx_layout-columns" : "dhx_layout-rows";
+        var directionCss = this.config.align ? " " + layoutCss + "--" + this.config.align : "";
+        if (content) {
+            return (layoutCss +
+                " dhx_layout-cell" +
+                (this.config.align ? " dhx_layout-cell--" + this.config.align : ""));
+        }
+        else {
+            var cellCss = this.config.parent ? _super.prototype._getCss.call(this) : "dhx_widget dhx_layout";
+            var fullModeCss = this.config.parent ? "" : " dhx_layout-cell";
+            return cellCss + (this.config.full ? fullModeCss : " " + layoutCss) + directionCss;
+        }
+    };
+    Layout.prototype._parseConfig = function () {
+        var _this = this;
+        var config = this.config;
+        var cells = config.rows || config.cols || config.views || [];
+        this._xLayout = !config.rows;
+        this._cells = cells.map(function (a) { return _this._createCell(a); });
+    };
+    Layout.prototype._createCell = function (cell) {
+        var view;
+        if (cell.rows || cell.cols || cell.views) {
+            cell.parent = this._root;
+            view = new Layout(this, cell);
+        }
+        else {
+            view = new Cell_1.Cell(this, cell);
+        }
+        // FIxME
+        this._root._all[view.id] = view;
+        if (cell.init) {
+            cell.init(view, cell);
+        }
+        return view;
+    };
+    Layout.prototype._haveCells = function (id) {
+        if (id) {
+            var array = this._root._all[id];
+            return array._cells && array._cells.length > 0;
+        }
+        return Object.keys(this._all).length > 0;
+    };
+    Layout.prototype._inheritTypes = function (obj) {
+        var _this = this;
+        if (obj === void 0) { obj = this._cells; }
+        if (Array.isArray(obj)) {
+            obj.forEach(function (cell) { return _this._inheritTypes(cell); });
+        }
+        else {
+            var cellConfig = obj.config;
+            if (cellConfig.rows || cellConfig.cols) {
+                var viewParent = obj.getParent();
+                if (!cellConfig.type && viewParent) {
+                    if (viewParent.config.type) {
+                        cellConfig.type = viewParent.config.type;
+                    }
+                    else {
+                        this._inheritTypes(viewParent);
+                    }
+                }
+            }
+        }
+    };
+    return Layout;
+}(Cell_1.Cell));
+exports.Layout = Layout;
+
+
+/***/ }),
+/* 122 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var view_1 = __webpack_require__(5);
+var types_1 = __webpack_require__(28);
+var helpers_1 = __webpack_require__(123);
+var events_1 = __webpack_require__(2);
+var CssManager_1 = __webpack_require__(32);
+var Cell = /** @class */ (function (_super) {
+    __extends(Cell, _super);
+    function Cell(parent, config) {
+        var _this = _super.call(this, parent, config) || this;
+        _this._disabled = [];
+        var p = parent;
+        if (p && p.isVisible) {
+            _this._parent = p;
+        }
+        if (_this._parent && _this._parent.events) {
+            _this.events = _this._parent.events;
+        }
+        else {
+            _this.events = new events_1.EventSystem(_this);
+        }
+        _this._cssManager = new CssManager_1.CssManager();
+        _this.config.full =
+            _this.config.full === undefined
+                ? Boolean(_this.config.header ||
+                    _this.config.collapsable ||
+                    _this.config.headerHeight ||
+                    _this.config.headerIcon ||
+                    _this.config.headerImage)
+                : _this.config.full;
+        _this._initHandlers();
+        _this.id = _this.config.id || core_1.uid();
+        return _this;
+    }
+    Cell.prototype.paint = function () {
+        if (this.isVisible()) {
+            var view = this.getRootView();
+            if (view) {
+                view.redraw();
+            }
+            else {
+                this._parent.paint();
+            }
+        }
+    };
+    Cell.prototype.isVisible = function () {
+        // top level node
+        if (!this._parent) {
+            if (this._container && this._container.tagName) {
+                return true;
+            }
+            return Boolean(this.getRootNode());
+        }
+        // check active view in case of multiview
+        var active = this._parent.config.activeView;
+        if (active && active !== this.id) {
+            return false;
+        }
+        // check that all parents of the cell are visible as well
+        return !this.config.hidden && (!this._parent || this._parent.isVisible());
+    };
+    Cell.prototype.hide = function () {
+        if (!this.events.fire(types_1.LayoutEvents.beforeHide, [this.id])) {
+            return;
+        }
+        this.config.hidden = true;
+        if (this._parent && this._parent.paint) {
+            this._parent.paint();
+        }
+        this.events.fire(types_1.LayoutEvents.afterHide, [this.id]);
+    };
+    Cell.prototype.show = function () {
+        if (!this.events.fire(types_1.LayoutEvents.beforeShow, [this.id])) {
+            return;
+        }
+        if (this._parent && this._parent.config && this._parent.config.activeView !== undefined) {
+            this._parent.config.activeView = this.id;
+        }
+        else {
+            this.config.hidden = false;
+        }
+        if (this._parent && !this._parent.isVisible()) {
+            this._parent.show();
+        }
+        this.paint();
+        this.events.fire(types_1.LayoutEvents.afterShow, [this.id]);
+    };
+    Cell.prototype.expand = function () {
+        if (!this.events.fire(types_1.LayoutEvents.beforeExpand, [this.id])) {
+            return;
+        }
+        this.config.collapsed = false;
+        this.events.fire(types_1.LayoutEvents.afterExpand, [this.id]);
+        this.paint();
+    };
+    Cell.prototype.collapse = function () {
+        if (!this.events.fire(types_1.LayoutEvents.beforeCollapse, [this.id])) {
+            return;
+        }
+        this.config.collapsed = true;
+        this.events.fire(types_1.LayoutEvents.afterCollapse, [this.id]);
+        this.paint();
+    };
+    Cell.prototype.toggle = function () {
+        if (this.config.collapsed) {
+            this.expand();
+        }
+        else {
+            this.collapse();
+        }
+    };
+    Cell.prototype.getParent = function () {
+        return this._parent;
+    };
+    Cell.prototype.destructor = function () {
+        this.config = null;
+        this.unmount();
+    };
+    Cell.prototype.getWidget = function () {
+        return this._ui;
+    };
+    Cell.prototype.getCellView = function () {
+        return this._parent && this._parent.getRefs(this._uid);
+    };
+    Cell.prototype.attach = function (name, config) {
+        this.config.html = null;
+        if (typeof name === "object") {
+            this._ui = name;
+        }
+        else if (typeof name === "string") {
+            this._ui = new window.dhx[name](null, config);
+        }
+        else if (typeof name === "function") {
+            if (name.prototype instanceof view_1.View) {
+                this._ui = new name(null, config);
+            }
+            else {
+                this._ui = {
+                    getRootView: function () {
+                        return name(config);
+                    },
+                };
+            }
+        }
+        this.paint();
+        return this._ui;
+    };
+    Cell.prototype.attachHTML = function (html) {
+        this.config.html = html;
+        this.paint();
+    };
+    Cell.prototype.toVDOM = function (nodes) {
+        var _a;
+        if (this.config === null) {
+            this.config = {};
+        }
+        if (this.config.hidden) {
+            return;
+        }
+        var style = this._calculateStyle();
+        var stylePadding = core_1.isDefined(this.config.padding)
+            ? !isNaN(Number(this.config.padding))
+                ? { padding: this.config.padding + "px" }
+                : { padding: this.config.padding }
+            : "";
+        var fullStyle = this.config.full || this.config.html ? style : __assign(__assign({}, style), stylePadding);
+        var cssClassName = this._cssManager.add(fullStyle, "dhx_cell-style__" + this._uid);
+        var kids;
+        if (!this.config.html) {
+            if (this._ui) {
+                var view = this._ui.getRootView();
+                if (view.render) {
+                    view = dom_1.inject(view);
+                }
+                kids = [view];
+            }
+            else {
+                kids = nodes || null;
+            }
+        }
+        var resizer = this.config.resizable && !this._isLastCell() && !this.config.collapsed
+            ? dom_1.el(".dhx_layout-resizer." +
+                (this._isXDirection() ? "dhx_layout-resizer--x" : "dhx_layout-resizer--y"), __assign(__assign({}, this._resizerHandlers), { _ref: "resizer_" + this._uid }), [
+                dom_1.el("span.dhx_layout-resizer__icon", {
+                    class: "dxi " +
+                        (this._isXDirection() ? "dxi-dots-vertical" : "dxi-dots-horizontal"),
+                }),
+            ])
+            : null;
+        var handlers = {};
+        if (this.config.on) {
+            for (var key in this.config.on) {
+                handlers["on" + key] = this.config.on[key];
+            }
+        }
+        var typeClass = "";
+        var isParent = this.config.cols || this.config.rows;
+        if (this.config.type && isParent) {
+            switch (this.config.type) {
+                case "line":
+                    typeClass = " dhx_layout-line";
+                    break;
+                case "wide":
+                    typeClass = " dhx_layout-wide";
+                    break;
+                case "space":
+                    typeClass = " dhx_layout-space";
+                    break;
+                default:
+                    break;
+            }
+        }
+        var cell = dom_1.el("div", __assign(__assign((_a = { _key: this._uid, _ref: this._uid }, _a["aria-label"] = this.config.id ? "tab-content-" + this.config.id : null, _a), handlers), { class: this._getCss(false) +
+                (this.config.css ? " " + this.config.css : "") +
+                (fullStyle ? " " + cssClassName : "") +
+                (this.config.collapsed ? " dhx_layout-cell--collapsed" : "") +
+                (this.config.resizable ? " dhx_layout-cell--resizable" : "") +
+                (this.config.type && !this.config.full ? typeClass : "") }), this.config.full
+            ? [
+                dom_1.el("div", {
+                    tabindex: this.config.collapsable ? "0" : "-1",
+                    class: "dhx_layout-cell-header" +
+                        (this._isXDirection()
+                            ? " dhx_layout-cell-header--col"
+                            : " dhx_layout-cell-header--row") +
+                        (this.config.collapsable ? " dhx_layout-cell-header--collapseble" : "") +
+                        (this.config.collapsed ? " dhx_layout-cell-header--collapsed" : "") +
+                        (((this.getParent() || {}).config || {}).isAccordion
+                            ? " dhx_layout-cell-header--accordion"
+                            : ""),
+                    style: {
+                        height: this.config.headerHeight,
+                    },
+                    onclick: this._handlers.toggle,
+                    onkeydown: this._handlers.enterCollapse,
+                }, [
+                    this.config.headerIcon &&
+                        dom_1.el("span.dhx_layout-cell-header__icon", {
+                            class: this.config.headerIcon,
+                        }),
+                    this.config.headerImage &&
+                        dom_1.el(".dhx_layout-cell-header__image-wrapper", [
+                            dom_1.el("img", {
+                                src: this.config.headerImage,
+                                class: "dhx_layout-cell-header__image",
+                            }),
+                        ]),
+                    this.config.header &&
+                        dom_1.el("h3.dhx_layout-cell-header__title", this.config.header),
+                    this.config.collapsable
+                        ? dom_1.el("div.dhx_layout-cell-header__collapse-icon", {
+                            class: this._getCollapseIcon(),
+                        })
+                        : dom_1.el("div.dhx_layout-cell-header__collapse-icon", {
+                            class: "dxi dxi-empty",
+                        }),
+                ]),
+                !this.config.collapsed
+                    ? dom_1.el("div", {
+                        style: __assign(__assign({}, stylePadding), { height: "calc(100% - " + (this.config.headerHeight || 37) + "px)" }),
+                        ".innerHTML": this.config.html,
+                        class: this._getCss(true) +
+                            " dhx_layout-cell-content" +
+                            (this.config.type ? typeClass : ""),
+                    }, kids)
+                    : null,
+            ]
+            : this.config.html &&
+                !(this.config.rows &&
+                    this.config.cols &&
+                    this.config.views)
+                ? [
+                    dom_1.el(".dhx_layout-cell-content", {
+                        ".innerHTML": this.config.html,
+                        style: stylePadding,
+                    }),
+                ]
+                : kids);
+        return resizer ? [cell, resizer] : cell;
+    };
+    Cell.prototype._getCss = function (_content) {
+        return "dhx_layout-cell";
+    };
+    Cell.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            enterCollapse: function (e) {
+                if (e.keyCode === 13) {
+                    _this._handlers.toggle();
+                }
+            },
+            collapse: function () {
+                if (!_this.config.collapsable) {
+                    return;
+                }
+                _this.collapse();
+            },
+            expand: function () {
+                if (!_this.config.collapsable) {
+                    return;
+                }
+                _this.expand();
+            },
+            toggle: function () {
+                if (!_this.config.collapsable) {
+                    return;
+                }
+                _this.toggle();
+            },
+        };
+        var blockOpts = {
+            left: null,
+            top: null,
+            isActive: false,
+            range: null,
+            xLayout: null,
+            nextCell: null,
+            size: null,
+            resizerLength: null,
+            mode: null,
+            percentsum: null,
+            margin: null,
+        };
+        var resizeMove = function (event) {
+            if (!blockOpts.isActive) {
+                return;
+            }
+            var clientX = event.targetTouches ? event.targetTouches[0].clientX : event.clientX;
+            var clientY = event.targetTouches ? event.targetTouches[0].clientY : event.clientY;
+            var newValue = blockOpts.xLayout
+                ? clientX - blockOpts.range.min + window.pageXOffset
+                : clientY - blockOpts.range.min + window.pageYOffset;
+            var prop = blockOpts.xLayout ? "width" : "height";
+            if (newValue < 0) {
+                newValue = blockOpts.resizerLength / 2;
+            }
+            else if (newValue > blockOpts.size) {
+                newValue = blockOpts.size - blockOpts.resizerLength;
+            }
+            switch (blockOpts.mode) {
+                case types_1.resizeMode.pixels:
+                    _this.config[prop] = newValue - blockOpts.resizerLength / 2 + "px";
+                    blockOpts.nextCell.config[prop] =
+                        blockOpts.size - newValue - blockOpts.resizerLength / 2 + "px";
+                    break;
+                case types_1.resizeMode.mixedpx1:
+                    _this.config[prop] = newValue - blockOpts.resizerLength / 2 + "px";
+                    break;
+                case types_1.resizeMode.mixedpx2:
+                    blockOpts.nextCell.config[prop] =
+                        blockOpts.size - newValue - blockOpts.resizerLength / 2 + "px";
+                    break;
+                case types_1.resizeMode.percents:
+                    _this.config[prop] = (newValue / blockOpts.size) * blockOpts.percentsum + "%";
+                    blockOpts.nextCell.config[prop] =
+                        ((blockOpts.size - newValue) / blockOpts.size) * blockOpts.percentsum + "%";
+                    break;
+                case types_1.resizeMode.mixedperc1:
+                    _this.config[prop] = (newValue / blockOpts.size) * blockOpts.percentsum + "%";
+                    break;
+                case types_1.resizeMode.mixedperc2:
+                    blockOpts.nextCell.config[prop] =
+                        ((blockOpts.size - newValue) / blockOpts.size) * blockOpts.percentsum + "%";
+                    break;
+                case types_1.resizeMode.unknown:
+                    _this.config[prop] = newValue - blockOpts.resizerLength / 2 + "px";
+                    blockOpts.nextCell.config[prop] =
+                        blockOpts.size - newValue - blockOpts.resizerLength / 2 + "px";
+                    _this.config.$fixed = true;
+                    break;
+            }
+            _this.paint();
+            _this.events.fire(types_1.LayoutEvents.resize, [_this.id]);
+        };
+        var resizeEnd = function (event) {
+            blockOpts.isActive = false;
+            document.body.classList.remove("dhx_no-select--resize");
+            if (!event.targetTouches) {
+                document.removeEventListener("mouseup", resizeEnd);
+                document.removeEventListener("mousemove", resizeMove);
+            }
+            else {
+                document.removeEventListener("touchend", resizeEnd);
+                document.removeEventListener("touchmove", resizeMove);
+            }
+            _this.events.fire(types_1.LayoutEvents.afterResizeEnd, [_this.id]);
+        };
+        var resizeStart = function (event) {
+            event.targetTouches && event.preventDefault();
+            if (event.which === 3) {
+                return;
+            }
+            if (blockOpts.isActive) {
+                resizeEnd(event);
+            }
+            if (!_this.events.fire(types_1.LayoutEvents.beforeResizeStart, [_this.id])) {
+                return;
+            }
+            document.body.classList.add("dhx_no-select--resize");
+            var block = _this.getCellView();
+            var nextCell = _this._getNextCell();
+            var nextBlock = nextCell.getCellView();
+            var resizerBlock = _this._getResizerView();
+            var blockOffsets = block.el.getBoundingClientRect();
+            var resizerOffsets = resizerBlock.el.getBoundingClientRect();
+            var nextBlockOffsets = nextBlock.el.getBoundingClientRect();
+            blockOpts.xLayout = _this._isXDirection();
+            blockOpts.left = blockOffsets.left + window.pageXOffset;
+            blockOpts.top = blockOffsets.top + window.pageYOffset;
+            blockOpts.margin = helpers_1.getMarginSize(_this.getParent().config, blockOpts.xLayout);
+            blockOpts.range = helpers_1.getBlockRange(blockOffsets, nextBlockOffsets, blockOpts.xLayout);
+            blockOpts.size = blockOpts.range.max - blockOpts.range.min - blockOpts.margin;
+            blockOpts.isActive = true;
+            blockOpts.nextCell = nextCell;
+            blockOpts.resizerLength = blockOpts.xLayout ? resizerOffsets.width : resizerOffsets.height;
+            blockOpts.mode = helpers_1.getResizeMode(blockOpts.xLayout, _this.config, nextCell.config);
+            if (blockOpts.mode === types_1.resizeMode.percents) {
+                var field = blockOpts.xLayout ? "width" : "height";
+                blockOpts.percentsum =
+                    parseFloat(_this.config[field].slice(0, -1)) +
+                        parseFloat(nextCell.config[field].slice(0, -1));
+            }
+            if (blockOpts.mode === types_1.resizeMode.mixedperc1) {
+                var field = blockOpts.xLayout ? "width" : "height";
+                blockOpts.percentsum =
+                    (1 / (blockOffsets[field] / (blockOpts.size - blockOpts.resizerLength))) *
+                        parseFloat(_this.config[field].slice(0, -1));
+            }
+            if (blockOpts.mode === types_1.resizeMode.mixedperc2) {
+                var field = blockOpts.xLayout ? "width" : "height";
+                blockOpts.percentsum =
+                    (1 / (nextBlockOffsets[field] / (blockOpts.size - blockOpts.resizerLength))) *
+                        parseFloat(nextCell.config[field]);
+            }
+        };
+        this._resizerHandlers = {
+            onmousedown: function (e) {
+                resizeStart(e);
+                document.addEventListener("mouseup", resizeEnd);
+                document.addEventListener("mousemove", resizeMove);
+            },
+            ontouchstart: function (e) {
+                resizeStart(e);
+                document.addEventListener("touchend", resizeEnd);
+                document.addEventListener("touchmove", resizeMove);
+            },
+            ondragstart: function (e) { return e.preventDefault(); },
+        };
+    };
+    Cell.prototype._getCollapseIcon = function () {
+        if (this._isXDirection() && this.config.collapsed) {
+            return "dxi dxi-chevron-right";
+        }
+        if (this._isXDirection() && !this.config.collapsed) {
+            return "dxi dxi-chevron-left";
+        }
+        if (!this._isXDirection() && this.config.collapsed) {
+            return "dxi dxi-chevron-up";
+        }
+        if (!this._isXDirection() && !this.config.collapsed) {
+            return "dxi dxi-chevron-down";
+        }
+    };
+    Cell.prototype._isLastCell = function () {
+        var parent = this._parent;
+        return parent && parent._cells.indexOf(this) === parent._cells.length - 1;
+    };
+    Cell.prototype._getNextCell = function () {
+        var parent = this._parent;
+        var index = parent._cells.indexOf(this);
+        return parent._cells[index + 1];
+    };
+    Cell.prototype._getResizerView = function () {
+        return this._parent.getRefs("resizer_" + this._uid);
+    };
+    Cell.prototype._isXDirection = function () {
+        return this._parent && this._parent._xLayout;
+    };
+    Cell.prototype._calculateStyle = function () {
+        var config = this.config;
+        if (!config) {
+            return;
+        }
+        var style = {};
+        var autoWidth = false;
+        var autoHeight = false;
+        if (!isNaN(Number(config.width)))
+            config.width = config.width + "px";
+        if (!isNaN(Number(config.height)))
+            config.height = config.height + "px";
+        if (!isNaN(Number(config.minWidth)))
+            config.minWidth = config.minWidth + "px";
+        if (!isNaN(Number(config.minHeight)))
+            config.minHeight = config.minHeight + "px";
+        if (!isNaN(Number(config.maxWidth)))
+            config.maxWidth = config.maxWidth + "px";
+        if (!isNaN(Number(config.maxHeight)))
+            config.maxHeight = config.maxHeight + "px";
+        if (config.width === "content")
+            autoWidth = true;
+        if (config.height === "content")
+            autoHeight = true;
+        var _a = config, width = _a.width, height = _a.height, cols = _a.cols, rows = _a.rows, minWidth = _a.minWidth, minHeight = _a.minHeight, maxWidth = _a.maxWidth, maxHeight = _a.maxHeight, gravity = _a.gravity, collapsed = _a.collapsed, $fixed = _a.$fixed;
+        var gravityNumber = Math.sign(gravity) === -1 ? 0 : gravity;
+        if (typeof gravity === "boolean") {
+            gravityNumber = gravity ? 1 : 0;
+        }
+        var fixed = typeof gravity === "boolean" ? !gravity : Math.sign(gravity) === -1;
+        if (this._isXDirection()) {
+            if ($fixed || width || (gravity === undefined && (minWidth || maxWidth))) {
+                fixed = true;
+            }
+        }
+        else {
+            if ($fixed || height || (gravity === undefined && (minHeight || maxHeight))) {
+                fixed = true;
+            }
+        }
+        var grow = fixed ? 0 : gravityNumber || 1;
+        var fillSpace = this._isXDirection() ? "x" : "y";
+        if (minWidth !== undefined)
+            style.minWidth = minWidth;
+        if (minHeight !== undefined)
+            style.minHeight = minHeight;
+        if (maxWidth !== undefined)
+            style.maxWidth = maxWidth;
+        if (maxHeight !== undefined)
+            style.maxHeight = maxHeight;
+        if (this._parent === undefined && !fillSpace !== undefined) {
+            fillSpace = true;
+        }
+        if (width !== undefined && width !== "content") {
+            style.width = width;
+        }
+        else {
+            if (fillSpace === true) {
+                style.width = "100%";
+            }
+            else if (fillSpace === "x") {
+                if (autoWidth) {
+                    style.flex = "0 0 auto";
+                }
+                else {
+                    var isAuto = this._isXDirection() ? "1px" : "auto";
+                    style.flex = grow + " " + (cols || rows ? "0 " + isAuto : "1 auto");
+                }
+            }
+        }
+        if (height !== undefined && height !== "content") {
+            style.height = height;
+        }
+        else {
+            if (fillSpace === true) {
+                style.height = "100%";
+            }
+            else if (fillSpace === "y") {
+                if (autoHeight) {
+                    style.flex = "0 0 auto";
+                }
+                else {
+                    var isAuto = !this._isXDirection() ? "1px" : "auto";
+                    style.flex = grow + " " + (cols || rows ? "0 " + isAuto : "1 auto");
+                }
+            }
+        }
+        if (fillSpace === true && config.width === undefined && config.height === undefined) {
+            style.flex = grow + " 1 auto";
+        }
+        if (collapsed) {
+            if (this._isXDirection()) {
+                style.width = "auto";
+            }
+            else {
+                style.height = "auto";
+            }
+            style.flex = "0 0 auto";
+        }
+        return style;
+    };
+    return Cell;
+}(view_1.View));
+exports.Cell = Cell;
+
+
+/***/ }),
+/* 123 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = __webpack_require__(28);
+function getResizeMode(isXLayout, conf1, conf2) {
+    var field = isXLayout ? "width" : "height";
+    var is1perc = conf1[field] && conf1[field].includes("%");
+    var is2perc = conf2[field] && conf2[field].includes("%");
+    var is1px = conf1[field] && conf1[field].includes("px");
+    var is2px = conf2[field] && conf2[field].includes("px");
+    if (is1perc && is2perc) {
+        return types_1.resizeMode.percents;
+    }
+    if (is1px && is2px) {
+        return types_1.resizeMode.pixels;
+    }
+    if (is1px && !is2px) {
+        return types_1.resizeMode.mixedpx1;
+    }
+    if (is2px && !is1px) {
+        return types_1.resizeMode.mixedpx2;
+    }
+    if (is1perc) {
+        return types_1.resizeMode.mixedperc1;
+    }
+    if (is2perc) {
+        return types_1.resizeMode.mixedperc2;
+    }
+    return types_1.resizeMode.unknown;
+}
+exports.getResizeMode = getResizeMode;
+function getBlockRange(block1, block2, isXLayout) {
+    if (isXLayout === void 0) { isXLayout = true; }
+    if (isXLayout) {
+        return {
+            min: block1.left + window.pageXOffset,
+            max: block2.right + window.pageXOffset,
+        };
+    }
+    return {
+        min: block1.top + window.pageYOffset,
+        max: block2.bottom + window.pageYOffset,
+    };
+}
+exports.getBlockRange = getBlockRange;
+function getMarginSize(config, xLayout) {
+    if (!config) {
+        return 0;
+    }
+    if (config.type === "space" || (config.type === "wide" && xLayout)) {
+        return 10;
+    }
+    return 0;
+}
+exports.getMarginSize = getMarginSize;
+
+
+/***/ }),
+/* 124 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20136,7 +17987,7 @@ var Slider = /** @class */ (function (_super) {
         this.paint();
     };
     Slider.prototype.destructor = function () {
-        this._keyManager.destructor();
+        this._keyManager && this._keyManager.destructor();
         document.body.contains(this._tooltip) && document.body.removeChild(this._tooltip);
         this._tooltip = null;
         this.unmount();
@@ -20680,7 +18531,7 @@ exports.Slider = Slider;
 
 
 /***/ }),
-/* 144 */
+/* 125 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20926,7 +18777,7 @@ exports.Popup = Popup;
 
 
 /***/ }),
-/* 145 */
+/* 126 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20942,7 +18793,7 @@ exports.isTimeCheck = isTimeCheck;
 
 
 /***/ }),
-/* 146 */
+/* 127 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20952,2692 +18803,166 @@ exports.linkButtonClasses = ".dhx_button.dhx_button--view_link.dhx_button--icon.
 
 
 /***/ }),
-/* 147 */
+/* 128 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(2);
-var html_1 = __webpack_require__(3);
-var view_1 = __webpack_require__(5);
-var core_1 = __webpack_require__(1);
-var color_1 = __webpack_require__(45);
-var colors_1 = __webpack_require__(71);
-var en_1 = __webpack_require__(46);
-var types_1 = __webpack_require__(72);
-// tslint:disable-next-line
-var tooltip_1 = __webpack_require__(64);
-// tslint:disable-next-line
-var ts_message_1 = __webpack_require__(18);
-var picker_1 = __webpack_require__(148);
-var calculations_1 = __webpack_require__(149);
-var Colorpicker = /** @class */ (function (_super) {
-    __extends(Colorpicker, _super);
-    function Colorpicker(container, config) {
-        var _this = _super.call(this, container, config) || this;
-        _this._setPaletteGrip = function (e) {
-            var paletteRect = _this.getRootView().refs.picker_palette.el.getBoundingClientRect();
-            var clientX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
-            var clientY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
-            var top = clientY - paletteRect.top;
-            var left = clientX - paletteRect.left;
-            var _a = calculations_1.calculatePaletteGrip(paletteRect, top, left), s = _a.s, v = _a.v;
-            _this._pickerState.hsv.s = s;
-            _this._pickerState.hsv.v = v;
-            _this.paint();
-        };
-        _this._setRangeGrip = function (e) {
-            var rangeRect = _this.getRootView().refs.hue_range.el.getBoundingClientRect();
-            var clientX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
-            var left = clientX - rangeRect.left;
-            var _a = calculations_1.calculateRangeGrip(rangeRect, left), h = _a.h, rangeLeft = _a.rangeLeft;
-            _this._pickerState.hsv.h = h;
-            _this._pickerState.rangeLeft = rangeLeft;
-            _this.paint();
-        };
-        _this._onColorClick = function (_e, node) {
-            _this._selected = node.data.color.toUpperCase();
-            _this.events.fire(types_1.ColorpickerEvents.change, [_this._selected]);
-            _this.events.fire(types_1.ColorpickerEvents.colorChange, [_this._selected]); // TODO: remove suite_7.0
-        };
-        _this._container = container;
-        _this.config = core_1.extend({
-            css: "",
-            grayShades: true,
-            pickerOnly: false,
-            paletteOnly: false,
-            customColors: [],
-            palette: colors_1.palette,
-            width: "238px",
-            mode: "palette",
-        }, _this.config);
-        if (!_this.config.palette) {
-            _this.config.palette = colors_1.palette;
-        }
-        if (_this.config.customColors) {
-            _this.config.customColors = _this.config.customColors.map(function (color) { return color.toUpperCase(); });
-        }
-        _this._pickerState = {
-            hsv: { h: 0, s: 1, v: 1 },
-            customHex: "",
-        };
-        _this.events = new events_1.EventSystem(_this);
-        _this._setHandlers();
-        var view = dom_1.create({ render: function () { return _this._getContent(); } });
-        _this.mount(_this._container, view);
-        return _this;
+var types_1 = __webpack_require__(9);
+var CheckboxEditor = /** @class */ (function () {
+    function CheckboxEditor(row, col, config) {
+        this._config = config;
+        this._cell = { row: row, col: col };
+        this._initHandlers();
     }
-    Colorpicker.prototype.destructor = function () {
-        this.unmount();
-    };
-    Colorpicker.prototype.clear = function () {
-        this._selected = "";
-        this.events.fire(types_1.ColorpickerEvents.change, [this._selected]);
-        this.paint();
-    };
-    Colorpicker.prototype.setValue = function (value) {
-        if (this._focusColor(value)) {
-            this.paint();
-            this.events.fire(types_1.ColorpickerEvents.change, [this._selected]);
-            this.events.fire(types_1.ColorpickerEvents.colorChange, [this._selected]); // TODO: remove suite_7.0
-        }
-    };
-    Colorpicker.prototype.setFocus = function (value) {
-        if (this._focusColor(value)) {
-            this.paint();
-        }
-    };
-    Colorpicker.prototype.getValue = function () {
-        return this._selected || "";
-    };
-    Colorpicker.prototype.getCustomColors = function () {
-        return this.config.customColors;
-    };
-    Colorpicker.prototype.setCustomColors = function (customColors) {
-        this.config.customColors = customColors.map(function (color) { return color.toUpperCase(); });
-        this.paint();
-    };
-    Colorpicker.prototype.setCurrentMode = function (mode) {
-        if (mode === "palette" || mode === "picker") {
-            this.config.mode = mode;
-            this.events.fire(types_1.ColorpickerEvents.modeChange, [mode]);
-            this.events.fire(types_1.ColorpickerEvents.viewChange, [mode]); // TODO: remove suite_7.0
-            this.paint();
-        }
-    };
-    Colorpicker.prototype.getCurrentMode = function () {
-        return this.config.mode;
-    };
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    Colorpicker.prototype.getView = function () {
-        return this.getCurrentMode();
-    };
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    Colorpicker.prototype.setView = function (mode) {
-        this.setCurrentMode(mode);
-    };
-    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
-    Colorpicker.prototype.focusValue = function (value) {
-        this.setFocus(value);
-    };
-    Colorpicker.prototype._setHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            click: {
-                ".dhx_palette__cell": this._onColorClick,
-            },
-            mousedown: function (e) {
-                _this._pickerMove(e);
-            },
-            touchstart: function (e) {
-                _this._pickerMove(e);
-            },
-            buttonsClick: function (button) {
-                _this.setCurrentMode("palette");
-                if (button === "cancel") {
-                    _this.events.fire(types_1.ColorpickerEvents.cancelClick, []);
-                    return;
-                }
-                if (button === "apply" && !_this.config.customColors.includes(_this._pickerState.background)) {
-                    _this.setValue(_this._pickerState.background);
-                    _this.events.fire(types_1.ColorpickerEvents.apply, []);
-                    _this.events.fire(types_1.ColorpickerEvents.selectClick, []); // TODO: remove suite_7.0
-                }
-            },
-            customColorClick: function () {
-                _this.setView("picker");
-            },
-            oninput: function (e) {
-                if (_this._inputTimeout) {
-                    clearTimeout(_this._inputTimeout);
-                }
-                _this._inputTimeout = setTimeout(function () {
-                    var val = e.target.value;
-                    if (val.indexOf("#") === -1) {
-                        val = "#" + val;
-                    }
-                    _this._pickerState.customHex = val;
-                    if (color_1.isHex(val)) {
-                        _this._pickerState.hsv = color_1.HexToHSV(val);
-                        _this.paint();
-                    }
-                }, 100);
-            },
-            contextmenu: {
-                ".dhx_palette__cell": function (e, node) {
-                    e.preventDefault();
-                    var index = _this.config.customColors.indexOf(node.data.color);
-                    if (index !== -1) {
-                        _this._removeCustomColor(index);
-                    }
-                    _this.paint();
-                    return;
-                },
-            },
-            mouseover: {
-                ".dhx_palette__cell": function (e) {
-                    if (e.target) {
-                        tooltip_1.tooltip(en_1.default.rightClickToDelete, {
-                            node: e.target,
-                            position: ts_message_1.Position.bottom,
-                        });
-                    }
-                },
-                ".dhx_colorpicker-custom-colors__picker": function (e) {
-                    if (e.target) {
-                        tooltip_1.tooltip(en_1.default.addNewColor, {
-                            node: e.target,
-                            position: ts_message_1.Position.bottom,
-                        });
-                    }
-                },
-            },
-        };
-        this.events.on(types_1.ColorpickerEvents.change, function () {
-            _this.paint();
-        });
-        // TODO: remove suite_7.0
-        this.events.on(types_1.ColorpickerEvents.colorChange, function () {
-            _this.paint();
-        });
-    };
-    Colorpicker.prototype._pickerMove = function (e) {
-        var name = html_1.locate(e);
-        this._pickerState.customHex = "";
-        if (name === "picker_palette") {
-            this._setPaletteGrip(e);
+    CheckboxEditor.prototype.endEdit = function () {
+        var value = this._checked;
+        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
+            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
         }
         else {
-            this._setRangeGrip(e);
+            this._input.checked = !value;
         }
-        var handler = name === "picker_palette" ? this._setPaletteGrip : this._setRangeGrip;
-        var move = e.targetTouches ? "touchmove" : "mousemove";
-        var up = e.targetTouches ? "touchend" : "mouseup";
-        document.addEventListener(move, handler);
-        document.addEventListener(up, function () {
-            document.removeEventListener(move, handler);
-        });
-        this.paint();
     };
-    Colorpicker.prototype._focusColor = function (value) {
-        if (value === undefined || value.length < 4) {
-            return false;
+    CheckboxEditor.prototype.toHTML = function () {
+        if (this._checked === undefined) {
+            this._checked = this._cell.row[this._cell.col.id];
         }
-        var hex = value.toUpperCase();
-        if (!color_1.isHex(hex)) {
-            return false;
-        }
-        var isInPalette = this.config.palette.reduce(function (state, col) {
-            if (state) {
-                return state;
-            }
-            col.forEach(function (color) {
-                if (color.toUpperCase() === hex) {
-                    state = true;
-                    return;
-                }
-            });
-            return state;
-        }, false);
-        var isInGrayShades = colors_1.grayShades.includes(hex);
-        if (!isInPalette && !isInGrayShades) {
-            var colors = this.getCustomColors();
-            if (!colors.includes(hex.toUpperCase())) {
-                colors.push(hex.toUpperCase());
-            }
-        }
-        this._selected = hex || null;
-        this._pickerState.hsv = color_1.HexToHSV(hex);
-        return true;
-    };
-    Colorpicker.prototype._removeCustomColor = function (index) {
-        this.config.customColors.splice(index, 1);
-    };
-    Colorpicker.prototype._getCells = function (colors, cellClass) {
-        var _this = this;
-        if (cellClass === void 0) { cellClass = ""; }
-        return colors.reduce(function (cells, color) {
-            var selected = (_this._selected || "").toUpperCase() === color.toUpperCase()
-                ? "dhx_palette__cell--selected"
-                : "";
-            cells.push(dom_1.el(".dhx_palette__cell", {
-                class: selected + " " + cellClass,
-                _data: { color: color },
-                style: "background:" + color,
-            }));
-            return cells;
-        }, []);
-    };
-    Colorpicker.prototype._getGrayShades = function () {
-        return dom_1.el(".dhx_palette__row", this._getCells(colors_1.grayShades));
-    };
-    Colorpicker.prototype._getPalette = function () {
-        var _this = this;
-        return this.config.palette.reduce(function (total, row) {
-            total.push(dom_1.el(".dhx_palette__col", _this._getCells(row)));
-            return total;
-        }, []);
-    };
-    Colorpicker.prototype._getContent = function () {
-        var view;
-        if (this.config.pickerOnly) {
-            view = [picker_1.getPicker(this, this._pickerState, this._handlers)];
-        }
-        else {
-            view =
-                this.config.mode === "palette"
-                    ? __spreadArrays([
-                        this.config.grayShades && this._getGrayShades()
-                    ], this._getPalette(), [
-                        !this.config.paletteOnly &&
-                            dom_1.el(".dhx_colorpicker-custom-colors", {
-                                onmouseover: this._handlers.mouseover,
-                            }, [
-                                dom_1.el(".dhx_colorpicker-custom-colors__header", [en_1.default.customColors]),
-                                dom_1.el(".dhx_palette--custom.dhx_palette__row", __spreadArrays(this._getCells(this.config.customColors, "dhx_custom-color__cell"), [
-                                    dom_1.el(".dhx_colorpicker-custom-colors__picker", {
-                                        class: "dxi dxi-plus",
-                                        onclick: this._handlers.customColorClick,
-                                        onmouseover: this._handlers.mouseover,
-                                    }),
-                                ])),
-                            ]),
-                    ]) : [picker_1.getPicker(this, this._pickerState, this._handlers)];
-        }
-        return dom_1.el(".dhx_widget.dhx_colorpicker", { class: this.config.css, style: { width: this.config.width } }, [
-            dom_1.el(".dhx_palette", {
-                onclick: this._handlers.click,
-                oncontextmenu: this._handlers.contextmenu,
-            }, view),
+        return dom_1.el("label.dhx_checkbox.dhx_cell-editor__checkbox", [
+            dom_1.el("input.dhx_checkbox__input", {
+                type: "checkbox",
+                _hooks: {
+                    didInsert: this._handlers.didInsert,
+                },
+                _key: "cell_editor",
+                dhx_id: "cell_editor",
+                checked: this._checked,
+                style: {
+                    userSelect: "none",
+                },
+            }),
+            dom_1.el("span.dhx_checkbox__visual-input"),
         ]);
     };
-    return Colorpicker;
-}(view_1.View));
-exports.Colorpicker = Colorpicker;
-
-
-/***/ }),
-/* 148 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var color_1 = __webpack_require__(45);
-var dom_1 = __webpack_require__(0);
-var en_1 = __webpack_require__(46);
-function getPicker(colorpicker, pickerState, handlers) {
-    var rgb = color_1.HSVtoRGB(pickerState.hsv);
-    pickerState.background = color_1.RGBToHex(rgb);
-    var currentBackground = color_1.RGBToHex(color_1.HSVtoRGB({ h: pickerState.hsv.h, s: 1, v: 1 }));
-    var root = colorpicker.getRootView();
-    var box = root.refs
-        ? root.refs.picker_palette.el.getBoundingClientRect()
-        : { height: 200, width: 218, x: 0, y: 0 };
-    var height = box.height - 2;
-    var width = box.width - 2;
-    var gripTop = height - pickerState.hsv.v * height - 4;
-    var gripLeft = pickerState.hsv.s * width - 4;
-    var rangeWidth = box.width - 6;
-    var rangeGripLeft = rangeWidth - ((360 - pickerState.hsv.h) / 360) * rangeWidth;
-    var inputValue = color_1.isHex(pickerState.customHex)
-        ? pickerState.customHex.replace("#", "")
-        : pickerState.background.replace("#", "");
-    return dom_1.el(".dhx_colorpicker-picker", {}, [
-        dom_1.el(".dhx_colorpicker-picker__palette", {
-            style: {
-                height: 132,
-                background: currentBackground,
-            },
-            onmousedown: handlers.mousedown,
-            ontouchstart: handlers.touchstart,
-            dhx_id: "picker_palette",
-            _ref: "picker_palette",
-        }, [
-            dom_1.el(".dhx_palette_grip", {
-                style: {
-                    top: gripTop,
-                    left: gripLeft,
-                },
-            }),
-        ]),
-        dom_1.el(".dhx_colorpicker-hue-range", {
-            style: { height: 16 },
-            onmousedown: handlers.mousedown,
-            ontouchstart: handlers.touchstart,
-            dhx_id: "hue_range",
-            _key: "hue_range",
-            _ref: "hue_range",
-        }, [
-            dom_1.el(".dhx_colorpicker-hue-range__grip", {
-                style: { left: rangeGripLeft },
-            }),
-        ]),
-        dom_1.el(".dhx_colorpicker-value", [
-            dom_1.el(".dhx_colorpicker-value__color", {
-                style: { background: pickerState.background },
-            }),
-            dom_1.el(".dhx_colorpicker-value__input__wrapper", [
-                dom_1.el("input", {
-                    class: "dhx_colorpicker-value__input",
-                    value: inputValue,
-                    oninput: handlers.oninput,
-                    maxlength: "7",
-                    _key: "hex_input",
-                    "aria-label": "type color in HEX format",
-                }),
-            ]),
-        ]),
-        dom_1.el(".dhx_colorpicker-picker__buttons", [
-            !colorpicker.config.pickerOnly &&
-                dom_1.el("button", {
-                    class: "dhx_button dhx_button--size_medium dhx_button--view_link dhx_button--color_primary",
-                    onclick: [handlers.buttonsClick, "cancel"],
-                }, en_1.default.cancel),
-            dom_1.el("button", {
-                class: "dhx_button dhx_button--size_medium dhx_button--view_flat dhx_button--color_primary",
-                onclick: [handlers.buttonsClick, "apply"],
-            }, en_1.default.select),
-        ]),
-    ]);
-}
-exports.getPicker = getPicker;
-function calculatePaletteGrip(rootView, top, left) {
-    var paletteRect = rootView.refs.picker_palette.el.getBoundingClientRect();
-    var bottom = paletteRect.height;
-    var right = paletteRect.width;
-    top = top < 0 ? 0 : top > bottom ? bottom : top;
-    left = left < 0 ? 0 : left > right ? right : left;
-    var pLeft = Math.round(left / (right / 100));
-    var pTop = 100 - Math.round(top / (bottom / 100));
-    this._pickerState.hsv.s = pLeft / 100;
-    this._pickerState.hsv.v = pTop / 100;
-}
-exports.calculatePaletteGrip = calculatePaletteGrip;
-
-
-/***/ }),
-/* 149 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-function calculatePaletteGrip(clientRect, top, left) {
-    var bottom = clientRect.height;
-    var right = clientRect.width;
-    top = top < 0 ? 0 : top > bottom ? bottom : top;
-    left = left < 0 ? 0 : left > right ? right : left;
-    var pLeft = Math.round(left / (right / 100));
-    var pTop = 100 - Math.round(top / (bottom / 100));
-    return {
-        s: pLeft / 100,
-        v: pTop / 100,
-    };
-}
-exports.calculatePaletteGrip = calculatePaletteGrip;
-function calculateRangeGrip(clientRect, left) {
-    var right = clientRect.width;
-    left = left < 0 ? 0 : left > right ? right : left;
-    return {
-        h: Math.round(360 * (left / right)),
-        rangeLeft: left,
-    };
-}
-exports.calculateRangeGrip = calculateRangeGrip;
-
-
-/***/ }),
-/* 150 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
-Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(151));
-__export(__webpack_require__(26));
-
-
-/***/ }),
-/* 151 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var events_1 = __webpack_require__(2);
-var view_1 = __webpack_require__(5);
-var ts_data_1 = __webpack_require__(4);
-var ComposeLayer_1 = __webpack_require__(152);
-var Legend_1 = __webpack_require__(154);
-var types_1 = __webpack_require__(26);
-var index_1 = __webpack_require__(156);
-var index_2 = __webpack_require__(160);
-var Stacker_1 = __webpack_require__(169);
-var common_1 = __webpack_require__(8);
-var Tooltip_1 = __webpack_require__(170);
-var Chart = /** @class */ (function (_super) {
-    __extends(Chart, _super);
-    function Chart(node, config) {
-        if (config === void 0) { config = {}; }
-        var _this = _super.call(this, null, config) || this;
-        // using zero values ensure that widget will not attempt to render self in the hidden state
-        _this._width = 0;
-        _this._height = 0;
-        _this._left = 0;
-        _this._top = 0;
-        var dataConfig = {};
-        if (config.maxPoints) {
-            dataConfig.approximate = {
-                value: config.series.map(function (a) { return a.value; }),
-                maxNum: config.maxPoints,
-            };
-        }
-        if (Array.isArray(config.data)) {
-            _this.events = new events_1.EventSystem(_this);
-            _this.data = new ts_data_1.DataCollection(dataConfig, _this.events);
-            _this.data.parse(config.data);
-        }
-        else if (config.data && config.data.events) {
-            _this.data = config.data;
-            _this.events = _this.data.events;
-            _this.events.context = _this;
-        }
-        else {
-            _this.events = new events_1.EventSystem(_this);
-            _this.data = new ts_data_1.DataCollection(dataConfig, _this.events);
-        }
-        _this._globalHTMLHandlers = {
-            onmousemove: function (e) {
-                var _a = _this._layers.getSizes(), left = _a.left, top = _a.top, bottom = _a.bottom, right = _a.right;
-                var pageX = e.pageX, pageY = e.pageY;
-                var rects = _this.getRootView().node.el.getBoundingClientRect();
-                _this._left = rects.left + window.pageXOffset;
-                _this._top = rects.top + window.pageYOffset;
-                var x = pageX - left - _this._left;
-                var y = pageY - top - _this._top;
-                if (x >= 0 && x <= _this._width - right - left && y >= 0 && y <= _this._height - bottom - top) {
-                    _this.events.fire(types_1.ChartEvents.chartMouseMove, [x, y, _this._left + left, _this._top + top]);
-                }
-                else {
-                    _this.events.fire(types_1.ChartEvents.chartMouseLeave);
-                }
-            },
-            onmouseleave: function () { return _this.events.fire(types_1.ChartEvents.chartMouseLeave); },
-        };
-        _this._layers = new ComposeLayer_1.ComposeLayer();
-        _this.setConfig(config);
-        _this._initEvents();
-        _this._tooltip = new Tooltip_1.Tooltip(_this);
-        var render = function () {
-            if (!_this.data.getLength()) {
-                return dom_1.el("div");
-            }
-            var getChartAriaLabel = function (config) {
-                /*  Full example (without symbols of new line):
-                    Type chart "Title". X/Y Scale Name: bottom axis from Min to Max. Scale Name: left axis Name from Min to Max.
-                    Series: seria A, seria B, seria C, ...
-                 */
-                var scales = _this._scales;
-                var series = config.series;
-                var type = config.type;
-                if (!type) {
-                    // scatter chart
-                    type = series && series.length && series[0] ? series[0].type || "" : "";
-                }
-                var label = (type || "") + " chart.";
-                var getAxisName = function (cfg) { return (cfg._isXDirection ? "X" : "Y"); };
-                var getAxisTitle = function (cfg) { return cfg.title || cfg.text || cfg.value || ""; };
-                var getAxisMin = function (cfg) { return (cfg.steps && cfg.steps.length ? cfg.steps[0] : cfg.min || 0); };
-                var getAxisMax = function (cfg) {
-                    return cfg.steps && cfg.steps.length
-                        ? cfg.steps[cfg.steps.length - 1]
-                        : cfg.max || cfg.maxPoints || "max";
-                };
-                var getRadialAxisValue = function (attr, point) { return point[attr]; };
-                if (scales) {
-                    Object.keys(scales).forEach(function (direction) {
-                        var scale = scales[direction];
-                        var cfg = scale._axis || scale.config;
-                        if (direction === "radial") {
-                            var xData = scale._data._order;
-                            label += " X scale " + getAxisTitle(scale.config) + ": " + direction + " axis from " + getRadialAxisValue(scale.config.value, xData[0]) + " to " + getRadialAxisValue(scale.config.value, xData[xData.length - 1]) + ".";
-                            label += " " + getAxisName(scale) + " scale: axis from " + getAxisMin(cfg) + " to " + getAxisMax(cfg) + ".";
-                        }
-                        else {
-                            label += " " + getAxisName(scale) + " scale " + getAxisTitle(scale.config) + ": " + direction + " axis from " + getAxisMin(cfg) + " to " + getAxisMax(cfg) + ".";
-                        }
-                    });
-                }
-                if (series && series.length) {
-                    label += " Series:";
-                    series.forEach(function (seria, index) {
-                        label += " " + (type === "pie" || type === "pie3D" || type === "donut" ? seria.text : seria.value);
-                        label += index === series.length - 1 ? "." : ",";
-                    });
-                }
-                return label;
-            };
-            var getChartAriaAttrs = function (config) { return ({
-                "aria-label": getChartAriaLabel(config),
-            }); };
-            var content = [
-                dom_1.resizer(function (x, y) {
-                    _this._width = x;
-                    _this._height = y || 400; // if height is not provided, use default value
-                    var view = _this.getRootView();
-                    if (view && view.node && view.node.el) {
-                        var rects = view.node.el.getBoundingClientRect();
-                        _this._left = rects.left + window.pageXOffset;
-                        _this._top = rects.top + window.pageYOffset;
-                    }
-                    _this.events.fire(types_1.ChartEvents.resize, [
-                        {
-                            width: _this._width,
-                            height: _this._height,
-                        },
-                    ]);
-                    _this.paint();
-                }),
-            ];
-            if (_this._width && _this._height) {
-                content.push(_this._layers.toVDOM(_this._width, _this._height, _this.events));
-            }
-            return dom_1.el(".dhx_widget.dhx_chart", __assign({ class: config.css ? config.css : "", onmousemove: _this._globalHTMLHandlers.onmousemove, onmouseleave: _this._globalHTMLHandlers.onmouseleave }, getChartAriaAttrs(config)), content);
-        };
-        var view = dom_1.create({
-            render: render,
-            hooks: {
-                didMount: function (vm) {
-                    if (vm && vm.node && vm.node.parent && vm.node.parent.el) {
-                        _this._width = vm.node.parent.el.offsetWidth;
-                        _this._height = vm.node.parent.el.offsetHeight || 400;
-                        _this.paint();
-                    }
-                },
-            },
-        });
-        _this.mount(node, view);
-        return _this;
-    }
-    Chart.prototype.getSeries = function (key) {
-        return this._series[key];
-    };
-    Chart.prototype.eachSeries = function (handler) {
-        var result = [];
-        for (var key in this._series) {
-            result.push(handler.call(this, this._series[key]));
-        }
-        return result;
-    };
-    Chart.prototype.destructor = function () {
-        this.events.clear();
-        this._tooltip.destructor();
-        this.unmount();
-    };
-    Chart.prototype.setConfig = function (config) {
+    CheckboxEditor.prototype._initHandlers = function () {
         var _this = this;
-        this.config = config;
-        this._layers.clear();
-        this._series = {};
-        this._scales = {};
-        var min;
-        // let baseLine;
-        if (config.scales) {
-            for (var key in config.scales) {
-                var scale = __assign({}, config.scales[key]);
-                if (config.scales[key].min !== undefined) {
-                    min = config.scales[key].min;
-                }
-                scale.type = scale.type || this._detectScaleType(scale, key);
-                if (config.scales.radial && key !== "radial") {
-                    scale.hidden = true;
-                }
-                this._setScale(scale, key);
-            }
-        }
-        var stack = new Stacker_1.default();
-        this._layers.add(stack);
-        config.series.forEach(function (cfg) {
-            if (cfg.baseLine !== undefined && cfg.baseLine < min) {
-                cfg.baseLine = undefined;
-            }
-            var serieConfig = __assign({}, cfg);
-            serieConfig.type = serieConfig.type || config.type;
-            var chartFactory = index_2.default[serieConfig.type];
-            if (serieConfig.barWidth || _this.config.barWidth) {
-                serieConfig.barWidth = serieConfig.barWidth || _this.config.barWidth;
-            }
-            var chart = new chartFactory(_this.data, serieConfig, _this.events);
-            var scales = common_1.getScales(config.scales);
-            var chartScales = scales.length > 1 && scales[0] !== "radial"
-                ? scales
-                : scales[0] === "radial"
-                    ? scales
-                    : ["bottom", "left"];
-            chartScales.forEach(function (type) {
-                var scale = _this._scales[type];
-                if (!scale) {
-                    return;
-                }
-                chart.addScale(type, scale);
-                if (!serieConfig.stacked) {
-                    scale.add(chart);
-                }
-                else {
-                    scale.add(stack);
-                }
-            });
-            _this._series[chart.id] = chart;
-            if (serieConfig.stacked) {
-                stack.add(chart);
-            }
-            else {
-                _this._layers.add(chart);
-            }
-        });
-        if (config.legend) {
-            var legendConfig = __assign({}, config.legend);
-            if (legendConfig.series) {
-                legendConfig.$seriesInfo = legendConfig.series.map(function (id) { return _this._series[id]; });
-            }
-            var legend = new Legend_1.Legend(this.data, legendConfig, this.events);
-            this._layers.add(legend);
-        }
-        this.paint();
-    };
-    Chart.prototype._setScale = function (config, position) {
-        var scale = new index_1.default[config.type](this.data, config, position);
-        if (scale.config.type !== "radial") {
-            this._layers.add(scale.scaleGrid());
-        }
-        this._layers.add(scale);
-        this._scales[position] = scale;
-    };
-    Chart.prototype._detectScaleType = function (config, key) {
-        if (key === "radial") {
-            return key;
-        }
-        if (config.text) {
-            return "text";
-        }
-        return "numeric";
-    };
-    Chart.prototype._initEvents = function () {
-        var _this = this;
-        // hide/show series on legend click
-        this.events.on(types_1.ChartEvents.toggleSeries, function (id, pieLike) {
-            if (pieLike) {
-                var serie = _this._series[Object.keys(_this._series)[0]];
-                if (serie) {
-                    serie.toggle(id);
-                    _this.paint();
-                }
-            }
-            else if (_this._series[id]) {
-                _this._series[id].toggle();
-                _this.paint();
-            }
-        }, this);
-        // repaint on data change
-        this.events.on(ts_data_1.DataEvents.change, function () { return _this.paint(); });
-    };
-    return Chart;
-}(view_1.View));
-exports.Chart = Chart;
-
-
-/***/ }),
-/* 152 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var Filters_1 = __webpack_require__(153);
-var ComposeLayer = /** @class */ (function () {
-    function ComposeLayer() {
-        this._data = [];
-        this._sizes = { left: 20, right: 20, top: 10, bottom: 10 };
-    }
-    ComposeLayer.prototype.add = function (obj) {
-        this._data.push(obj);
-    };
-    ComposeLayer.prototype.clear = function () {
-        this._data.forEach(function (item) { return item.destructor && item.destructor(); });
-        this._data = [];
-    };
-    ComposeLayer.prototype.getSizes = function () {
-        return this._sizes;
-    };
-    ComposeLayer.prototype.toVDOM = function (width, height) {
-        var sizes = { left: 20, right: 20, top: 10, bottom: 10 };
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        var toPaint = this._data.filter(function (l) { return !l.dataReady || l.dataReady().length; });
-        // eslint-disable-next-line @typescript-eslint/unbound-method
-        this._data.forEach(function (l) { return !l.scaleReady || l.scaleReady(sizes); });
-        var shift = 0;
-        var shiftCount = 0;
-        toPaint.forEach(function (item) {
-            if (item.seriesShift) {
-                shift += item.seriesShift();
-                shiftCount++;
-            }
-        });
-        var step = shift / shiftCount;
-        shift = shiftCount ? (step - shift) / 2 : 0;
-        toPaint.forEach(function (item) {
-            if (item.seriesShift) {
-                item.seriesShift(shift);
-                shift += step;
-            }
-        });
-        this._sizes = sizes;
-        var contentWidth = width - sizes.left - sizes.right;
-        var contentHeight = height - sizes.top - sizes.bottom;
-        var chartsContent = dom_1.sv("g", {
-            transform: "translate(" + sizes.left + ", " + sizes.top + ")",
-        }, __spreadArrays([
-            dom_1.sv("rect.dhx_chart-graph_area", {
-                width: contentWidth > 0 ? contentWidth : 0,
-                height: contentHeight > 0 ? contentHeight : 0,
-                fill: "transparent",
-            })
-        ], toPaint.map(function (item) {
-            return item.paint(width - (sizes.left + sizes.right), height - (sizes.top + sizes.bottom));
-        })));
-        var defs = dom_1.sv("defs", [Filters_1.dropShadow(), Filters_1.shadow()]);
-        return dom_1.sv("svg", {
-            width: width,
-            height: height,
-            role: "graphics-document",
-        }, [defs, chartsContent]);
-    };
-    return ComposeLayer;
-}());
-exports.ComposeLayer = ComposeLayer;
-
-
-/***/ }),
-/* 153 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-exports.shadow = function () {
-    return dom_1.sv("filter", { id: "shadow" }, [
-        dom_1.sv("feDiffuseLighting", {
-            in: "SourceGraphic",
-            result: "light",
-            "lighting-color": "white",
-        }, [dom_1.sv("feDistantLight", { azimuth: 90, elevation: 25 })]),
-        dom_1.sv("feComposite", {
-            in: "SourceGraphic",
-            in2: "light",
-            operator: "arithmetic",
-            k1: "1",
-            k2: "0",
-            k3: "0",
-            k4: "0",
-        }),
-    ]);
-};
-exports.dropShadow = function () {
-    return dom_1.sv("filter", {
-        id: "dropshadow",
-        x: "-100%",
-        y: "-100%",
-        width: "300%",
-        height: "300%",
-    }, [
-        dom_1.sv("feGaussianBlur", { in: "SourceAlpha", stdDeviation: 2 }),
-        dom_1.sv("feOffset", { dx: 0, dy: 0, result: "offsetblur" }),
-        dom_1.sv("feOffset", { dx: 0, dy: 0, result: "offsetblur" }),
-        dom_1.sv("feFlood", { "flood-color": "rgba(85,85,85,0.5)" }),
-        dom_1.sv("feComposite", { in2: "offsetblur", operator: "in" }),
-        dom_1.sv("feMerge", [dom_1.sv("feMergeNode"), dom_1.sv("feMergeNode", { in: "SourceGraphic" })]),
-    ]);
-};
-
-
-/***/ }),
-/* 154 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(26);
-var dom_1 = __webpack_require__(0);
-var common_1 = __webpack_require__(8);
-var legend_1 = __webpack_require__(155);
-function getDefaultMargin(halign, valign) {
-    switch (valign) {
-        case "middle": {
-            switch (halign) {
-                case "right":
-                    return 60;
-                case "left":
-                    return 120;
-                case "center":
-                    throw new Error("cant place legend on center, middle");
-            }
-        }
-        // eslint-disable-next-line no-fallthrough
-        case "top":
-            return 20;
-        case "bottom":
-            return 60;
-    }
-}
-var Legend = /** @class */ (function () {
-    function Legend(_data, config, _events) {
-        var _this = this;
-        this._data = _data;
-        this._events = _events;
-        var defaults = {
-            form: "rect",
-            itemPadding: 20,
-            halign: "right",
-            valign: "middle",
-        };
-        this.config = __assign(__assign({}, defaults), config);
-        this.config.margin = config.margin || getDefaultMargin(this.config.halign, this.config.valign);
         this._handlers = {
-            onclick: function (id, pieLike) {
-                return _this._events.fire(types_1.ChartEvents.toggleSeries, [id, pieLike]);
-            },
-        };
-    }
-    Legend.prototype.scaleReady = function (sizes) {
-        if (this.config.valign === "middle") {
-            if (this.config.halign === "right") {
-                sizes.right += this.config.size || 200;
-            }
-            else if (this.config.halign === "left") {
-                sizes.left += this.config.size || 200;
-            }
-        }
-        else {
-            if (this.config.valign === "top") {
-                sizes.top += this.config.size || 40;
-            }
-            else if (this.config.valign === "bottom") {
-                sizes.bottom += this.config.size || 40;
-            }
-        }
-    };
-    Legend.prototype.paint = function (width, height) {
-        var _this = this;
-        var getLegendAriaAttrs = function (item) { return ({
-            role: "button",
-            "aria-label": item.active ? "Hide chart " + item.text : "Show chart " + item.text,
-        }); };
-        var data = this._getData();
-        var config = this.config;
-        var positionX;
-        var positionY;
-        var font = common_1.getFontStyle("legend-text");
-        var figureWidth = 10; // get Figure width from config ??
-        var margin = config.margin, itemPadding = config.itemPadding;
-        var svg = [];
-        var isMid = config.valign === "middle";
-        var xPadding = 0;
-        var yPadding = 0;
-        data.forEach(function (item) {
-            svg.push(dom_1.sv("g", __assign({ transform: "translate(" + xPadding + "," + yPadding + ")", onclick: [_this._handlers.onclick, item.id, _this.config.values], class: "legend-item " + (!item.active ? "not-active" : "") }, getLegendAriaAttrs(item)), [
-                dom_1.sv("text", {
-                    x: figureWidth / 2 + 5,
-                    y: 0,
-                    class: "start-text legend-text",
-                }, [common_1.verticalCenteredText(item.text)]),
-                legend_1.legendShape(config.form, item),
-            ]));
-            if (!isMid) {
-                var textWidth = common_1.getTextWidth(item.text, font);
-                xPadding += textWidth + itemPadding + figureWidth * 1.5;
-            }
-            else {
-                yPadding += itemPadding + 2;
-            }
-        });
-        switch (config.valign) {
-            case "top":
-                positionY = -margin - figureWidth / 2;
-                break;
-            case "middle":
-                positionY = (height - yPadding) / 2 + itemPadding / 2;
-                break;
-            case "bottom":
-                positionY = height + margin;
-                break;
-        }
-        switch (config.halign) {
-            case "left":
-                positionX = isMid ? -margin : figureWidth / 2;
-                break;
-            case "center":
-                positionX = (width - xPadding) / 2;
-                break;
-            case "right":
-                positionX = isMid
-                    ? width + margin + figureWidth / 2
-                    : width - xPadding + itemPadding + figureWidth / 2;
-                break;
-        }
-        return dom_1.sv("g", {
-            transform: "translate(" + positionX + ", " + positionY + ")",
-            "aria-label": "Legend",
-        }, svg);
-    };
-    Legend.prototype._getData = function () {
-        var drawData = [];
-        if (this.config.values) {
-            var text_1 = common_1.locator(this.config.values.text);
-            var fill_1 = common_1.locator(this.config.values.color);
-            this._data.map(function (item, index) {
-                drawData.push({
-                    id: item.id,
-                    text: text_1(item).toString(),
-                    alpha: 1,
-                    fill: fill_1(item).toString() || common_1.getDefaultColor(index),
-                    active: !item.$hidden,
-                });
-            });
-        }
-        else {
-            var series = this.config.$seriesInfo;
-            for (var _i = 0, series_1 = series; _i < series_1.length; _i++) {
-                var serie = series_1[_i];
-                var seriaConfig = serie.config;
-                var useColor = seriaConfig.fill && seriaConfig.color;
-                drawData.push({
-                    id: seriaConfig.id,
-                    text: seriaConfig.name || seriaConfig.value,
-                    alpha: seriaConfig.alpha,
-                    fill: seriaConfig.fill || seriaConfig.color,
-                    color: useColor && seriaConfig.color,
-                    active: seriaConfig.active,
-                });
-            }
-        }
-        return drawData;
-    };
-    return Legend;
-}());
-exports.Legend = Legend;
-
-
-/***/ }),
-/* 155 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var figureWidth = 10;
-var forms = {
-    circle: function (color, fill, fillOpacity) {
-        return dom_1.sv("circle", {
-            id: core_1.uid(),
-            r: figureWidth / 2,
-            fill: fill,
-            class: "figure " + (color !== "none" ? "with-stroke" : ""),
-            "stroke-width": 2,
-            "fill-opacity": fillOpacity,
-            stroke: color,
-            transform: "translate(0, -1)",
-        });
-    },
-    rect: function (color, fill, fillOpacity) {
-        return dom_1.sv("rect", {
-            id: core_1.uid(),
-            fill: fill,
-            "fill-opacity": fillOpacity,
-            width: figureWidth,
-            "stroke-width": 2,
-            height: figureWidth,
-            class: "figure " + (color !== "none" ? "with-stroke" : ""),
-            stroke: color,
-            transform: "translate(" + -figureWidth / 2 + ", " + -figureWidth / 2 + ")",
-        });
-    },
-};
-function legendShape(form, item) {
-    if (typeof form === "string") {
-        form = forms[form];
-    }
-    return form(item.color || "none", item.fill, item.alpha || 1);
-}
-exports.legendShape = legendShape;
-
-
-/***/ }),
-/* 156 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var RadialScale_1 = __webpack_require__(157);
-var Scale_1 = __webpack_require__(47);
-var TextScale_1 = __webpack_require__(159);
-var scaleTypes = {
-    radial: RadialScale_1.RadialScale,
-    text: TextScale_1.TextScale,
-    numeric: Scale_1.Scale,
-};
-exports.default = scaleTypes;
-
-
-/***/ }),
-/* 157 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var circle_1 = __webpack_require__(27);
-var Scale_1 = __webpack_require__(47);
-var RadialScale = /** @class */ (function (_super) {
-    __extends(RadialScale, _super);
-    function RadialScale(_data, config) {
-        return _super.call(this, _data, config, "radial") || this;
-    }
-    RadialScale.prototype.paint = function (width, height) {
-        var _this = this;
-        if (this.config.hidden) {
-            return null;
-        }
-        var zebra = this.config.zebra;
-        var attribute = this.config.value;
-        var realAxis = this.config.showAxis ? this._axis.steps : null;
-        var axis = this._axis.steps.map(function (step) { return _this.point(step); });
-        var scales = this._data.map(function (item) { return item[attribute]; });
-        var config = { scales: scales, axis: axis, realAxis: realAxis, zebra: zebra, attribute: attribute };
-        return circle_1.radarScale(config, width, height);
-    };
-    RadialScale.prototype.point = function (val) {
-        return (val - this._axis.min) / (this._axis.max - this._axis.min);
-    };
-    return RadialScale;
-}(Scale_1.Scale));
-exports.RadialScale = RadialScale;
-
-
-/***/ }),
-/* 158 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var common_1 = __webpack_require__(8);
-var allowedBases = [1, 2, 3, 5, 10];
-var AxisCreator = /** @class */ (function () {
-    function AxisCreator(_data, conf) {
-        if (conf === void 0) { conf = {}; }
-        this._data = _data;
-        var chekedData = [];
-        for (var _i = 0, _a = this._data; _i < _a.length; _i++) {
-            var item = _a[_i];
-            if (typeof item === "number") {
-                chekedData.push(item);
-            }
-        }
-        var defaults = {
-            min: Math.min.apply(Math, chekedData),
-            max: Math.max.apply(Math, chekedData),
-            maxTicks: this._data.length < 20 ? this._data.length : 20,
-        };
-        this.config = __assign(__assign({}, defaults), conf);
-        if (this.config.padding) {
-            this._addPadding();
-        }
-    }
-    AxisCreator.prototype.getScale = function () {
-        var steps = this.config.log ? this._logSteps() : this._calculateSteps(this._getStep());
-        return {
-            min: steps[0],
-            max: steps[steps.length - 1],
-            steps: steps,
-        };
-    };
-    AxisCreator.prototype._getStep = function () {
-        var ticks = this.config.maxTicks;
-        var dif = this.config.max - this.config.min;
-        var exponent = Math.floor(common_1.log10(dif / ticks));
-        var step = Math.pow(10, exponent);
-        var rawBase = dif / step / ticks;
-        var nearestBase = allowedBases[__spreadArrays(allowedBases, [rawBase]).sort(function (a, b) { return a - b; }).indexOf(rawBase)];
-        return nearestBase * step;
-    };
-    AxisCreator.prototype._calculateSteps = function (step) {
-        var firstIndex = Math.floor(this.config.min / step);
-        var lastIndex = Math.ceil(this.config.max / step);
-        var steps = [];
-        for (var i = firstIndex; i <= lastIndex; i++) {
-            var currentStep = step * i;
-            if (Math.floor(currentStep) !== currentStep) {
-                currentStep = parseFloat(currentStep.toFixed(8));
-            }
-            steps.push(currentStep);
-        }
-        return steps;
-    };
-    AxisCreator.prototype._logSteps = function () {
-        var steps = [];
-        if (this.config.min < 0) {
-            var negativeExponent = Math.ceil(common_1.log10(-this.config.min));
-            for (var i = negativeExponent; i > 0; i--) {
-                steps.push(-(Math.pow(10, i)));
-            }
-            steps.push(0);
-        }
-        if (this.config.max > 0) {
-            var positiveExponent = Math.ceil(common_1.log10(this.config.max));
-            for (var i = 1; i <= positiveExponent; i++) {
-                steps.push(Math.pow(10, i));
-            }
-        }
-        return steps;
-    };
-    AxisCreator.prototype._addPadding = function () {
-        this.config.min -= this.config.padding;
-    };
-    return AxisCreator;
-}());
-exports.AxisCreator = AxisCreator;
-
-
-/***/ }),
-/* 159 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var common_1 = __webpack_require__(8);
-var Scale_1 = __webpack_require__(47);
-var SvgScales_1 = __webpack_require__(73);
-var renderScale = {
-    left: SvgScales_1.left,
-    right: SvgScales_1.right,
-    bottom: SvgScales_1.bottom,
-    top: SvgScales_1.top,
-};
-var renderGrid = {
-    left: SvgScales_1.leftGrid,
-    right: SvgScales_1.rightGrid,
-    bottom: SvgScales_1.bottomGrid,
-    top: SvgScales_1.topGrid,
-};
-var TextScale = /** @class */ (function (_super) {
-    __extends(TextScale, _super);
-    function TextScale() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    TextScale.prototype.scaleReady = function (sizes) {
-        var max = this._data.getLength() - 1;
-        var steps = this._data.map(this.locator);
-        this._axis = { max: max, steps: steps };
-        sizes[this._position] += this.config.size;
-    };
-    TextScale.prototype.point = function (value) {
-        var pos = this._axis.steps.indexOf(value);
-        if (this._padding) {
-            var max = this._axis.max + 1;
-            var padding = 0.5 / max;
-            var point = pos / max;
-            return this._isXDirection ? padding + point : 1 - padding - point;
-        }
-        else {
-            return this._isXDirection ? pos / this._axis.max : 1 - pos / this._axis.max;
-        }
-    };
-    TextScale.prototype.paint = function (width, height) {
-        var _this = this;
-        if (this.config.hidden) {
-            return null;
-        }
-        var points = this._axis.steps.map(function (item, index) { return [
-            _this._isXDirection ? _this._getAxisPoint(index) * width : _this.point(item) * height,
-            item,
-        ]; });
-        return renderScale[this._position](points, this.config, width, height);
-    };
-    TextScale.prototype.scaleGrid = function () {
-        var _this = this;
-        var getPoints = function (width, height) {
-            return _this._axis.steps.map(function (item, index) { return [
-                _this._isXDirection ? _this._getAxisPoint(index) * width : _this._getAxisPoint(index) * height,
-                item,
-            ]; });
-        };
-        var type = this._position;
-        var grid = this.config.grid;
-        var dashed = this.config.dashed;
-        var hidden = this.config.hidden;
-        var getSpecificLevel = function () { return _this._axis.steps.indexOf(_this.config.targetLine); };
-        return {
-            paint: function (width, height) {
-                var targetLine = getSpecificLevel();
-                var points = getPoints(width, height);
-                var config = { targetLine: targetLine, dashed: dashed, grid: grid, hidden: hidden };
-                return renderGrid[type](points, width, height, config);
-            },
-        };
-    };
-    TextScale.prototype._setDefaults = function (config) {
-        var defaults = {
-            scalePadding: 30,
-            textPadding: 12,
-            grid: true,
-            targetLine: null,
-            showText: true,
-        };
-        this.locator = common_1.locator(config.text);
-        this.config = __assign(__assign({}, defaults), config);
-    };
-    TextScale.prototype._getAxisPoint = function (index) {
-        var max = this._axis.max;
-        if (this._padding) {
-            var count = max + 1;
-            var padding = 0.5 / count;
-            var point = index / count;
-            return this._isXDirection ? padding + point : 1 - padding - point;
-        }
-        else {
-            return this._isXDirection ? index / max : 1 - index / max;
-        }
-    };
-    return TextScale;
-}(Scale_1.Scale));
-exports.TextScale = TextScale;
-
-
-/***/ }),
-/* 160 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var Area_1 = __webpack_require__(74);
-var Bar_1 = __webpack_require__(76);
-var BarX_1 = __webpack_require__(161);
-var Donut_1 = __webpack_require__(162);
-var Line_1 = __webpack_require__(51);
-var Pie_1 = __webpack_require__(163);
-var Pie3D_1 = __webpack_require__(164);
-var Radar_1 = __webpack_require__(165);
-var Scatter_1 = __webpack_require__(166);
-var Spline_1 = __webpack_require__(167);
-var SplineArea_1 = __webpack_require__(168);
-var seriesTypes = {
-    line: Line_1.default,
-    spline: Spline_1.default,
-    area: Area_1.default,
-    splineArea: SplineArea_1.default,
-    scatter: Scatter_1.default,
-    pie: Pie_1.default,
-    pie3D: Pie3D_1.default,
-    donut: Donut_1.default,
-    radar: Radar_1.default,
-    bar: Bar_1.default,
-    xbar: BarX_1.default,
-};
-exports.default = seriesTypes;
-
-
-/***/ }),
-/* 161 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Bar_1 = __webpack_require__(76);
-var BarX = /** @class */ (function (_super) {
-    __extends(BarX, _super);
-    function BarX() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    BarX.prototype.addScale = function (type, scale) {
-        var realtype = type === "top" || type === "bottom" ? "left" : "top";
-        _super.prototype.addScale.call(this, realtype, scale);
-    };
-    BarX.prototype.paint = function (width, height, prev) {
-        return _super.prototype.paint.call(this, height, width, prev);
-    };
-    BarX.prototype.getTooltipType = function (id, x, y) {
-        if (this.config.baseLine !== undefined && this._baseLinePosition > x) {
-            return "left";
-        }
-        return "right";
-    };
-    BarX.prototype.getClosest = function (x, y) {
-        var res = [Infinity, null, null, null];
-        for (var _i = 0, _a = this._points; _i < _a.length; _i++) {
-            var point = _a[_i];
-            var dist = this._getClosestDist(x, y, point[1], point[0]);
-            if (res[0] > dist) {
-                res[0] = dist;
-                res[1] = point[1];
-                res[2] = point[0];
-                res[3] = point[2];
-            }
-        }
-        return res;
-    };
-    BarX.prototype._getText = function (item) {
-        return item[4].toString();
-    };
-    BarX.prototype._getClosestDist = function (x, y, px, py) {
-        if (this.config.stacked && x > px) {
-            return Infinity;
-        }
-        return Math.abs(y - py);
-    };
-    BarX.prototype._path = function (item, prev) {
-        item[0] += this._shift;
-        return "\nM " + prev + " " + (item[0] - this.config.barWidth / 2) + "\nH " + item[1] + "\nv " + this.config.barWidth + "\nH " + prev;
-    };
-    BarX.prototype._base = function (height) {
-        var baseLine = this.config.baseLine;
-        return (this._baseLinePosition = baseLine !== undefined ? this.yScale.point(baseLine) * height : 0);
-    };
-    BarX.prototype._text = function (item, prev, rotate) {
-        var x = (prev + item[1]) / 2;
-        var y = item[0];
-        var canRotate = rotate && !isNaN(rotate);
-        return {
-            x: x,
-            y: y,
-            class: "bar-text",
-            transform: canRotate ? "rotate(" + rotate + " " + x + " " + y + ")" : "",
-        };
-    };
-    return BarX;
-}(Bar_1.default));
-exports.default = BarX;
-
-
-/***/ }),
-/* 162 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(27);
-var common_1 = __webpack_require__(8);
-var NoScaleSeria_1 = __webpack_require__(50);
-var Donut = /** @class */ (function (_super) {
-    __extends(Donut, _super);
-    function Donut() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Donut.prototype.paint = function (width, height) {
-        var _this = this;
-        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
-        var getPointAriaAttrs = function (value, text, percent) {
-            if (percent === void 0) { percent = 0; }
-            return ({
-                role: "graphics-symbol",
-                "aria-roledescription": "piece of donut",
-                "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
-            });
-        };
-        var getChartAriaAttrs = function (cfg) { return ({
-            "aria-label": "chart " + (cfg.text || ""),
-        }); };
-        var radius;
-        if (height > width) {
-            radius = width / 2;
-        }
-        else {
-            radius = height / 2;
-        }
-        var currentPercent = -0.25;
-        var svg = [];
-        var links = [];
-        var tooltipData = [];
-        this._points.forEach(function (item) {
-            var percent = item[0], value = item[1], id = item[2], text = item[3], color = item[4];
-            var err = percent === 0 || percent === 1 ? -0.000001 : 0;
-            var _a = circle_1.getCoordinates(currentPercent, radius, radius), startX = _a[0], startY = _a[1];
-            var avPercent = currentPercent + percent / 2;
-            currentPercent += percent + err;
-            var _b = circle_1.getCoordinates(currentPercent, radius, radius), endX = _b[0], endY = _b[1];
-            var largeArcFlag = percent > 0.5 ? 1 : 0;
-            var middleLine = circle_1.getCoordinates(avPercent, radius, radius);
-            var isRight = avPercent > -0.25 && avPercent < 0.25;
-            var isUp = avPercent > 0.5 || avPercent < 0;
-            switch (_this.config.subType) {
-                case "basic": {
-                    var className = isRight ? "donut-value-title start-text" : "donut-value-title end-text";
-                    var textPadding = 10;
-                    var dy = isUp ? -textPadding * 2 : textPadding;
-                    var linkStart = circle_1.getCoordinates(avPercent, radius + 10, radius + 10);
-                    var className2 = isRight ? "donut-value start-text" : "donut-value end-text";
-                    var text1 = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
-                    var text2 = dom_1.sv("text", {
-                        x: linkStart[0],
-                        y: linkStart[1] + dy + 16,
-                        class: className2,
-                        "aria-hidden": "true",
-                    }, [common_1.verticalCenteredText(value.toString())]);
-                    links.push(text1);
-                    links.push(text2);
-                    break;
-                }
-                case "valueOnly": {
-                    var className = isRight ? "donut-value start-text" : "donut-value end-text";
-                    var textPadding = 10;
-                    var dy = isUp ? -textPadding : textPadding;
-                    var linkStart = circle_1.getCoordinates(avPercent, radius + 10, radius + 10);
-                    var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
-                    links.push(textSvg);
-                    break;
-                }
-                case "percentOnly": {
-                    var percentText = dom_1.sv("text", __assign({ x: (middleLine[0] * 7) / 9, y: (middleLine[1] * 7) / 9, class: "pie-inner-value" }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
-                    links.push(percentText);
-                    break;
-                }
-            }
-            var d = "M " + startX + " " + startY + " A " + radius + " " + radius + " 0 " + largeArcFlag + " 1 " + endX + " " + endY + " L 0 0";
-            var _c = circle_1.getCoordinates(avPercent, 4, 4), shiftX = _c[0], shiftY = _c[1];
-            var currentSector = dom_1.sv("path", {
-                d: d,
-                _key: id,
-                fill: color,
-                class: "chart donut",
-                onclick: [_this._handlers.onclick, item[1], item[2]],
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                onmouseout: [circle_1.pieLikeHandlers.onmouseout],
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                onmouseover: [circle_1.pieLikeHandlers.onmouseover, shiftX, shiftY],
-                role: "presentation",
-            });
-            svg.push(currentSector);
-            if (_this._points.length === 1) {
-                tooltipData.push([width / 2, height / 2]);
-            }
-            else {
-                tooltipData.push([middleLine[0] * 0.8 + width / 2, middleLine[1] * 0.8 + height / 2]);
-            }
-        });
-        this._center = [width / 2, height / 2];
-        this._tooltipData = tooltipData;
-        svg.push(dom_1.sv("circle", {
-            cx: 0,
-            cy: 0,
-            r: (radius * 5) / 9,
-            fill: "#FFFFFF",
-            role: "presentation",
-        }));
-        svg = svg.concat(links);
-        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
-    };
-    return Donut;
-}(NoScaleSeria_1.default));
-exports.default = Donut;
-
-
-/***/ }),
-/* 163 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(27);
-var common_1 = __webpack_require__(8);
-var NoScaleSeria_1 = __webpack_require__(50);
-var Pie = /** @class */ (function (_super) {
-    __extends(Pie, _super);
-    function Pie() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    // todo move to NoScaleSeria
-    Pie.prototype.paint = function (width, height) {
-        var _this = this;
-        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
-        var getPointAriaAttrs = function (value, text, percent) { return ({
-            role: "graphics-symbol",
-            "aria-roledescription": "piece of pie",
-            "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
-        }); };
-        var getChartAriaAttrs = function (cfg) { return ({
-            "aria-label": "chart " + (cfg.text || ""),
-        }); };
-        var _a = this.config, stroke = _a.stroke, strokeWidth = _a.strokeWidth, gradient = _a.gradient, useLines = _a.useLines, showText = _a.showText, showTextTemplate = _a.showTextTemplate, subType = _a.subType;
-        var radius;
-        if (height > width) {
-            radius = width / 2;
-        }
-        else {
-            radius = height / 2;
-        }
-        var currentPercent = -0.25; // 0 percent is (1, 0) point, -.25 is (0, -1) point
-        var tooltipData = [];
-        var svg = [];
-        var defs = [];
-        var links = [];
-        var pie = [];
-        var lines = [];
-        this._points.forEach(function (item) {
-            var percent = item[0], value = item[1], id = item[2], text = item[3], color = item[4];
-            var err = percent === 0 || percent === 1 ? -0.000001 : 0;
-            var fill = color;
-            if (gradient) {
-                var grad = gradient(color);
-                var gradientId = "gradient" + core_1.uid();
-                var radialGradient = common_1.getRadialGradient(grad.options, grad.stops, gradientId);
-                fill = "url(#" + gradientId + ")";
-                defs.push(radialGradient);
-            }
-            var _a = circle_1.getCoordinates(currentPercent, radius, radius), startX = _a[0], startY = _a[1];
-            var avPercent = currentPercent + percent / 2;
-            var lineLength = avPercent < 0.25 ? 5 : -5; // from 0 to 180 right pointer, 180 to 360 left pointer
-            var middleLine = circle_1.getCoordinates(avPercent, radius, radius);
-            var _b = [5, 30], startPart = _b[0], endPart = _b[1];
-            var _c = [
-                circle_1.getCoordinates(avPercent, radius + startPart, radius + startPart),
-                circle_1.getCoordinates(avPercent, radius + endPart, radius + endPart),
-            ], linkStart = _c[0], linkEnd = _c[1];
-            var className = avPercent > -0.25 && avPercent < 0.25 ? "pie-value start-text" : "pie-value end-text";
-            if (useLines) {
-                links.push(dom_1.sv("path", {
-                    d: "M" + linkStart[0] + " " + linkStart[1] + " L" + linkEnd[0] + " " + linkEnd[1] + " h " + lineLength,
-                    class: "pie-value-connector",
-                }));
-                var textSvg = dom_1.sv("text", __assign({ x: linkEnd[0], y: linkEnd[1], dx: lineLength / 2 + lineLength > 0 ? 10 : -10, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
-                links.push(textSvg);
-            }
-            else {
-                var textPadding = 5;
-                var dy = avPercent > 0.5 || avPercent < 0 ? -textPadding : textPadding;
-                var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
-                links.push(textSvg);
-            }
-            if ((showText || showTextTemplate) && showText !== false) {
-                var linkText = dom_1.sv("text", {
-                    x: middleLine[0] * 0.7,
-                    y: middleLine[1] * 0.7,
-                    class: "pie-inner-value",
-                    "aria-hidden": "true",
-                }, [
-                    showTextTemplate
-                        ? common_1.verticalCenteredText(showTextTemplate(value.toString()))
-                        : common_1.verticalCenteredText(value.toString()),
-                ]);
-                links.push(linkText);
-            }
-            if (subType === "percentOnly") {
-                var percentText = dom_1.sv("text", {
-                    x: middleLine[0] * 0.5,
-                    y: middleLine[1] * 0.5,
-                    class: "pie-inner-value",
-                    "aria-hidden": "true",
-                }, [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
-                links.push(percentText);
-            }
-            currentPercent += percent + err;
-            var _d = circle_1.getCoordinates(currentPercent, radius, radius), endX = _d[0], endY = _d[1];
-            var largeArcFlag = percent > 0.5 ? 1 : 0;
-            var d = "M " + startX + " " + startY + " A " + radius + " " + radius + " 0 " + largeArcFlag + " 1 " + endX + " " + endY + " L 0 0";
-            var _e = circle_1.getCoordinates(avPercent, 4, 4), shiftX = _e[0], shiftY = _e[1];
-            var currentSector = dom_1.sv("path", {
-                d: d,
-                class: "chart pie",
-                _key: id,
-                fill: fill,
-                onclick: [_this._handlers.onclick, item[1], item[2]],
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                onmouseover: [circle_1.pieLikeHandlers.onmouseover, shiftX, shiftY],
-                // eslint-disable-next-line @typescript-eslint/unbound-method
-                onmouseout: [circle_1.pieLikeHandlers.onmouseout],
-                role: "presentation",
-            });
-            pie.push(currentSector);
-            if (_this._points.length > 1 && stroke) {
-                var strokeOpts = {
-                    "stroke-width": strokeWidth,
-                    stroke: stroke,
-                };
-                var line = dom_1.sv("path", __assign({ d: "M0 0 L" + endX + " " + endY, fill: "none" }, strokeOpts));
-                lines.push(line);
-            }
-            if (_this._points.length === 1) {
-                tooltipData.push([width / 2, height / 2]);
-            }
-            else {
-                tooltipData.push([middleLine[0] * 0.7 + width / 2, middleLine[1] * 0.7 + height / 2]);
-            }
-        });
-        this._center = [width / 2, height / 2];
-        this._tooltipData = tooltipData;
-        svg.push(dom_1.sv("defs", defs));
-        svg = svg.concat(pie);
-        svg = svg.concat(lines);
-        svg = svg.concat(links);
-        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
-    };
-    return Pie;
-}(NoScaleSeria_1.default));
-exports.default = Pie;
-
-
-/***/ }),
-/* 164 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(27);
-var common_1 = __webpack_require__(8);
-var NoScaleSeria_1 = __webpack_require__(50);
-var Pie = /** @class */ (function (_super) {
-    __extends(Pie, _super);
-    function Pie() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    // todo move to NoScaleSeria
-    Pie.prototype.paint = function (width, height) {
-        var _this = this;
-        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
-        var getPointAriaAttrs = function (value, text, percent) { return ({
-            role: "graphics-symbol",
-            "aria-roledescription": "piece of pie",
-            "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
-        }); };
-        var getChartAriaAttrs = function (cfg) { return ({
-            "aria-label": "chart " + (cfg.text || ""),
-        }); };
-        var _a = this.config, subType = _a.subType, useLines = _a.useLines, showText = _a.showText, showTextTemplate = _a.showTextTemplate;
-        var radiusX;
-        if (height > width) {
-            radiusX = width / 2;
-        }
-        else {
-            radiusX = height / 2;
-        }
-        var radiusY = radiusX * 0.5;
-        var connector = radiusX / 5;
-        var tooltipData = [];
-        var currentPercent = -0.25;
-        var svg = [];
-        var links = [];
-        this._points.forEach(function (item) {
-            var percent = item[0], value = item[1], id = item[2], text = item[3], color = item[4];
-            var err = percent === 0 || percent === 1 ? -0.000001 : 0;
-            var _a = circle_1.getCoordinates(currentPercent, radiusX, radiusY), startX = _a[0], startY = _a[1];
-            var avPercent = currentPercent + percent / 2;
-            var lineLength = avPercent < 0.25 ? 5 : -5;
-            var middleLine = circle_1.getCoordinates(avPercent, radiusX, radiusY);
-            var delta = 0;
-            if (avPercent > 0 && avPercent < 0.5) {
-                delta = connector * Math.sin(2 * Math.PI * avPercent);
-            }
-            var linkStart = circle_1.getCoordinates(avPercent, radiusX + 5 + delta, radiusY + 5 + delta);
-            var linkEnd = circle_1.getCoordinates(avPercent, radiusX + 30 + delta, radiusY + 30 + delta);
-            var nextPercent = currentPercent + percent + err;
-            var _b = circle_1.getCoordinates(nextPercent, radiusX, radiusY), endX = _b[0], endY = _b[1];
-            var largeArcFlag = percent > 0.5 ? 1 : 0;
-            var className = avPercent > -0.25 && avPercent < 0.25 ? "pie-value start-text" : "pie-value end-text";
-            if (useLines) {
-                links.push(dom_1.sv("path", {
-                    d: "M" + linkStart[0] + " " + linkStart[1] + " L" + linkEnd[0] + " " + linkEnd[1] + " h " + lineLength,
-                    class: "pie-value-connector",
-                }));
-                var textSvg = dom_1.sv("text", __assign({ x: linkEnd[0], y: linkEnd[1], dx: lineLength / 2 + lineLength > 0 ? 10 : -10, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
-                links.push(textSvg);
-            }
-            else {
-                var textPadding = 10;
-                var dy = avPercent > 0.5 || avPercent < 0 ? -textPadding : textPadding;
-                var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
-                links.push(textSvg);
-            }
-            if ((showText || showTextTemplate) && showText !== false) {
-                var textSvg = dom_1.sv("text", {
-                    x: middleLine[0] * 0.7,
-                    y: middleLine[1] * 0.7,
-                    class: "pie-inner-value",
-                    "aria-hidden": "true",
-                }, [
-                    showTextTemplate
-                        ? common_1.verticalCenteredText(showTextTemplate(value))
-                        : common_1.verticalCenteredText(value.toString()),
-                ]);
-                links.push(textSvg);
-            }
-            if (subType === "percentOnly") {
-                var percentText = dom_1.sv("text", {
-                    x: middleLine[0] * 0.6,
-                    y: middleLine[1] * 0.6,
-                    class: "pie-inner-value",
-                    "aria-hidden": "true",
-                }, [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
-                links.push(percentText);
-            }
-            // 3d block
-            var addition = "";
-            if (currentPercent <= 0 && nextPercent >= 0.5) {
-                addition = "M " + radiusX + " 0 v " + connector + " A " + radiusX + " " + radiusY + " 0 1 1 " + -radiusX + " " + connector + " v " + -connector;
-            }
-            else if (currentPercent <= 0 && nextPercent < 0.5) {
-                addition = "M " + radiusX + " 0 v " + connector + " A " + radiusX + " " + radiusY + " 0 0 1 " + endX + " " + (endY +
-                    connector) + " v " + -connector;
-            }
-            else if (currentPercent > 0 && currentPercent <= 0.5 && nextPercent >= 0.5) {
-                addition = "M " + startX + " " + startY + " v " + connector + " A " + radiusX + " " + radiusY + " 0 0 1 " + -radiusX + " " + connector + " v " + -connector;
-            }
-            else if (currentPercent > 0 && nextPercent < 0.5) {
-                addition = "M " + startX + " " + startY + " v " + connector + " A " + radiusX + " " + radiusY + " 0 0 1 " + endX + " " + (endY +
-                    connector) + " v " + -connector;
-            }
-            if (addition) {
-                var additionPath = dom_1.sv("path", {
-                    _key: id + "__shadow__",
-                    d: addition,
-                    fill: color,
-                    onclick: [_this._handlers.onclick, item[1], item[2]],
-                    class: "chart pie3d addition",
-                    stroke: "none",
-                    filter: "url(#shadow)",
-                    role: "presentation",
-                });
-                svg.push(additionPath);
-            }
-            // end 3d block
-            var d = "M " + startX + " " + startY + " A " + radiusX + " " + radiusY + " 0 " + largeArcFlag + " 1 " + endX + " " + endY + " L 0 0";
-            svg.push(dom_1.sv("path", {
-                d: d,
-                _key: id,
-                fill: color,
-                stroke: "none",
-                onclick: [_this._handlers.onclick, item[1], item[2]],
-                class: "chart pie3d",
-                role: "presentation",
-            }));
-            if (_this._points.length === 1) {
-                tooltipData.push([width / 2, height / 2]);
-            }
-            else {
-                tooltipData.push([middleLine[0] * 0.7 + width / 2, middleLine[1] * 0.7 + height / 2]);
-            }
-            currentPercent = nextPercent;
-        });
-        this._center = [width / 2, height / 2];
-        this._tooltipData = tooltipData;
-        svg = svg.concat(links);
-        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
-    };
-    return Pie;
-}(NoScaleSeria_1.default));
-exports.default = Pie;
-
-
-/***/ }),
-/* 165 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var circle_1 = __webpack_require__(27);
-var common_1 = __webpack_require__(8);
-var BaseSeria_1 = __webpack_require__(49);
-var Radar = /** @class */ (function (_super) {
-    __extends(Radar, _super);
-    function Radar() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Radar.prototype.addScale = function (type, scale) {
-        this._scale = scale;
-    };
-    Radar.prototype.scaleReady = function (sizes) {
-        for (var key in sizes) {
-            sizes[key] += this.config.paddings;
-        }
-        return sizes;
-    };
-    Radar.prototype.dataReady = function (prev) {
-        var _this = this;
-        if (!this.config.active) {
-            return (this._points = []);
-        }
-        var xLocator = common_1.locator(this._scale.config.value);
-        this._points = this._data.map(function (item, index) {
-            // raw values
-            var value = _this._locator(item);
-            var set = [value, value, item.id, value, value];
-            if (prev) {
-                set[1] += prev[index][1];
-            }
-            if (xLocator) {
-                set.push(xLocator(item));
-            }
-            return set;
-        });
-        return this._points;
-    };
-    Radar.prototype.getTooltipText = function (id) {
-        if (this.config.tooltip) {
-            var p = this._defaultLocator(this._data.getItem(id));
-            if (this.config.tooltipTemplate) {
-                return this.config.tooltipTemplate(p);
-            }
-            return p;
-        }
-    };
-    Radar.prototype.paint = function (width, height) {
-        var _this = this;
-        _super.prototype.paint.call(this, width, height);
-        var getPointAriaAttrs = function (key, points) {
-            var point;
-            if (key) {
-                point = points.find(function (p) { return key.includes(p[2]); });
-            }
-            return {
-                role: "graphics-symbol",
-                "aria-roledescription": "point",
-                "aria-label": point ? "point x=" + point[5] + " y=" + point[4] : "",
-            };
-        };
-        var getChartAriaAttrs = function (cfg) { return ({
-            "aria-label": "chart " + (cfg.value || ""),
-        }); };
-        if (!this.config.active) {
-            return;
-        }
-        var config = this.config;
-        var svg = [];
-        var d = this._points.map(function (item, first) { return (first ? "L" : "M") + (item[0] + " " + item[1]); }).join(" ") + "Z";
-        svg.push(dom_1.sv("path", {
-            d: d,
-            stroke: config.color,
-            "stroke-width": config.strokeWidth,
-            fill: config.fill,
-            "fill-opacity": config.alpha,
-            class: "chart radar",
-        }));
-        if (config.pointType) {
-            var points = this._points
-                .map(function (p) { return _this._drawPointType(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); })
-                .map(function (node) {
-                if (node && node.attrs) {
-                    node.attrs = __assign(__assign({}, node.attrs), getPointAriaAttrs(node.key, _this._points));
-                }
-                return node;
-            });
-            svg.push(dom_1.sv("g", points));
-        }
-        return dom_1.sv("g", __assign({ id: "seria" + config.id }, getChartAriaAttrs(this.config)), svg);
-    };
-    Radar.prototype._calckFinalPoints = function (width, height) {
-        var _this = this;
-        var radius;
-        if (height > width) {
-            radius = width / 2;
-        }
-        else {
-            radius = height / 2;
-        }
-        var scalePercent = 1 / this._data.getLength();
-        var currentPercent = -0.25 - scalePercent;
-        this._points.forEach(function (item, index) {
-            currentPercent += scalePercent;
-            var value = _this._scale.point(item[0]);
-            var real = circle_1.getCoordinates(currentPercent, value * radius, value * radius);
-            // scaled values
-            item[0] = real[0] + width / 2;
-            item[1] = real[1] + height / 2;
-        });
-    };
-    Radar.prototype._defaultLocator = function (v) {
-        return this._locator(v);
-    };
-    Radar.prototype._setDefaults = function (config) {
-        var defaults = {
-            strokeWidth: 2,
-            active: true,
-            tooltip: true,
-            paddings: 5,
-            color: "none",
-            fill: "none",
-            pointType: "circle",
-        };
-        this._locator = common_1.locator(config.value);
-        config.scales = config.scales || ["radial"];
-        this.config = __assign(__assign({}, defaults), config);
-        if (this.config.pointType) {
-            var color = this.config.pointColor || this.config.color;
-            this._drawPointType = this._getPointType(this.config.pointType, color, this.config.tooltip);
-        }
-    };
-    return Radar;
-}(BaseSeria_1.default));
-exports.default = Radar;
-
-
-/***/ }),
-/* 166 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var Line_1 = __webpack_require__(51);
-var common_1 = __webpack_require__(8);
-var Scatter = /** @class */ (function (_super) {
-    __extends(Scatter, _super);
-    function Scatter() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Scatter.prototype.addScale = function (type, scale) {
-        if (type === "bottom" || type === "top") {
-            this.xScale = scale;
-            this._xLocator = common_1.locator(this.config.value);
-        }
-        else {
-            this.yScale = scale;
-            this._yLocator = common_1.locator(this.config.valueY);
-        }
-    };
-    Scatter.prototype._setDefaults = function (config) {
-        var defaults = {
-            active: true,
-            tooltip: true,
-            pointType: "rect",
-        };
-        this.config = __assign(__assign({}, defaults), config);
-        var showTooltip = this.config.tooltip;
-        var point = this.config.pointType;
-        var color = this.config.pointColor || this.config.color;
-        if (point) {
-            this._drawPointType = this._getPointType(point, color, showTooltip);
-        }
-    };
-    return Scatter;
-}(Line_1.default));
-exports.default = Scatter;
-
-
-/***/ }),
-/* 167 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var spline_1 = __webpack_require__(77);
-var Line_1 = __webpack_require__(51);
-var Spline = /** @class */ (function (_super) {
-    __extends(Spline, _super);
-    function Spline() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Spline.prototype._getForm = function (points, config, css, width, height) {
-        var color = config.color;
-        var className = config.css;
-        var d = spline_1.default(points);
-        return dom_1.sv("path", {
-            id: "seria" + config.id,
-            d: d,
-            class: className,
-            stroke: color,
-            "stroke-width": 2,
-            fill: "none",
-        });
-    };
-    return Spline;
-}(Line_1.default));
-exports.default = Spline;
-
-
-/***/ }),
-/* 168 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var spline_1 = __webpack_require__(77);
-var Area_1 = __webpack_require__(74);
-var SplineArea = /** @class */ (function (_super) {
-    __extends(SplineArea, _super);
-    function SplineArea() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    SplineArea.prototype._form = function (width, height, svg, prev) {
-        var _a = this.config, fill = _a.fill, alpha = _a.alpha, strokeWidth = _a.strokeWidth, color = _a.color, id = _a.id;
-        var className = this.config.css;
-        var d = "";
-        var first = this._points[0];
-        if (prev) {
-            d = spline_1.default([].concat(prev).reverse()) + " " + spline_1.default(this._points, true) + " Z";
-        }
-        else {
-            d = "M" + first[0] + " " + height + " V " + first[1] + " " + spline_1.default(this._points) + " V" + height + " H " + first[0];
-        }
-        if (strokeWidth) {
-            var line = spline_1.default(this._points);
-            var splinePath = dom_1.sv("path", {
-                d: line,
-                "stroke-width": strokeWidth,
-                stroke: color,
-                fill: "none",
-                "stroke-linecap": "butt",
-                class: className,
-            });
-            svg.push(splinePath);
-        }
-        var path = dom_1.sv("path", {
-            id: "seria" + id,
-            d: d,
-            class: className,
-            fill: fill,
-            "fill-opacity": alpha,
-            stroke: "none",
-        });
-        svg.push(path);
-        return svg;
-    };
-    return SplineArea;
-}(Area_1.default));
-exports.default = SplineArea;
-
-
-/***/ }),
-/* 169 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var Stacker = /** @class */ (function () {
-    function Stacker() {
-        this._series = [];
-    }
-    Stacker.prototype.add = function (seria) {
-        this._series.push(seria);
-    };
-    Stacker.prototype.dataReady = function (prev) {
-        this._toPaint = this._series.filter(function (serie) {
-            var next = serie.dataReady(prev);
-            if (next.length) {
-                prev = next;
-                return true;
-            }
-            return false;
-        });
-        return prev || [];
-    };
-    Stacker.prototype.getPoints = function () {
-        if (this._toPaint.length) {
-            return this._toPaint[0].getPoints().concat(this._toPaint[this._toPaint.length - 1].getPoints());
-        }
-        return [];
-    };
-    Stacker.prototype.paint = function (width, height, prev) {
-        var svg = [];
-        var markers = [];
-        this._toPaint.forEach(function (seria) {
-            if (seria.paintformAndMarkers) {
-                var _a = seria.paintformAndMarkers(width, height, prev), content = _a[0], seriesMarkers = _a[1];
-                svg.push(content);
-                markers.push(seriesMarkers);
-            }
-            else {
-                var content = seria.paint(width, height, prev);
-                svg.push(content);
-            }
-            prev = seria.getPoints();
-        });
-        return dom_1.sv("g", svg.concat(markers));
-    };
-    return Stacker;
-}());
-exports.default = Stacker;
-
-
-/***/ }),
-/* 170 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var common_1 = __webpack_require__(8);
-var line_1 = __webpack_require__(75);
-var types_1 = __webpack_require__(26);
-var Tooltip = /** @class */ (function () {
-    function Tooltip(chart) {
-        this._chart = chart;
-        this._initEvents();
-    }
-    Tooltip.prototype.destructor = function () {
-        document.body.removeChild(this._tooltip);
-    };
-    Tooltip.prototype._showLineTooltip = function (lineTooltipItems) {
-        var lineTooltip = "";
-        var root = this._chart.getRootView();
-        var calcPointTop = 0;
-        for (var _i = 0, lineTooltipItems_1 = lineTooltipItems; _i < lineTooltipItems_1.length; _i++) {
-            var item = lineTooltipItems_1[_i];
-            calcPointTop += item.top;
-            this._prevLine =
-                root &&
-                    root.refs &&
-                    root.refs["line" + Math.round(item.left)] &&
-                    root.refs["line" + Math.round(item.left)].el;
-            this._prevLine.classList.add("grid-line__active");
-            var seria = this._chart.getSeries(item.seriaId);
-            var point = seria.getPoints();
-            if (!point.length || !seria.config.tooltip)
-                continue;
-            var shadeColor = seria.config.pointColor ||
-                (seria.config.color && seria.config.color !== "none"
-                    ? seria.config.color
-                    : seria.config.fill);
-            var shadeHTMLHelper = line_1.getShadeHTMLHelper(seria.config.pointType !== "empty" && seria.config.pointType
-                ? seria.config.pointType
-                : "simpleRect", shadeColor);
-            lineTooltip += "<div class=\"line-point\" _ref=\"dhx_tooltip_" + seria.config.id + "_box\">\n\t\t\t\t<svg class=\"dhx_tooltip_svg\" role=\"graphics-document\" style=\"width: 8px; height: 8px;\">" + shadeHTMLHelper(4, 4, point[0][2]) + "</svg>\n\t\t\t\t<span class=\"dhx_line-point-text\" _ref=\"dhx_tooltip_" + seria.config.id + "_text\">" + item.text + "</span>\n\t\t\t</div>";
-        }
-        if (!this._tooltip) {
-            this._createTooltip();
-        }
-        var bodyHeight = document.body.offsetHeight;
-        var bodyWidth = document.body.offsetWidth;
-        this._tooltip.innerHTML = lineTooltip;
-        this._tooltip.classList.add("dhx_chart_tooltip__visible");
-        var middlePointHeight = calcPointTop / lineTooltipItems.length;
-        var lineRect = this._prevLine.getBoundingClientRect();
-        var contentHight = this._tooltip.offsetHeight;
-        var contentWidth = this._tooltip.offsetWidth;
-        var top = middlePointHeight - contentHight / 2 + lineRect.top + window.scrollY;
-        var left = lineRect.left + 10;
-        if (top + contentHight > bodyHeight) {
-            top -= top + contentHight - bodyHeight;
-        }
-        if (left + contentWidth > bodyWidth) {
-            left = lineRect.left - contentWidth - 10;
-        }
-        this._tooltip.style.left = left + "px";
-        this._tooltip.style.top = top + "px";
-    };
-    Tooltip.prototype._showTooltip = function (text, e) {
-        if (!this._tooltip) {
-            this._createTooltip();
-        }
-        var bodyHeight = document.body.offsetHeight;
-        var bodyWidth = document.body.offsetWidth;
-        this._tooltip.innerHTML = text;
-        this._tooltip.classList.add("dhx_chart_tooltip__visible");
-        var contentHight = this._tooltip.offsetHeight;
-        var contentWidth = this._tooltip.offsetWidth;
-        var mouseTop = e.pageY + 10;
-        var mouseLeft = e.pageX + 10;
-        if (mouseTop + contentHight > bodyHeight) {
-            mouseTop = e.pageY - contentHight;
-        }
-        if (mouseLeft + contentWidth > bodyWidth) {
-            mouseLeft = e.pageX - contentWidth - 10;
-        }
-        this._tooltip.style.left = mouseLeft + "px";
-        this._tooltip.style.top = mouseTop + "px";
-    };
-    Tooltip.prototype._showTooltipOnClosest = function (closest) {
-        if (!this._tooltip) {
-            this._createTooltip();
-        }
-        var tooltipSeries = this._chart.getSeries(closest[4]);
-        if (tooltipSeries) {
-            var text = tooltipSeries.getTooltipText(closest[3]);
-            if (!text)
-                return;
-            var layersSize = this._chart._layers.getSizes();
-            var root = this._chart.getRootNode();
-            var rect = root.getBoundingClientRect();
-            this._tooltip.innerHTML = text;
-            this._tooltip.classList.add("dhx_chart_tooltip__visible");
-            var bodyHeight = document.body.offsetHeight;
-            var contentHight = this._tooltip.offsetHeight;
-            var top_1 = closest[2] +
-                rect.top +
-                contentHight / 2 +
-                layersSize.top -
-                (this._chart.config.type === "radar" ? 10 : 15);
-            if (top_1 + contentHight > bodyHeight) {
-                top_1 =
-                    closest[2] +
-                        rect.top -
-                        contentHight / 2 +
-                        layersSize.top -
-                        (this._chart.config.type === "radar" ? 10 : 15);
-            }
-            if (top_1 + contentHight > bodyHeight) {
-                this._tooltip.classList.remove("dhx_chart_tooltip__visible");
-            }
-            this._tooltip.style.left = rect.left + closest[1] + 10 + "px";
-            this._tooltip.style.top = top_1 + "px";
-        }
-    };
-    Tooltip.prototype._createTooltip = function () {
-        this._tooltip = document.createElement("div");
-        this._tooltip.classList.add("dhx_chart_tooltip");
-        this._tooltip.classList.add("dhx_chart_tooltip_line");
-        this._tooltip.classList.add("dhx_chart_tooltip__hidden");
-        document.body.appendChild(this._tooltip);
-    };
-    Tooltip.prototype._initEvents = function () {
-        var _this = this;
-        this._chart.events.on(types_1.ChartEvents.chartMouseMove, function (x, y) {
-            if (_this._prevLine) {
-                _this._prevLine.classList.remove("grid-line__active");
-            }
-            if (!_this._mouseOverBar) {
-                var lineTooltipItems_2 = [];
-                var closest_1 = [Infinity, null, null, null, null]; // (dist, x, y, id, serieid)
-                _this._chart.eachSeries(function (seria) {
-                    var type = seria.config.type;
-                    if (type === "line" || type === "spline" || type === "splineArea" || type === "area") {
-                        var closestLine = seria.getClosestVertical(x);
-                        var item = {
-                            value: closestLine[4],
-                            text: seria.getTooltipText(closestLine[3]),
-                            seriaId: seria.config.id,
-                            left: closestLine[1],
-                            top: closestLine[2],
-                        };
-                        if (typeof item.left === "number" && typeof item.top === "number") {
-                            lineTooltipItems_2.push(item);
-                        }
-                    }
-                    else if (type === "pie" || type === "pie3D" || type === "donut" || type === "radar") {
-                        var seriaClosest = seria.getClosest(x, y);
-                        if (closest_1[0] > seriaClosest[0]) {
-                            closest_1[0] = seriaClosest[0];
-                            closest_1[1] = seriaClosest[1];
-                            closest_1[2] = seriaClosest[2];
-                            closest_1[3] = seriaClosest[3];
-                            closest_1[4] = seria.id;
-                        }
-                    }
-                });
-                if (lineTooltipItems_2.length) {
-                    lineTooltipItems_2.sort(function (a, b) { return b.value - a.value; });
-                    _this._showLineTooltip(lineTooltipItems_2);
+            onChange: function (e) {
+                var value = e.target.checked;
+                if (_this._config.events.fire(types_1.GridEvents.beforeEditStart, [
+                    _this._cell.row,
+                    _this._cell.col,
+                    "checkbox",
+                ])) {
+                    _this._checked = value;
+                    _this._config.events.fire(types_1.GridEvents.afterEditStart, [
+                        _this._cell.row,
+                        _this._cell.col,
+                        "checkbox",
+                    ]);
+                    _this.endEdit();
                 }
                 else {
-                    _this._showTooltipOnClosest(closest_1);
+                    _this._input.checked = !value;
                 }
-            }
-        });
-        this._chart.events.on(types_1.ChartEvents.seriaMouseMove, function (id, seriaId, e) {
-            _this._mouseOverBar = true;
-            var rootView = _this._chart.getRootView();
-            var seria = _this._chart.getSeries(seriaId);
-            var text = seria.getTooltipText(id);
-            var item = rootView && rootView.refs && rootView.refs[common_1.calcPointRef(id, seriaId)].el;
-            item.setAttribute("fill-opacity", seria.config.alpha > 0.6 ? seria.config.alpha - 0.4 : 1);
-            if (text) {
-                _this._showTooltip(text, e);
-            }
-            else if (_this._tooltip) {
-                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
-            }
-        });
-        this._chart.events.on(types_1.ChartEvents.seriaMouseLeave, function (id, seriaId) {
-            _this._mouseOverBar = false;
-            var rootView = _this._chart.getRootView();
-            var seria = _this._chart.getSeries(seriaId);
-            if (seria.config.type !== "area") {
-                var item = rootView && rootView.refs && rootView.refs[common_1.calcPointRef(id, seriaId)].el;
-                item.setAttribute("fill-opacity", seria.config.alpha);
-            }
-            if (_this._tooltip) {
-                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
-            }
-        });
-        this._chart.events.on(types_1.ChartEvents.chartMouseLeave, function () {
-            if (_this._tooltip) {
-                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
-            }
-            if (_this._prevLine) {
-                _this._prevLine.classList.remove("grid-line__active");
-            }
-        });
+            },
+            didInsert: function (node) {
+                _this._checkbox = node.el.parentNode.lastChild;
+                _this._input = node.el.parentNode.firstChild;
+                _this._input.addEventListener("change", _this._handlers.onChange);
+            },
+        };
     };
-    return Tooltip;
+    return CheckboxEditor;
 }());
-exports.Tooltip = Tooltip;
+exports.CheckboxEditor = CheckboxEditor;
 
 
 /***/ }),
-/* 171 */
+/* 129 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var types_1 = __webpack_require__(9);
+var ts_combobox_1 = __webpack_require__(29);
+var FocusManager_1 = __webpack_require__(18);
+var ComboboxEditor = /** @class */ (function () {
+    function ComboboxEditor(row, col, config) {
+        this._config = config;
+        this._cell = { row: row, col: col };
+        this._initHandlers();
+    }
+    ComboboxEditor.prototype.endEdit = function (withoutSave) {
+        var value;
+        if (!withoutSave) {
+            value = this._input.getValue();
+        }
+        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
+            this._input.popup.hide();
+            document.removeEventListener("mousedown", this._handlers.onOuterClick);
+            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            FocusManager_1.focusManager.setFocusId(this._config.gridId);
+            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
+        }
+        else {
+            this._input.focus();
+        }
+    };
+    ComboboxEditor.prototype.toHTML = function () {
+        var _this = this;
+        var content = this._cell.col.options.map(function (item) {
+            return { id: "" + item, value: item };
+        }) || [];
+        if (!this._input) {
+            this._input = new ts_combobox_1.Combobox(null, {
+                readOnly: true,
+                cellHeight: 37,
+                css: "dhx_cell-editor__combobox",
+            });
+            this._input.data.parse(content);
+            this._input.setValue(this._cell.row[this._cell.col.id]);
+        }
+        document.addEventListener("mousedown", this._handlers.onOuterClick);
+        this._config.$editable.editor = this;
+        dom_1.awaitRedraw().then(function () {
+            var holderNode = _this._input.getRootView().refs.holder.el;
+            _this._input.popup.getContainer().style.width = holderNode.offsetWidth + "px";
+            _this._input.popup.show(holderNode);
+        });
+        FocusManager_1.focusManager.setFocusId(this._input._uid);
+        return dom_1.inject(this._input.getRootView());
+    };
+    ComboboxEditor.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            onOuterClick: function (e) {
+                if (e.target instanceof Node) {
+                    var isInput = _this._input &&
+                        _this._input.getRootNode() &&
+                        _this._input.getRootNode().contains(e.target);
+                    var isPopup = _this._input.popup &&
+                        _this._input.popup.getRootNode() &&
+                        _this._input.popup.getRootNode().contains(e.target);
+                    if (!(isInput || isPopup)) {
+                        _this.endEdit();
+                    }
+                }
+            },
+        };
+    };
+    return ComboboxEditor;
+}());
+exports.ComboboxEditor = ComboboxEditor;
+
+
+/***/ }),
+/* 130 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -23667,17 +18992,17 @@ var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
 var events_1 = __webpack_require__(2);
 var html_1 = __webpack_require__(3);
-var keycodes_1 = __webpack_require__(172);
+var keycodes_1 = __webpack_require__(131);
 var view_1 = __webpack_require__(5);
 var ts_data_1 = __webpack_require__(4);
 var ts_layout_1 = __webpack_require__(13);
-var ts_list_1 = __webpack_require__(39);
+var ts_list_1 = __webpack_require__(40);
 var ts_popup_1 = __webpack_require__(10);
-var keyListener_1 = __webpack_require__(173);
-var en_1 = __webpack_require__(52);
+var keyListener_1 = __webpack_require__(135);
+var en_1 = __webpack_require__(42);
 var types_1 = __webpack_require__(24);
-var helper_1 = __webpack_require__(174);
-var types_2 = __webpack_require__(78);
+var helper_1 = __webpack_require__(136);
+var types_2 = __webpack_require__(72);
 var helper_2 = __webpack_require__(6);
 function itemsCountTemplate(count, templateFN) {
     if (typeof templateFN === "function") {
@@ -24363,7 +19688,7 @@ exports.Combobox = Combobox;
 
 
 /***/ }),
-/* 172 */
+/* 131 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24381,7 +19706,603 @@ exports.KEY_CODES = {
 
 
 /***/ }),
-/* 173 */
+/* 132 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var ts_data_1 = __webpack_require__(4);
+var dom_1 = __webpack_require__(0);
+var KeyManager_1 = __webpack_require__(14);
+var FocusManager_1 = __webpack_require__(18);
+var types_1 = __webpack_require__(24);
+var view_1 = __webpack_require__(5);
+var Selection_1 = __webpack_require__(71);
+var html_1 = __webpack_require__(3);
+var types_2 = __webpack_require__(41);
+var editors_1 = __webpack_require__(133);
+exports.MOVE_UP = 1;
+exports.MOVE_DOWN = 2;
+var List = /** @class */ (function (_super) {
+    __extends(List, _super);
+    function List(node, config) {
+        if (config === void 0) { config = {}; }
+        var _this = this;
+        var itemHeight = config.itemHeight || (config.virtual ? 37 : null);
+        if (itemHeight && typeof itemHeight === "number") {
+            itemHeight = itemHeight.toString() + "px";
+        }
+        _this = _super.call(this, node, core_1.extend({
+            itemHeight: itemHeight,
+            keyNavigation: true,
+            editable: false,
+            selection: true,
+        }, config)) || this;
+        _this._touch = {
+            duration: 350,
+            dblDuration: 300,
+            timer: null,
+            start: false,
+            timeStamp: null,
+        };
+        // init data colleciton and link events between widget and data
+        var data = _this.config.data;
+        if (!(data instanceof ts_data_1.DataCollection)) {
+            _this.data = new ts_data_1.DataCollection({});
+            _this.events = _this.data.events;
+            if (data)
+                _this.data.parse(data);
+        }
+        else {
+            // [TODO] deprecate in favor of raw data input
+            _this.data = data;
+            _this.events = data.events;
+        }
+        _this.selection = new Selection_1.Selection({
+            disabled: !_this.config.selection,
+            multiselection: _this.config.multiselection,
+        }, _this.data, _this.events);
+        if (_this.config.keyNavigation) {
+            _this.keyManager = new KeyManager_1.KeyManager(function (e, focusId) {
+                return focusId === _this._uid && (!_this._edited || (_this._edited && e.key !== "escape"));
+            });
+            _this._initHotKey();
+            FocusManager_1.focusManager.setFocusId(_this._uid);
+        }
+        _this.events.on(ts_data_1.DataEvents.change, function (_, status, item) {
+            if (status === "setPage") {
+                _this.showItem(_this.data.getId(item[0]));
+            }
+            _this.paint();
+        });
+        _this.events.on(types_1.SelectionEvents.afterUnSelect, function () { return _this.paint(); });
+        _this.events.on(types_1.SelectionEvents.afterSelect, function () { return _this.paint(); });
+        _this.events.on(types_2.ListEvents.afterEditEnd, _this.editEnd.bind(_this));
+        var drop = function (value) { return function (info) {
+            _this.data.setMeta(_this.data.getItem(info.target), "drop", value);
+            _this.paint();
+        }; };
+        _this.events.on(ts_data_1.DragEvents.canDrop, drop(true));
+        _this.events.on(ts_data_1.DragEvents.cancelDrop, drop(false));
+        var drag = function (value) { return function (info) {
+            info.source.map(function (id) { return _this.data.setMeta(_this.data.getItem(id), "drag", value); });
+            _this.paint();
+        }; };
+        _this.events.on(ts_data_1.DragEvents.dragStart, drag(true));
+        _this.events.on(ts_data_1.DragEvents.afterDrag, drag(false));
+        _this._handlers = {
+            onmousedown: function (e) {
+                _this._dragStart(e);
+            },
+            ontouchstart: function (e) {
+                _this._touch.timer = setTimeout(function () {
+                    _this._dragStart(e);
+                }, _this._touch.duration);
+                if (!_this._touch.timeStamp) {
+                    _this._touch.timeStamp = +e.timeStamp.toFixed();
+                }
+                else {
+                    var dblTap = _this._touch.dblDuration >= _this._touch.timeStamp - +e.timeStamp.toFixed();
+                    if (dblTap) {
+                        e.preventDefault();
+                        _this._dblClick(e);
+                    }
+                    _this._touch.timeStamp = null;
+                }
+                setTimeout(function () {
+                    _this._touch.timeStamp = null;
+                }, _this._touch.dblDuration);
+            },
+            ontouchmove: function (e) {
+                _this._touch.start && e.preventDefault();
+                _this._clearTouchTimer();
+            },
+            ontouchend: function () {
+                _this._touch.start = false;
+                _this._clearTouchTimer();
+            },
+            ondragstart: function () { return (_this.config.dragMode && !_this._edited ? false : null); },
+            oncontextmenu: function (e) {
+                var id = html_1.locate(e);
+                if (!id) {
+                    return;
+                }
+                _this.events.fire(types_2.ListEvents.itemRightClick, [id, e]);
+            },
+            onclick: function (e) {
+                var id = html_1.locate(e);
+                if (!id) {
+                    return;
+                }
+                _this.selection.add(id, e.ctrlKey || e.metaKey, e.shiftKey);
+                _this.events.fire(types_2.ListEvents.click, [id, e]);
+                _this._focus = id;
+                _this.paint();
+            },
+            ondblclick: function (e) {
+                _this._dblClick(e);
+            },
+            onscroll: function (e) {
+                if (_this.config.virtual) {
+                    _this._topOffset = e.target.scrollTop;
+                    _this._visibleHeight = e.target.offsetHeight;
+                    _this.paint();
+                }
+            },
+            onmouseover: function (e) {
+                var id = html_1.locate(e);
+                if (!id) {
+                    return;
+                }
+                var prevId = html_1.locate(e.relatedTarget);
+                if (id !== prevId)
+                    _this.events.fire(types_2.ListEvents.itemMouseOver, [id, e]);
+            },
+        };
+        var evs = _this.config.eventHandlers;
+        if (evs) {
+            for (var _i = 0, _a = Object.entries(evs); _i < _a.length; _i++) {
+                var _b = _a[_i], event_name = _b[0], events = _b[1];
+                _this._handlers[event_name] = html_1.eventHandler(function (e) { return html_1.locate(e); }, events, _this._handlers[event_name]);
+            }
+        }
+        if (_this.config.dragMode) {
+            ts_data_1.dragManager.setItem(_this._uid, _this);
+        }
+        // defaults for virtual rendering
+        _this._topOffset = _this._visibleHeight = 0;
+        var view = dom_1.create({
+            render: function () { return _this._renderList(); },
+            hooks: {
+                didMount: function (vm) {
+                    if (_this.config.virtual)
+                        _this._visibleHeight = vm.node.el.offsetHeight;
+                },
+                didRedraw: function (vm) { return _this._didRedraw(vm); },
+            },
+        });
+        _this.mount(node, view);
+        return _this;
+    }
+    List.prototype._didRedraw = function (vm) {
+        // do nothing
+    };
+    List.prototype._dblClick = function (e) {
+        var id = html_1.locate(e);
+        if (!id) {
+            return;
+        }
+        if (this.config.editable) {
+            this.editItem(id);
+        }
+        this.events.fire(types_2.ListEvents.doubleClick, [id, e]);
+    };
+    List.prototype._clearTouchTimer = function () {
+        if (this._touch.timer) {
+            clearTimeout(this._touch.timer);
+            this._touch.timer = null;
+        }
+    };
+    List.prototype._dragStart = function (e) {
+        var _this = this;
+        this._touch.start = true;
+        var itemsForGhost = [];
+        var item = html_1.locateNode(e, "dhx_id");
+        var itemId = item && item.getAttribute("dhx_id");
+        var selectionIds = this.selection.getId();
+        if (this.config.multiselection && selectionIds instanceof Array) {
+            selectionIds.map(function (id) {
+                if (id !== itemId && _this.getRootView().refs[id]) {
+                    itemsForGhost.push(_this.getRootView().refs[id].el);
+                }
+            });
+            selectionIds = __spreadArrays(selectionIds);
+        }
+        if (typeof selectionIds === "string") {
+            selectionIds = [selectionIds];
+        }
+        return this.config.dragMode && !this._edited
+            ? ts_data_1.dragManager.onMouseDown(e, selectionIds || [itemId], itemsForGhost)
+            : null;
+    };
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    List.prototype.disableSelection = function () {
+        this.selection.disable();
+    };
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    List.prototype.enableSelection = function () {
+        this.selection.enable();
+    };
+    List.prototype.editItem = function (id) {
+        this._edited = id;
+        if (!this.data.getItem(this._edited) || !this.events.fire(types_2.ListEvents.beforeEditStart, [id])) {
+            this._edited = null;
+            return;
+        }
+        this._getHotkeys();
+        this.paint();
+        this.events.fire(types_2.ListEvents.afterEditStart, [id]);
+    };
+    // [TODO] maybe better name
+    List.prototype.editEnd = function (value, id) {
+        if (this._edited) {
+            if (value !== null) {
+                var item = this.data.getItem(id);
+                this.data.update(id, __assign(__assign({}, item), { value: value }));
+            }
+            this._edited = null;
+            this.paint();
+        }
+    };
+    /*
+        Focus API allows to mark item as active one, but not selected yet
+        Used by keyboard navigation
+    */
+    List.prototype.getFocusItem = function () {
+        return this.data.getItem(this._focus);
+    };
+    List.prototype.setFocus = function (id) {
+        if (this._focus != id && this.data.exists(id)) {
+            this._focus = id;
+            this.showItem(id);
+            this.events.fire(types_2.ListEvents.focusChange, [this.data.getIndex(this._focus), this._focus]);
+            this.paint();
+        }
+    };
+    List.prototype.getFocus = function () {
+        return this._focus;
+    };
+    List.prototype.destructor = function () {
+        this.keyManager && this.keyManager.destructor();
+        this.selection.destructor();
+        this.unmount();
+    };
+    List.prototype.showItem = function (id) {
+        var rootView = this.getRootView();
+        if (!rootView || !rootView.node || !rootView.node.el || typeof id === "undefined") {
+            return;
+        }
+        var listEl = this.getRootNode();
+        if (!listEl) {
+            return;
+        }
+        var virtual = this.config.virtual;
+        var index = this.data.getIndex(id);
+        var currentPage = Math.floor(index / listEl.children.length) || 0;
+        var el = listEl.children[index - listEl.children.length * currentPage];
+        if (!virtual && !el)
+            return;
+        var height = virtual ? parseInt(this.config.itemHeight) : el.clientHeight;
+        var top = virtual ? index * height : el.offsetTop;
+        if (top >= listEl.scrollTop + listEl.clientHeight - height) {
+            listEl.scrollTo(0, top - listEl.clientHeight + height);
+        }
+        else if (top < listEl.scrollTop) {
+            listEl.scrollTo(0, top);
+        }
+    };
+    List.prototype._renderItem = function (item, index) {
+        var itemHeight = this.config.itemHeight;
+        if (item.$empty) {
+            return dom_1.el("li", {
+                class: "dhx_list-item",
+                style: {
+                    height: itemHeight,
+                },
+            });
+        }
+        var html = (this.config.template && this.config.template(item)) || item.html;
+        var focus = item.id === this._focus;
+        if (item.id === this._edited) {
+            var editor = editors_1.getEditor(item, this);
+            return editor.toHTML();
+        }
+        var mx = this.data.getMetaMap(item);
+        var node = __assign(__assign(__assign(__assign({}, this._events), { class: "dhx_list-item" +
+                (mx && mx.selected ? " dhx_list-item--selected" : "") +
+                (focus ? " dhx_list-item--focus" : "") +
+                (mx && mx.drop && !this._edited ? " dhx_list-item--drophere" : "") +
+                (mx && mx.drag && !this._edited ? " dhx_list-item--dragtarget" : "") +
+                (this.config.dragMode && !this._edited ? " dhx_list-item--drag" : "") +
+                (item.css ? " " + item.css : ""), dhx_id: item.id, _ref: item.id.toString(), style: {
+                height: itemHeight,
+            }, _key: item.id, ".innerHTML": html }), this.getItemAriaAttrs(this, item)), { tabindex: focus ? 0 : -1 });
+        if (html) {
+            node[".innerHTML"] = html;
+            return dom_1.el("li", node);
+        }
+        else {
+            node.class += " dhx_list-item--text";
+            return dom_1.el("li", node, item.text || item.value);
+        }
+    };
+    List.prototype._renderList = function () {
+        var _this = this;
+        var range = this._getRange();
+        // mapRange
+        var data = this.data.getRawData(range[0], range[1]);
+        var kids = data.map(function (obj, index) { return _this._renderItem(obj, index); });
+        if (this.config.virtual) {
+            kids = __spreadArrays([
+                dom_1.el(".div", { style: { height: range[2] + "px" } })
+            ], kids, [
+                dom_1.el(".div", { style: { height: range[3] + "px" } }),
+            ]);
+        }
+        return dom_1.el("ul.dhx_widget.dhx_list", __assign(__assign({ style: {
+                "min-height": this.config.itemHeight,
+                "max-height": this.config.height,
+                position: "relative",
+            }, class: (this.config.css ? this.config.css : "") +
+                (this.config.multiselection && this.selection.getItem() ? " dhx_no-select--pointer" : ""), dhx_widget_id: this._uid }, this._handlers), this.getListAriaAttrs(this.config, this.data.getLength())), kids);
+    };
+    List.prototype.moveFocus = function (mode, step) {
+        var length = this.data.getLength();
+        if (!length) {
+            return;
+        }
+        var id = this._focus;
+        var index = id ? this.data.getIndex(id) : -1;
+        step = step || 1;
+        if (mode === exports.MOVE_DOWN) {
+            id = this.data.getId(Math.min(index + step, length - 1));
+        }
+        else if (mode === exports.MOVE_UP) {
+            id = this.data.getId(Math.max(index - step, 0));
+        }
+        this.setFocus(id);
+    };
+    List.prototype._getRange = function () {
+        if (this.config.virtual) {
+            var overscanCount = 5;
+            var visibleHeight = this._visibleHeight || parseInt(this.config.height);
+            var itemHeight = parseInt(this.config.itemHeight);
+            var total = this.data.getLength();
+            var totalHeight = this.data.getLength() * itemHeight;
+            var position = this._topOffset;
+            // correct value to be in [0, total-visible] range
+            position = Math.max(0, Math.min(position, totalHeight - visibleHeight));
+            var index = Math.floor(position / itemHeight);
+            var count = Math.min(total - index, Math.floor(visibleHeight / itemHeight) + overscanCount);
+            this._topOffset = position;
+            return [index, count + index, index * itemHeight, totalHeight - itemHeight * (count + index)];
+        }
+        else {
+            return [0, -1, 0, 0];
+        }
+    };
+    List.prototype._getHotkeys = function () {
+        var _this = this;
+        return {
+            arrowDown: function (e) {
+                _this.moveFocus(exports.MOVE_DOWN);
+                e.preventDefault();
+            },
+            arrowUp: function (e) {
+                _this.moveFocus(exports.MOVE_UP);
+                e.preventDefault();
+            },
+            escape: function () {
+                _this.editEnd(null);
+            },
+            enter: function (e) {
+                _this.selection.add(_this._focus);
+                _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
+            },
+            "shift+enter": function (e) {
+                _this.selection.add(_this._focus, false, true);
+                _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
+            },
+            "ctrl+enter": function (e) {
+                _this.selection.add(_this._focus, true, false);
+                _this.events.fire(types_2.ListEvents.click, [_this._focus, e]);
+            },
+            "ctrl+a": function (e) {
+                if (_this.config.multiselection) {
+                    e.preventDefault();
+                    _this.selection.remove();
+                    var ids = _this.data.map(function (i) { return i.id; });
+                    ids.forEach(function (id) {
+                        if (_this.config.multiselection === "ctrlClick") {
+                            _this.selection.add(id, true);
+                        }
+                        else {
+                            _this.selection.add(id);
+                        }
+                    });
+                }
+            },
+        };
+    };
+    List.prototype._initHotKey = function () {
+        var handlers = this._getHotkeys();
+        for (var key in handlers) {
+            this.keyManager.addHotKey(key, handlers[key]);
+        }
+        for (var key in this.config.hotkeys) {
+            this.keyManager.addHotKey(key, this.config.hotkeys[key]);
+        }
+    };
+    List.prototype.getItemAriaAttrs = function (context, item) {
+        var getAriaGrabbed = function (context, item) {
+            return context.config.dragMode && !context._edited
+                ? { "aria-grabbed": Boolean(item.$dragtarget && !context._edited).toString() }
+                : {};
+        };
+        var getAriaRoleDescription = function (context) {
+            return context.config.editable
+                ? {
+                    "aria-roledescription": "" + (context._edited ? "Press Enter to stop editing" : "Double click to edit content"),
+                }
+                : {};
+        };
+        return __assign(__assign({ role: "option", "aria-selected": item.$selected ? "true" : "false" }, getAriaGrabbed(context, item)), getAriaRoleDescription(context));
+    };
+    List.prototype.getListAriaAttrs = function (config, dataLength) {
+        return {
+            role: "listbox",
+            "aria-label": "Listbox " + (config.title || "") + ", count of options = " + dataLength + "." + (config.editable ? " Content is editable." : ""),
+            "aria-multiselectable": config.selection && config.multiselection ? "true" : "false",
+            "aria-readonly": config.editable ? "false" : "true",
+        };
+    };
+    return List;
+}(view_1.View));
+exports.List = List;
+
+
+/***/ }),
+/* 133 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var InputEditor_1 = __webpack_require__(134);
+function getEditor(item, list) {
+    return new InputEditor_1.InputEditor(item, list);
+}
+exports.getEditor = getEditor;
+
+
+/***/ }),
+/* 134 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var types_1 = __webpack_require__(41);
+var InputEditor = /** @class */ (function () {
+    function InputEditor(item, list) {
+        var _this = this;
+        this._list = list;
+        this._config = list.config;
+        this._item = item;
+        this._list.events.on(types_1.ListEvents.focusChange, function (index, id) {
+            if (_this._mode && id !== _this._item.id) {
+                _this.endEdit();
+            }
+        });
+        this._initHandlers();
+    }
+    InputEditor.prototype.endEdit = function () {
+        if (this._input) {
+            var value = this._input.value;
+            if (this._list.events.fire(types_1.ListEvents.beforeEditEnd, [value, this._item.id])) {
+                this._input.removeEventListener("blur", this._handlers.onBlur);
+                this._input.removeEventListener("change", this._handlers.onChange);
+                this._handlers = {};
+                this._mode = false;
+                this._list.events.fire(types_1.ListEvents.afterEditEnd, [value, this._item.id]);
+            }
+            else {
+                this._input.focus();
+            }
+        }
+    };
+    InputEditor.prototype.toHTML = function () {
+        this._mode = true;
+        var itemHeight = this._config.itemHeight;
+        return dom_1.el(".dhx_input__wrapper", { role: "presentation" }, [
+            dom_1.el("div.dhx_input__container", { role: "presentation" }, [
+                dom_1.el("input.dhx_input", {
+                    class: this._item.css ? " " + this._item.css : "",
+                    style: {
+                        height: itemHeight,
+                        width: "100%",
+                        padding: "8px, 12px",
+                    },
+                    _hooks: {
+                        didInsert: this._handlers.didInsert,
+                    },
+                    _key: this._item.id,
+                    dhx_id: this._item.id,
+                }),
+            ]),
+        ]);
+    };
+    InputEditor.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            onBlur: function () {
+                _this.endEdit();
+            },
+            onChange: function () {
+                _this.endEdit();
+            },
+            didInsert: function (node) {
+                var input = node.el;
+                _this._input = input;
+                input.focus();
+                input.value = _this._item.value;
+                input.setSelectionRange(0, input.value.length);
+                input.addEventListener("change", _this._handlers.onChange);
+                input.addEventListener("blur", _this._handlers.onBlur);
+            },
+        };
+    };
+    return InputEditor;
+}());
+exports.InputEditor = InputEditor;
+
+
+/***/ }),
+/* 135 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24441,14 +20362,14 @@ exports.KeyListener = KeyListener;
 
 
 /***/ }),
-/* 174 */
+/* 136 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var en_1 = __webpack_require__(52);
+var en_1 = __webpack_require__(42);
 function selectAllView() {
     return dom_1.el(".dhx_list-item.dhx_combobox-options__item.dhx_combobox-options__item--select-all.dhx_combobox__action-select-all", en_1.default.selectAll);
 }
@@ -24464,21 +20385,1937 @@ exports.emptyListView = emptyListView;
 
 
 /***/ }),
-/* 175 */
+/* 137 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
-function __export(m) {
-    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
-}
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(176));
-__export(__webpack_require__(79));
+var dom_1 = __webpack_require__(0);
+var types_1 = __webpack_require__(9);
+var core_1 = __webpack_require__(1);
+var data_1 = __webpack_require__(19);
+var TextAreaEditor = /** @class */ (function () {
+    function TextAreaEditor(row, col, config) {
+        this._config = config;
+        this._cell = { row: row, col: col };
+        this._width = this._cell.col.$width;
+        var widthOffset = 0;
+        if (this._config.firstColId === this._cell.col.id && this._cell.row.hasOwnProperty("$level")) {
+            widthOffset = data_1.getTreeCellWidthOffset(this._cell.row);
+        }
+        this._width -= widthOffset - 4;
+        this._initHandlers();
+    }
+    TextAreaEditor.prototype.endEdit = function (withoutSave) {
+        var value;
+        if (!withoutSave) {
+            value = this._editor.value;
+        }
+        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
+            this._editor.removeEventListener("blur", this._handlers.onBlur);
+            this._editor.removeEventListener("change", this._handlers.onChange);
+            this._editor.removeEventListener("input", this._handlers.onInput);
+            if (this._cell.col.type !== "string" && core_1.isNumeric(value)) {
+                value = parseFloat(value);
+            }
+            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
+            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
+        }
+        else {
+            this._editor.focus();
+        }
+    };
+    TextAreaEditor.prototype.toHTML = function () {
+        var value = this._cell.row[this._cell.col.id];
+        if (this._editor) {
+            value = this._editor.value;
+        }
+        this._config.$editable.editor = this;
+        var css = typeof this._cell.row.height === "undefined" && !this._cell.col.htmlEnable
+            ? "dhx_cell-editor dhx_cell-editor__textarea"
+            : "dhx_cell-editor dhx_cell-editor__textarea_constant-height";
+        return dom_1.el("textarea", {
+            _hooks: {
+                didInsert: this._handlers.didInsert,
+            },
+            _ref: "textarea",
+            _key: "cell_editor",
+            dhx_id: "cell_editor",
+            value: value,
+            class: css,
+            style: {
+                width: this._width,
+            },
+        });
+    };
+    TextAreaEditor.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            onBlur: function () {
+                _this.endEdit();
+            },
+            onChange: function () {
+                _this.endEdit();
+            },
+            onInput: function (event) {
+                var _a;
+                if (typeof _this._cell.row.height !== "undefined" || _this._cell.col.htmlEnable)
+                    return;
+                var currentHeight = _this._getCurrentHeight(_this._editor.value, {
+                    width: _this._cell.col.$width - 2,
+                    maxHeight: _this._config.rowHeight,
+                });
+                _this._cell.row[_this._cell.col.id] = _this._editor.value;
+                var totalHeight = data_1.getCalculatedRowHeight(data_1.getMaxRowHeight(_this._cell.row, _this._config.columns));
+                var currentRowHeight = data_1.getCalculatedRowHeight(data_1.getMaxRowHeight((_a = {}, _a[_this._cell.col.id] = _this._cell.row[_this._cell.col.id], _a), _this._config.columns));
+                _this._minHeight = totalHeight === currentRowHeight ? _this._config.rowHeight : totalHeight;
+                if (currentHeight >= _this._minHeight && currentHeight !== _this._prevHeight) {
+                    if (!_this._config.events.fire(types_1.GridEvents.beforeRowResize, [
+                        _this._cell.row,
+                        event,
+                        currentHeight,
+                    ])) {
+                        return;
+                    }
+                    _this._config.events.fire(types_1.GridEvents.afterRowResize, [
+                        _this._cell.row,
+                        event,
+                        currentHeight,
+                    ]);
+                }
+                _this._prevHeight = currentHeight;
+            },
+            didInsert: function (node) {
+                _this._editor = node.el;
+                _this._editor.focus();
+                _this._editor.setSelectionRange(0, _this._editor.value.length);
+                _this._editor.addEventListener("change", _this._handlers.onChange);
+                _this._editor.addEventListener("blur", _this._handlers.onBlur);
+                _this._editor.addEventListener("input", _this._handlers.onInput);
+            },
+        };
+    };
+    TextAreaEditor.prototype._getCurrentHeight = function (value, config) {
+        config = __assign({ width: 100, maxHeight: 40, lineHeight: 20 }, config);
+        var element = document.createElement("textarea");
+        element.className = "dhx_cell-editor dhx_cell-editor__textarea";
+        element.value = value;
+        element.style.width = config.width + "px";
+        element.style.lineHeight = config.lineHeight + "px";
+        element.style.maxHeight = config.maxHeight + "px";
+        element.style.boxSizing = "border-box";
+        document.body.appendChild(element);
+        var height = this._getElementHeight(element);
+        var currentRows = element.value.split("\n").length;
+        var calculateRows = Math.round(height / config.lineHeight);
+        var calculateHeight = height < config.maxHeight ? config.maxHeight : height;
+        document.body.removeChild(element);
+        return currentRows === 1 && currentRows === calculateRows ? config.maxHeight : calculateHeight;
+    };
+    TextAreaEditor.prototype._getElementHeight = function (element) {
+        return element.scrollHeight;
+    };
+    return TextAreaEditor;
+}());
+exports.TextAreaEditor = TextAreaEditor;
 
 
 /***/ }),
-/* 176 */
+/* 138 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var html_1 = __webpack_require__(3);
+var Cells_1 = __webpack_require__(35);
+var FixedRows_1 = __webpack_require__(73);
+var main_1 = __webpack_require__(15);
+function getFixedColsHeader(renderConfig, layout) {
+    if (typeof renderConfig.leftSplit !== "number") {
+        return;
+    }
+    var splitHidden = 0;
+    for (var index = 0; index < renderConfig.leftSplit; index++) {
+        if (renderConfig.columns[index].hidden)
+            splitHidden++;
+    }
+    if (splitHidden === renderConfig.leftSplit) {
+        return;
+    }
+    var columns = renderConfig.columns.slice(0, renderConfig.leftSplit - splitHidden);
+    var width = 0;
+    for (var _i = 0, columns_1 = columns; _i < columns_1.length; _i++) {
+        var col = columns_1[_i];
+        width += col.$width;
+    }
+    var frozenHeaderCols = renderConfig.leftSplit >= 0 &&
+        FixedRows_1.getFixedRows(__assign(__assign({}, renderConfig), { currentColumns: columns, $positions: __assign(__assign({}, renderConfig.$positions), { xStart: 0, xEnd: renderConfig.leftSplit }), scroll: { top: 0, left: 0 }, columns: columns }), __assign(__assign({}, layout), { name: "header", position: "top", shifts: { x: 0, y: 0 } }));
+    var headerRowsConfig = __assign(__assign({}, layout), { name: "header", position: "top" });
+    return (frozenHeaderCols &&
+        dom_1.el(".dhx_" + headerRowsConfig.name + "-fixed-cols", {
+            style: {
+                position: "absolute",
+                top: 0,
+                left: 0,
+                maxWidth: width,
+                overflow: "hidden",
+            },
+            role: "rowgroup",
+            "aria-rowcount": frozenHeaderCols.length,
+        }, frozenHeaderCols.body));
+}
+exports.getFixedColsHeader = getFixedColsHeader;
+function getFixedCols(renderConfig, layout) {
+    if (typeof renderConfig.leftSplit !== "number") {
+        return;
+    }
+    var splitHidden = 0;
+    for (var index = 0; index < renderConfig.leftSplit; index++) {
+        if (renderConfig.columns[index].hidden)
+            splitHidden++;
+    }
+    if (splitHidden === renderConfig.leftSplit) {
+        return;
+    }
+    var scrollBarWidth = renderConfig.$totalWidth <= layout.wrapper.width ? 0 : html_1.getScrollbarWidth();
+    var fixedContentHeight = renderConfig.$totalHeight + renderConfig.headerHeight + renderConfig.footerHeight;
+    var fixedColsHeight = fixedContentHeight - (fixedContentHeight > layout.gridBodyHeight ? scrollBarWidth : null);
+    var columns = renderConfig.columns.slice(0, renderConfig.leftSplit - splitHidden);
+    renderConfig.fixedColumnsWidth = main_1.getTotalWidth(columns);
+    var fixedCols = Cells_1.getCells(__assign(__assign({}, renderConfig), { columns: columns, $positions: __assign(__assign({}, renderConfig.$positions), { xStart: 0, xEnd: renderConfig.leftSplit }) }));
+    var isSticky = layout.sticky;
+    var footerRowsConfig = __assign(__assign({}, layout), { name: "footer", position: "bottom" });
+    var frozenFooterCols = renderConfig.leftSplit >= 0 &&
+        FixedRows_1.getRows(__assign(__assign({}, renderConfig), { currentColumns: columns, $positions: __assign(__assign({}, renderConfig.$positions), { xStart: 0, xEnd: renderConfig.leftSplit }) }), __assign(__assign({}, layout), { name: "footer", position: "bottom" }));
+    var frozenFooter = isSticky
+        ? frozenFooterCols &&
+            dom_1.el(".dhx_" + footerRowsConfig.name + "-fixed-cols", {
+                style: {
+                    position: "absolute",
+                    top: fixedColsHeight > layout.gridBodyHeight
+                        ? (isSticky
+                            ? layout.gridBodyHeight
+                            : layout.gridBodyHeight + renderConfig.headerHeight) -
+                            scrollBarWidth -
+                            renderConfig.headerHeight
+                        : fixedColsHeight - renderConfig.headerHeight,
+                    left: 0,
+                },
+                role: "rowgroup",
+                "aria-rowcount": frozenFooterCols.length,
+            }, frozenFooterCols)
+        : null;
+    var pos = renderConfig.$positions;
+    var spans = Cells_1.getSpans(renderConfig, true);
+    return [
+        dom_1.el(".dhx_grid-fixed-cols-wrap", {
+            style: {
+                height: fixedColsHeight > layout.gridBodyHeight
+                    ? (isSticky
+                        ? layout.gridBodyHeight
+                        : layout.gridBodyHeight + renderConfig.headerHeight) - scrollBarWidth
+                    : fixedColsHeight,
+                paddingTop: renderConfig.headerHeight,
+                overflow: "hidden",
+                width: renderConfig.fixedColumnsWidth,
+            },
+            role: "presentation",
+            "aria-label": "Fixed column",
+        }, [
+            dom_1.el(".dhx_grid-fixed-cols", __assign(__assign({ style: {
+                    top: -renderConfig.scroll.top + renderConfig.headerHeight - 1 + "px",
+                    paddingTop: layout.shifts.y,
+                    height: renderConfig.$totalHeight,
+                    position: "absolute",
+                }, _flags: dom_1.KEYED_LIST }, Cells_1.getHandlers(pos.yStart, pos.xStart, renderConfig)), { role: "rowgroup", "aria-rowcount": renderConfig.data.length }), __spreadArrays([spans && dom_1.el(".dhx_span-spans", { role: "presentation" }, [spans])], fixedCols)),
+            dom_1.el(".dhx_frozen-cols-border", { role: "presentation" }),
+        ]),
+        renderConfig.$footer ? frozenFooter : null,
+    ];
+}
+exports.getFixedCols = getFixedCols;
+
+
+/***/ }),
+/* 139 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var ts_combobox_1 = __webpack_require__(29);
+var ts_data_1 = __webpack_require__(4);
+var types_1 = __webpack_require__(9);
+var data_1 = __webpack_require__(19);
+var html_1 = __webpack_require__(3);
+var inputDelay;
+function onInput(eventSystem, colId, filter, filterObj, e) {
+    var inputHandler = function () {
+        var val = html_1.isIE() || html_1.isSafari() ? e.target.value : e.path ? e.path[0].value : e.explicitOriginalTarget.value;
+        filterObj.value[colId] = val;
+        eventSystem.fire(types_1.GridEvents.filterChange, [val, colId, filter]);
+        eventSystem.fire(types_1.GridEvents.headerInput, [val, colId, filter]); // TODO: remove sute_7.0
+    };
+    if (filter === "selectFilter") {
+        inputHandler();
+        return;
+    }
+    if (inputDelay) {
+        clearTimeout(inputDelay);
+    }
+    inputDelay = setTimeout(inputHandler, 250);
+}
+function applyMathMethod(column, config, method, validate) {
+    if (!column || !config || !method) {
+        return;
+    }
+    var id = column.id;
+    var columnData = validate
+        ? validate(id, config.data)
+        : config.data.reduce(function (items, item) {
+            if (item[id] !== undefined && item[id] !== "" && !isNaN(item[id])) {
+                items.push(parseFloat(item[id]));
+            }
+            return items;
+        }, []);
+    // [todo] move to treegrid
+    var roots = columnData;
+    if (config.type === "tree") {
+        roots = config.data.reduce(function (total, item) {
+            if (item.$level === 0) {
+                if (item[id] !== undefined && item[id] !== "" && !isNaN(item[id])) {
+                    total.push(parseFloat(item[id]) || 0);
+                }
+                else {
+                    var value_1 = 0;
+                    config.datacollection.eachChild(item.id, function (cell) {
+                        if (!config.datacollection.haveItems(cell.id)) {
+                            value_1 += parseFloat(cell[id]);
+                        }
+                    });
+                    total.push(value_1);
+                }
+            }
+            return total;
+        }, []);
+    }
+    return method(columnData, roots);
+}
+function getContent() {
+    var _this = this;
+    return {
+        inputFilter: {
+            element: {},
+            toHtml: function (column, config) {
+                var colId = column.id.toString();
+                this.element[colId] = dom_1.el("label.dhx_grid-filter__label.dxi.dxi-magnify", { "aria-label": "Type to search", _ref: column.id + "_filter" }, [
+                    dom_1.el("input", {
+                        type: "text",
+                        class: "dhx_input dhx_grid-filter",
+                        oninput: [onInput, config.events, column.id, "inputFilter", this],
+                        _key: column.id,
+                        value: this.value[column.id] || "",
+                    }),
+                ]);
+                return this.element[colId];
+            },
+            match: function (value, match) {
+                var res = "";
+                for (var i = 0; i < match.length; i++) {
+                    var char = match.charCodeAt(i);
+                    if ((char > 32 && char < 48) || char === 63 || (char > 90 && char < 95) || char === 124) {
+                        res += "\\" + match[i];
+                    }
+                    else {
+                        res += match[i];
+                    }
+                }
+                return new RegExp("" + res, "i").test(value);
+            },
+            value: {},
+        },
+        selectFilter: {
+            element: {},
+            toHtml: function (column, config) {
+                var _this = this;
+                var colId = column.id.toString();
+                this.element[colId] = dom_1.el("label.dhx_grid-filter__label.dxi.dxi-menu-down", { _ref: column.id + "_filter" }, [
+                    dom_1.el("select.dxi.dxi-menu-down", {
+                        type: "text",
+                        class: "dhx_input dhx_grid-filter dhx_grid-filter--select",
+                        onchange: [onInput, config.events, column.id, "selectFilter", this],
+                        _key: column.id,
+                    }, __spreadArrays([
+                        dom_1.el("option", { value: "" }, "")
+                    ], column.$uniqueData.map(function (val) {
+                        return val &&
+                            dom_1.el("option", {
+                                value: val,
+                                selected: _this.value[column.id] === val.toString(),
+                            }, val);
+                    }))),
+                ]);
+                return this.element[colId];
+            },
+            match: function (value, match) { return (match ? value.toString() == match : true); },
+            value: {},
+        },
+        comboFilter: {
+            element: {},
+            toHtml: function (column, config) {
+                var combo;
+                var colId = column.id.toString();
+                if (!this.element[colId]) {
+                    var conf = column.header.filter(function (item) { return item.filterConfig !== undefined; })[0];
+                    if (conf && conf.filterConfig) {
+                        combo = new ts_combobox_1.Combobox(null, JSON.parse(JSON.stringify(conf.filterConfig)));
+                    }
+                    else {
+                        combo = new ts_combobox_1.Combobox(null, {});
+                    }
+                    combo.data.parse(column.$uniqueData.map(function (value) { return ({ value: value }); }));
+                    config.events.on(ts_data_1.DataEvents.load, function () {
+                        combo.data.parse(column.$uniqueData.map(function (value) { return ({ value: value }); }));
+                    });
+                    this.element[colId] = combo;
+                    combo.events.on("change", function (id) {
+                        if (id) {
+                            var item = void 0;
+                            var value = void 0;
+                            if (combo.data.getItem(id)) {
+                                item = combo.list.selection.getItem();
+                                value = item.value;
+                                config.events.fire(types_1.GridEvents.filterChange, [value, colId, "comboFilter"]);
+                                config.events.fire(types_1.GridEvents.headerInput, [value, colId, "comboFilter"]); // TODO: remove suite_7.0
+                            }
+                            else {
+                                config.events.fire(types_1.GridEvents.filterChange, ["", colId, "comboFilter"]);
+                                config.events.fire(types_1.GridEvents.headerInput, ["", colId, "comboFilter"]); // TODO: remove suite_7.0
+                            }
+                        }
+                    });
+                    config.events.on(types_1.GridEvents.scroll, function () {
+                        combo._hideOptions();
+                    });
+                    combo.popup.events.on("afterHide", function () {
+                        if (!combo.list.selection.getItem()) {
+                            combo.clear();
+                            config.events.fire(types_1.GridEvents.filterChange, ["", colId, "comboFilter"]);
+                            config.events.fire(types_1.GridEvents.headerInput, ["", colId, "comboFilter"]); // TODO: remove suite_7.0
+                        }
+                    });
+                }
+                else {
+                    combo = this.element[column.id];
+                }
+                return dom_1.inject(combo.getRootView());
+            },
+            match: function (value, match) { return (match ? value === match : true); },
+            destroy: function () {
+                if (_this.content && _this.content.comboFilter.element) {
+                    var comboFilters = _this.content.comboFilter.element;
+                    for (var combo in comboFilters) {
+                        comboFilters[combo].destructor();
+                        delete comboFilters[combo];
+                    }
+                }
+            },
+            value: {},
+        },
+        sum: {
+            calculate: function (col, roots) { return roots.reduce(function (sum, c) { return (sum += parseFloat(c) || 0); }, 0); },
+            toHtml: function (column, config) {
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
+            },
+        },
+        avg: {
+            calculate: function (col, roots) {
+                return col.length ? roots.reduce(function (sum, c) { return (sum += c); }, 0) / col.length : null;
+            },
+            toHtml: function (column, config) {
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
+            },
+        },
+        min: {
+            calculate: function (col) { return (col.length ? Math.min.apply(Math, col) : null); },
+            toHtml: function (column, config) {
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
+            },
+        },
+        max: {
+            calculate: function (col) { return (col.length ? Math.max.apply(Math, col) : null); },
+            toHtml: function (column, config) {
+                var value = applyMathMethod(column, config, this.calculate);
+                if (column.format || column.type === "percent") {
+                    return data_1.toFormat(value, column.type, column.format);
+                }
+                else {
+                    return value ? value.toFixed(3) : null;
+                }
+            },
+        },
+        count: {
+            calculate: function (_col, roots) {
+                // [todo]
+                return roots.reduce(function (count, c) { return (count += c); }, 0);
+            },
+            validate: function (colId, data) {
+                return data.reduce(function (items, item) {
+                    if (item[colId] !== undefined && item[colId] !== "") {
+                        if (isNaN(item)) {
+                            items.push(1);
+                        }
+                        else {
+                            items.push(item);
+                        }
+                    }
+                    return items;
+                }, []);
+            },
+            toHtml: function (column, config) {
+                return applyMathMethod(column, config, this.calculate, this.validate);
+            },
+        },
+    };
+}
+exports.getContent = getContent;
+
+
+/***/ }),
+/* 140 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var types_1 = __webpack_require__(9);
+var html_1 = __webpack_require__(3);
+function startResize(grid, column, ev, cb) {
+    ev.targetTouches && ev.preventDefault();
+    var initX = ev.targetTouches ? ev.targetTouches[0].clientX : ev.clientX;
+    var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
+    var initWidth = 0;
+    grid.config.$resizing = column;
+    var moveHandler = function (e) {
+        var i = core_1.findIndex(columns, function (obj) {
+            return obj.id === column;
+        });
+        var currentX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+        var containerLeft = currentX - grid.getRootNode().getBoundingClientRect().left;
+        var scrollbarY = grid.config.$totalHeight > grid.config.height ? html_1.getScrollbarWidth() : 0;
+        if (grid.config.leftSplit === i + 1 && containerLeft >= grid.config.width - scrollbarY - 2) {
+            return;
+        }
+        initWidth = initWidth || columns[i].$width;
+        var minWidth = columns[i].minWidth || 40;
+        var maxWidth = columns[i].maxWidth;
+        var move = currentX - initX;
+        var cols = __spreadArrays(columns);
+        var size = initWidth + move;
+        var final;
+        if ((maxWidth && size >= maxWidth) || size <= minWidth) {
+            if (size <= minWidth) {
+                final = minWidth;
+            }
+            if (size >= maxWidth) {
+                final = maxWidth;
+            }
+        }
+        else {
+            final = size;
+        }
+        cols[i].$width = final;
+        cols[i].$fixed = true;
+        grid.events.fire(types_1.GridEvents.resize, [columns[i], e]);
+        grid.paint();
+    };
+    var upHandler = function () {
+        if (!ev.targetTouches) {
+            document.removeEventListener("mousemove", moveHandler);
+            document.removeEventListener("mouseup", upHandler);
+        }
+        else {
+            document.removeEventListener("touchmove", moveHandler);
+            document.removeEventListener("touchend", upHandler);
+        }
+        cb();
+    };
+    if (!ev.targetTouches) {
+        document.addEventListener("mousemove", moveHandler);
+        document.addEventListener("mouseup", upHandler);
+    }
+    else {
+        document.addEventListener("touchmove", moveHandler);
+        document.addEventListener("touchend", upHandler);
+    }
+    grid.paint();
+}
+exports.startResize = startResize;
+
+
+/***/ }),
+/* 141 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var html_1 = __webpack_require__(3);
+var types_1 = __webpack_require__(43);
+var nodeTimeout = new WeakMap();
+var containers = new Map();
+function createMessageContainer(parent, position) {
+    var messageContainer = document.createElement("div");
+    messageContainer.setAttribute("data-position", position);
+    messageContainer.className =
+        "dhx_message-container " +
+            "dhx_message-container--" +
+            position +
+            (parent === document.body ? " dhx_message-container--in-body" : "");
+    return messageContainer;
+}
+function onExpire(node, fromClick) {
+    if (fromClick) {
+        clearTimeout(nodeTimeout.get(node));
+    }
+    var container = node.parentNode;
+    var position = container.getAttribute("data-position");
+    var parent = container.parentNode;
+    var messageContainerInfo = containers.get(parent);
+    if (!messageContainerInfo) {
+        return;
+    }
+    var positionInfo = messageContainerInfo[position];
+    if (!positionInfo) {
+        return;
+    }
+    var stack = positionInfo.stack;
+    var index = stack.indexOf(node);
+    if (index !== -1) {
+        container.removeChild(node);
+        stack.splice(index, 1);
+        if (stack.length === 0) {
+            parent.removeChild(container);
+        }
+        return;
+    }
+}
+function message(props) {
+    var _a;
+    if (typeof props === "string") {
+        props = { text: props };
+    }
+    props.position = props.position || types_1.MessageContainerPosition.topRight;
+    var messageBox = document.createElement("div");
+    messageBox.className = "dhx_widget dhx_message " + (props.css || "");
+    messageBox.setAttribute("role", "alert");
+    props.text && messageBox.setAttribute("aria-describedby", "dhx_alert__content");
+    if (props.html) {
+        messageBox.innerHTML = props.html;
+    }
+    else {
+        messageBox.innerHTML = "<span class=\"dhx_message__text\">" + props.text + "</span>\n\t\t" + (props.icon ? "<span class=\"dhx_message__icon dxi " + props.icon + "\"></span>" : "");
+    }
+    var parent = props.node ? html_1.toNode(props.node) : document.body;
+    var position = getComputedStyle(parent).position;
+    if (position === "static") {
+        parent.style.position = "relative";
+    }
+    var messageContainerInfo = containers.get(parent);
+    if (!messageContainerInfo) {
+        containers.set(parent, (_a = {},
+            _a[props.position] = {
+                stack: [],
+                container: createMessageContainer(parent, props.position),
+            },
+            _a));
+    }
+    else if (!messageContainerInfo[props.position]) {
+        messageContainerInfo[props.position] = {
+            stack: [],
+            container: createMessageContainer(parent, props.position),
+        };
+    }
+    var _b = containers.get(parent)[props.position], stack = _b.stack, container = _b.container;
+    if (stack.length === 0) {
+        parent.appendChild(container);
+    }
+    stack.push(messageBox);
+    container.appendChild(messageBox);
+    if (props.expire) {
+        var timeout = setTimeout(function () { return onExpire(messageBox); }, props.expire);
+        nodeTimeout.set(messageBox, timeout);
+    }
+    messageBox.onclick = function () { return onExpire(messageBox, true); };
+}
+exports.message = message;
+
+
+/***/ }),
+/* 142 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Promise) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var en_1 = __webpack_require__(44);
+var common_1 = __webpack_require__(74);
+function alert(props) {
+    var apply = props.buttons && props.buttons[0] ? props.buttons[0] : en_1.default.apply;
+    var unblock = common_1.blockScreen(props.blockerCss);
+    return new Promise(function (res) {
+        var alertBox = document.createElement("div");
+        alertBox.setAttribute("role", "alert");
+        alertBox.setAttribute("aria-modal", "true");
+        props.text && alertBox.setAttribute("aria-describedby", "dhx_alert__content");
+        props.header && alertBox.setAttribute("aria-labelledby", "dhx_alert__header");
+        alertBox.className = "dhx_widget dhx_alert " + (props.css || "");
+        var closeAlert = function (e) {
+            if (e.key === "Escape" || e.key === "Esc" || e.key === " ") {
+                e.preventDefault();
+                alertBox.querySelector("button").click();
+            }
+        };
+        alertBox.innerHTML = "\n\t\t\t" + (props.header ? "<div id=\"dhx_alert__header\" class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t\t" + (props.text ? "<div id=\"dhx_alert__content\" class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button type=\"button\" aria-label=\"confirm\" class=\"dhx_alert__apply-button dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
+        document.body.appendChild(alertBox);
+        alertBox.querySelector(".dhx_alert__apply-button").focus();
+        alertBox.querySelector("button").addEventListener("click", function () {
+            unblock();
+            document.body.removeChild(alertBox);
+            res(true);
+        });
+        alertBox.addEventListener("keydown", closeAlert);
+    });
+}
+exports.alert = alert;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
+
+/***/ }),
+/* 143 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Promise) {
+Object.defineProperty(exports, "__esModule", { value: true });
+var en_1 = __webpack_require__(44);
+var common_1 = __webpack_require__(74);
+function confirm(props) {
+    props.buttonsAlignment = props.buttonsAlignment || "right";
+    var apply = props.buttons && props.buttons[1] ? props.buttons[1] : en_1.default.apply;
+    var reject = props.buttons && props.buttons[0] ? props.buttons[0] : en_1.default.reject;
+    var unblock = common_1.blockScreen(props.blockerCss);
+    return new Promise(function (res) {
+        var confirmBox = document.createElement("div");
+        confirmBox.setAttribute("role", "alertdialog");
+        confirmBox.setAttribute("aria-modal", "true");
+        props.text && confirmBox.setAttribute("aria-describedby", "dhx_alert__content");
+        props.header && confirmBox.setAttribute("aria-labelledby", "dhx_alert__header");
+        var focusItem;
+        var answer = function (val) {
+            unblock();
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            confirmBox.removeEventListener("click", clickHandler);
+            // eslint-disable-next-line @typescript-eslint/no-use-before-define
+            document.removeEventListener("keydown", closeConfirm);
+            document.body.removeChild(confirmBox);
+            res(val);
+        };
+        var clickHandler = function (e) {
+            if (e.target.tagName === "BUTTON") {
+                answer(e.target.classList.contains("dhx_alert__confirm-aply"));
+            }
+        };
+        var closeConfirm = function (e) {
+            if (e.key === "Escape" || e.key === "Esc") {
+                confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
+                answer(e.target.classList.contains("dhx_alert__confirm-reject"));
+            }
+            else if (e.key === "Tab") {
+                if (focusItem === "aply") {
+                    focusItem = "reject";
+                    confirmBox.querySelector(".dhx_alert__confirm-reject").focus();
+                }
+                else {
+                    focusItem = "aply";
+                    confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
+                }
+                e.preventDefault();
+            }
+        };
+        confirmBox.className = "dhx_widget dhx_alert dhx_alert--confirm" + (props.css ? " " + props.css : "");
+        confirmBox.innerHTML = "\n\t\t" + (props.header ? "<div class=\"dhx_alert__header\"> " + props.header + " </div>" : "") + "\n\t\t" + (props.text ? "<div class=\"dhx_alert__content\">" + props.text + "</div>" : "") + "\n\t\t\t<div class=\"dhx_alert__footer " + (props.buttonsAlignment ? "dhx_alert__footer--" + props.buttonsAlignment : "") + "\">\n\t\t\t\t<button type=\"button\" aria-label=\"reject\" class=\"dhx_alert__confirm-reject dhx_button dhx_button--view_link dhx_button--color_primary dhx_button--size_medium\">" + reject + "</button>\n\t\t\t\t<button type=\"button\"  aria-label=\"aply\"class=\"dhx_alert__confirm-aply dhx_button dhx_button--view_flat dhx_button--color_primary dhx_button--size_medium\">" + apply + "</button>\n\t\t\t</div>";
+        document.body.appendChild(confirmBox);
+        focusItem = "aply";
+        confirmBox.querySelector(".dhx_alert__confirm-aply").focus();
+        confirmBox.addEventListener("click", clickHandler);
+        document.addEventListener("keydown", closeConfirm);
+    });
+}
+exports.confirm = confirm;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
+
+/***/ }),
+/* 144 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = __webpack_require__(9);
+var html_1 = __webpack_require__(3);
+function selectionMove(e, grid, dir, range, toEnd, ctrlUp, shiftUp) {
+    if (toEnd === void 0) { toEnd = false; }
+    if (ctrlUp === void 0) { ctrlUp = false; }
+    if (shiftUp === void 0) { shiftUp = false; }
+    if (grid.config.$editable || !grid.config.selection || html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
+        return;
+    }
+    if (e) {
+        e.preventDefault();
+    }
+    var selected = grid.selection.getCell();
+    var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
+    grid.data.filter(function (row) { return !row.hidden; });
+    if (selected) {
+        if (dir === "vertical") {
+            if (toEnd) {
+                var newItem = range === 1
+                    ? grid.data.getItem(grid.data.getId(grid.data.getLength() - 1))
+                    : grid.data.getItem(grid.data.getId(0));
+                grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
+                grid.scrollTo(newItem.id.toString(), selected.column.id.toString());
+            }
+            else {
+                var index = grid.data.getIndex(selected.row.id.toString());
+                if (index + range >= 0 && index + range < grid.data.getLength()) {
+                    var newItem = grid.data.getItem(grid.data.getId(index + range));
+                    grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
+                    grid.scrollTo(newItem.id.toString(), selected.column.id.toString());
+                }
+            }
+        }
+        else {
+            if (toEnd) {
+                var newItem = range === 1 ? columns[columns.length - 1] : columns[0];
+                grid.selection.setCell(selected.row.id, newItem.id, ctrlUp, shiftUp);
+                grid.scrollTo(selected.row.id.toString(), newItem.id.toString());
+            }
+            else {
+                var index = columns.indexOf(selected.column);
+                if (index + range >= 0 && index + range < columns.length) {
+                    grid.scrollTo(selected.row.id.toString(), columns[index + range].id.toString());
+                    grid.selection.setCell(selected.row.id, columns[index + range].id, ctrlUp, shiftUp);
+                }
+            }
+        }
+    }
+}
+exports.selectionMove = selectionMove;
+function getKeysHandlers(grid) {
+    var cellSelection = grid.config.selection === "cell" ||
+        grid.config.selection === "complex" ||
+        grid.config.selection === true;
+    var gridBodyHandlers = {};
+    if (grid.getRootView()) {
+        var gridBody_1 = grid.getRootView().refs.grid_body.el;
+        gridBodyHandlers = {
+            pageUp: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop -= gridBody_1.clientHeight;
+            },
+            pageDown: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop += gridBody_1.clientHeight;
+            },
+            home: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop = 0;
+            },
+            end: function (e) {
+                e.preventDefault();
+                gridBody_1.scrollTop += gridBody_1.scrollHeight;
+            },
+        };
+    }
+    return __assign({ enter: function () {
+            if (cellSelection) {
+                var selected = grid.selection.getCell();
+                if (selected &&
+                    ((selected.column.editable !== false && grid.config.editable) || selected.column.editable)) {
+                    if (!grid.config.$editable) {
+                        if (selected.column.type !== "boolean") {
+                            grid.editCell(selected.row.id, selected.column.id, selected.column.editorType);
+                        }
+                        else {
+                            grid.events.fire(types_1.GridEvents.afterEditEnd, [
+                                !selected.row[selected.column.id],
+                                selected.row,
+                                selected.column,
+                            ]);
+                        }
+                    }
+                    else {
+                        grid.editEnd();
+                    }
+                }
+            }
+            else {
+                if (grid.config.$editable) {
+                    grid.editEnd();
+                }
+            }
+        }, space: function (e) {
+            if (cellSelection && grid.config.editable && !grid.config.$editable) {
+                var selected = grid.selection.getCell();
+                if (selected && selected.column.type === "boolean") {
+                    e.preventDefault();
+                    grid.events.fire(types_1.GridEvents.afterEditEnd, [
+                        !selected.row[selected.column.id],
+                        selected.row,
+                        selected.column,
+                    ]);
+                }
+            }
+        }, escape: function () {
+            if (grid.config.$editable) {
+                grid.editEnd(true);
+            }
+        }, tab: function (e) {
+            if (!grid.config.selection || html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
+                return;
+            }
+            if (e) {
+                e.preventDefault();
+            }
+            if (grid.config.$editable) {
+                grid.editEnd();
+            }
+            var selected = grid.selection.getCell();
+            var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
+            if (selected) {
+                var index = columns.indexOf(selected.column) + 1;
+                if (index >= 0 && index < columns.length) {
+                    grid.selection.setCell(selected.row.id, columns[index].id);
+                    grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
+                }
+                else if (index >= 0) {
+                    var newLineIndex = grid.data.getIndex(selected.row.id.toString()) + 1;
+                    if (newLineIndex < grid.data.getLength()) {
+                        grid.selection.setCell(grid.data.getId(newLineIndex), columns[0].id);
+                        grid.scrollTo(grid.data.getId(newLineIndex).toString(), columns[0].id.toString());
+                    }
+                }
+            }
+        }, "shift+tab": function (e) {
+            if (!grid.config.selection || html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
+                return;
+            }
+            if (e) {
+                e.preventDefault();
+            }
+            if (grid.config.$editable) {
+                grid.editEnd();
+            }
+            var selected = grid.selection.getCell();
+            var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
+            if (selected) {
+                var index = columns.indexOf(selected.column) - 1;
+                if (index >= 0 && index < columns.length) {
+                    grid.selection.setCell(selected.row.id, columns[index].id);
+                    grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
+                }
+                else if (index < grid.data.getLength()) {
+                    var newLineIndex = grid.data.getIndex(selected.row.id.toString()) - 1;
+                    if (newLineIndex >= 0) {
+                        grid.selection.setCell(grid.data.getId(newLineIndex), columns[columns.length - 1].id);
+                        grid.scrollTo(grid.data.getId(newLineIndex).toString(), columns[columns.length - 1].id.toString());
+                    }
+                }
+            }
+        }, arrowUp: function (e) {
+            selectionMove(e, grid, "vertical", -1);
+        }, "ctrl+arrowUp": function (e) {
+            selectionMove(e, grid, "vertical", -1, true);
+        }, "shift+arrowUp": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", -1, false, false, true);
+            }
+        }, "ctrl+shift+arrowUp": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", -1, true, false, true);
+            }
+        }, arrowDown: function (e) {
+            selectionMove(e, grid, "vertical", 1);
+        }, "ctrl+arrowDown": function (e) {
+            selectionMove(e, grid, "vertical", 1, true);
+        }, "shift+arrowDown": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", 1, false, false, true);
+            }
+        }, "ctrl+shift+arrowDown": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "vertical", 1, true, false, true);
+            }
+        }, arrowRight: function (e) {
+            selectionMove(e, grid, "horizontal", 1);
+        }, "ctrl+arrowRight": function (e) {
+            selectionMove(e, grid, "horizontal", 1, true);
+        }, "shift+arrowRight": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", 1, false, false, true);
+            }
+        }, "ctrl+shift+arrowRight": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", 1, true, false, true);
+            }
+        }, arrowLeft: function (e) {
+            selectionMove(e, grid, "horizontal", -1);
+        }, "ctrl+arrowLeft": function (e) {
+            selectionMove(e, grid, "horizontal", -1, true);
+        }, "shift+arrowLeft": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", -1, false, false, true);
+            }
+        }, "ctrl+shift+arrowLeft": function (e) {
+            if (grid.config.multiselection) {
+                selectionMove(e, grid, "horizontal", -1, true, false, true);
+            }
+        } }, gridBodyHandlers);
+}
+exports.getKeysHandlers = getKeysHandlers;
+
+
+/***/ }),
+/* 145 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+/* WEBPACK VAR INJECTION */(function(Promise) {
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var dataproxy_1 = __webpack_require__(23);
+var core_1 = __webpack_require__(1);
+var ajax_1 = __webpack_require__(34);
+var LazyDataProxy = /** @class */ (function (_super) {
+    __extends(LazyDataProxy, _super);
+    function LazyDataProxy(url, config) {
+        var _this = _super.call(this, url) || this;
+        _this.config = core_1.extend({
+            from: 0,
+            limit: 50,
+            delay: 50,
+            prepare: 0,
+        }, config);
+        _this.updateUrl(url, { from: _this.config.from, limit: _this.config.limit });
+        return _this;
+    }
+    LazyDataProxy.prototype.load = function () {
+        var _this = this;
+        return new Promise(function (resolve) {
+            if (!_this._timeout) {
+                ajax_1.ajax.get(_this.url, { responseType: "text" }).then(resolve);
+                _this._cooling = true;
+                _this._timeout = setTimeout(function () {
+                    return;
+                });
+            }
+            else {
+                clearTimeout(_this._timeout);
+                _this._timeout = setTimeout(function () {
+                    ajax_1.ajax.get(_this.url, { responseType: "text" }).then(resolve);
+                    _this._cooling = true;
+                }, _this.config.delay);
+                if (_this._cooling) {
+                    resolve(null);
+                    _this._cooling = false;
+                }
+            }
+        });
+    };
+    return LazyDataProxy;
+}(dataproxy_1.DataProxy));
+exports.LazyDataProxy = LazyDataProxy;
+
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
+
+/***/ }),
+/* 146 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var events_1 = __webpack_require__(2);
+var types_1 = __webpack_require__(24);
+var types_2 = __webpack_require__(16);
+var Selection = /** @class */ (function () {
+    function Selection(config, data, events) {
+        var _this = this;
+        this.events = events || new events_1.EventSystem(this);
+        this._data = data;
+        this.config = config;
+        this._data.events.on(types_2.DataEvents.removeAll, function () {
+            _this._selected = null;
+        });
+        this._data.events.on(types_2.DataEvents.change, function () {
+            if (_this._selected) {
+                var near = _this._data.getNearId(_this._selected);
+                if (near !== _this._selected) {
+                    _this._selected = null;
+                    if (near) {
+                        _this.add(near);
+                    }
+                }
+            }
+        });
+    }
+    Selection.prototype.getId = function () {
+        return this._selected;
+    };
+    Selection.prototype.getItem = function () {
+        if (this._selected) {
+            return this._data.getItem(this._selected);
+        }
+        return null;
+    };
+    Selection.prototype.remove = function (id) {
+        id = id || this._selected;
+        if (!id) {
+            return true;
+        }
+        if (this.events.fire(types_1.SelectionEvents.beforeUnSelect, [id])) {
+            this._data.update(id, { $selected: false }, true);
+            this._selected = null;
+            this.events.fire(types_1.SelectionEvents.afterUnSelect, [id]);
+            return true;
+        }
+        return false;
+    };
+    Selection.prototype.add = function (id) {
+        if (this._selected === id || !!this.config.disabled || !this._data.exists(id)) {
+            return;
+        }
+        this.remove();
+        this._addSingle(id);
+    };
+    Selection.prototype.enable = function () {
+        this.config.disabled = false;
+    };
+    Selection.prototype.disable = function () {
+        this.remove();
+        this.config.disabled = true;
+    };
+    Selection.prototype._addSingle = function (id) {
+        if (this.events.fire(types_1.SelectionEvents.beforeSelect, [id])) {
+            this._selected = id;
+            this._data.update(id, { $selected: true }, true);
+            this.events.fire(types_1.SelectionEvents.afterSelect, [id]);
+        }
+    };
+    return Selection;
+}());
+exports.Selection = Selection;
+
+
+/***/ }),
+/* 147 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var scrollView_1 = __webpack_require__(148);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
+var ts_layout_1 = __webpack_require__(13);
+var ts_message_1 = __webpack_require__(20);
+var ts_toolbar_1 = __webpack_require__(31);
+var ts_navbar_1 = __webpack_require__(21);
+var en_1 = __webpack_require__(46);
+var types_1 = __webpack_require__(30);
+var Uploader_1 = __webpack_require__(58);
+var configs_1 = __webpack_require__(161);
+var helper_1 = __webpack_require__(162);
+var ProgressBar_1 = __webpack_require__(163);
+var ReadStackPreview_1 = __webpack_require__(164);
+var Vault = /** @class */ (function (_super) {
+    __extends(Vault, _super);
+    function Vault(container, config) {
+        if (config === void 0) { config = {}; }
+        var _this = _super.call(this, null, core_1.extend({
+            mode: types_1.VaultMode.list,
+            toolbar: true,
+            updateFromResponse: true,
+            scaleFactor: 4,
+            customScroll: true,
+            uploader: {},
+            progressBar: {},
+        }, config)) || this;
+        if (!_this.config.toolbar) {
+            _this.config.uploader.autosend = true;
+        }
+        if (config.data) {
+            _this.data = config.data;
+            _this.events = config.data.events;
+            _this.events.context = _this;
+        }
+        else {
+            _this.events = new events_1.EventSystem(_this);
+            _this.data = new ts_data_1.DataCollection({}, _this.events);
+        }
+        _this.data.config.init = function (obj) {
+            obj.status = obj.status || types_1.FileStatus.uploaded;
+            if (obj.file) {
+                obj.size = obj.file.size;
+                obj.name = obj.file.name;
+            }
+            else {
+                obj.size = obj.size || 0;
+                obj.name = obj.name || "";
+            }
+            if (_this.config.mode === types_1.VaultMode.grid && obj.file && helper_1.isImage(obj)) {
+                _this._readStack.add(obj, _this.uploader.config.autosend);
+            }
+            return obj;
+        };
+        _this._readStack = new ReadStackPreview_1.ReadStackPreview(_this.data);
+        _this.uploader = new Uploader_1.Uploader(_this.config.uploader, _this.data, _this.events);
+        _this._scrollView = new scrollView_1.ScrollView(function () { return _this._vaultView.getRootView(); });
+        _this._progressBar = new ProgressBar_1.ProgressBar(_this.events, _this.config.progressBar);
+        _this.events.on(types_1.UploaderEvents.uploadProgress, function (progress, current, total) {
+            return _this._progressBar.setState(progress, { current: current, total: total });
+        });
+        _this._initHandlers();
+        _this._initUI(container);
+        _this._initEvents();
+        return _this;
+    }
+    Vault.prototype.destructor = function () {
+        this.toolbar.destructor();
+        this._readStack.stop();
+        this.uploader.unlinkDropArea();
+        this.uploader.abort();
+    };
+    Vault.prototype.getRootView = function () {
+        return this._layout.getRootView();
+    };
+    Vault.prototype._initUI = function (container) {
+        var _this = this;
+        var cfg = this.config.toolbar ? configs_1.layoutConfig : configs_1.layoutConfigWithoutTopbar;
+        cfg.on = this._getDragEvents();
+        var layout = (this._layout = new ts_layout_1.Layout(container, cfg));
+        var toolbar = (this.toolbar = new ts_toolbar_1.Toolbar(null, {
+            css: "vault-toolbar",
+        }));
+        this.toolbar.data.parse([
+            {
+                id: "add",
+                tooltip: en_1.default.add,
+                type: "button",
+                icon: "dxi-plus",
+            },
+            {
+                id: "upload",
+                tooltip: en_1.default.upload,
+                type: "button",
+                icon: "dxi icon-upload",
+            },
+            {
+                id: "spacer",
+                type: "spacer",
+            },
+            {
+                id: "remove-all",
+                tooltip: en_1.default.clearAll,
+                type: "button",
+                icon: "dxi-delete-forever",
+            },
+        ]);
+        this._hideUploadAndDeleteButtons();
+        this._vaultView = view_1.toViewLike(dom_1.create({ render: function () { return _this._draw(); } }));
+        if (this.config.toolbar) {
+            layout.getCell("topbar").attach(toolbar);
+        }
+        layout.getCell("vault").attach(this._vaultView);
+    };
+    Vault.prototype._initHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            onclick: {
+                ".action-add": function () { return _this.uploader.selectFile(); },
+                ".action-remove-file": function (e) {
+                    var id = html_1.locate(e);
+                    if (!id) {
+                        return;
+                    }
+                    _this.data.update(id, { $toRemove: true });
+                    setTimeout(function () {
+                        _this.data.update(id, { $toRemove: false }, true);
+                        _this.data.remove(id);
+                    }, 200);
+                },
+            },
+            onmouseover: {
+                ".action-download": function (e) {
+                    ts_message_1.tooltip(en_1.default.download, {
+                        node: e.target,
+                        position: ts_message_1.Position.bottom,
+                    });
+                },
+                ".action-remove-file": function (e) {
+                    ts_message_1.tooltip(en_1.default.clear, {
+                        node: e.target,
+                        position: ts_message_1.Position.bottom,
+                    });
+                },
+                ".title-content, .dhx-file-name": function (e) {
+                    var id = html_1.locate(e);
+                    var item = _this.data.getItem(id);
+                    ts_message_1.tooltip(item.name, {
+                        node: e.target,
+                        position: ts_message_1.Position.bottom,
+                        css: "tooltip-light",
+                    });
+                },
+            },
+        };
+    };
+    Vault.prototype._getDragEvents = function () {
+        var _this = this;
+        var rect = {
+            left: null,
+            top: null,
+            width: null,
+            height: null,
+        };
+        return {
+            dragleave: function (e) {
+                if (!_this._canDrop) {
+                    return;
+                }
+                if (e.pageX > rect.left + rect.width - 1 ||
+                    e.pageX < rect.left ||
+                    e.pageY > rect.top + rect.height - 1 ||
+                    e.pageY < rect.top) {
+                    _this._canDrop = false;
+                    if (_this.config.toolbar) {
+                        _this._layout.getCell("topbar").show();
+                    }
+                    _this._layout.config.css = "vault-layout";
+                    _this._layout.paint();
+                }
+            },
+            dragenter: function (e) {
+                e.preventDefault();
+                if (_this.uploader.isActive || _this._canDrop) {
+                    return;
+                }
+                var types = e.dataTransfer.types;
+                for (var _i = 0, types_2 = types; _i < types_2.length; _i++) {
+                    var type = types_2[_i];
+                    if (type !== "Files" && type !== "application/x-moz-file") {
+                        _this._canDrop = false;
+                        return;
+                    }
+                }
+                _this._canDrop = true;
+                var clientRect = _this.getRootView().node.el.getBoundingClientRect();
+                rect.left = clientRect.left + window.pageXOffset;
+                rect.top = clientRect.top + window.pageYOffset;
+                rect.width = clientRect.width;
+                rect.height = clientRect.height;
+                _this._canDrop = true;
+                if (_this.config.toolbar) {
+                    _this._layout.getCell("topbar").hide();
+                }
+                _this._layout.config.css = "vault-layout dhx-dragin";
+                _this._layout.paint();
+            },
+            dragover: function (e) {
+                e.preventDefault();
+            },
+            drop: function (e) {
+                e.preventDefault();
+                if (!_this._canDrop) {
+                    return;
+                }
+                var dataTransfer = e.dataTransfer;
+                _this.uploader.parseFiles(dataTransfer);
+                _this._canDrop = false;
+                if (_this.config.toolbar) {
+                    _this._layout.getCell("topbar").show();
+                }
+                _this._layout.config.css = "vault-layout";
+                _this._layout.paint();
+            },
+        };
+    };
+    Vault.prototype._hideUploadAndDeleteButtons = function () {
+        this.toolbar.hide(["upload", "remove-all"]);
+    };
+    Vault.prototype._showUploadAndDeleteButtons = function () {
+        if (this.uploader.config.autosend) {
+            this.toolbar.show("remove-all");
+        }
+        else {
+            this.toolbar.show(["upload", "remove-all"]);
+        }
+    };
+    Vault.prototype._initEvents = function () {
+        var _this = this;
+        this.data.events.on(ts_data_1.DataEvents.change, function () {
+            if (!_this.data.getLength()) {
+                _this._hideUploadAndDeleteButtons();
+            }
+            else {
+                _this._showUploadAndDeleteButtons();
+            }
+            _this._vaultView.paint();
+        });
+        this.events.on(types_1.UploaderEvents.uploadBegin, function () {
+            if (_this.config.toolbar) {
+                _this._layout.getCell("topbar").attach(_this._progressBar);
+            }
+        });
+        this.events.on(types_1.UploaderEvents.uploadComplete, function () {
+            if (_this.config.mode === types_1.VaultMode.grid && _this.uploader.config.autosend) {
+                _this._readStack.read();
+            }
+            if (_this.config.toolbar) {
+                _this._layout.getCell("topbar").attach(_this.toolbar);
+            }
+        });
+        this.toolbar.events.on(ts_navbar_1.NavigationBarEvents.click, function (id) {
+            switch (id) {
+                case "add":
+                    _this.uploader.selectFile();
+                    break;
+                case "remove-all":
+                    _this.data.removeAll();
+                    break;
+                case "upload":
+                    _this.uploader.send();
+                    break;
+            }
+        });
+        this.events.on(types_1.ProgressBarEvents.cancel, function () {
+            _this.uploader.abort();
+            _this._vaultView.paint();
+        });
+    };
+    Vault.prototype._draw = function () {
+        var isEmpty = !this.data.getLength();
+        var files = this.config.mode === types_1.VaultMode.grid ? this._drawGrid() : this._drawList();
+        return dom_1.el("div", __assign(__assign({ class: "vault dhx_widget" + (this._canDrop ? " drop-here" : "") }, this._handlers), { dhx_widget_id: this._uid }), [
+            this._canDrop || isEmpty
+                ? this._drawDropableArea()
+                : this.config.customScroll
+                    ? this._scrollView.render(files)
+                    : files,
+        ]);
+    };
+    Vault.prototype._getFileActions = function (file) {
+        var defaultActions = [];
+        var hoverActions = [];
+        var actions = [dom_1.el(".dhx-default-actions", defaultActions), dom_1.el(".dhx-hover-actions", hoverActions)];
+        if (file.status === types_1.FileStatus.inprogress) {
+            return actions;
+        }
+        if (file.status !== types_1.FileStatus.failed && file.link) {
+            var link = (this.config.downloadURL || "") + file.link;
+            var downloadName = link
+                .split("/")
+                .pop()
+                .split("?")[0];
+            var download = dom_1.el("a", {
+                download: downloadName,
+                class: "download-link",
+                href: link,
+            }, [dom_1.el(".icon-btn.dxi.dxi-download.action-download")]);
+            hoverActions.push(download);
+        }
+        var remove = dom_1.el(".icon-btn.dxi.dxi-delete-forever.action-remove-file");
+        hoverActions.push(remove);
+        if (file.status === types_1.FileStatus.failed) {
+            var warn = dom_1.el(".dxi.dxi-alert-circle.warning-status");
+            defaultActions.push(warn);
+        }
+        if (file.status === types_1.FileStatus.uploaded) {
+            var uploadComplete = dom_1.el(".dxi.dxi-checkbox-marked-circle.uploaded-status");
+            defaultActions.push(uploadComplete);
+        }
+        return actions;
+    };
+    Vault.prototype._drawList = function () {
+        var _this = this;
+        return dom_1.el(".dhx-files-block.dhx-webkit-scroll", this.data.map(function (item) {
+            var isError = item.status === types_1.FileStatus.failed && item.request;
+            var inProgress = item.status === types_1.FileStatus.inprogress;
+            var inQueue = item.status === types_1.FileStatus.queue;
+            var notUploaded = item.status !== types_1.FileStatus.uploaded;
+            return dom_1.el("div", {
+                class: "dhx-file-item" +
+                    (item.$toRemove ? " to-remove" : "") +
+                    (inQueue ? " in-queue" : ""),
+                dhx_id: item.id,
+                _key: item.id,
+            }, [
+                dom_1.el(".dhx-file-icon", [
+                    dom_1.el("div", {
+                        class: "dhx-file-type " +
+                            helper_1.getFileClassName(item) +
+                            (notUploaded ? " not-loaded" : ""),
+                    }),
+                ]),
+                dom_1.el(".dhx-file-title", [
+                    dom_1.el(".dhx-title-content", item.name),
+                    dom_1.el(".dhx-file-info", [
+                        isError && dom_1.el(".warn-message", item.request.statusText || en_1.default.error),
+                        inProgress
+                            ? dom_1.el(".progress-value", (item.progress * 100).toFixed(1) + "%")
+                            : dom_1.el(".dhx-size" + ((isError && ".dhx-size-error") || ""), helper_1.getBasis(item.size)),
+                    ]),
+                ]),
+                inProgress &&
+                    dom_1.el(".dhx-download-progress", {
+                        style: {
+                            width: (item.progress * 100).toFixed(1) + "%",
+                        },
+                    }),
+                !inProgress && dom_1.el(".dhx-file-action", _this._getFileActions(item)),
+            ]);
+        }));
+    };
+    Vault.prototype._drawDropableArea = function () {
+        return dom_1.el(".dhx-dropable-area.drop-files-here", [
+            dom_1.el(".dhx-big-icon-block", [
+                dom_1.el(".dxi.icon-upload"),
+            ]),
+            !this._canDrop && dom_1.el(".drop-area-bold-text", en_1.default.dragAndDrop),
+            !this._canDrop && dom_1.el(".drop-area-bold-text", en_1.default.filesOrFoldersHere),
+            !this._canDrop && dom_1.el(".drop-area-light-text", en_1.default.or),
+            !this._canDrop && dom_1.el("button.dhx_btn.dhx_btn--flat.dhx_btn--small.action-add", en_1.default.browse),
+        ]);
+    };
+    Vault.prototype._drawGrid = function () {
+        var _this = this;
+        return dom_1.el("div", {
+            class: "dhx-files-grid dhx-webkit-scroll",
+        }, [
+            dom_1.el(".dhx-grid-content", this.data.map(function (item) {
+                var inProgress = item.status === types_1.FileStatus.inprogress;
+                var inQueue = item.status === types_1.FileStatus.queue;
+                var isError = item.status === types_1.FileStatus.failed;
+                return dom_1.el("div", {
+                    class: "dhx-file-grid-item" +
+                        (inProgress ? " in-progress" : "") +
+                        (item.$toRemove ? " to-remove" : "") +
+                        (inQueue ? " in-queue" : "") +
+                        (isError ? " failed" : ""),
+                    dhx_id: item.id,
+                    _key: item.id,
+                }, [
+                    dom_1.el(".dhx-preview-wrapper", __spreadArrays([
+                        item.preview
+                            ? dom_1.el(".dhx-server-file-preview", [dom_1.el("img", { src: item.preview })])
+                            : item.image
+                                ? dom_1.el("canvas", {
+                                    width: 98 * _this.config.scaleFactor,
+                                    height: 98 * _this.config.scaleFactor,
+                                    _hooks: {
+                                        didInsert: function (node) {
+                                            var _a = helper_1.calculateCover(item.image), dx = _a.dx, dy = _a.dy, sx = _a.sx, sy = _a.sy, sHeight = _a.sHeight, sWidth = _a.sWidth;
+                                            var ctx = node.el.getContext("2d");
+                                            ctx.drawImage(item.image, sx, sy, sWidth, sHeight, dx, dy, 98 * _this.config.scaleFactor, 98 * _this.config.scaleFactor);
+                                        },
+                                    },
+                                })
+                                : dom_1.el("div", {
+                                    class: "dhx-file-preview dhx-file-type " +
+                                        helper_1.getFileClassName(item),
+                                }),
+                        inProgress && _this._drawCircle(item.progress)
+                    ], _this._getFileActions(item), [
+                        dom_1.el(".dhx-file-info", [
+                            isError &&
+                                dom_1.el(".warn-message", item.request.statusText || en_1.default.error),
+                            !inProgress &&
+                                dom_1.el(".dhx-size" + ((isError && ".dhx-size-error") || ""), helper_1.getBasis(item.size)),
+                        ]),
+                    ])),
+                    dom_1.el(".dhx-file-name", helper_1.truncateWord(item.name)),
+                ]);
+            })),
+        ]);
+    };
+    Vault.prototype._drawCircle = function (progress) {
+        return dom_1.el(".progress-layout", [
+            dom_1.el(".progress-amount", (progress * 100).toFixed(1) + "%"),
+            dom_1.sv("svg", {
+                xmlns: "http://www.w3.org/2000/svg",
+                class: "progress-circle",
+                viewBox: "0 0 60 60",
+            }, [
+                dom_1.sv("circle", {
+                    cx: 30,
+                    cy: 30,
+                    r: 28,
+                    "stroke-width": 4,
+                    class: "progress-bar-background",
+                }),
+                dom_1.sv("circle.active-circle", {
+                    cx: 30,
+                    cy: 30,
+                    r: 28,
+                    "stroke-width": 4,
+                    "stroke-dasharray": "175.9 175.9",
+                    "stroke-dashoffset": (1 - progress) * 175.9,
+                    class: "progress-bar-active",
+                }),
+            ]),
+        ]);
+    };
+    return Vault;
+}(view_1.View));
+exports.Vault = Vault;
+
+
+/***/ }),
+/* 148 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var html_1 = __webpack_require__(3);
+var ScrollView = /** @class */ (function () {
+    function ScrollView(getRootView, config) {
+        var _a;
+        var _this = this;
+        if (config === void 0) { config = {}; }
+        this.config = core_1.extend({
+            speed: 20,
+        }, config);
+        this._wheelName = html_1.isIE() ? "onmousewheel" : "onwheel";
+        this._getRootView = getRootView;
+        this._scrollTop = 0;
+        this._runnerTop = 0;
+        this._runnerHeight = 0;
+        this._visibleArea = 1;
+        this._scrollWidth = html_1.getScrollbarWidth();
+        this._handlers = (_a = {
+                onscroll: function () {
+                    _this._update();
+                }
+            },
+            _a[this._wheelName] = function (e) {
+                e.preventDefault();
+                var sign = (e.deltaY || -e.wheelDelta) > 0 ? 1 : -1;
+                var delta = sign * _this.config.speed;
+                var area = _this._getRefs().area;
+                var maxBottom = area.scrollHeight - _this._runnerHeight;
+                var newScrollTop = _this._scrollTop + delta;
+                if (newScrollTop < 0) {
+                    area.scrollTop = 0;
+                }
+                else if (newScrollTop > maxBottom) {
+                    area.scrollTop = maxBottom;
+                }
+                else {
+                    area.scrollTop = newScrollTop;
+                }
+                _this._update();
+            },
+            _a.onmousedownRunner = function (mouseDownEv) {
+                mouseDownEv.preventDefault();
+                var _a = _this._getRefs(), area = _a.area, runner = _a.runner;
+                var rect = area.getBoundingClientRect();
+                var top = rect.top + window.pageYOffset;
+                var bottom = rect.bottom + window.pageYOffset;
+                var maxBottom = area.scrollHeight - _this._runnerHeight;
+                var delta = mouseDownEv.pageY - runner.getBoundingClientRect().top - window.pageYOffset;
+                var mouseMove = function (e) {
+                    var y = e.pageY - delta;
+                    if (y <= top) {
+                        area.scrollTop = 0;
+                    }
+                    else if (y > bottom) {
+                        area.scrollTop = maxBottom;
+                    }
+                    else {
+                        area.scrollTop = (y - top) / _this._visibleArea;
+                    }
+                    _this._update();
+                };
+                var mouseUp = function () {
+                    document.removeEventListener("mousemove", mouseMove);
+                    document.removeEventListener("mouseup", mouseUp);
+                    document.body.classList.remove("dhx-no-select");
+                };
+                document.body.classList.add("dhx-no-select");
+                document.addEventListener("mousemove", mouseMove);
+                document.addEventListener("mouseup", mouseUp);
+            },
+            _a.onmousedownTrack = function (e) {
+                if (e.target.classList.contains("scroll-runner")) {
+                    return;
+                }
+                e.preventDefault();
+                var area = _this._getRefs().area;
+                var top = e.target.getBoundingClientRect().top + window.pageYOffset;
+                var maxBottom = area.scrollHeight - _this._runnerHeight;
+                var y = e.pageY;
+                var updateScroll = function () {
+                    var scrollTop;
+                    if (y < top + _this._runnerTop) {
+                        scrollTop = _this._scrollTop - area.clientHeight;
+                        if (scrollTop < 0) {
+                            scrollTop = 0;
+                        }
+                    }
+                    else if (y > top + _this._runnerTop + _this._runnerHeight) {
+                        scrollTop = _this._scrollTop + area.clientHeight;
+                        if (scrollTop > maxBottom) {
+                            scrollTop = maxBottom;
+                        }
+                    }
+                    else {
+                        return;
+                    }
+                    area.scrollTop = scrollTop;
+                    _this._update();
+                };
+                updateScroll();
+                var mousePressed = setInterval(updateScroll, 100);
+                var mouseUp = function () {
+                    document.removeEventListener("mouseup", mouseUp);
+                    window.clearInterval(mousePressed); // typescript bug
+                };
+                document.addEventListener("mouseup", mouseUp);
+            },
+            _a);
+    }
+    ScrollView.prototype.render = function (element) {
+        var _a;
+        var _this = this;
+        if (this._scrollWidth === 0) {
+            return element;
+        }
+        return dom_1.el(".scroll-view-wrapper", {
+            style: {
+                width: "100%",
+                height: "100%",
+                overflow: "hidden",
+                position: "relative",
+            },
+        }, [
+            dom_1.el(".scroll-view", {
+                onscroll: this._handlers.onscroll,
+                _ref: "scroll-view",
+                _hooks: {
+                    didInsert: function () {
+                        _this._update();
+                    },
+                    didRecycle: function () {
+                        _this._update();
+                    },
+                },
+                style: {
+                    height: "100%",
+                    width: "calc(100% + " + this._scrollWidth + "px)",
+                    overflowY: "scroll",
+                    "-ms-overflow-style": "scrollbar",
+                },
+            }, [element]),
+            dom_1.el(".y-scroll", (_a = {
+                    onmousedown: this._handlers.onmousedownTrack
+                },
+                _a[this._wheelName] = this._handlers[this._wheelName],
+                _a.style = {
+                    width: "10px",
+                    height: "100%",
+                    right: 0,
+                    top: 0,
+                    position: "absolute",
+                },
+                _a), [
+                dom_1.el(".scroll-runner", {
+                    _ref: "scroll-runner",
+                    onmousedown: this._handlers.onmousedownRunner,
+                    style: {
+                        height: this._runnerHeight + "px",
+                        right: "2px",
+                        top: this._runnerTop,
+                        width: "6px",
+                        position: "absolute",
+                    },
+                }),
+            ]),
+        ]);
+    };
+    ScrollView.prototype._update = function () {
+        var refs = this._getRefs();
+        if (!refs) {
+            return;
+        }
+        var area = refs.area, runner = refs.runner;
+        this._visibleArea = area.clientHeight / area.scrollHeight;
+        this._scrollTop = area.scrollTop;
+        this._runnerTop = this._scrollTop * this._visibleArea;
+        if (this._visibleArea < 1) {
+            this._runnerHeight = area.clientHeight * this._visibleArea;
+        }
+        else {
+            this._runnerHeight = 0;
+        }
+        // update dom
+        runner.style.top = this._runnerTop + "px";
+        runner.style.height = this._runnerHeight + "px";
+    };
+    ScrollView.prototype._getRefs = function () {
+        var rootView = this._getRootView();
+        if (rootView.refs && rootView.refs["scroll-view"] && rootView.refs["scroll-runner"]) {
+            return {
+                area: rootView.refs["scroll-view"].el,
+                runner: rootView.refs["scroll-runner"].el,
+            };
+        }
+    };
+    return ScrollView;
+}());
+exports.ScrollView = ScrollView;
+
+
+/***/ }),
+/* 149 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24510,8 +22347,4427 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
-var ts_list_1 = __webpack_require__(39);
-var editors_1 = __webpack_require__(177);
+var html_1 = __webpack_require__(3);
+var ts_message_1 = __webpack_require__(20);
+var ts_navbar_1 = __webpack_require__(21);
+var Toolbar = /** @class */ (function (_super) {
+    __extends(Toolbar, _super);
+    function Toolbar(element, config) {
+        var _this = _super.call(this, element, core_1.extend({
+            navigationType: "click",
+        }, config)) || this;
+        _this._currentRoot = null;
+        var render = function () { return _this._draw(element); };
+        _this.mount(element, dom_1.create({ render: render }));
+        return _this;
+    }
+    Toolbar.prototype.getState = function (id) {
+        if (id && !this.data.getItem(id.toString())) {
+            return;
+        }
+        var state = {};
+        this.data.eachChild(this.data.getRoot(), function (item) {
+            if (item.twoState && !item.group) {
+                state[item.id] = item.active;
+            }
+            else if (item.type === "input" || item.type === "selectButton") {
+                state[item.id] = item.value;
+            }
+        }, false);
+        for (var key in this._groups) {
+            if (this._groups[key].active) {
+                state[key] = this._groups[key].active;
+            }
+        }
+        if (id) {
+            return state[id];
+        }
+        return state;
+    };
+    Toolbar.prototype.setState = function (state) {
+        for (var key in state) {
+            if (this._groups && this._groups[key]) {
+                if (this._groups[key].active) {
+                    this.data.update(this._groups[key].active, { active: false });
+                    this._groups[key].active = state[key];
+                    this.data.update(state[key], { active: true });
+                }
+            }
+            else {
+                var item = this.data.getItem(key);
+                if (item.type === "input" || item.type === "selectButton") {
+                    this.data.update(key, { value: state[key] });
+                }
+                else {
+                    this.data.update(key, { active: state[key] });
+                }
+            }
+        }
+    };
+    Toolbar.prototype._customHandlers = function () {
+        var _this = this;
+        return {
+            input: function (e) {
+                var id = html_1.locate(e);
+                _this.data.update(id, { value: e.target.value });
+            },
+            tooltip: function (e) {
+                var elem = html_1.locateNode(e);
+                if (!elem) {
+                    return;
+                }
+                var id = elem.getAttribute("dhx_id");
+                var item = _this.data.getItem(id);
+                if (item.tooltip) {
+                    ts_message_1.tooltip(item.tooltip, {
+                        node: elem,
+                        position: ts_message_1.Position.bottom,
+                    });
+                }
+            },
+        };
+    };
+    Toolbar.prototype._getFactory = function () {
+        return ts_navbar_1.createFactory({
+            widget: this,
+            defaultType: "navItem",
+            allowedTypes: [
+                "button",
+                "imageButton",
+                "selectButton",
+                "navItem",
+                "menuItem",
+                "separator",
+                "spacer",
+                "title",
+                "input",
+                "customHTML",
+                "customHTMLButton",
+            ],
+            widgetName: "toolbar",
+        });
+    };
+    Toolbar.prototype._draw = function (element) {
+        var _this = this;
+        var getAriaAttrs = function (element) { return ({
+            role: "toolbar",
+            "aria-label": element || "",
+        }); };
+        return dom_1.el("nav.dhx_widget.dhx_toolbar", {
+            class: this.config.css ? this.config.css : "",
+        }, [
+            dom_1.el("ul.dhx_navbar.dhx_navbar--horizontal", __assign(__assign({ dhx_widget_id: this._uid, tabindex: 0 }, getAriaAttrs(element)), { onclick: this._handlers.onclick, onmousedown: this._handlers.onmousedown, oninput: this._handlers.input, onmouseover: this._handlers.tooltip, _hooks: {
+                    didInsert: function (node) {
+                        node.el.addEventListener("keyup", function (e) {
+                            if (e.which !== 9) {
+                                return;
+                            }
+                            var elem = html_1.locateNode(document.activeElement);
+                            if (!elem) {
+                                return;
+                            }
+                            var id = elem.getAttribute("dhx_id");
+                            var item = _this.data.getItem(id);
+                            if (item.tooltip) {
+                                ts_message_1.tooltip(item.tooltip, {
+                                    node: elem,
+                                    position: ts_message_1.Position.bottom,
+                                    force: true,
+                                });
+                            }
+                        }, true);
+                    },
+                } }), this.data.map(function (item) { return _this._factory(item); }, this.data.getRoot(), false)),
+        ]);
+    };
+    Toolbar.prototype._getMode = function (item, root) {
+        return item.id === root ? "bottom" : "right";
+    };
+    Toolbar.prototype._close = function (e) {
+        this._activePosition = null;
+        this._currentRoot = null;
+        _super.prototype._close.call(this, e);
+    };
+    Toolbar.prototype._setRoot = function (id) {
+        if (this.data.getParent(id) === this.data.getRoot()) {
+            this._currentRoot = id;
+        }
+    };
+    return Toolbar;
+}(ts_navbar_1.Navbar));
+exports.Toolbar = Toolbar;
+
+
+/***/ }),
+/* 150 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var KeyManager_1 = __webpack_require__(14);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
+var types_1 = __webpack_require__(45);
+function addInGroups(groups, item) {
+    if (groups[item.group]) {
+        if (item.active) {
+            groups[item.group].active = item.id;
+        }
+        groups[item.group].elements.push(item.id);
+    }
+    else {
+        groups[item.group] = {
+            active: item.active ? item.id : null,
+            elements: [item.id],
+        };
+    }
+}
+var Navbar = /** @class */ (function (_super) {
+    __extends(Navbar, _super);
+    function Navbar(element, config) {
+        var _this = _super.call(this, element, core_1.extend({}, config)) || this;
+        _this._isContextMenu = false;
+        _this._documentHaveListener = false;
+        _this._rootItem = {};
+        if (Array.isArray(_this.config.data)) {
+            _this.events = new events_1.EventSystem(_this);
+            _this.data = new ts_data_1.TreeCollection({}, _this.events);
+        }
+        else if (_this.config.data && _this.config.data.events) {
+            _this.data = _this.config.data;
+            _this.events = _this.data.events;
+            _this.events.context = _this;
+        }
+        else {
+            _this.events = new events_1.EventSystem(_this);
+            _this.data = new ts_data_1.TreeCollection({}, _this.events);
+        }
+        _this._documentClick = function (e) {
+            if (_this._documentHaveListener) {
+                var element_1 = html_1.locateNode(e);
+                var root = _this.data.getRoot();
+                var id = element_1 && element_1.getAttribute("dhx_id");
+                var parent_1 = _this.data.getParent(id);
+                var supportsTouch = "ontouchstart" in window || navigator.msMaxTouchPoints;
+                document.removeEventListener("click", _this._documentClick);
+                _this._documentHaveListener = false;
+                if (((supportsTouch && !element_1) || !_this._isContextMenu) &&
+                    (root === parent_1 || !parent_1 || !_this.data.getItem(id))) {
+                    _this._close(e);
+                }
+            }
+        };
+        _this._currentRoot = _this.data.getRoot();
+        _this._factory = _this._getFactory();
+        _this._initHandlers();
+        // this._init();
+        _this._keyManager = new KeyManager_1.KeyManager(function (_, focusId) { return focusId === _this._uid; });
+        _this._initEvents();
+        if (Array.isArray(_this.config.data)) {
+            _this.data.parse(_this.config.data);
+        }
+        return _this;
+    }
+    Navbar.prototype.paint = function () {
+        _super.prototype.paint.call(this);
+        if (this._isContextMenu && !this._vpopups) {
+            this._init();
+        }
+        if (this._vpopups) {
+            this._vpopups.redraw();
+        }
+    };
+    Navbar.prototype.disable = function (ids) {
+        var _this = this;
+        if (typeof ids !== "undefined") {
+            this._setProp(ids, "disabled", true);
+        }
+        else {
+            this.data.forEach(function (_a) {
+                var id = _a.id;
+                return _this._setProp(id, "disabled", true);
+            });
+        }
+    };
+    Navbar.prototype.enable = function (ids) {
+        var _this = this;
+        if (typeof ids !== "undefined") {
+            this._setProp(ids, "disabled", false);
+        }
+        else {
+            this.data.forEach(function (_a) {
+                var id = _a.id;
+                return _this._setProp(id, "disabled", false);
+            });
+        }
+    };
+    Navbar.prototype.isDisabled = function (id) {
+        var item = this.data.getItem(id);
+        if (item) {
+            return item.disabled || false;
+        }
+    };
+    Navbar.prototype.show = function (ids) {
+        var _this = this;
+        if (typeof ids !== "undefined") {
+            this._setProp(ids, "hidden", false);
+        }
+        else {
+            this.data.forEach(function (_a) {
+                var id = _a.id;
+                return _this._setProp(id, "hidden", false);
+            });
+        }
+    };
+    Navbar.prototype.hide = function (ids) {
+        var _this = this;
+        if (typeof ids !== "undefined") {
+            this._setProp(ids, "hidden", true);
+        }
+        else {
+            this.data.forEach(function (_a) {
+                var id = _a.id;
+                return _this._setProp(id, "hidden", true);
+            });
+        }
+    };
+    Navbar.prototype.destructor = function () {
+        this.events.clear();
+        this._keyManager && this._keyManager.destructor();
+        this._vpopups && !!this._vpopups.node && this._vpopups.unmount();
+        this.unmount();
+    };
+    Navbar.prototype.select = function (id, unselect) {
+        var _this = this;
+        if (unselect === void 0) { unselect = true; }
+        if (!id) {
+            throw new Error("Function argument cannot be empty, for more info check documentation https://docs.dhtmlx.com");
+        }
+        unselect && this.unselect();
+        this.data.update(id, { active: true });
+        this.data.eachParent(id, function (parent) {
+            _this.data.update(parent.id, { active: true });
+        });
+    };
+    Navbar.prototype.unselect = function (id) {
+        var _this = this;
+        if (!id) {
+            this.data.forEach(function (item) {
+                _this.data.update(item.id, { active: false });
+            });
+        }
+        else {
+            this.data.update(id, { active: false });
+            this.data.eachChild(id, function (parent) {
+                _this.data.update(parent.id, { active: false });
+            });
+        }
+    };
+    Navbar.prototype.isSelected = function (id) {
+        if (!id || !this.data.getItem(id)) {
+            return;
+        }
+        return !!this.data.getItem(id).active;
+    };
+    Navbar.prototype.getSelected = function () {
+        var selected = [];
+        this.data.forEach(function (item) {
+            item.active && selected.push(item.id);
+        });
+        return selected;
+    };
+    Navbar.prototype._customHandlers = function () {
+        return {};
+    };
+    Navbar.prototype._close = function (e) {
+        var _this = this;
+        if (!this._popupActive || !this.events.fire(types_1.NavigationBarEvents.beforeHide, [this._activeMenu, e])) {
+            return;
+        }
+        if (this._activeParents) {
+            this._activeParents.forEach(function (parentId) { return _this.data.exists(parentId) && _this.data.update(parentId, { $activeParent: false }); });
+        }
+        if (this.config.navigationType === "click") {
+            this._isActive = false;
+        }
+        clearTimeout(this._currentTimeout);
+        this._popupActive = false;
+        this._activeMenu = null;
+        !!this._vpopups.node && this._vpopups.unmount();
+        this._vpopups = null;
+        this.events.fire(types_1.NavigationBarEvents.afterHide, [e]);
+        this.paint();
+    };
+    Navbar.prototype._init = function () {
+        var _this = this;
+        var render = function () {
+            return dom_1.el("div", {
+                dhx_widget_id: _this._uid,
+                class: (_this._isContextMenu ? " dhx_context-menu" : "") + " " + (_this.config.css
+                    ? _this.config.css
+                        .split(" ")
+                        .map(function (i) { return i + "--context-menu"; })
+                        .join(" ")
+                    : ""),
+                onmousemove: _this._handlers.onmousemove,
+                onmouseleave: _this._handlers.onmouseleave,
+                onclick: _this._handlers.onclick,
+                onmousedown: _this._handlers.onmousedown,
+            }, _this._drawPopups());
+        };
+        this._vpopups = dom_1.create({
+            render: render,
+        });
+        this._vpopups.mount(document.body);
+    };
+    Navbar.prototype._initHandlers = function () {
+        var _this = this;
+        /*
+            for navigation type click:
+            first click open menu, _isActive = true
+            after navigation use mousemove
+            can be closed after outer click or menu leaf item click
+        */
+        this._isActive = this.config.navigationType !== "click";
+        this._handlers = __assign({ onmousemove: function (e) {
+                if (!_this._isActive) {
+                    return;
+                }
+                var elem = html_1.locateNode(e);
+                if (!elem) {
+                    return;
+                }
+                var id = elem.getAttribute("dhx_id");
+                if (_this._activeMenu !== id) {
+                    if (_this.data.haveItems(id)) {
+                        if (!_this._vpopups) {
+                            _this._init();
+                        }
+                        var position = html_1.getRealPosition(elem);
+                        _this.data.update(id, { $position: position }, false);
+                    }
+                    _this._activeItemChange(id, e);
+                }
+            }, onmouseleave: function (e) {
+                if (_this.config.navigationType !== "click") {
+                    // maybe all time when mouse leave close menu
+                    if (_this._popupActive) {
+                        var element = html_1.locateNode(e, "dhx_id", "relatedTarget");
+                        if (element) {
+                            var id = element.getAttribute("dhx_id");
+                            if (!_this.data.getItem(id)) {
+                                _this._close(e);
+                            }
+                        }
+                        else {
+                            _this._close(e);
+                        }
+                    }
+                    _this._activeItemChange(null, e);
+                }
+            }, onclick: function (e) {
+                var element = html_1.locateNode(e);
+                if (!element) {
+                    return;
+                }
+                var id = element.getAttribute("dhx_id");
+                if (_this.isDisabled(id)) {
+                    return;
+                }
+                var item = _this.data.getItem(id);
+                if (item.multiClick) {
+                    return;
+                }
+                if (_this.data.haveItems(id)) {
+                    if (!_this._vpopups) {
+                        _this._init();
+                    }
+                    if (id === _this._currentRoot) {
+                        return;
+                    }
+                    if (!_this._isActive) {
+                        _this._isActive = true;
+                    }
+                    _this._setRoot(id);
+                    var position = html_1.getRealPosition(element);
+                    _this.data.update(id, { $position: position }, false);
+                    _this._activeItemChange(id, e);
+                }
+                else {
+                    switch (item.type) {
+                        case "input":
+                        case "title":
+                            break;
+                        case "menuItem":
+                        case "selectButton":
+                            _this._onMenuItemClick(id, e);
+                            break;
+                        case "imageButton":
+                        case "button":
+                        case "customButton":
+                        case "customHTML":
+                        case "navItem":
+                            if (item.twoState) {
+                                _this.data.update(item.id, { active: !item.active });
+                            }
+                            _this.events.fire(types_1.NavigationBarEvents.click, [id, e]);
+                            _this._close(e);
+                            break;
+                        default:
+                            _this._close(e);
+                    }
+                }
+            }, onmousedown: function (e) {
+                var element = html_1.locateNode(e);
+                if (!element) {
+                    return;
+                }
+                var id = element.getAttribute("dhx_id");
+                var item = _this.data.getItem(id);
+                if (!item.multiClick) {
+                    return;
+                }
+                var fireTime = 365;
+                var timeout;
+                var fireAction = function () {
+                    _this.events.fire(types_1.NavigationBarEvents.click, [id, e]);
+                    if (fireTime > 50) {
+                        fireTime -= 55;
+                    }
+                    timeout = setTimeout(fireAction, fireTime);
+                };
+                var mouseup = function () {
+                    clearTimeout(timeout);
+                    document.removeEventListener("mouseup", mouseup);
+                };
+                fireAction();
+                document.addEventListener("mouseup", mouseup);
+            } }, this._customHandlers());
+    };
+    Navbar.prototype._initEvents = function () {
+        var _this = this;
+        var timeout = null;
+        this.data.events.on(types_1.DataEvents.change, function () {
+            _this.paint();
+            if (timeout) {
+                clearTimeout(timeout);
+            }
+            timeout = setTimeout(function () {
+                var groups = {};
+                _this.data.eachChild(_this.data.getRoot(), function (item) {
+                    if (item.group) {
+                        item.twoState = true;
+                        addInGroups(groups, item);
+                    }
+                }, true);
+                _this._groups = groups;
+                _this._resetHotkeys();
+                timeout = null;
+                _this.paint();
+            }, 100);
+        });
+        this.events.on(types_1.NavigationBarEvents.click, function (id) {
+            var item = _this.data.getItem(id);
+            var parent = _this.data.getItem(item.parent);
+            if (parent && parent.type === "selectButton") {
+                _this.data.update(item.parent, { value: item.value, icon: item.icon });
+            }
+            if (item.group) {
+                var group = _this._groups[item.group];
+                if (group.active) {
+                    _this.data.update(group.active, { active: false });
+                }
+                group.active = item.id;
+                _this.data.update(item.id, { active: true });
+            }
+        });
+        this._customInitEvents();
+    };
+    Navbar.prototype._getMode = function (item, root, _active) {
+        if (_active === void 0) { _active = false; }
+        return item.parent === root ? "bottom" : "right";
+    };
+    Navbar.prototype._drawMenuItems = function (id, asMenuItem) {
+        var _this = this;
+        if (asMenuItem === void 0) { asMenuItem = true; }
+        return this.data.map(function (item) { return _this._factory(item, asMenuItem); }, id, false);
+    };
+    Navbar.prototype._setRoot = function (_id) {
+        return; // need only for toolbar
+    };
+    Navbar.prototype._getParents = function (id, root) {
+        var parentIds = [];
+        var afterRoot = false;
+        var currentItem = this.data.getItem(id);
+        var disabled = currentItem && currentItem.disabled;
+        this.data.eachParent(id, function (item) {
+            if (item.id === root) {
+                parentIds.push(item.id);
+                afterRoot = true;
+            }
+            else if (!afterRoot) {
+                parentIds.push(item.id);
+            }
+        }, !disabled);
+        if (this._isContextMenu && this._activePosition) {
+            parentIds.push(root);
+        }
+        return parentIds;
+    };
+    Navbar.prototype._listenOuterClick = function () {
+        if (this._documentHaveListener) {
+            return;
+        }
+        document.addEventListener("click", this._documentClick, true);
+        this._documentHaveListener = true;
+    };
+    Navbar.prototype._customInitEvents = function () {
+        return;
+    };
+    Navbar.prototype._drawPopups = function () {
+        var _this = this;
+        var id = this._activeMenu;
+        if (!this._isContextMenu && !id) {
+            return null;
+        }
+        var root = this._currentRoot;
+        if (this._isContextMenu && !this._activePosition) {
+            return null;
+        }
+        var parentIds = this._getParents(id, root);
+        this._activeParents = parentIds;
+        parentIds.forEach(function (parentId) {
+            return _this.data.exists(parentId) && _this.data.update(parentId, { $activeParent: true }, false);
+        });
+        return parentIds
+            .map(function (itemId) {
+            if (!_this.data.haveItems(itemId)) {
+                return null;
+            }
+            var getAriaAttrs = function (item) { return ({
+                role: "menu",
+                "aria-labeledby": item.id,
+                "aria-live": "polite",
+            }); };
+            var item = _this.data.getItem(itemId) || _this._rootItem; // for root item
+            _this._popupActive = true;
+            return dom_1.el("ul", __assign({ class: "dhx_widget dhx_menu" + (_this.config.menuCss ? " " + _this.config.menuCss : ""), _key: itemId, _hooks: {
+                    didInsert: function (vnode) {
+                        var _a = vnode.el.getBoundingClientRect(), width = _a.width, height = _a.height;
+                        var position = _this._isContextMenu && _this._activePosition && itemId === root
+                            ? _this._activePosition
+                            : item.$position;
+                        var mode = _this._getMode(item, root, position === _this._activePosition);
+                        var style = html_1.calculatePosition(position, {
+                            mode: mode,
+                            width: width,
+                            height: height,
+                        });
+                        item.$style = style;
+                        vnode.patch({ style: style });
+                    },
+                    didRecycle: function (_, vnode) {
+                        if (_this._isContextMenu && _this._activePosition && itemId === root) {
+                            var _a = vnode.el.getBoundingClientRect(), width = _a.width, height = _a.height;
+                            var style = html_1.calculatePosition(_this._activePosition, {
+                                mode: _this._getMode(item, root, true),
+                                width: width,
+                                height: height,
+                            });
+                            item.$style = style;
+                            vnode.patch({ style: style });
+                        }
+                    },
+                }, tabindex: 0, style: item.$style || {
+                    position: "absolute",
+                } }, getAriaAttrs(item)), _this._drawMenuItems(itemId));
+        })
+            .reverse();
+    };
+    Navbar.prototype._onMenuItemClick = function (id, e) {
+        var item = this.data.getItem(id);
+        if (item.disabled) {
+            return;
+        }
+        if (item.twoState) {
+            this.data.update(item.id, { active: !item.active });
+        }
+        this.events.fire(types_1.NavigationBarEvents.click, [id, e]);
+        this._close(e);
+    };
+    Navbar.prototype._activeItemChange = function (id, e) {
+        var _this = this;
+        if (this._activeParents) {
+            var parentIds_1 = this._getParents(id, this._currentRoot);
+            this._activeParents.forEach(function (parentId) {
+                if (_this.data.exists(parentId) && !parentIds_1.includes(parentId)) {
+                    _this.data.update(parentId, { $activeParent: false }, false);
+                }
+            });
+        }
+        if (id && !this._documentHaveListener) {
+            this._listenOuterClick();
+        }
+        if (id && this.data.haveItems(id)) {
+            if (this._activeMenu !== id || !this._popupActive) {
+                this.events.fire(types_1.NavigationBarEvents.openMenu, [id]);
+            }
+            clearTimeout(this._currentTimeout);
+            this.paint();
+        }
+        else {
+            clearTimeout(this._currentTimeout);
+            this._currentTimeout = setTimeout(function () { return _this.paint(); }, 400);
+        }
+        this._activeMenu = id;
+    };
+    Navbar.prototype._resetHotkeys = function () {
+        var _this = this;
+        this._keyManager.removeHotKey(null, this);
+        this.data.map(function (item) {
+            if (item.hotkey) {
+                _this._keyManager.addHotKey(item.hotkey, function () { return _this._onMenuItemClick(item.id, null); });
+            }
+        });
+    };
+    Navbar.prototype._setProp = function (id, key, value) {
+        var _a;
+        var _this = this;
+        if (Array.isArray(id)) {
+            id.forEach(function (itemId) {
+                var _a;
+                return _this.data.update(itemId, (_a = {}, _a[key] = value, _a));
+            });
+        }
+        else {
+            this.data.update(id, (_a = {}, _a[key] = value, _a));
+        }
+    };
+    return Navbar;
+}(view_1.View));
+exports.Navbar = Navbar;
+
+
+/***/ }),
+/* 151 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var button_1 = __webpack_require__(152);
+var navItem_1 = __webpack_require__(153);
+var customHTMLButton_1 = __webpack_require__(154);
+var imageButton_1 = __webpack_require__(155);
+var input_1 = __webpack_require__(156);
+var menuItem_1 = __webpack_require__(157);
+var separator_1 = __webpack_require__(158);
+var spacer_1 = __webpack_require__(159);
+var title_1 = __webpack_require__(160);
+var helpers_1 = __webpack_require__(25);
+function itemfactory(item, events, widgetName, props) {
+    switch (item.type) {
+        case "navItem":
+        case "selectButton":
+            return navItem_1.navItem(item, widgetName, props.collapsed);
+        case "button":
+            return button_1.button(item, widgetName);
+        case "title":
+            return title_1.title(item, widgetName);
+        case "separator":
+            return separator_1.separator(item, widgetName);
+        case "spacer":
+            return spacer_1.spacer(item, widgetName);
+        case "input":
+            return input_1.input(item, events, widgetName);
+        case "imageButton":
+            return imageButton_1.imageButton(item, widgetName);
+        case "menuItem":
+            return menuItem_1.menuItem(item, widgetName, props.asMenuItem);
+        case "customHTMLButton":
+            return customHTMLButton_1.customHTMLButton(item, widgetName, props.asMenuItem);
+        case "block":
+        default:
+            throw new Error("unknown item type " + item.type);
+    }
+}
+function normalizeOpenIcon(widgetName, item, data) {
+    switch (widgetName) {
+        case "sidebar":
+        case "context-menu":
+            item.$openIcon = "right";
+            break;
+        case "toolbar":
+            if (item.parent === data.getRoot()) {
+                item.$openIcon = "right";
+            }
+            else {
+                item.$openIcon = "bottom";
+            }
+            break;
+        case "menu":
+            if (item.parent !== this.data.getRoot()) {
+                item.$openIcon = "right";
+            }
+            break;
+        case "ribbon": {
+            var parent_1 = data.getItem(item.parent);
+            if (parent_1 && item.type !== "block") {
+                if (parent_1.type === "block") {
+                    item.$openIcon = "bottom";
+                }
+                else {
+                    item.$openIcon = "right";
+                }
+            }
+            break;
+        }
+    }
+}
+function createFactory(_a) {
+    var defaultType = _a.defaultType, allowedTypes = _a.allowedTypes, widgetName = _a.widgetName, widget = _a.widget;
+    var allowedSet = new Set();
+    for (var _i = 0, allowedTypes_1 = allowedTypes; _i < allowedTypes_1.length; _i++) {
+        var type = allowedTypes_1[_i];
+        allowedSet.add(type);
+    }
+    var config = widget.config, events = widget.events, data = widget.data;
+    return function (item, asMenuItem) {
+        if (item.hidden) {
+            return null;
+        }
+        if (!item.type || item.type === "button" || item.type === "navItem" || item.type === "menuItem") {
+            if (!item.value && !item.icon && !item.html) {
+                return null;
+            }
+        }
+        item.type = item.type || defaultType;
+        if (allowedSet && !allowedSet.has(item.type)) {
+            item.type = defaultType;
+        }
+        if (item.type === "imageButton" && widgetName !== "ribbon") {
+            item.active = false;
+        }
+        if (asMenuItem && item.type !== "spacer" && item.type !== "separator" && item.type !== "customHTML") {
+            item.type = "menuItem";
+        }
+        if (data.haveItems(item.id)) {
+            normalizeOpenIcon(widgetName, item, data);
+        }
+        if (widgetName === "toolbar" && item.items) {
+            item.items.forEach(function (element) {
+                if (!element.type) {
+                    element.type = "menuItem";
+                }
+            });
+        }
+        var itemVNode = item.type !== "customHTML" &&
+            itemfactory(item, events, widgetName, {
+                asMenuItem: asMenuItem,
+                collapsed: widgetName !== "sidebar" || config.collapsed,
+            });
+        return helpers_1.navbarComponentMixin(widgetName, item, asMenuItem, itemVNode);
+    };
+}
+exports.createFactory = createFactory;
+
+
+/***/ }),
+/* 152 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var helpers_1 = __webpack_require__(25);
+function button(item, widgetName) {
+    var getAriaAttrs = function (item) {
+        var isItemActivated = item.active || item.$activeParent;
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+            "aria-label": item.value || item.tooltip || item.id || "" + (" " + (item.count || "")),
+        };
+        if (item.items) {
+            // as menu
+            attrs["id"] = item.id;
+            attrs["aria-haspopup"] = "menu"; // menu has hot keys, listbox doesn't have
+            if (isItemActivated) {
+                attrs["aria-expanded"] = "true";
+            }
+        }
+        return attrs;
+    };
+    var isIconButton = item.icon && !item.value;
+    var counterClass = isIconButton ? " dhx_navbar-count--absolute" : " dhx_navbar-count--button-inline";
+    return dom_1.el("button.dhx_button", __assign({ class: helpers_1.getNavbarButtonCSS(item, widgetName), dhx_id: item.id, disabled: item.disabled, type: "button" }, getAriaAttrs(item)), [
+        item.icon ? helpers_1.getIcon(item.icon, "button") : null,
+        item.html
+            ? dom_1.el("div.dhx_button__text", { ".innerHTML": item.html })
+            : item.value && dom_1.el("span.dhx_button__text", item.value),
+        item.count > 0 && helpers_1.getCount(item, counterClass, isIconButton),
+        item.value && item.$openIcon
+            ? dom_1.el("span.dhx_button__icon.dhx_button__icon--menu.dxi.dxi-menu-right", {
+                "aria-hidden": "true",
+            })
+            : null,
+        item.loading &&
+            dom_1.el("span.dhx_button__loading", {
+                "aria-hidden": "true",
+            }, [dom_1.el("span.dhx_button__loading-icon.dxi.dxi-loading")]),
+    ]);
+}
+exports.button = button;
+
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var helpers_1 = __webpack_require__(25);
+function navItem(item, widgetName, collapsed) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+            "aria-label": item.value || " ",
+        };
+        var isItemActivated = item.active || item.$activeParent;
+        if (item.type === "selectButton" || item.items) {
+            attrs["id"] = item.id;
+            attrs["aria-haspopup"] = "menu"; // menu has hot keys, listbox doesn't have
+            if (isItemActivated) {
+                attrs["aria-expanded"] = "true";
+            }
+        }
+        else {
+            if (item.twoState || isItemActivated) {
+                attrs["aria-pressed"] = isItemActivated ? "true" : "false";
+            }
+            if (!item.value && item.icon && item.tooltip) {
+                attrs["aria-label"] = item.tooltip + " " + (item.count || "");
+            }
+        }
+        return attrs;
+    };
+    var baseClass = " dhx_" + widgetName + "-button";
+    return dom_1.el("button", __assign({ class: "dhx_button" +
+            baseClass +
+            (item.active || item.$activeParent ? baseClass + "--active" : "") +
+            (item.disabled ? baseClass + "--disabled" : "") +
+            (item.$openIcon ? baseClass + "--select" : "") +
+            (item.circle ? baseClass + "--circle" : "") +
+            (item.size ? " " + baseClass + "--" + item.size : "") +
+            (!item.value && item.icon ? baseClass + "--icon" : "") +
+            (item.css ? " " + item.css : ""), dhx_id: item.id, disabled: item.disabled, type: "button" }, getAriaAttrs(item)), [
+        item.icon &&
+            dom_1.el("span", {
+                class: item.icon + baseClass + "__icon",
+                "aria-hidden": "true",
+            }),
+        item.html &&
+            dom_1.el("div", {
+                class: baseClass.trim() + "__html",
+                ".innerHTML": item.html,
+            }),
+        !item.html &&
+            item.value &&
+            dom_1.el("span", {
+                class: baseClass.trim() + "__text",
+            }, item.value),
+        item.count > 0 && helpers_1.getCount(item, baseClass + "__count", collapsed),
+        item.$openIcon &&
+            dom_1.el("span.dxi.dxi-menu-right", {
+                class: baseClass + "__caret",
+                "aria-hidden": "true",
+            }),
+    ]);
+}
+exports.navItem = navItem;
+
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+function customHTMLButton(item, widgetName, asMenuItem) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+        };
+        if (item.twoState || item.active || item.$activeParent) {
+            attrs["aria-pressed"] = item.active || item.$activeParent ? "true" : "false";
+        }
+        return attrs;
+    };
+    var baseClass = asMenuItem ? " dhx_button dhx_menu-button" : " dhx_button dhx_nav-menu-button";
+    return dom_1.el("button", __assign({ class: "dhx_custom-button" + baseClass + (item.$activeParent ? baseClass + "--active" : ""), dhx_id: item.id, type: "button", ".innerHTML": item.html }, getAriaAttrs(item)), item.html ? "" : item.value);
+}
+exports.customHTMLButton = customHTMLButton;
+
+
+/***/ }),
+/* 155 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var helpers_1 = __webpack_require__(25);
+function imageButton(item, widgetName) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            "aria-disabled": item.disabled ? "true" : "false",
+        };
+        if (item.twoState || item.active) {
+            attrs["aria-pressed"] = item.active ? "true" : "false";
+        }
+        if (!item.value && item.src && item.tooltip) {
+            attrs["aria-label"] = item.tooltip + " " + (item.count || "");
+        }
+        return attrs;
+    };
+    var baseClass = "dhx_" + widgetName + "-button-image";
+    var isRibbon = widgetName === "ribbon";
+    return dom_1.el("button.dhx_button", __assign({ class: baseClass +
+            (item.size ? " " + baseClass + "--" + item.size : "") +
+            (!item.value && item.src ? " " + baseClass + "--icon" : "") +
+            (isRibbon && item.$openIcon ? " " + baseClass + "--select" : "") +
+            (item.active ? " " + baseClass + "--active" : ""), dhx_id: item.id, type: "button" }, getAriaAttrs(item)), [
+        isRibbon &&
+            item.value &&
+            item.$openIcon &&
+            dom_1.el("span.dxi.dxi-menu-right", {
+                class: baseClass + "__caret",
+                "aria-hidden": "true",
+            }),
+        item.html
+            ? dom_1.el("div", {
+                class: baseClass + "__text",
+                ".innerHTML": item.html,
+            })
+            : item.value &&
+                dom_1.el("span", {
+                    class: baseClass + "__text",
+                }, item.value),
+        item.src &&
+            dom_1.el("span", {
+                class: baseClass + "__image",
+                style: { backgroundImage: "url(" + item.src + ")" },
+                role: "presentation",
+            }),
+        item.count > 0 && helpers_1.getCount(item, baseClass + "__count", true),
+    ]);
+}
+exports.imageButton = imageButton;
+
+
+/***/ }),
+/* 156 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var types_1 = __webpack_require__(45);
+function onBlur(events, id) {
+    events.fire(types_1.NavigationBarEvents.inputBlur, [id]);
+}
+function onFocus(events, id) {
+    events.fire(types_1.NavigationBarEvents.inputFocus, [id]);
+}
+function input(item, events, widgetName) {
+    return dom_1.el(".dhx_form-group.dhx_form-group--no-message-holder.dhx_form-group--label_sr" +
+        (".dhx_" + widgetName + "__input"), {
+        style: {
+            width: item.width ? item.width : "200px",
+        },
+        role: "presentation",
+    }, [
+        item.label && dom_1.el("label.dhx_label", { for: item.id }, item.label),
+        dom_1.el(".dhx_input__wrapper", {
+            role: "presentation",
+        }, [
+            dom_1.el("input.dhx_input", {
+                placeholder: item.placeholder,
+                class: item.icon ? "dhx_input--icon-padding" : "",
+                value: item.value,
+                disabled: item.disabled,
+                onblur: [onBlur, events, item.id],
+                onfocus: [onFocus, events, item.id],
+                dhx_id: item.id,
+                _hooks: {
+                    didInsert: function (node) {
+                        if (events) {
+                            events.fire(types_1.NavigationBarEvents.inputCreated, [item.id, node.el]);
+                        }
+                    },
+                },
+                _key: item.id,
+                "aria-label": item.label ||
+                    item.helpMessage ||
+                    "type " + (item.placeholder ? "text like " + item.placeholder : "text"),
+            }),
+            item.icon
+                ? dom_1.el(".dhx_input__icon", {
+                    class: item.icon,
+                    "aria-hidden": "true",
+                })
+                : null,
+        ]),
+    ]);
+}
+exports.input = input;
+
+
+/***/ }),
+/* 157 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var helpers_1 = __webpack_require__(25);
+function menuItem(item, widgetName, asMenuItem) {
+    var getAriaAttrs = function (item) {
+        var attrs = {
+            role: "menuitem",
+            "aria-disabled": item.disabled ? "true" : "false",
+        };
+        if (item.items) {
+            attrs["aria-haspopup"] = "true";
+        }
+        return attrs;
+    };
+    var baseClass = asMenuItem ? " dhx_menu-button" : " dhx_nav-menu-button";
+    return dom_1.el("button", __assign({ class: "dhx_button" +
+            baseClass +
+            (item.disabled ? baseClass + "--disabled" : "") +
+            (item.active || item.$activeParent ? baseClass + "--active" : ""), disabled: item.disabled, dhx_id: item.id, type: "button" }, getAriaAttrs(item)), asMenuItem
+        ? [
+            item.icon || item.value || item.html
+                ? dom_1.el("span.dhx_menu-button__block.dhx_menu-button__block--left", [
+                    item.icon &&
+                        dom_1.el("span.dhx_menu-button__icon", {
+                            class: item.icon,
+                        }),
+                    item.html
+                        ? dom_1.el("div.dhx_menu-button__text", { ".innerHTML": item.html })
+                        : item.value && dom_1.el("span.dhx_menu-button__text", item.value),
+                ])
+                : null,
+            item.count > 0 || item.hotkey || item.items
+                ? dom_1.el("span.dhx_menu-button__block.dhx_menu-button__block--right", [
+                    item.count > 0 && helpers_1.getCount(item, " dhx_menu-button__count", false),
+                    item.hotkey && dom_1.el("span.dhx_menu-button__hotkey", item.hotkey),
+                    item.items && dom_1.el("span.dhx_menu-button__caret.dxi.dxi-menu-right"),
+                ])
+                : null,
+        ]
+        : [
+            item.icon &&
+                dom_1.el("span.dhx_menu-button__icon", {
+                    class: item.icon,
+                }),
+            item.html
+                ? dom_1.el("div.dhx_menu-button__text", { ".innerHTML": item.html })
+                : item.value && dom_1.el("span.dhx_nav-menu-button__text", item.value),
+        ]);
+}
+exports.menuItem = menuItem;
+
+
+/***/ }),
+/* 158 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function separator(item, widgetName) {
+    return null;
+}
+exports.separator = separator;
+
+
+/***/ }),
+/* 159 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function spacer(item, widgetName) {
+    return null;
+}
+exports.spacer = spacer;
+
+
+/***/ }),
+/* 160 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+function title(item, widgetName) {
+    return dom_1.el("span", {
+        class: "dhx_navbar-title" + " dhx_navbar-title--" + widgetName,
+        dhx_id: item.id,
+        ".innerHTML": item.html,
+        "aria-label": item.value || "",
+    }, !item.html ? item.value : null);
+}
+exports.title = title;
+
+
+/***/ }),
+/* 161 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.layoutConfig = {
+    css: "vault-layout",
+    rows: [
+        {
+            id: "topbar",
+            css: "vault-topbar",
+        },
+        {
+            id: "vault",
+            css: "vault-file-grid",
+        },
+    ],
+};
+exports.layoutConfigWithoutTopbar = {
+    css: "vault-layout",
+    rows: [
+        {
+            id: "vault",
+            css: "vault-file-grid",
+        },
+    ],
+};
+
+
+/***/ }),
+/* 162 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var en_1 = __webpack_require__(46);
+var basis = ["byte", "kilobyte", "megabyte", "gigabyte"];
+function getBasis(size, current) {
+    if (size === void 0) { size = 0; }
+    if (current === void 0) { current = 0; }
+    return size < 1024
+        ? size + " " + en_1.default[basis[current]]
+        : this.getBasis(Math.round(size / 1024), current + 1);
+}
+exports.getBasis = getBasis;
+var MAX_WORD_LENGTH = 13;
+function truncateWord(word, len) {
+    if (len === void 0) { len = MAX_WORD_LENGTH; }
+    var start;
+    var end;
+    if (word.length <= len) {
+        return word;
+    }
+    var dotIndex = word.lastIndexOf(".");
+    if (dotIndex === -1) {
+        end = word.substr(word.length - 4);
+        start = word.substr(0, len - 7);
+    }
+    else {
+        var endStartFrom = dotIndex - 3;
+        end = word.substr(endStartFrom);
+        start = word.substr(0, len - (word.length - endStartFrom));
+    }
+    return start + "..." + end;
+}
+exports.truncateWord = truncateWord;
+function calculateCover(image) {
+    var width = image.width, height = image.height;
+    var imageAspectRatio = width / height;
+    var sHeight;
+    var sWidth;
+    var sx;
+    var sy;
+    if (imageAspectRatio > 1) {
+        // width > height
+        sWidth = height;
+        sHeight = height;
+        sx = (width - sWidth) / 2;
+        sy = 0;
+    }
+    else if (imageAspectRatio < 1) {
+        // width < height
+        sWidth = width;
+        sHeight = width;
+        sx = 0;
+        sy = (height - sHeight) / 2;
+    }
+    else {
+        // width == height
+        sHeight = width;
+        sWidth = width;
+        sx = 0;
+        sy = 0;
+    }
+    return {
+        sx: sx,
+        sy: sy,
+        sWidth: sWidth,
+        sHeight: sHeight,
+        dx: 0,
+        dy: 0,
+    };
+}
+exports.calculateCover = calculateCover;
+var FileType;
+(function (FileType) {
+    FileType["image"] = "image";
+    FileType["video"] = "video";
+    FileType["archive"] = "archive";
+    FileType["table"] = "table";
+    FileType["document"] = "document";
+    FileType["presentation"] = "presentation";
+    FileType["application"] = "application";
+    FileType["web"] = "web";
+    FileType["apple"] = "apple";
+    FileType["pdf"] = "pdf";
+    FileType["psd"] = "psd";
+    FileType["audio"] = "audio";
+    FileType["other"] = "other";
+    FileType["text"] = "text";
+})(FileType = exports.FileType || (exports.FileType = {}));
+function getMimeAndExtension(fileWrapper) {
+    var extension = fileWrapper.name.split(".").pop() || "none";
+    var mime = fileWrapper.file ? fileWrapper.file.type : "";
+    return {
+        extension: extension,
+        mime: mime,
+    };
+}
+function getFileType(extension, mime) {
+    switch (extension) {
+        case "jpg":
+        case "jpeg":
+        case "gif":
+        case "png":
+        case "bmp":
+        case "tiff":
+        case "pcx":
+        case "svg":
+        case "ico":
+            return FileType.image;
+        case "avi":
+        case "mpg":
+        case "mpeg":
+        case "rm":
+        case "move":
+        case "mov":
+        case "mkv":
+        case "flv":
+        case "f4v":
+        case "mp4":
+        case "3gp":
+        case "wmv":
+        case "webm":
+        case "vob":
+            return FileType.video;
+        case "rar":
+        case "zip":
+        case "tar":
+        case "tgz":
+        case "arj":
+        case "gzip":
+        case "bzip2":
+        case "7z":
+        case "ace":
+        case "apk":
+        case "deb":
+        case "zipx":
+        case "cab":
+        case "tar-gz":
+        case "rpm":
+        case "xar":
+            return FileType.archive;
+        case "xlr":
+        case "xls":
+        case "xlsm":
+        case "xlsx":
+        case "ods":
+        case "csv":
+        case "tsv":
+            return FileType.table;
+        case "doc":
+        case "docx":
+        case "docm":
+        case "dot":
+        case "dotx":
+        case "odt":
+        case "wpd":
+        case "wps":
+        case "pages":
+            return FileType.document;
+        case "wav":
+        case "aiff":
+        case "au":
+        case "mp3":
+        case "aac":
+        case "wma":
+        case "ogg":
+        case "flac":
+        case "ape":
+        case "wv":
+        case "m4a":
+        case "mid":
+        case "midi":
+            return FileType.audio;
+        case "pot":
+        case "potm":
+        case "potx":
+        case "pps":
+        case "ppsm":
+        case "ppsx":
+        case "ppt":
+        case "pptx":
+        case "pptm":
+        case "odp":
+            return FileType.presentation;
+        case "html":
+        case "htm":
+        case "eml":
+            return FileType.web;
+        case "exe":
+            return FileType.application;
+        case "dmg":
+            return FileType.apple;
+        case "pdf":
+        case "ps":
+        case "eps":
+            return FileType.pdf;
+        case "psd":
+            return FileType.psd;
+        case "txt":
+        case "djvu":
+        case "nfo":
+        case "xml":
+            return FileType.text;
+        default: {
+            var type = mime.split("/")[0];
+            switch (type) {
+                case "image":
+                    return FileType.image;
+                case "audio":
+                    return FileType.audio;
+                case "video":
+                    return FileType.video;
+                default:
+                    return FileType.other;
+            }
+        }
+    }
+}
+exports.getFileType = getFileType;
+function getFileClassName(fileWrapper) {
+    var _a = getMimeAndExtension(fileWrapper), mime = _a.mime, extension = _a.extension;
+    return getFileType(extension, mime) + " extension-" + extension;
+}
+exports.getFileClassName = getFileClassName;
+function isImage(fileWrapper) {
+    var _a = getMimeAndExtension(fileWrapper), mime = _a.mime, extension = _a.extension;
+    var fileType = getFileType(extension, mime);
+    return fileType === FileType.image;
+}
+exports.isImage = isImage;
+
+
+/***/ }),
+/* 163 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var view_1 = __webpack_require__(5);
+var en_1 = __webpack_require__(46);
+var types_1 = __webpack_require__(30);
+var ProgressBar = /** @class */ (function (_super) {
+    __extends(ProgressBar, _super);
+    function ProgressBar(events, config) {
+        var _this = _super.call(this, null, config) || this;
+        _this.events = events;
+        _this._progress = 0;
+        var render = function () { return _this._draw(); };
+        _this.mount(null, dom_1.create({
+            render: render,
+        }));
+        _this._abortUpload = function () {
+            _this.events.fire(types_1.ProgressBarEvents.cancel);
+        };
+        return _this;
+    }
+    ProgressBar.prototype.setState = function (progress, extra) {
+        this._progress = progress;
+        if (this.config.template) {
+            this._progressText = this.config.template(progress, extra);
+        }
+        else {
+            this._progressText = this._progress.toFixed(1) + "%";
+        }
+        this.paint();
+    };
+    ProgressBar.prototype._draw = function () {
+        return dom_1.el(".progress-bar", {
+            _key: this._uid,
+        }, [
+            dom_1.el(".progress-indicator", {
+                style: {
+                    width: this._progress + "%",
+                },
+            }),
+            dom_1.el(".progress-text", {
+                ".innerHTML": this._progressText,
+            }),
+            dom_1.el("button", {
+                class: "dhx_btn dhx_btn--flat dhx_btn_small action-abort-all",
+                onclick: this._abortUpload,
+            }, en_1.default.cancel),
+        ]);
+    };
+    return ProgressBar;
+}(view_1.View));
+exports.ProgressBar = ProgressBar;
+
+
+/***/ }),
+/* 164 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var ReadStackPreview = /** @class */ (function () {
+    function ReadStackPreview(data) {
+        this._readerStack = [];
+        this._isActive = false;
+        this._data = data;
+    }
+    ReadStackPreview.prototype.add = function (fileWrapper, wait) {
+        if (wait === void 0) { wait = false; }
+        this._readerStack.push(fileWrapper);
+        if (!wait) {
+            this.read();
+        }
+    };
+    ReadStackPreview.prototype.read = function () {
+        var _this = this;
+        if (!this._readerStack.length || this._isActive) {
+            return;
+        }
+        var fileWrapper = this._readerStack.shift();
+        this._isActive = true;
+        var reader = new FileReader();
+        reader.readAsDataURL(fileWrapper.file);
+        reader.onload = function (e) {
+            var image = new Image();
+            image.src = e.target.result;
+            image.onload = function () {
+                if (_this._data.exists(fileWrapper.id)) {
+                    _this._data.update(fileWrapper.id, { image: image });
+                }
+                _this._isActive = false;
+                _this.read();
+            };
+        };
+        reader.onerror = function () {
+            _this._isActive = false;
+            _this.read();
+        };
+    };
+    ReadStackPreview.prototype.stop = function () {
+        this._readerStack = [];
+    };
+    return ReadStackPreview;
+}());
+exports.ReadStackPreview = ReadStackPreview;
+
+
+/***/ }),
+/* 165 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var events_1 = __webpack_require__(2);
+var html_1 = __webpack_require__(3);
+var view_1 = __webpack_require__(5);
+var core_1 = __webpack_require__(1);
+var color_1 = __webpack_require__(48);
+var colors_1 = __webpack_require__(76);
+var en_1 = __webpack_require__(49);
+var types_1 = __webpack_require__(77);
+// tslint:disable-next-line
+var tooltip_1 = __webpack_require__(75);
+// tslint:disable-next-line
+var ts_message_1 = __webpack_require__(20);
+var picker_1 = __webpack_require__(166);
+var calculations_1 = __webpack_require__(167);
+var Colorpicker = /** @class */ (function (_super) {
+    __extends(Colorpicker, _super);
+    function Colorpicker(container, config) {
+        var _this = _super.call(this, container, config) || this;
+        _this._setPaletteGrip = function (e) {
+            var paletteRect = _this.getRootView().refs.picker_palette.el.getBoundingClientRect();
+            var clientX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+            var clientY = e.targetTouches ? e.targetTouches[0].clientY : e.clientY;
+            var top = clientY - paletteRect.top;
+            var left = clientX - paletteRect.left;
+            var _a = calculations_1.calculatePaletteGrip(paletteRect, top, left), s = _a.s, v = _a.v;
+            _this._pickerState.hsv.s = s;
+            _this._pickerState.hsv.v = v;
+            _this.paint();
+        };
+        _this._setRangeGrip = function (e) {
+            var rangeRect = _this.getRootView().refs.hue_range.el.getBoundingClientRect();
+            var clientX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
+            var left = clientX - rangeRect.left;
+            var _a = calculations_1.calculateRangeGrip(rangeRect, left), h = _a.h, rangeLeft = _a.rangeLeft;
+            _this._pickerState.hsv.h = h;
+            _this._pickerState.rangeLeft = rangeLeft;
+            _this.paint();
+        };
+        _this._onColorClick = function (_e, node) {
+            _this._selected = node.data.color.toUpperCase();
+            _this.events.fire(types_1.ColorpickerEvents.change, [_this._selected]);
+            _this.events.fire(types_1.ColorpickerEvents.colorChange, [_this._selected]); // TODO: remove suite_7.0
+        };
+        _this._container = container;
+        _this.config = core_1.extend({
+            css: "",
+            grayShades: true,
+            pickerOnly: false,
+            paletteOnly: false,
+            customColors: [],
+            palette: colors_1.palette,
+            width: "238px",
+            mode: "palette",
+        }, _this.config);
+        if (!_this.config.palette) {
+            _this.config.palette = colors_1.palette;
+        }
+        if (_this.config.customColors) {
+            _this.config.customColors = _this.config.customColors.map(function (color) { return color.toUpperCase(); });
+        }
+        _this._pickerState = {
+            hsv: { h: 0, s: 1, v: 1 },
+            customHex: "",
+        };
+        _this.events = new events_1.EventSystem(_this);
+        _this._setHandlers();
+        var view = dom_1.create({ render: function () { return _this._getContent(); } });
+        _this.mount(_this._container, view);
+        return _this;
+    }
+    Colorpicker.prototype.destructor = function () {
+        this.unmount();
+    };
+    Colorpicker.prototype.clear = function () {
+        this._selected = "";
+        this.events.fire(types_1.ColorpickerEvents.change, [this._selected]);
+        this.paint();
+    };
+    Colorpicker.prototype.setValue = function (value) {
+        if (this._focusColor(value)) {
+            this.paint();
+            this.events.fire(types_1.ColorpickerEvents.change, [this._selected]);
+            this.events.fire(types_1.ColorpickerEvents.colorChange, [this._selected]); // TODO: remove suite_7.0
+        }
+    };
+    Colorpicker.prototype.setFocus = function (value) {
+        if (this._focusColor(value)) {
+            this.paint();
+        }
+    };
+    Colorpicker.prototype.getValue = function () {
+        return this._selected || "";
+    };
+    Colorpicker.prototype.getCustomColors = function () {
+        return this.config.customColors;
+    };
+    Colorpicker.prototype.setCustomColors = function (customColors) {
+        this.config.customColors = customColors.map(function (color) { return color.toUpperCase(); });
+        this.paint();
+    };
+    Colorpicker.prototype.setCurrentMode = function (mode) {
+        if (mode === "palette" || mode === "picker") {
+            this.config.mode = mode;
+            this.events.fire(types_1.ColorpickerEvents.modeChange, [mode]);
+            this.events.fire(types_1.ColorpickerEvents.viewChange, [mode]); // TODO: remove suite_7.0
+            this.paint();
+        }
+    };
+    Colorpicker.prototype.getCurrentMode = function () {
+        return this.config.mode;
+    };
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    Colorpicker.prototype.getView = function () {
+        return this.getCurrentMode();
+    };
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    Colorpicker.prototype.setView = function (mode) {
+        this.setCurrentMode(mode);
+    };
+    /** @deprecated See a documentation: https://docs.dhtmlx.com/ */
+    Colorpicker.prototype.focusValue = function (value) {
+        this.setFocus(value);
+    };
+    Colorpicker.prototype._setHandlers = function () {
+        var _this = this;
+        this._handlers = {
+            click: {
+                ".dhx_palette__cell": this._onColorClick,
+            },
+            mousedown: function (e) {
+                _this._pickerMove(e);
+            },
+            touchstart: function (e) {
+                _this._pickerMove(e);
+            },
+            buttonsClick: function (button) {
+                _this.setCurrentMode("palette");
+                if (button === "cancel") {
+                    _this.events.fire(types_1.ColorpickerEvents.cancelClick, []);
+                    return;
+                }
+                if (button === "apply" && !_this.config.customColors.includes(_this._pickerState.background)) {
+                    _this.setValue(_this._pickerState.background);
+                    _this.events.fire(types_1.ColorpickerEvents.apply, []);
+                    _this.events.fire(types_1.ColorpickerEvents.selectClick, []); // TODO: remove suite_7.0
+                }
+            },
+            customColorClick: function () {
+                _this.setView("picker");
+            },
+            oninput: function (e) {
+                if (_this._inputTimeout) {
+                    clearTimeout(_this._inputTimeout);
+                }
+                _this._inputTimeout = setTimeout(function () {
+                    var val = e.target.value;
+                    if (val.indexOf("#") === -1) {
+                        val = "#" + val;
+                    }
+                    _this._pickerState.customHex = val;
+                    if (color_1.isHex(val)) {
+                        _this._pickerState.hsv = color_1.HexToHSV(val);
+                        _this.paint();
+                    }
+                }, 100);
+            },
+            contextmenu: {
+                ".dhx_palette__cell": function (e, node) {
+                    e.preventDefault();
+                    var index = _this.config.customColors.indexOf(node.data.color);
+                    if (index !== -1) {
+                        _this._removeCustomColor(index);
+                    }
+                    _this.paint();
+                    return;
+                },
+            },
+            mouseover: {
+                ".dhx_palette__cell": function (e) {
+                    if (e.target) {
+                        tooltip_1.tooltip(en_1.default.rightClickToDelete, {
+                            node: e.target,
+                            position: ts_message_1.Position.bottom,
+                        });
+                    }
+                },
+                ".dhx_colorpicker-custom-colors__picker": function (e) {
+                    if (e.target) {
+                        tooltip_1.tooltip(en_1.default.addNewColor, {
+                            node: e.target,
+                            position: ts_message_1.Position.bottom,
+                        });
+                    }
+                },
+            },
+        };
+        this.events.on(types_1.ColorpickerEvents.change, function () {
+            _this.paint();
+        });
+        // TODO: remove suite_7.0
+        this.events.on(types_1.ColorpickerEvents.colorChange, function () {
+            _this.paint();
+        });
+    };
+    Colorpicker.prototype._pickerMove = function (e) {
+        var name = html_1.locate(e);
+        this._pickerState.customHex = "";
+        if (name === "picker_palette") {
+            this._setPaletteGrip(e);
+        }
+        else {
+            this._setRangeGrip(e);
+        }
+        var handler = name === "picker_palette" ? this._setPaletteGrip : this._setRangeGrip;
+        var move = e.targetTouches ? "touchmove" : "mousemove";
+        var up = e.targetTouches ? "touchend" : "mouseup";
+        document.addEventListener(move, handler);
+        document.addEventListener(up, function () {
+            document.removeEventListener(move, handler);
+        });
+        this.paint();
+    };
+    Colorpicker.prototype._focusColor = function (value) {
+        if (value === undefined || value.length < 4) {
+            return false;
+        }
+        var hex = value.toUpperCase();
+        if (!color_1.isHex(hex)) {
+            return false;
+        }
+        var isInPalette = this.config.palette.reduce(function (state, col) {
+            if (state) {
+                return state;
+            }
+            col.forEach(function (color) {
+                if (color.toUpperCase() === hex) {
+                    state = true;
+                    return;
+                }
+            });
+            return state;
+        }, false);
+        var isInGrayShades = colors_1.grayShades.includes(hex);
+        if (!isInPalette && !isInGrayShades) {
+            var colors = this.getCustomColors();
+            if (!colors.includes(hex.toUpperCase())) {
+                colors.push(hex.toUpperCase());
+            }
+        }
+        this._selected = hex || null;
+        this._pickerState.hsv = color_1.HexToHSV(hex);
+        return true;
+    };
+    Colorpicker.prototype._removeCustomColor = function (index) {
+        this.config.customColors.splice(index, 1);
+    };
+    Colorpicker.prototype._getCells = function (colors, cellClass) {
+        var _this = this;
+        if (cellClass === void 0) { cellClass = ""; }
+        return colors.reduce(function (cells, color) {
+            var selected = (_this._selected || "").toUpperCase() === color.toUpperCase()
+                ? "dhx_palette__cell--selected"
+                : "";
+            cells.push(dom_1.el(".dhx_palette__cell", {
+                class: selected + " " + cellClass,
+                _data: { color: color },
+                style: "background:" + color,
+            }));
+            return cells;
+        }, []);
+    };
+    Colorpicker.prototype._getGrayShades = function () {
+        return dom_1.el(".dhx_palette__row", this._getCells(colors_1.grayShades));
+    };
+    Colorpicker.prototype._getPalette = function () {
+        var _this = this;
+        return this.config.palette.reduce(function (total, row) {
+            total.push(dom_1.el(".dhx_palette__col", _this._getCells(row)));
+            return total;
+        }, []);
+    };
+    Colorpicker.prototype._getContent = function () {
+        var view;
+        if (this.config.pickerOnly) {
+            view = [picker_1.getPicker(this, this._pickerState, this._handlers)];
+        }
+        else {
+            view =
+                this.config.mode === "palette"
+                    ? __spreadArrays([
+                        this.config.grayShades && this._getGrayShades()
+                    ], this._getPalette(), [
+                        !this.config.paletteOnly &&
+                            dom_1.el(".dhx_colorpicker-custom-colors", {
+                                onmouseover: this._handlers.mouseover,
+                            }, [
+                                dom_1.el(".dhx_colorpicker-custom-colors__header", [en_1.default.customColors]),
+                                dom_1.el(".dhx_palette--custom.dhx_palette__row", __spreadArrays(this._getCells(this.config.customColors, "dhx_custom-color__cell"), [
+                                    dom_1.el(".dhx_colorpicker-custom-colors__picker", {
+                                        class: "dxi dxi-plus",
+                                        onclick: this._handlers.customColorClick,
+                                        onmouseover: this._handlers.mouseover,
+                                    }),
+                                ])),
+                            ]),
+                    ]) : [picker_1.getPicker(this, this._pickerState, this._handlers)];
+        }
+        return dom_1.el(".dhx_widget.dhx_colorpicker", { class: this.config.css, style: { width: this.config.width } }, [
+            dom_1.el(".dhx_palette", {
+                onclick: this._handlers.click,
+                oncontextmenu: this._handlers.contextmenu,
+            }, view),
+        ]);
+    };
+    return Colorpicker;
+}(view_1.View));
+exports.Colorpicker = Colorpicker;
+
+
+/***/ }),
+/* 166 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var color_1 = __webpack_require__(48);
+var dom_1 = __webpack_require__(0);
+var en_1 = __webpack_require__(49);
+function getPicker(colorpicker, pickerState, handlers) {
+    var rgb = color_1.HSVtoRGB(pickerState.hsv);
+    pickerState.background = color_1.RGBToHex(rgb);
+    var currentBackground = color_1.RGBToHex(color_1.HSVtoRGB({ h: pickerState.hsv.h, s: 1, v: 1 }));
+    var root = colorpicker.getRootView();
+    var box = root.refs
+        ? root.refs.picker_palette.el.getBoundingClientRect()
+        : { height: 200, width: 218, x: 0, y: 0 };
+    var height = box.height - 2;
+    var width = box.width - 2;
+    var gripTop = height - pickerState.hsv.v * height - 4;
+    var gripLeft = pickerState.hsv.s * width - 4;
+    var rangeWidth = box.width - 6;
+    var rangeGripLeft = rangeWidth - ((360 - pickerState.hsv.h) / 360) * rangeWidth;
+    var inputValue = color_1.isHex(pickerState.customHex)
+        ? pickerState.customHex.replace("#", "")
+        : pickerState.background.replace("#", "");
+    return dom_1.el(".dhx_colorpicker-picker", {}, [
+        dom_1.el(".dhx_colorpicker-picker__palette", {
+            style: {
+                height: 132,
+                background: currentBackground,
+            },
+            onmousedown: handlers.mousedown,
+            ontouchstart: handlers.touchstart,
+            dhx_id: "picker_palette",
+            _ref: "picker_palette",
+        }, [
+            dom_1.el(".dhx_palette_grip", {
+                style: {
+                    top: gripTop,
+                    left: gripLeft,
+                },
+            }),
+        ]),
+        dom_1.el(".dhx_colorpicker-hue-range", {
+            style: { height: 16 },
+            onmousedown: handlers.mousedown,
+            ontouchstart: handlers.touchstart,
+            dhx_id: "hue_range",
+            _key: "hue_range",
+            _ref: "hue_range",
+        }, [
+            dom_1.el(".dhx_colorpicker-hue-range__grip", {
+                style: { left: rangeGripLeft },
+            }),
+        ]),
+        dom_1.el(".dhx_colorpicker-value", [
+            dom_1.el(".dhx_colorpicker-value__color", {
+                style: { background: pickerState.background },
+            }),
+            dom_1.el(".dhx_colorpicker-value__input__wrapper", [
+                dom_1.el("input", {
+                    class: "dhx_colorpicker-value__input",
+                    value: inputValue,
+                    oninput: handlers.oninput,
+                    maxlength: "7",
+                    _key: "hex_input",
+                    "aria-label": "type color in HEX format",
+                }),
+            ]),
+        ]),
+        dom_1.el(".dhx_colorpicker-picker__buttons", [
+            !colorpicker.config.pickerOnly &&
+                dom_1.el("button", {
+                    class: "dhx_button dhx_button--size_medium dhx_button--view_link dhx_button--color_primary",
+                    onclick: [handlers.buttonsClick, "cancel"],
+                }, en_1.default.cancel),
+            dom_1.el("button", {
+                class: "dhx_button dhx_button--size_medium dhx_button--view_flat dhx_button--color_primary",
+                onclick: [handlers.buttonsClick, "apply"],
+            }, en_1.default.select),
+        ]),
+    ]);
+}
+exports.getPicker = getPicker;
+function calculatePaletteGrip(rootView, top, left) {
+    var paletteRect = rootView.refs.picker_palette.el.getBoundingClientRect();
+    var bottom = paletteRect.height;
+    var right = paletteRect.width;
+    top = top < 0 ? 0 : top > bottom ? bottom : top;
+    left = left < 0 ? 0 : left > right ? right : left;
+    var pLeft = Math.round(left / (right / 100));
+    var pTop = 100 - Math.round(top / (bottom / 100));
+    this._pickerState.hsv.s = pLeft / 100;
+    this._pickerState.hsv.v = pTop / 100;
+}
+exports.calculatePaletteGrip = calculatePaletteGrip;
+
+
+/***/ }),
+/* 167 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+function calculatePaletteGrip(clientRect, top, left) {
+    var bottom = clientRect.height;
+    var right = clientRect.width;
+    top = top < 0 ? 0 : top > bottom ? bottom : top;
+    left = left < 0 ? 0 : left > right ? right : left;
+    var pLeft = Math.round(left / (right / 100));
+    var pTop = 100 - Math.round(top / (bottom / 100));
+    return {
+        s: pLeft / 100,
+        v: pTop / 100,
+    };
+}
+exports.calculatePaletteGrip = calculatePaletteGrip;
+function calculateRangeGrip(clientRect, left) {
+    var right = clientRect.width;
+    left = left < 0 ? 0 : left > right ? right : left;
+    return {
+        h: Math.round(360 * (left / right)),
+        rangeLeft: left,
+    };
+}
+exports.calculateRangeGrip = calculateRangeGrip;
+
+
+/***/ }),
+/* 168 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(169));
+__export(__webpack_require__(26));
+
+
+/***/ }),
+/* 169 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var events_1 = __webpack_require__(2);
+var view_1 = __webpack_require__(5);
+var ts_data_1 = __webpack_require__(4);
+var ComposeLayer_1 = __webpack_require__(170);
+var Legend_1 = __webpack_require__(172);
+var types_1 = __webpack_require__(26);
+var index_1 = __webpack_require__(174);
+var index_2 = __webpack_require__(178);
+var Stacker_1 = __webpack_require__(187);
+var common_1 = __webpack_require__(8);
+var Tooltip_1 = __webpack_require__(188);
+var Chart = /** @class */ (function (_super) {
+    __extends(Chart, _super);
+    function Chart(node, config) {
+        if (config === void 0) { config = {}; }
+        var _this = _super.call(this, null, config) || this;
+        // using zero values ensure that widget will not attempt to render self in the hidden state
+        _this._width = 0;
+        _this._height = 0;
+        _this._left = 0;
+        _this._top = 0;
+        var dataConfig = {};
+        if (config.maxPoints) {
+            dataConfig.approximate = {
+                value: config.series.map(function (a) { return a.value; }),
+                maxNum: config.maxPoints,
+            };
+        }
+        if (Array.isArray(config.data)) {
+            _this.events = new events_1.EventSystem(_this);
+            _this.data = new ts_data_1.DataCollection(dataConfig, _this.events);
+            _this.data.parse(config.data);
+        }
+        else if (config.data && config.data.events) {
+            _this.data = config.data;
+            _this.events = _this.data.events;
+            _this.events.context = _this;
+        }
+        else {
+            _this.events = new events_1.EventSystem(_this);
+            _this.data = new ts_data_1.DataCollection(dataConfig, _this.events);
+        }
+        _this._globalHTMLHandlers = {
+            onmousemove: function (e) {
+                var _a = _this._layers.getSizes(), left = _a.left, top = _a.top, bottom = _a.bottom, right = _a.right;
+                var pageX = e.pageX, pageY = e.pageY;
+                var rects = _this.getRootView().node.el.getBoundingClientRect();
+                _this._left = rects.left + window.pageXOffset;
+                _this._top = rects.top + window.pageYOffset;
+                var x = pageX - left - _this._left;
+                var y = pageY - top - _this._top;
+                if (x >= 0 && x <= _this._width - right - left && y >= 0 && y <= _this._height - bottom - top) {
+                    _this.events.fire(types_1.ChartEvents.chartMouseMove, [x, y, _this._left + left, _this._top + top]);
+                }
+                else {
+                    _this.events.fire(types_1.ChartEvents.chartMouseLeave);
+                }
+            },
+            onmouseleave: function () { return _this.events.fire(types_1.ChartEvents.chartMouseLeave); },
+        };
+        _this._layers = new ComposeLayer_1.ComposeLayer();
+        _this.setConfig(config);
+        _this._initEvents();
+        _this._tooltip = new Tooltip_1.Tooltip(_this);
+        var render = function () {
+            if (!_this.data.getLength()) {
+                return dom_1.el("div");
+            }
+            var getChartAriaLabel = function (config) {
+                /*  Full example (without symbols of new line):
+                    Type chart "Title". X/Y Scale Name: bottom axis from Min to Max. Scale Name: left axis Name from Min to Max.
+                    Series: seria A, seria B, seria C, ...
+                 */
+                var scales = _this._scales;
+                var series = config.series;
+                var type = config.type;
+                if (!type) {
+                    // scatter chart
+                    type = series && series.length && series[0] ? series[0].type || "" : "";
+                }
+                var label = (type || "") + " chart.";
+                var getAxisName = function (cfg) { return (cfg._isXDirection ? "X" : "Y"); };
+                var getAxisTitle = function (cfg) { return cfg.title || cfg.text || cfg.value || ""; };
+                var getAxisMin = function (cfg) { return (cfg.steps && cfg.steps.length ? cfg.steps[0] : cfg.min || 0); };
+                var getAxisMax = function (cfg) {
+                    return cfg.steps && cfg.steps.length
+                        ? cfg.steps[cfg.steps.length - 1]
+                        : cfg.max || cfg.maxPoints || "max";
+                };
+                var getRadialAxisValue = function (attr, point) { return point[attr]; };
+                if (scales) {
+                    Object.keys(scales).forEach(function (direction) {
+                        var scale = scales[direction];
+                        var cfg = scale._axis || scale.config;
+                        if (direction === "radial") {
+                            var xData = scale._data._order;
+                            label += " X scale " + getAxisTitle(scale.config) + ": " + direction + " axis from " + getRadialAxisValue(scale.config.value, xData[0]) + " to " + getRadialAxisValue(scale.config.value, xData[xData.length - 1]) + ".";
+                            label += " " + getAxisName(scale) + " scale: axis from " + getAxisMin(cfg) + " to " + getAxisMax(cfg) + ".";
+                        }
+                        else {
+                            label += " " + getAxisName(scale) + " scale " + getAxisTitle(scale.config) + ": " + direction + " axis from " + getAxisMin(cfg) + " to " + getAxisMax(cfg) + ".";
+                        }
+                    });
+                }
+                if (series && series.length) {
+                    label += " Series:";
+                    series.forEach(function (seria, index) {
+                        label += " " + (type === "pie" || type === "pie3D" || type === "donut" ? seria.text : seria.value);
+                        label += index === series.length - 1 ? "." : ",";
+                    });
+                }
+                return label;
+            };
+            var getChartAriaAttrs = function (config) { return ({
+                "aria-label": getChartAriaLabel(config),
+            }); };
+            var content = [
+                dom_1.resizer(function (x, y) {
+                    _this._width = x;
+                    _this._height = y || 400; // if height is not provided, use default value
+                    var view = _this.getRootView();
+                    if (view && view.node && view.node.el) {
+                        var rects = view.node.el.getBoundingClientRect();
+                        _this._left = rects.left + window.pageXOffset;
+                        _this._top = rects.top + window.pageYOffset;
+                    }
+                    _this.events.fire(types_1.ChartEvents.resize, [
+                        {
+                            width: _this._width,
+                            height: _this._height,
+                        },
+                    ]);
+                    _this.paint();
+                }),
+            ];
+            if (_this._width && _this._height) {
+                content.push(_this._layers.toVDOM(_this._width, _this._height, _this.events));
+            }
+            return dom_1.el(".dhx_widget.dhx_chart", __assign({ class: config.css ? config.css : "", onmousemove: _this._globalHTMLHandlers.onmousemove, onmouseleave: _this._globalHTMLHandlers.onmouseleave }, getChartAriaAttrs(config)), content);
+        };
+        var view = dom_1.create({
+            render: render,
+            hooks: {
+                didMount: function (vm) {
+                    if (vm && vm.node && vm.node.parent && vm.node.parent.el) {
+                        _this._width = vm.node.parent.el.offsetWidth;
+                        _this._height = vm.node.parent.el.offsetHeight || 400;
+                        _this.paint();
+                    }
+                },
+            },
+        });
+        _this.mount(node, view);
+        return _this;
+    }
+    Chart.prototype.getSeries = function (key) {
+        return this._series[key];
+    };
+    Chart.prototype.eachSeries = function (handler) {
+        var result = [];
+        for (var key in this._series) {
+            result.push(handler.call(this, this._series[key]));
+        }
+        return result;
+    };
+    Chart.prototype.destructor = function () {
+        this._tooltip.destructor();
+        this.events.clear();
+        this.unmount();
+    };
+    Chart.prototype.setConfig = function (config) {
+        var _this = this;
+        this.config = config;
+        this._layers.clear();
+        this._series = {};
+        this._scales = {};
+        var min;
+        // let baseLine;
+        if (config.scales) {
+            for (var key in config.scales) {
+                var scale = __assign({}, config.scales[key]);
+                if (config.scales[key].min !== undefined) {
+                    min = config.scales[key].min;
+                }
+                scale.type = scale.type || this._detectScaleType(scale, key);
+                if (config.scales.radial && key !== "radial") {
+                    scale.hidden = true;
+                }
+                this._setScale(scale, key);
+            }
+        }
+        var stack = new Stacker_1.default();
+        this._layers.add(stack);
+        config.series.forEach(function (cfg) {
+            if (cfg.baseLine !== undefined && cfg.baseLine < min) {
+                cfg.baseLine = undefined;
+            }
+            var serieConfig = __assign({}, cfg);
+            serieConfig.type = serieConfig.type || config.type;
+            var chartFactory = index_2.default[serieConfig.type];
+            if (serieConfig.barWidth || _this.config.barWidth) {
+                serieConfig.barWidth = serieConfig.barWidth || _this.config.barWidth;
+            }
+            var chart = new chartFactory(_this.data, serieConfig, _this.events);
+            var scales = common_1.getScales(config.scales);
+            var chartScales = scales.length > 1 && scales[0] !== "radial"
+                ? scales
+                : scales[0] === "radial"
+                    ? scales
+                    : ["bottom", "left"];
+            chartScales.forEach(function (type) {
+                var scale = _this._scales[type];
+                if (!scale) {
+                    return;
+                }
+                chart.addScale(type, scale);
+                if (!serieConfig.stacked) {
+                    scale.add(chart);
+                }
+                else {
+                    scale.add(stack);
+                }
+            });
+            _this._series[chart.id] = chart;
+            if (serieConfig.stacked) {
+                stack.add(chart);
+            }
+            else {
+                _this._layers.add(chart);
+            }
+        });
+        if (config.legend) {
+            var legendConfig = __assign({}, config.legend);
+            if (legendConfig.series) {
+                legendConfig.$seriesInfo = legendConfig.series.map(function (id) { return _this._series[id]; });
+            }
+            var legend = new Legend_1.Legend(this.data, legendConfig, this.events);
+            this._layers.add(legend);
+        }
+        this.paint();
+    };
+    Chart.prototype._setScale = function (config, position) {
+        var scale = new index_1.default[config.type](this.data, config, position);
+        if (scale.config.type !== "radial") {
+            this._layers.add(scale.scaleGrid());
+        }
+        this._layers.add(scale);
+        this._scales[position] = scale;
+    };
+    Chart.prototype._detectScaleType = function (config, key) {
+        if (key === "radial") {
+            return key;
+        }
+        if (config.text) {
+            return "text";
+        }
+        return "numeric";
+    };
+    Chart.prototype._initEvents = function () {
+        var _this = this;
+        // hide/show series on legend click
+        this.events.on(types_1.ChartEvents.toggleSeries, function (id, pieLike) {
+            if (pieLike) {
+                var serie = _this._series[Object.keys(_this._series)[0]];
+                if (serie) {
+                    serie.toggle(id);
+                    _this.paint();
+                }
+            }
+            else if (_this._series[id]) {
+                _this._series[id].toggle();
+                _this.paint();
+            }
+        }, this);
+        // repaint on data change
+        this.events.on(ts_data_1.DataEvents.change, function () { return _this.paint(); });
+    };
+    return Chart;
+}(view_1.View));
+exports.Chart = Chart;
+
+
+/***/ }),
+/* 170 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var Filters_1 = __webpack_require__(171);
+var ComposeLayer = /** @class */ (function () {
+    function ComposeLayer() {
+        this._data = [];
+        this._sizes = { left: 20, right: 20, top: 10, bottom: 10 };
+    }
+    ComposeLayer.prototype.add = function (obj) {
+        this._data.push(obj);
+    };
+    ComposeLayer.prototype.clear = function () {
+        this._data.forEach(function (item) { return item.destructor && item.destructor(); });
+        this._data = [];
+    };
+    ComposeLayer.prototype.getSizes = function () {
+        return this._sizes;
+    };
+    ComposeLayer.prototype.toVDOM = function (width, height) {
+        var sizes = { left: 20, right: 20, top: 10, bottom: 10 };
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        var toPaint = this._data.filter(function (l) { return !l.dataReady || l.dataReady().length; });
+        // eslint-disable-next-line @typescript-eslint/unbound-method
+        this._data.forEach(function (l) { return !l.scaleReady || l.scaleReady(sizes); });
+        var shift = 0;
+        var shiftCount = 0;
+        toPaint.forEach(function (item) {
+            if (item.seriesShift) {
+                shift += item.seriesShift();
+                shiftCount++;
+            }
+        });
+        var step = shift / shiftCount;
+        shift = shiftCount ? (step - shift) / 2 : 0;
+        toPaint.forEach(function (item) {
+            if (item.seriesShift) {
+                item.seriesShift(shift);
+                shift += step;
+            }
+        });
+        this._sizes = sizes;
+        var contentWidth = width - sizes.left - sizes.right;
+        var contentHeight = height - sizes.top - sizes.bottom;
+        var chartsContent = dom_1.sv("g", {
+            transform: "translate(" + sizes.left + ", " + sizes.top + ")",
+        }, __spreadArrays([
+            dom_1.sv("rect.dhx_chart-graph_area", {
+                width: contentWidth > 0 ? contentWidth : 0,
+                height: contentHeight > 0 ? contentHeight : 0,
+                fill: "transparent",
+            })
+        ], toPaint.map(function (item) {
+            return item.paint(width - (sizes.left + sizes.right), height - (sizes.top + sizes.bottom));
+        })));
+        var defs = dom_1.sv("defs", [Filters_1.dropShadow(), Filters_1.shadow()]);
+        return dom_1.sv("svg", {
+            width: width,
+            height: height,
+            role: "graphics-document",
+        }, [defs, chartsContent]);
+    };
+    return ComposeLayer;
+}());
+exports.ComposeLayer = ComposeLayer;
+
+
+/***/ }),
+/* 171 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+exports.shadow = function () {
+    return dom_1.sv("filter", { id: "shadow" }, [
+        dom_1.sv("feDiffuseLighting", {
+            in: "SourceGraphic",
+            result: "light",
+            "lighting-color": "white",
+        }, [dom_1.sv("feDistantLight", { azimuth: 90, elevation: 25 })]),
+        dom_1.sv("feComposite", {
+            in: "SourceGraphic",
+            in2: "light",
+            operator: "arithmetic",
+            k1: "1",
+            k2: "0",
+            k3: "0",
+            k4: "0",
+        }),
+    ]);
+};
+exports.dropShadow = function () {
+    return dom_1.sv("filter", {
+        id: "dropshadow",
+        x: "-100%",
+        y: "-100%",
+        width: "300%",
+        height: "300%",
+    }, [
+        dom_1.sv("feGaussianBlur", { in: "SourceAlpha", stdDeviation: 2 }),
+        dom_1.sv("feOffset", { dx: 0, dy: 0, result: "offsetblur" }),
+        dom_1.sv("feOffset", { dx: 0, dy: 0, result: "offsetblur" }),
+        dom_1.sv("feFlood", { "flood-color": "rgba(85,85,85,0.5)" }),
+        dom_1.sv("feComposite", { in2: "offsetblur", operator: "in" }),
+        dom_1.sv("feMerge", [dom_1.sv("feMergeNode"), dom_1.sv("feMergeNode", { in: "SourceGraphic" })]),
+    ]);
+};
+
+
+/***/ }),
+/* 172 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var types_1 = __webpack_require__(26);
+var dom_1 = __webpack_require__(0);
+var common_1 = __webpack_require__(8);
+var legend_1 = __webpack_require__(173);
+function getDefaultMargin(halign, valign) {
+    switch (valign) {
+        case "middle": {
+            switch (halign) {
+                case "right":
+                    return 60;
+                case "left":
+                    return 120;
+                case "center":
+                    throw new Error("cant place legend on center, middle");
+            }
+        }
+        // eslint-disable-next-line no-fallthrough
+        case "top":
+            return 20;
+        case "bottom":
+            return 60;
+    }
+}
+var Legend = /** @class */ (function () {
+    function Legend(_data, config, _events) {
+        var _this = this;
+        this._data = _data;
+        this._events = _events;
+        var defaults = {
+            form: "rect",
+            itemPadding: 20,
+            halign: "right",
+            valign: "middle",
+        };
+        this.config = __assign(__assign({}, defaults), config);
+        this.config.margin = config.margin || getDefaultMargin(this.config.halign, this.config.valign);
+        this._handlers = {
+            onclick: function (id, pieLike) {
+                return _this._events.fire(types_1.ChartEvents.toggleSeries, [id, pieLike]);
+            },
+        };
+    }
+    Legend.prototype.scaleReady = function (sizes) {
+        if (this.config.valign === "middle") {
+            if (this.config.halign === "right") {
+                sizes.right += this.config.size || 200;
+            }
+            else if (this.config.halign === "left") {
+                sizes.left += this.config.size || 200;
+            }
+        }
+        else {
+            if (this.config.valign === "top") {
+                sizes.top += this.config.size || 40;
+            }
+            else if (this.config.valign === "bottom") {
+                sizes.bottom += this.config.size || 40;
+            }
+        }
+    };
+    Legend.prototype.paint = function (width, height) {
+        var _this = this;
+        var getLegendAriaAttrs = function (item) { return ({
+            role: "button",
+            "aria-label": item.active ? "Hide chart " + item.text : "Show chart " + item.text,
+        }); };
+        var data = this._getData();
+        var config = this.config;
+        var positionX;
+        var positionY;
+        var font = common_1.getFontStyle("legend-text");
+        var figureWidth = 10; // get Figure width from config ??
+        var margin = config.margin, itemPadding = config.itemPadding;
+        var svg = [];
+        var isMid = config.valign === "middle";
+        var xPadding = 0;
+        var yPadding = 0;
+        data.forEach(function (item) {
+            svg.push(dom_1.sv("g", __assign({ transform: "translate(" + xPadding + "," + yPadding + ")", onclick: [_this._handlers.onclick, item.id, _this.config.values], class: "legend-item " + (!item.active ? "not-active" : "") }, getLegendAriaAttrs(item)), [
+                dom_1.sv("text", {
+                    x: figureWidth / 2 + 5,
+                    y: 0,
+                    class: "start-text legend-text",
+                }, [common_1.verticalCenteredText(item.text)]),
+                legend_1.legendShape(config.form, item),
+            ]));
+            if (!isMid) {
+                var textWidth = common_1.getTextWidth(item.text, font);
+                xPadding += textWidth + itemPadding + figureWidth * 1.5;
+            }
+            else {
+                yPadding += itemPadding + 2;
+            }
+        });
+        switch (config.valign) {
+            case "top":
+                positionY = -margin - figureWidth / 2;
+                break;
+            case "middle":
+                positionY = (height - yPadding) / 2 + itemPadding / 2;
+                break;
+            case "bottom":
+                positionY = height + margin;
+                break;
+        }
+        switch (config.halign) {
+            case "left":
+                positionX = isMid ? -margin : figureWidth / 2;
+                break;
+            case "center":
+                positionX = (width - xPadding) / 2;
+                break;
+            case "right":
+                positionX = isMid
+                    ? width + margin + figureWidth / 2
+                    : width - xPadding + itemPadding + figureWidth / 2;
+                break;
+        }
+        return dom_1.sv("g", {
+            transform: "translate(" + positionX + ", " + positionY + ")",
+            "aria-label": "Legend",
+        }, svg);
+    };
+    Legend.prototype._getData = function () {
+        var drawData = [];
+        if (this.config.values) {
+            var text_1 = common_1.locator(this.config.values.text);
+            var fill_1 = common_1.locator(this.config.values.color);
+            this._data.map(function (item, index) {
+                drawData.push({
+                    id: item.id,
+                    text: text_1(item).toString(),
+                    alpha: 1,
+                    fill: fill_1(item).toString() || common_1.getDefaultColor(index),
+                    active: !item.$hidden,
+                });
+            });
+        }
+        else {
+            var series = this.config.$seriesInfo;
+            for (var _i = 0, series_1 = series; _i < series_1.length; _i++) {
+                var serie = series_1[_i];
+                var seriaConfig = serie.config;
+                var useColor = seriaConfig.fill && seriaConfig.color;
+                drawData.push({
+                    id: seriaConfig.id,
+                    text: seriaConfig.name || seriaConfig.value,
+                    alpha: seriaConfig.alpha,
+                    fill: seriaConfig.fill || seriaConfig.color,
+                    color: useColor && seriaConfig.color,
+                    active: seriaConfig.active,
+                });
+            }
+        }
+        return drawData;
+    };
+    return Legend;
+}());
+exports.Legend = Legend;
+
+
+/***/ }),
+/* 173 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var figureWidth = 10;
+var forms = {
+    circle: function (color, fill, fillOpacity) {
+        return dom_1.sv("circle", {
+            id: core_1.uid(),
+            r: figureWidth / 2,
+            fill: fill,
+            class: "figure " + (color !== "none" ? "with-stroke" : ""),
+            "stroke-width": 2,
+            "fill-opacity": fillOpacity,
+            stroke: color,
+            transform: "translate(0, -1)",
+        });
+    },
+    rect: function (color, fill, fillOpacity) {
+        return dom_1.sv("rect", {
+            id: core_1.uid(),
+            fill: fill,
+            "fill-opacity": fillOpacity,
+            width: figureWidth,
+            "stroke-width": 2,
+            height: figureWidth,
+            class: "figure " + (color !== "none" ? "with-stroke" : ""),
+            stroke: color,
+            transform: "translate(" + -figureWidth / 2 + ", " + -figureWidth / 2 + ")",
+        });
+    },
+};
+function legendShape(form, item) {
+    if (typeof form === "string") {
+        form = forms[form];
+    }
+    return form(item.color || "none", item.fill, item.alpha || 1);
+}
+exports.legendShape = legendShape;
+
+
+/***/ }),
+/* 174 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var RadialScale_1 = __webpack_require__(175);
+var Scale_1 = __webpack_require__(50);
+var TextScale_1 = __webpack_require__(177);
+var scaleTypes = {
+    radial: RadialScale_1.RadialScale,
+    text: TextScale_1.TextScale,
+    numeric: Scale_1.Scale,
+};
+exports.default = scaleTypes;
+
+
+/***/ }),
+/* 175 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var circle_1 = __webpack_require__(27);
+var Scale_1 = __webpack_require__(50);
+var RadialScale = /** @class */ (function (_super) {
+    __extends(RadialScale, _super);
+    function RadialScale(_data, config) {
+        return _super.call(this, _data, config, "radial") || this;
+    }
+    RadialScale.prototype.paint = function (width, height) {
+        var _this = this;
+        if (this.config.hidden) {
+            return null;
+        }
+        var zebra = this.config.zebra;
+        var attribute = this.config.value;
+        var realAxis = this.config.showAxis ? this._axis.steps : null;
+        var axis = this._axis.steps.map(function (step) { return _this.point(step); });
+        var scales = this._data.map(function (item) { return item[attribute]; });
+        var config = { scales: scales, axis: axis, realAxis: realAxis, zebra: zebra, attribute: attribute };
+        return circle_1.radarScale(config, width, height);
+    };
+    RadialScale.prototype.point = function (val) {
+        return (val - this._axis.min) / (this._axis.max - this._axis.min);
+    };
+    return RadialScale;
+}(Scale_1.Scale));
+exports.RadialScale = RadialScale;
+
+
+/***/ }),
+/* 176 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+var __spreadArrays = (this && this.__spreadArrays) || function () {
+    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
+    for (var r = Array(s), k = 0, i = 0; i < il; i++)
+        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
+            r[k] = a[j];
+    return r;
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var common_1 = __webpack_require__(8);
+var allowedBases = [1, 2, 3, 5, 10];
+var AxisCreator = /** @class */ (function () {
+    function AxisCreator(_data, conf) {
+        if (conf === void 0) { conf = {}; }
+        this._data = _data;
+        var chekedData = [];
+        for (var _i = 0, _a = this._data; _i < _a.length; _i++) {
+            var item = _a[_i];
+            if (typeof item === "number") {
+                chekedData.push(item);
+            }
+        }
+        var defaults = {
+            min: Math.min.apply(Math, chekedData),
+            max: Math.max.apply(Math, chekedData),
+            maxTicks: this._data.length < 20 ? this._data.length : 20,
+        };
+        this.config = __assign(__assign({}, defaults), conf);
+        if (this.config.padding) {
+            this._addPadding();
+        }
+    }
+    AxisCreator.prototype.getScale = function () {
+        var steps = this.config.log ? this._logSteps() : this._calculateSteps(this._getStep());
+        return {
+            min: steps[0],
+            max: steps[steps.length - 1],
+            steps: steps,
+        };
+    };
+    AxisCreator.prototype._getStep = function () {
+        var ticks = this.config.maxTicks;
+        var dif = this.config.max - this.config.min;
+        var exponent = Math.floor(common_1.log10(dif / ticks));
+        var step = Math.pow(10, exponent);
+        var rawBase = dif / step / ticks;
+        var nearestBase = allowedBases[__spreadArrays(allowedBases, [rawBase]).sort(function (a, b) { return a - b; }).indexOf(rawBase)];
+        return nearestBase * step;
+    };
+    AxisCreator.prototype._calculateSteps = function (step) {
+        var firstIndex = Math.floor(this.config.min / step);
+        var lastIndex = Math.ceil(this.config.max / step);
+        var steps = [];
+        for (var i = firstIndex; i <= lastIndex; i++) {
+            var currentStep = step * i;
+            if (Math.floor(currentStep) !== currentStep) {
+                currentStep = parseFloat(currentStep.toFixed(8));
+            }
+            steps.push(currentStep);
+        }
+        return steps;
+    };
+    AxisCreator.prototype._logSteps = function () {
+        var steps = [];
+        if (this.config.min < 0) {
+            var negativeExponent = Math.ceil(common_1.log10(-this.config.min));
+            for (var i = negativeExponent; i > 0; i--) {
+                steps.push(-(Math.pow(10, i)));
+            }
+            steps.push(0);
+        }
+        if (this.config.max > 0) {
+            var positiveExponent = Math.ceil(common_1.log10(this.config.max));
+            for (var i = 1; i <= positiveExponent; i++) {
+                steps.push(Math.pow(10, i));
+            }
+        }
+        return steps;
+    };
+    AxisCreator.prototype._addPadding = function () {
+        this.config.min -= this.config.padding;
+    };
+    return AxisCreator;
+}());
+exports.AxisCreator = AxisCreator;
+
+
+/***/ }),
+/* 177 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var common_1 = __webpack_require__(8);
+var Scale_1 = __webpack_require__(50);
+var SvgScales_1 = __webpack_require__(78);
+var renderScale = {
+    left: SvgScales_1.left,
+    right: SvgScales_1.right,
+    bottom: SvgScales_1.bottom,
+    top: SvgScales_1.top,
+};
+var renderGrid = {
+    left: SvgScales_1.leftGrid,
+    right: SvgScales_1.rightGrid,
+    bottom: SvgScales_1.bottomGrid,
+    top: SvgScales_1.topGrid,
+};
+var TextScale = /** @class */ (function (_super) {
+    __extends(TextScale, _super);
+    function TextScale() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    TextScale.prototype.scaleReady = function (sizes) {
+        var max = this._data.getLength() - 1;
+        var steps = this._data.map(this.locator);
+        this._axis = { max: max, steps: steps };
+        sizes[this._position] += this.config.size;
+    };
+    TextScale.prototype.point = function (value) {
+        var pos = this._axis.steps.indexOf(value);
+        if (this._padding) {
+            var max = this._axis.max + 1;
+            var padding = 0.5 / max;
+            var point = pos / max;
+            return this._isXDirection ? padding + point : 1 - padding - point;
+        }
+        else {
+            return this._isXDirection ? pos / this._axis.max : 1 - pos / this._axis.max;
+        }
+    };
+    TextScale.prototype.paint = function (width, height) {
+        var _this = this;
+        if (this.config.hidden) {
+            return null;
+        }
+        var points = this._axis.steps.map(function (item, index) { return [
+            _this._isXDirection ? _this._getAxisPoint(index) * width : _this.point(item) * height,
+            item,
+        ]; });
+        return renderScale[this._position](points, this.config, width, height);
+    };
+    TextScale.prototype.scaleGrid = function () {
+        var _this = this;
+        var getPoints = function (width, height) {
+            return _this._axis.steps.map(function (item, index) { return [
+                _this._isXDirection ? _this._getAxisPoint(index) * width : _this._getAxisPoint(index) * height,
+                item,
+            ]; });
+        };
+        var type = this._position;
+        var grid = this.config.grid;
+        var dashed = this.config.dashed;
+        var hidden = this.config.hidden;
+        var getSpecificLevel = function () { return _this._axis.steps.indexOf(_this.config.targetLine); };
+        return {
+            paint: function (width, height) {
+                var targetLine = getSpecificLevel();
+                var points = getPoints(width, height);
+                var config = { targetLine: targetLine, dashed: dashed, grid: grid, hidden: hidden };
+                return renderGrid[type](points, width, height, config);
+            },
+        };
+    };
+    TextScale.prototype._setDefaults = function (config) {
+        var defaults = {
+            scalePadding: 30,
+            textPadding: 12,
+            grid: true,
+            targetLine: null,
+            showText: true,
+        };
+        this.locator = common_1.locator(config.text);
+        this.config = __assign(__assign({}, defaults), config);
+    };
+    TextScale.prototype._getAxisPoint = function (index) {
+        var max = this._axis.max;
+        if (this._padding) {
+            var count = max + 1;
+            var padding = 0.5 / count;
+            var point = index / count;
+            return this._isXDirection ? padding + point : 1 - padding - point;
+        }
+        else {
+            return this._isXDirection ? index / max : 1 - index / max;
+        }
+    };
+    return TextScale;
+}(Scale_1.Scale));
+exports.TextScale = TextScale;
+
+
+/***/ }),
+/* 178 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var Area_1 = __webpack_require__(79);
+var Bar_1 = __webpack_require__(81);
+var BarX_1 = __webpack_require__(179);
+var Donut_1 = __webpack_require__(180);
+var Line_1 = __webpack_require__(54);
+var Pie_1 = __webpack_require__(181);
+var Pie3D_1 = __webpack_require__(182);
+var Radar_1 = __webpack_require__(183);
+var Scatter_1 = __webpack_require__(184);
+var Spline_1 = __webpack_require__(185);
+var SplineArea_1 = __webpack_require__(186);
+var seriesTypes = {
+    line: Line_1.default,
+    spline: Spline_1.default,
+    area: Area_1.default,
+    splineArea: SplineArea_1.default,
+    scatter: Scatter_1.default,
+    pie: Pie_1.default,
+    pie3D: Pie3D_1.default,
+    donut: Donut_1.default,
+    radar: Radar_1.default,
+    bar: Bar_1.default,
+    xbar: BarX_1.default,
+};
+exports.default = seriesTypes;
+
+
+/***/ }),
+/* 179 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var Bar_1 = __webpack_require__(81);
+var BarX = /** @class */ (function (_super) {
+    __extends(BarX, _super);
+    function BarX() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    BarX.prototype.addScale = function (type, scale) {
+        var realtype = type === "top" || type === "bottom" ? "left" : "top";
+        _super.prototype.addScale.call(this, realtype, scale);
+    };
+    BarX.prototype.paint = function (width, height, prev) {
+        return _super.prototype.paint.call(this, height, width, prev);
+    };
+    BarX.prototype.getTooltipType = function (id, x, y) {
+        if (this.config.baseLine !== undefined && this._baseLinePosition > x) {
+            return "left";
+        }
+        return "right";
+    };
+    BarX.prototype.getClosest = function (x, y) {
+        var res = [Infinity, null, null, null];
+        for (var _i = 0, _a = this._points; _i < _a.length; _i++) {
+            var point = _a[_i];
+            var dist = this._getClosestDist(x, y, point[1], point[0]);
+            if (res[0] > dist) {
+                res[0] = dist;
+                res[1] = point[1];
+                res[2] = point[0];
+                res[3] = point[2];
+            }
+        }
+        return res;
+    };
+    BarX.prototype._getText = function (item) {
+        return item[4].toString();
+    };
+    BarX.prototype._getClosestDist = function (x, y, px, py) {
+        if (this.config.stacked && x > px) {
+            return Infinity;
+        }
+        return Math.abs(y - py);
+    };
+    BarX.prototype._path = function (item, prev) {
+        item[0] += this._shift;
+        return "\nM " + prev + " " + (item[0] - this.config.barWidth / 2) + "\nH " + item[1] + "\nv " + this.config.barWidth + "\nH " + prev;
+    };
+    BarX.prototype._base = function (height) {
+        var baseLine = this.config.baseLine;
+        return (this._baseLinePosition = baseLine !== undefined ? this.yScale.point(baseLine) * height : 0);
+    };
+    BarX.prototype._text = function (item, prev, rotate) {
+        var x = (prev + item[1]) / 2;
+        var y = item[0];
+        var canRotate = rotate && !isNaN(rotate);
+        return {
+            x: x,
+            y: y,
+            class: "bar-text",
+            transform: canRotate ? "rotate(" + rotate + " " + x + " " + y + ")" : "",
+        };
+    };
+    return BarX;
+}(Bar_1.default));
+exports.default = BarX;
+
+
+/***/ }),
+/* 180 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var circle_1 = __webpack_require__(27);
+var common_1 = __webpack_require__(8);
+var NoScaleSeria_1 = __webpack_require__(53);
+var Donut = /** @class */ (function (_super) {
+    __extends(Donut, _super);
+    function Donut() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Donut.prototype.paint = function (width, height) {
+        var _this = this;
+        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
+        var getPointAriaAttrs = function (value, text, percent) {
+            if (percent === void 0) { percent = 0; }
+            return ({
+                role: "graphics-symbol",
+                "aria-roledescription": "piece of donut",
+                "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
+            });
+        };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.text || ""),
+        }); };
+        var _a = this.config, stroke = _a.stroke, strokeWidth = _a.strokeWidth, useLines = _a.useLines, subType = _a.subType;
+        var radius;
+        if (height > width) {
+            radius = width / 2;
+        }
+        else {
+            radius = height / 2;
+        }
+        var currentPercent = -0.25;
+        var svg = [];
+        var links = [];
+        var lines = [];
+        var tooltipData = [];
+        this._points.forEach(function (item) {
+            var percent = item[0], value = item[1], id = item[2], text = item[3], color = item[4];
+            var err = percent === 0 || percent === 1 ? -0.000001 : 0;
+            var _a = circle_1.getCoordinates(currentPercent, radius, radius), startX = _a[0], startY = _a[1];
+            var avPercent = currentPercent + percent / 2;
+            currentPercent += percent + err;
+            var _b = circle_1.getCoordinates(currentPercent, radius, radius), endX = _b[0], endY = _b[1];
+            var largeArcFlag = percent > 0.5 ? 1 : 0;
+            var middleLine = circle_1.getCoordinates(avPercent, radius, radius);
+            var isRight = avPercent > -0.25 && avPercent < 0.25;
+            var isUp = avPercent > 0.5 || avPercent < 0;
+            var lineLength = avPercent < 0.25 ? 5 : -5;
+            var _c = [5, 30], startPart = _c[0], endPart = _c[1];
+            var _d = [
+                circle_1.getCoordinates(avPercent, radius + startPart, radius + startPart),
+                circle_1.getCoordinates(avPercent, radius + endPart, radius + endPart),
+            ], linkStart = _d[0], linkEnd = _d[1];
+            if (useLines && subType !== "percentOnly") {
+                links.push(dom_1.sv("path", {
+                    d: "M" + linkStart[0] + " " + linkStart[1] + " L" + linkEnd[0] + " " + linkEnd[1] + " h " + lineLength,
+                    class: "pie-value-connector",
+                }));
+            }
+            switch (_this.config.subType) {
+                case "basic": {
+                    var className = isRight ? "donut-value-title start-text" : "donut-value-title end-text";
+                    var textPadding = 10;
+                    var dy = isUp ? -textPadding * 2 : textPadding;
+                    var linkStart_1 = circle_1.getCoordinates(avPercent, radius + 10, radius + 10);
+                    var className2 = isRight ? "donut-value start-text" : "donut-value end-text";
+                    var text1 = dom_1.sv("text", __assign({ x: useLines ? linkEnd[0] : linkStart_1[0], y: (useLines ? linkEnd[1] : linkStart_1[1]) + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
+                    var text2 = dom_1.sv("text", {
+                        x: useLines ? linkEnd[0] : linkStart_1[0],
+                        y: (useLines ? linkEnd[1] : linkStart_1[1]) + dy + 16,
+                        class: className2,
+                        "aria-hidden": "true",
+                    }, [common_1.verticalCenteredText(value.toString())]);
+                    links.push(text1);
+                    links.push(text2);
+                    break;
+                }
+                case "valueOnly": {
+                    var className = isRight ? "donut-value start-text" : "donut-value end-text";
+                    var textPadding = 10;
+                    var dy = isUp ? -textPadding : textPadding;
+                    var linkStart_2 = circle_1.getCoordinates(avPercent, radius + 10, radius + 10);
+                    var textSvg = dom_1.sv("text", __assign({ x: useLines ? linkEnd[0] : linkStart_2[0], y: (useLines ? linkEnd[1] : linkStart_2[1]) + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
+                    links.push(textSvg);
+                    break;
+                }
+                case "percentOnly": {
+                    var percentText = dom_1.sv("text", __assign({ x: (middleLine[0] * 7) / 9, y: (middleLine[1] * 7) / 9, class: "pie-inner-value" }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
+                    links.push(percentText);
+                    break;
+                }
+            }
+            var d = "M " + startX + " " + startY + " A " + radius + " " + radius + " 0 " + largeArcFlag + " 1 " + endX + " " + endY + " L 0 0";
+            var _e = circle_1.getCoordinates(avPercent, 4, 4), shiftX = _e[0], shiftY = _e[1];
+            var currentSector = dom_1.sv("path", {
+                d: d,
+                _key: id,
+                fill: color,
+                class: "chart donut",
+                onclick: [_this._handlers.onclick, item[1], item[2]],
+                // eslint-disable-next-line @typescript-eslint/unbound-method
+                onmouseout: [circle_1.pieLikeHandlers.onmouseout],
+                // eslint-disable-next-line @typescript-eslint/unbound-method
+                onmouseover: [circle_1.pieLikeHandlers.onmouseover, shiftX, shiftY],
+                role: "presentation",
+            });
+            svg.push(currentSector);
+            if (_this._points.length > 1 && stroke) {
+                var strokeOpts = {
+                    "stroke-width": strokeWidth,
+                    stroke: stroke,
+                };
+                var line = dom_1.sv("path", __assign({ d: "M 0 0 L" + endX + " " + endY, fill: "none" }, strokeOpts));
+                lines.push(line);
+            }
+            if (_this._points.length === 1) {
+                tooltipData.push([width / 2, height / 2]);
+            }
+            else {
+                tooltipData.push([middleLine[0] * 0.8 + width / 2, middleLine[1] * 0.8 + height / 2]);
+            }
+        });
+        this._center = [width / 2, height / 2];
+        this._tooltipData = tooltipData;
+        svg = svg.concat(lines);
+        svg.push(dom_1.sv("circle", {
+            cx: 0,
+            cy: 0,
+            r: (radius * 5) / 9,
+            fill: "#FFFFFF",
+            role: "presentation",
+        }));
+        svg = svg.concat(links);
+        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
+    };
+    return Donut;
+}(NoScaleSeria_1.default));
+exports.default = Donut;
+
+
+/***/ }),
+/* 181 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var circle_1 = __webpack_require__(27);
+var common_1 = __webpack_require__(8);
+var NoScaleSeria_1 = __webpack_require__(53);
+var Pie = /** @class */ (function (_super) {
+    __extends(Pie, _super);
+    function Pie() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    // todo move to NoScaleSeria
+    Pie.prototype.paint = function (width, height) {
+        var _this = this;
+        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
+        var getPointAriaAttrs = function (value, text, percent) { return ({
+            role: "graphics-symbol",
+            "aria-roledescription": "piece of pie",
+            "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
+        }); };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.text || ""),
+        }); };
+        var _a = this.config, stroke = _a.stroke, strokeWidth = _a.strokeWidth, gradient = _a.gradient, useLines = _a.useLines, showText = _a.showText, showTextTemplate = _a.showTextTemplate, subType = _a.subType;
+        var radius;
+        if (height > width) {
+            radius = width / 2;
+        }
+        else {
+            radius = height / 2;
+        }
+        var currentPercent = -0.25; // 0 percent is (1, 0) point, -.25 is (0, -1) point
+        var tooltipData = [];
+        var svg = [];
+        var defs = [];
+        var links = [];
+        var pie = [];
+        var lines = [];
+        this._points.forEach(function (item) {
+            var percent = item[0], value = item[1], id = item[2], text = item[3], color = item[4];
+            var err = percent === 0 || percent === 1 ? -0.000001 : 0;
+            var fill = color;
+            if (gradient) {
+                var grad = gradient(color);
+                var gradientId = "gradient" + core_1.uid();
+                var radialGradient = common_1.getRadialGradient(grad.options, grad.stops, gradientId);
+                fill = "url(#" + gradientId + ")";
+                defs.push(radialGradient);
+            }
+            var _a = circle_1.getCoordinates(currentPercent, radius, radius), startX = _a[0], startY = _a[1];
+            var avPercent = currentPercent + percent / 2;
+            var lineLength = avPercent < 0.25 ? 5 : -5; // from 0 to 180 right pointer, 180 to 360 left pointer
+            var middleLine = circle_1.getCoordinates(avPercent, radius, radius);
+            var _b = [5, 30], startPart = _b[0], endPart = _b[1];
+            var _c = [
+                circle_1.getCoordinates(avPercent, radius + startPart, radius + startPart),
+                circle_1.getCoordinates(avPercent, radius + endPart, radius + endPart),
+            ], linkStart = _c[0], linkEnd = _c[1];
+            var className = avPercent > -0.25 && avPercent < 0.25 ? "pie-value start-text" : "pie-value end-text";
+            if (useLines) {
+                links.push(dom_1.sv("path", {
+                    d: "M" + linkStart[0] + " " + linkStart[1] + " L" + linkEnd[0] + " " + linkEnd[1] + " h " + lineLength,
+                    class: "pie-value-connector",
+                }));
+                var textSvg = dom_1.sv("text", __assign({ x: linkEnd[0], y: linkEnd[1], dx: lineLength / 2 + lineLength > 0 ? 10 : -10, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
+                links.push(textSvg);
+            }
+            else {
+                var textPadding = 5;
+                var dy = avPercent > 0.5 || avPercent < 0 ? -textPadding : textPadding;
+                var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
+                links.push(textSvg);
+            }
+            if ((showText || showTextTemplate) && showText !== false) {
+                var linkText = dom_1.sv("text", {
+                    x: middleLine[0] * 0.7,
+                    y: middleLine[1] * 0.7,
+                    class: "pie-inner-value",
+                    "aria-hidden": "true",
+                }, [
+                    showTextTemplate
+                        ? common_1.verticalCenteredText(showTextTemplate(value.toString()))
+                        : common_1.verticalCenteredText(value.toString()),
+                ]);
+                links.push(linkText);
+            }
+            if (subType === "percentOnly") {
+                var percentText = dom_1.sv("text", {
+                    x: middleLine[0] * 0.5,
+                    y: middleLine[1] * 0.5,
+                    class: "pie-inner-value",
+                    "aria-hidden": "true",
+                }, [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
+                links.push(percentText);
+            }
+            currentPercent += percent + err;
+            var _d = circle_1.getCoordinates(currentPercent, radius, radius), endX = _d[0], endY = _d[1];
+            var largeArcFlag = percent > 0.5 ? 1 : 0;
+            var d = "M " + startX + " " + startY + " A " + radius + " " + radius + " 0 " + largeArcFlag + " 1 " + endX + " " + endY + " L 0 0";
+            var _e = circle_1.getCoordinates(avPercent, 4, 4), shiftX = _e[0], shiftY = _e[1];
+            var currentSector = dom_1.sv("path", {
+                d: d,
+                class: "chart pie",
+                _key: id,
+                fill: fill,
+                onclick: [_this._handlers.onclick, item[1], item[2]],
+                // eslint-disable-next-line @typescript-eslint/unbound-method
+                onmouseover: [circle_1.pieLikeHandlers.onmouseover, shiftX, shiftY],
+                // eslint-disable-next-line @typescript-eslint/unbound-method
+                onmouseout: [circle_1.pieLikeHandlers.onmouseout],
+                role: "presentation",
+            });
+            pie.push(currentSector);
+            if (_this._points.length > 1 && stroke) {
+                var strokeOpts = {
+                    "stroke-width": strokeWidth,
+                    stroke: stroke,
+                };
+                var line = dom_1.sv("path", __assign({ d: "M0 0 L" + endX + " " + endY, fill: "none" }, strokeOpts));
+                lines.push(line);
+            }
+            if (_this._points.length === 1) {
+                tooltipData.push([width / 2, height / 2]);
+            }
+            else {
+                tooltipData.push([middleLine[0] * 0.7 + width / 2, middleLine[1] * 0.7 + height / 2]);
+            }
+        });
+        this._center = [width / 2, height / 2];
+        this._tooltipData = tooltipData;
+        svg.push(dom_1.sv("defs", defs));
+        svg = svg.concat(pie);
+        svg = svg.concat(lines);
+        svg = svg.concat(links);
+        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
+    };
+    return Pie;
+}(NoScaleSeria_1.default));
+exports.default = Pie;
+
+
+/***/ }),
+/* 182 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var circle_1 = __webpack_require__(27);
+var common_1 = __webpack_require__(8);
+var NoScaleSeria_1 = __webpack_require__(53);
+var Pie = /** @class */ (function (_super) {
+    __extends(Pie, _super);
+    function Pie() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    // todo move to NoScaleSeria
+    Pie.prototype.paint = function (width, height) {
+        var _this = this;
+        var roundToTwoNumAfterPoint = function (p) { return Math.round((p * 100 + Number.EPSILON) * 100) / 100; };
+        var getPointAriaAttrs = function (value, text, percent) { return ({
+            role: "graphics-symbol",
+            "aria-roledescription": "piece of pie",
+            "aria-label": (text || "") + ", " + value + " (" + roundToTwoNumAfterPoint(percent) + "%)",
+        }); };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.text || ""),
+        }); };
+        var _a = this.config, subType = _a.subType, useLines = _a.useLines, showText = _a.showText, showTextTemplate = _a.showTextTemplate;
+        var radiusX;
+        if (height > width) {
+            radiusX = width / 2;
+        }
+        else {
+            radiusX = height / 2;
+        }
+        var radiusY = radiusX * 0.5;
+        var connector = radiusX / 5;
+        var tooltipData = [];
+        var currentPercent = -0.25;
+        var svg = [];
+        var links = [];
+        this._points.forEach(function (item) {
+            var percent = item[0], value = item[1], id = item[2], text = item[3], color = item[4];
+            var err = percent === 0 || percent === 1 ? -0.000001 : 0;
+            var _a = circle_1.getCoordinates(currentPercent, radiusX, radiusY), startX = _a[0], startY = _a[1];
+            var avPercent = currentPercent + percent / 2;
+            var lineLength = avPercent < 0.25 ? 5 : -5;
+            var middleLine = circle_1.getCoordinates(avPercent, radiusX, radiusY);
+            var delta = 0;
+            if (avPercent > 0 && avPercent < 0.5) {
+                delta = connector * Math.sin(2 * Math.PI * avPercent);
+            }
+            var linkStart = circle_1.getCoordinates(avPercent, radiusX + 5 + delta, radiusY + 5 + delta);
+            var linkEnd = circle_1.getCoordinates(avPercent, radiusX + 30 + delta, radiusY + 30 + delta);
+            var nextPercent = currentPercent + percent + err;
+            var _b = circle_1.getCoordinates(nextPercent, radiusX, radiusY), endX = _b[0], endY = _b[1];
+            var largeArcFlag = percent > 0.5 ? 1 : 0;
+            var className = avPercent > -0.25 && avPercent < 0.25 ? "pie-value start-text" : "pie-value end-text";
+            if (useLines) {
+                links.push(dom_1.sv("path", {
+                    d: "M" + linkStart[0] + " " + linkStart[1] + " L" + linkEnd[0] + " " + linkEnd[1] + " h " + lineLength,
+                    class: "pie-value-connector",
+                }));
+                var textSvg = dom_1.sv("text", __assign({ x: linkEnd[0], y: linkEnd[1], dx: lineLength / 2 + lineLength > 0 ? 10 : -10, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
+                links.push(textSvg);
+            }
+            else {
+                var textPadding = 10;
+                var dy = avPercent > 0.5 || avPercent < 0 ? -textPadding : textPadding;
+                var textSvg = dom_1.sv("text", __assign({ x: linkStart[0], y: linkStart[1] + dy, class: className }, getPointAriaAttrs(value, text, percent)), [common_1.verticalCenteredText(text.toString())]);
+                links.push(textSvg);
+            }
+            if ((showText || showTextTemplate) && showText !== false) {
+                var textSvg = dom_1.sv("text", {
+                    x: middleLine[0] * 0.7,
+                    y: middleLine[1] * 0.7,
+                    class: "pie-inner-value",
+                    "aria-hidden": "true",
+                }, [
+                    showTextTemplate
+                        ? common_1.verticalCenteredText(showTextTemplate(value))
+                        : common_1.verticalCenteredText(value.toString()),
+                ]);
+                links.push(textSvg);
+            }
+            if (subType === "percentOnly") {
+                var percentText = dom_1.sv("text", {
+                    x: middleLine[0] * 0.6,
+                    y: middleLine[1] * 0.6,
+                    class: "pie-inner-value",
+                    "aria-hidden": "true",
+                }, [common_1.verticalCenteredText(Math.round(percent * 100) + "%")]);
+                links.push(percentText);
+            }
+            // 3d block
+            var addition = "";
+            if (currentPercent <= 0 && nextPercent >= 0.5) {
+                addition = "M " + radiusX + " 0 v " + connector + " A " + radiusX + " " + radiusY + " 0 1 1 " + -radiusX + " " + connector + " v " + -connector;
+            }
+            else if (currentPercent <= 0 && nextPercent < 0.5) {
+                addition = "M " + radiusX + " 0 v " + connector + " A " + radiusX + " " + radiusY + " 0 0 1 " + endX + " " + (endY +
+                    connector) + " v " + -connector;
+            }
+            else if (currentPercent > 0 && currentPercent <= 0.5 && nextPercent >= 0.5) {
+                addition = "M " + startX + " " + startY + " v " + connector + " A " + radiusX + " " + radiusY + " 0 0 1 " + -radiusX + " " + connector + " v " + -connector;
+            }
+            else if (currentPercent > 0 && nextPercent < 0.5) {
+                addition = "M " + startX + " " + startY + " v " + connector + " A " + radiusX + " " + radiusY + " 0 0 1 " + endX + " " + (endY +
+                    connector) + " v " + -connector;
+            }
+            if (addition) {
+                var additionPath = dom_1.sv("path", {
+                    _key: id + "__shadow__",
+                    d: addition,
+                    fill: color,
+                    onclick: [_this._handlers.onclick, item[1], item[2]],
+                    class: "chart pie3d addition",
+                    stroke: "none",
+                    filter: "url(#shadow)",
+                    role: "presentation",
+                });
+                svg.push(additionPath);
+            }
+            // end 3d block
+            var d = "M " + startX + " " + startY + " A " + radiusX + " " + radiusY + " 0 " + largeArcFlag + " 1 " + endX + " " + endY + " L 0 0";
+            svg.push(dom_1.sv("path", {
+                d: d,
+                _key: id,
+                fill: color,
+                stroke: "none",
+                onclick: [_this._handlers.onclick, item[1], item[2]],
+                class: "chart pie3d",
+                role: "presentation",
+            }));
+            if (_this._points.length === 1) {
+                tooltipData.push([width / 2, height / 2]);
+            }
+            else {
+                tooltipData.push([middleLine[0] * 0.7 + width / 2, middleLine[1] * 0.7 + height / 2]);
+            }
+            currentPercent = nextPercent;
+        });
+        this._center = [width / 2, height / 2];
+        this._tooltipData = tooltipData;
+        svg = svg.concat(links);
+        return dom_1.sv("g", __assign({ transform: "translate(" + width / 2 + ", " + height / 2 + ")" }, getChartAriaAttrs(this.config)), svg);
+    };
+    return Pie;
+}(NoScaleSeria_1.default));
+exports.default = Pie;
+
+
+/***/ }),
+/* 183 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var circle_1 = __webpack_require__(27);
+var common_1 = __webpack_require__(8);
+var BaseSeria_1 = __webpack_require__(52);
+var Radar = /** @class */ (function (_super) {
+    __extends(Radar, _super);
+    function Radar() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Radar.prototype.addScale = function (type, scale) {
+        this._scale = scale;
+    };
+    Radar.prototype.scaleReady = function (sizes) {
+        for (var key in sizes) {
+            sizes[key] += this.config.paddings;
+        }
+        return sizes;
+    };
+    Radar.prototype.dataReady = function (prev) {
+        var _this = this;
+        if (!this.config.active) {
+            return (this._points = []);
+        }
+        var xLocator = common_1.locator(this._scale.config.value);
+        this._points = this._data.map(function (item, index) {
+            // raw values
+            var value = _this._locator(item);
+            var set = [value, value, item.id, value, value];
+            if (prev) {
+                set[1] += prev[index][1];
+            }
+            if (xLocator) {
+                set.push(xLocator(item));
+            }
+            return set;
+        });
+        return this._points;
+    };
+    Radar.prototype.getTooltipText = function (id) {
+        if (this.config.tooltip) {
+            var p = this._defaultLocator(this._data.getItem(id));
+            if (this.config.tooltipTemplate) {
+                return this.config.tooltipTemplate(p);
+            }
+            return p;
+        }
+    };
+    Radar.prototype.paint = function (width, height) {
+        var _this = this;
+        _super.prototype.paint.call(this, width, height);
+        var getPointAriaAttrs = function (key, points) {
+            var point;
+            if (key) {
+                point = points.find(function (p) { return key.includes(p[2]); });
+            }
+            return {
+                role: "graphics-symbol",
+                "aria-roledescription": "point",
+                "aria-label": point ? "point x=" + point[5] + " y=" + point[4] : "",
+            };
+        };
+        var getChartAriaAttrs = function (cfg) { return ({
+            "aria-label": "chart " + (cfg.value || ""),
+        }); };
+        if (!this.config.active) {
+            return;
+        }
+        var config = this.config;
+        var svg = [];
+        var d = this._points.map(function (item, first) { return (first ? "L" : "M") + (item[0] + " " + item[1]); }).join(" ") + "Z";
+        svg.push(dom_1.sv("path", {
+            d: d,
+            stroke: config.color,
+            "stroke-width": config.strokeWidth,
+            fill: config.fill,
+            "fill-opacity": config.alpha,
+            class: "chart radar",
+        }));
+        if (config.pointType) {
+            var points = this._points
+                .map(function (p) { return _this._drawPointType(p[0], p[1], common_1.calcPointRef(p[2], _this.id)); })
+                .map(function (node) {
+                if (node && node.attrs) {
+                    node.attrs = __assign(__assign({}, node.attrs), getPointAriaAttrs(node.key, _this._points));
+                }
+                return node;
+            });
+            svg.push(dom_1.sv("g", points));
+        }
+        return dom_1.sv("g", __assign({ id: "seria" + config.id }, getChartAriaAttrs(this.config)), svg);
+    };
+    Radar.prototype._calckFinalPoints = function (width, height) {
+        var _this = this;
+        var radius;
+        if (height > width) {
+            radius = width / 2;
+        }
+        else {
+            radius = height / 2;
+        }
+        var scalePercent = 1 / this._data.getLength();
+        var currentPercent = -0.25 - scalePercent;
+        this._points.forEach(function (item, index) {
+            currentPercent += scalePercent;
+            var value = _this._scale.point(item[0]);
+            var real = circle_1.getCoordinates(currentPercent, value * radius, value * radius);
+            // scaled values
+            item[0] = real[0] + width / 2;
+            item[1] = real[1] + height / 2;
+        });
+    };
+    Radar.prototype._defaultLocator = function (v) {
+        return this._locator(v);
+    };
+    Radar.prototype._setDefaults = function (config) {
+        var defaults = {
+            strokeWidth: 2,
+            active: true,
+            tooltip: true,
+            paddings: 5,
+            color: "none",
+            fill: "none",
+            pointType: "circle",
+        };
+        this._locator = common_1.locator(config.value);
+        config.scales = config.scales || ["radial"];
+        this.config = __assign(__assign({}, defaults), config);
+        if (this.config.pointType) {
+            var color = this.config.pointColor || this.config.color;
+            this._drawPointType = this._getPointType(this.config.pointType, color);
+        }
+    };
+    return Radar;
+}(BaseSeria_1.default));
+exports.default = Radar;
+
+
+/***/ }),
+/* 184 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var Line_1 = __webpack_require__(54);
+var common_1 = __webpack_require__(8);
+var Scatter = /** @class */ (function (_super) {
+    __extends(Scatter, _super);
+    function Scatter() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Scatter.prototype.addScale = function (type, scale) {
+        if (type === "bottom" || type === "top") {
+            this.xScale = scale;
+            this._xLocator = common_1.locator(this.config.value);
+        }
+        else {
+            this.yScale = scale;
+            this._yLocator = common_1.locator(this.config.valueY);
+        }
+    };
+    Scatter.prototype._setDefaults = function (config) {
+        var defaults = {
+            active: true,
+            tooltip: true,
+            pointType: "rect",
+        };
+        this.config = __assign(__assign({}, defaults), config);
+        var point = this.config.pointType;
+        var color = this.config.pointColor || this.config.color;
+        if (point) {
+            this._drawPointType = this._getPointType(point, color);
+        }
+    };
+    return Scatter;
+}(Line_1.default));
+exports.default = Scatter;
+
+
+/***/ }),
+/* 185 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var spline_1 = __webpack_require__(82);
+var Line_1 = __webpack_require__(54);
+var Spline = /** @class */ (function (_super) {
+    __extends(Spline, _super);
+    function Spline() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Spline.prototype._getForm = function (points, config, css, width, height) {
+        var color = config.color;
+        var className = config.css;
+        var d = spline_1.default(points);
+        return dom_1.sv("path", {
+            id: "seria" + config.id,
+            d: d,
+            class: className,
+            stroke: color,
+            "stroke-width": 2,
+            fill: "none",
+        });
+    };
+    return Spline;
+}(Line_1.default));
+exports.default = Spline;
+
+
+/***/ }),
+/* 186 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var spline_1 = __webpack_require__(82);
+var Area_1 = __webpack_require__(79);
+var SplineArea = /** @class */ (function (_super) {
+    __extends(SplineArea, _super);
+    function SplineArea() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    SplineArea.prototype._form = function (width, height, svg, prev) {
+        var _a = this.config, fill = _a.fill, alpha = _a.alpha, strokeWidth = _a.strokeWidth, color = _a.color, id = _a.id;
+        var className = this.config.css;
+        var d = "";
+        var first = this._points[0];
+        if (prev) {
+            d = spline_1.default([].concat(prev).reverse()) + " " + spline_1.default(this._points, true) + " Z";
+        }
+        else {
+            d = "M" + first[0] + " " + height + " V " + first[1] + " " + spline_1.default(this._points) + " V" + height + " H " + first[0];
+        }
+        if (strokeWidth) {
+            var line = spline_1.default(this._points);
+            var splinePath = dom_1.sv("path", {
+                d: line,
+                "stroke-width": strokeWidth,
+                stroke: color,
+                fill: "none",
+                "stroke-linecap": "butt",
+                class: className,
+            });
+            svg.push(splinePath);
+        }
+        var path = dom_1.sv("path", {
+            id: "seria" + id,
+            d: d,
+            class: className,
+            fill: fill,
+            "fill-opacity": alpha,
+            stroke: "none",
+        });
+        svg.push(path);
+        return svg;
+    };
+    return SplineArea;
+}(Area_1.default));
+exports.default = SplineArea;
+
+
+/***/ }),
+/* 187 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var dom_1 = __webpack_require__(0);
+var Stacker = /** @class */ (function () {
+    function Stacker() {
+        this._series = [];
+    }
+    Stacker.prototype.add = function (seria) {
+        this._series.push(seria);
+    };
+    Stacker.prototype.dataReady = function (prev) {
+        this._toPaint = this._series.filter(function (serie) {
+            var next = serie.dataReady(prev);
+            if (next.length) {
+                prev = next;
+                return true;
+            }
+            return false;
+        });
+        return prev || [];
+    };
+    Stacker.prototype.getPoints = function () {
+        if (this._toPaint.length) {
+            return this._toPaint[0].getPoints().concat(this._toPaint[this._toPaint.length - 1].getPoints());
+        }
+        return [];
+    };
+    Stacker.prototype.paint = function (width, height, prev) {
+        var svg = [];
+        var markers = [];
+        this._toPaint.forEach(function (seria) {
+            if (seria.paintformAndMarkers) {
+                var _a = seria.paintformAndMarkers(width, height, prev), content = _a[0], seriesMarkers = _a[1];
+                svg.push(content);
+                markers.push(seriesMarkers);
+            }
+            else {
+                var content = seria.paint(width, height, prev);
+                svg.push(content);
+            }
+            prev = seria.getPoints();
+        });
+        return dom_1.sv("g", svg.concat(markers));
+    };
+    return Stacker;
+}());
+exports.default = Stacker;
+
+
+/***/ }),
+/* 188 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+var common_1 = __webpack_require__(8);
+var line_1 = __webpack_require__(80);
+var types_1 = __webpack_require__(26);
+var Tooltip = /** @class */ (function () {
+    function Tooltip(chart) {
+        this._chart = chart;
+        this._initEvents();
+    }
+    Tooltip.prototype.destructor = function () {
+        if (this._tooltip) {
+            document.body.removeChild(this._tooltip);
+            this._tooltip = null;
+        }
+    };
+    Tooltip.prototype._showLineTooltip = function (lineTooltipItems) {
+        var lineTooltip = "";
+        var root = this._chart.getRootView();
+        var calcPointTop = 0;
+        for (var _i = 0, lineTooltipItems_1 = lineTooltipItems; _i < lineTooltipItems_1.length; _i++) {
+            var item = lineTooltipItems_1[_i];
+            calcPointTop += item.top;
+            this._prevLine =
+                root &&
+                    root.refs &&
+                    root.refs["line" + Math.round(item.left)] &&
+                    root.refs["line" + Math.round(item.left)].el;
+            this._prevLine.classList.add("grid-line__active");
+            var seria = this._chart.getSeries(item.seriaId);
+            var point = seria.getPoints();
+            if (!point.length || !seria.config.tooltip)
+                continue;
+            var shadeColor = seria.config.pointColor ||
+                (seria.config.color && seria.config.color !== "none"
+                    ? seria.config.color
+                    : seria.config.fill);
+            var shadeHTMLHelper = line_1.getShadeHTMLHelper(seria.config.pointType !== "empty" && seria.config.pointType
+                ? seria.config.pointType
+                : "simpleRect", shadeColor);
+            lineTooltip += "<div class=\"line-point\" _ref=\"dhx_tooltip_" + seria.config.id + "_box\">\n\t\t\t\t<svg class=\"dhx_tooltip_svg\" role=\"graphics-document\" style=\"width: 8px; height: 8px;\">" + shadeHTMLHelper(4, 4, point[0][2]) + "</svg>\n\t\t\t\t<span class=\"dhx_line-point-text\" _ref=\"dhx_tooltip_" + seria.config.id + "_text\">" + item.text + "</span>\n\t\t\t</div>";
+        }
+        if (!this._tooltip) {
+            this._createTooltip();
+        }
+        var bodyHeight = document.body.offsetHeight;
+        var bodyWidth = document.body.offsetWidth;
+        this._tooltip.innerHTML = lineTooltip;
+        this._tooltip.classList.add("dhx_chart_tooltip__visible");
+        var middlePointHeight = calcPointTop / lineTooltipItems.length;
+        var lineRect = this._prevLine.getBoundingClientRect();
+        var contentHight = this._tooltip.offsetHeight;
+        var contentWidth = this._tooltip.offsetWidth;
+        var top = middlePointHeight - contentHight / 2 + lineRect.top + window.scrollY;
+        var left = lineRect.left + 10;
+        if (top + contentHight > bodyHeight) {
+            top -= top + contentHight - bodyHeight;
+        }
+        if (left + contentWidth > bodyWidth) {
+            left = lineRect.left - contentWidth - 10;
+        }
+        this._tooltip.style.left = left + "px";
+        this._tooltip.style.top = top + "px";
+    };
+    Tooltip.prototype._showTooltip = function (text, e) {
+        if (!this._tooltip) {
+            this._createTooltip();
+        }
+        var bodyHeight = document.body.offsetHeight;
+        var bodyWidth = document.body.offsetWidth;
+        this._tooltip.innerHTML = text;
+        this._tooltip.classList.add("dhx_chart_tooltip__visible");
+        var contentHight = this._tooltip.offsetHeight;
+        var contentWidth = this._tooltip.offsetWidth;
+        var mouseTop = e.pageY + 10;
+        var mouseLeft = e.pageX + 10;
+        if (mouseTop + contentHight > bodyHeight) {
+            mouseTop = e.pageY - contentHight;
+        }
+        if (mouseLeft + contentWidth > bodyWidth) {
+            mouseLeft = e.pageX - contentWidth - 10;
+        }
+        this._tooltip.style.left = mouseLeft + "px";
+        this._tooltip.style.top = mouseTop + "px";
+    };
+    Tooltip.prototype._showTooltipOnClosest = function (closest) {
+        if (!this._tooltip) {
+            this._createTooltip();
+        }
+        var tooltipSeries = this._chart.getSeries(closest[4]);
+        if (tooltipSeries) {
+            var text = tooltipSeries.getTooltipText(closest[3]);
+            if (!text)
+                return;
+            var layersSize = this._chart._layers.getSizes();
+            var root = this._chart.getRootNode();
+            var rect = root.getBoundingClientRect();
+            this._tooltip.innerHTML = text;
+            this._tooltip.classList.add("dhx_chart_tooltip__visible");
+            var bodyHeight = document.body.offsetHeight;
+            var contentHight = this._tooltip.offsetHeight;
+            var top_1 = closest[2] +
+                rect.top +
+                contentHight / 2 +
+                layersSize.top -
+                (this._chart.config.type === "radar" ? 10 : 15);
+            if (top_1 + contentHight > bodyHeight) {
+                top_1 =
+                    closest[2] +
+                        rect.top -
+                        contentHight / 2 +
+                        layersSize.top -
+                        (this._chart.config.type === "radar" ? 10 : 15);
+            }
+            if (top_1 + contentHight > bodyHeight) {
+                this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+            this._tooltip.style.left = rect.left + closest[1] + 10 + "px";
+            this._tooltip.style.top = top_1 + "px";
+        }
+    };
+    Tooltip.prototype._createTooltip = function () {
+        this._tooltip = document.createElement("div");
+        this._tooltip.setAttribute("dhx_widget_id", this._chart._uid);
+        this._tooltip.classList.add("dhx_chart_tooltip");
+        this._tooltip.classList.add("dhx_chart_tooltip_line");
+        this._tooltip.classList.add("dhx_chart_tooltip__hidden");
+        document.body.appendChild(this._tooltip);
+    };
+    Tooltip.prototype._initEvents = function () {
+        var _this = this;
+        this._chart.events.on(types_1.ChartEvents.chartMouseMove, function (x, y) {
+            if (_this._prevLine) {
+                _this._prevLine.classList.remove("grid-line__active");
+            }
+            if (!_this._mouseOverBar) {
+                var lineTooltipItems_2 = [];
+                var closest_1 = [Infinity, null, null, null, null]; // (dist, x, y, id, serieid)
+                _this._chart.eachSeries(function (seria) {
+                    var type = seria.config.type;
+                    if (type === "line" || type === "spline" || type === "splineArea" || type === "area") {
+                        var closestLine = seria.getClosestVertical(x);
+                        var item = {
+                            value: closestLine[4],
+                            text: seria.getTooltipText(closestLine[3]),
+                            seriaId: seria.config.id,
+                            left: closestLine[1],
+                            top: closestLine[2],
+                        };
+                        if (typeof item.left === "number" && typeof item.top === "number") {
+                            lineTooltipItems_2.push(item);
+                        }
+                    }
+                    else if (type === "pie" || type === "pie3D" || type === "donut" || type === "radar") {
+                        var seriaClosest = seria.getClosest(x, y);
+                        if (closest_1[0] > seriaClosest[0]) {
+                            closest_1[0] = seriaClosest[0];
+                            closest_1[1] = seriaClosest[1];
+                            closest_1[2] = seriaClosest[2];
+                            closest_1[3] = seriaClosest[3];
+                            closest_1[4] = seria.id;
+                        }
+                    }
+                });
+                if (lineTooltipItems_2.length) {
+                    lineTooltipItems_2.sort(function (a, b) { return b.value - a.value; });
+                    _this._showLineTooltip(lineTooltipItems_2);
+                }
+                else {
+                    _this._showTooltipOnClosest(closest_1);
+                }
+            }
+        });
+        this._chart.events.on(types_1.ChartEvents.seriaMouseMove, function (id, seriaId, e) {
+            _this._mouseOverBar = true;
+            var rootView = _this._chart.getRootView();
+            var seria = _this._chart.getSeries(seriaId);
+            var text = seria.getTooltipText(id);
+            var item = rootView && rootView.refs && rootView.refs[common_1.calcPointRef(id, seriaId)].el;
+            item.setAttribute("fill-opacity", seria.config.alpha > 0.6 ? seria.config.alpha - 0.4 : 1);
+            if (text) {
+                _this._showTooltip(text, e);
+            }
+            else if (_this._tooltip) {
+                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+        });
+        this._chart.events.on(types_1.ChartEvents.seriaMouseLeave, function (id, seriaId) {
+            _this._mouseOverBar = false;
+            var rootView = _this._chart.getRootView();
+            var seria = _this._chart.getSeries(seriaId);
+            if (seria.config.type !== "area") {
+                var item = rootView && rootView.refs && rootView.refs[common_1.calcPointRef(id, seriaId)].el;
+                item.setAttribute("fill-opacity", seria.config.alpha);
+            }
+            if (_this._tooltip) {
+                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+        });
+        this._chart.events.on(types_1.ChartEvents.chartMouseLeave, function () {
+            if (_this._tooltip) {
+                _this._tooltip.classList.remove("dhx_chart_tooltip__visible");
+            }
+            if (_this._prevLine) {
+                _this._prevLine.classList.remove("grid-line__active");
+            }
+        });
+    };
+    return Tooltip;
+}());
+exports.Tooltip = Tooltip;
+
+
+/***/ }),
+/* 189 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+function __export(m) {
+    for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
+}
+Object.defineProperty(exports, "__esModule", { value: true });
+__export(__webpack_require__(190));
+__export(__webpack_require__(83));
+
+
+/***/ }),
+/* 190 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+var core_1 = __webpack_require__(1);
+var dom_1 = __webpack_require__(0);
+var ts_list_1 = __webpack_require__(40);
+var editors_1 = __webpack_require__(191);
 var DataView = /** @class */ (function (_super) {
     __extends(DataView, _super);
     function DataView(node, config) {
@@ -24661,13 +26917,13 @@ exports.DataView = DataView;
 
 
 /***/ }),
-/* 177 */
+/* 191 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
-var InputEditor_1 = __webpack_require__(178);
+var InputEditor_1 = __webpack_require__(192);
 function getEditor(item, dataView) {
     return new InputEditor_1.InputEditor(item, dataView);
 }
@@ -24675,14 +26931,14 @@ exports.getEditor = getEditor;
 
 
 /***/ }),
-/* 178 */
+/* 192 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(79);
+var types_1 = __webpack_require__(83);
 var InputEditor = /** @class */ (function () {
     function InputEditor(item, dataView) {
         var _this = this;
@@ -24774,7 +27030,7 @@ exports.InputEditor = InputEditor;
 
 
 /***/ }),
-/* 179 */
+/* 193 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24783,14 +27039,14 @@ function __export(m) {
     for (var p in m) if (!exports.hasOwnProperty(p)) exports[p] = m[p];
 }
 Object.defineProperty(exports, "__esModule", { value: true });
-__export(__webpack_require__(180));
+__export(__webpack_require__(194));
 __export(__webpack_require__(7));
 var types_1 = __webpack_require__(7);
 exports.FormEvents = types_1.FormEvents;
 
 
 /***/ }),
-/* 180 */
+/* 194 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -24842,23 +27098,24 @@ var events_1 = __webpack_require__(2);
 var view_1 = __webpack_require__(5);
 var ts_layout_1 = __webpack_require__(13);
 var core_1 = __webpack_require__(1);
-var dateinput_1 = __webpack_require__(181);
-var button_1 = __webpack_require__(182);
-var checkbox_1 = __webpack_require__(80);
-var checkboxGroup_1 = __webpack_require__(183);
-var input_1 = __webpack_require__(53);
-var radioGroup_1 = __webpack_require__(184);
-var select_1 = __webpack_require__(186);
-var textarea_1 = __webpack_require__(187);
-var textinput_1 = __webpack_require__(188);
-var combo_1 = __webpack_require__(189);
-var sliderform_1 = __webpack_require__(190);
+var dateinput_1 = __webpack_require__(195);
+var button_1 = __webpack_require__(196);
+var checkbox_1 = __webpack_require__(84);
+var checkboxGroup_1 = __webpack_require__(197);
+var input_1 = __webpack_require__(55);
+var radioGroup_1 = __webpack_require__(198);
+var select_1 = __webpack_require__(200);
+var textarea_1 = __webpack_require__(201);
+var textinput_1 = __webpack_require__(202);
+var combo_1 = __webpack_require__(203);
+var sliderform_1 = __webpack_require__(204);
 var helper_1 = __webpack_require__(6);
-var simplevault_1 = __webpack_require__(191);
-var timeinput_1 = __webpack_require__(192);
-var colorpicker_1 = __webpack_require__(193);
-var spacer_1 = __webpack_require__(194);
+var simplevault_1 = __webpack_require__(205);
+var timeinput_1 = __webpack_require__(206);
+var colorpicker_1 = __webpack_require__(207);
+var spacer_1 = __webpack_require__(208);
 var types_1 = __webpack_require__(7);
+var dom_1 = __webpack_require__(0);
 var Form = /** @class */ (function (_super) {
     __extends(Form, _super);
     function Form(container, config) {
@@ -24879,6 +27136,14 @@ var Form = /** @class */ (function (_super) {
         _this.events.on(types_1.FormEvents.afterHide, function () {
             if (!Object.values(_this._attachments).some(function (item) { return !item.config.hidden; })) {
                 _this._formContainerHide();
+            }
+        });
+        // TODO: bad practice for setting node attributes
+        dom_1.awaitRedraw().then(function () {
+            var node = _this.layout.getRootNode();
+            if (node) {
+                node.setAttribute("role", "form");
+                _this.config.title && node.setAttribute("aria-label", _this.config.title);
             }
         });
         return _this;
@@ -25782,9 +28047,6 @@ var Form = /** @class */ (function (_super) {
         this.config.css += " dhx_form";
         this._createLayoutConfig(this.config, layoutConfig);
         var layout = (this.layout = new ts_layout_1.Layout(container, layoutConfig));
-        var node = layout.getRootNode();
-        node.setAttribute("role", "form");
-        this.config.title && node.setAttribute("aria-label", this.config.title);
         for (var name_1 in attachments) {
             layout.getCell(name_1).attach(attachments[name_1]);
         }
@@ -25836,7 +28098,7 @@ exports.Form = Form;
 /* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(12)))
 
 /***/ }),
-/* 181 */
+/* 195 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -25862,7 +28124,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_calendar_1 = __webpack_require__(41);
+var ts_calendar_1 = __webpack_require__(37);
 var date_1 = __webpack_require__(22);
 var events_1 = __webpack_require__(2);
 var dom_1 = __webpack_require__(0);
@@ -26185,7 +28447,7 @@ exports.DatePicker = DatePicker;
 
 
 /***/ }),
-/* 182 */
+/* 196 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26361,7 +28623,7 @@ exports.Button = Button;
 
 
 /***/ }),
-/* 183 */
+/* 197 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26401,7 +28663,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var ts_layout_1 = __webpack_require__(13);
 var events_1 = __webpack_require__(2);
-var checkbox_1 = __webpack_require__(80);
+var checkbox_1 = __webpack_require__(84);
 var label_1 = __webpack_require__(11);
 var types_1 = __webpack_require__(7);
 var core_1 = __webpack_require__(1);
@@ -26697,7 +28959,7 @@ exports.CheckboxGroup = CheckboxGroup;
 
 
 /***/ }),
-/* 184 */
+/* 198 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -26739,7 +29001,7 @@ var core_1 = __webpack_require__(1);
 var ts_layout_1 = __webpack_require__(13);
 var ts_popup_1 = __webpack_require__(10);
 var events_1 = __webpack_require__(2);
-var radiobutton_1 = __webpack_require__(185);
+var radiobutton_1 = __webpack_require__(199);
 var helper_1 = __webpack_require__(6);
 var label_1 = __webpack_require__(11);
 var types_1 = __webpack_require__(7);
@@ -27017,7 +29279,7 @@ exports.RadioGroup = RadioGroup;
 
 
 /***/ }),
-/* 185 */
+/* 199 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27174,7 +29436,7 @@ exports.RadioButton = RadioButton;
 
 
 /***/ }),
-/* 186 */
+/* 200 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27213,6 +29475,7 @@ var Select = /** @class */ (function (_super) {
         _this.events = new events_1.EventSystem();
         _this._isValid = true;
         _this._propsItem = [
+            "required",
             "validation",
             "icon",
             "label",
@@ -27286,7 +29549,9 @@ var Select = /** @class */ (function (_super) {
         var _a = this.config, value = _a.value, validation = _a.validation;
         if (!silent && !this.events.fire(types_1.ItemEvent.beforeValidate, [value]))
             return;
-        this._isValid = validation ? this.config.validation(value) : typeof value !== "undefined";
+        this._isValid = validation
+            ? this.config.validation(value)
+            : typeof value !== "undefined" && !!String(value).length;
         !silent && this.events.fire(types_1.ItemEvent.afterValidate, [value, this._isValid]);
         return this._isValid;
     };
@@ -27343,6 +29608,7 @@ var Select = /** @class */ (function (_super) {
             name: config.name,
             disabled: false,
             hidden: false,
+            required: false,
             validation: undefined,
             icon: "",
             label: "",
@@ -27397,9 +29663,9 @@ var Select = /** @class */ (function (_super) {
         };
     };
     Select.prototype._draw = function () {
-        var _a = this.config, id = _a.id, options = _a.options, icon = _a.icon, value = _a.value, validation = _a.validation, label = _a.label, labelWidth = _a.labelWidth, helpMessage = _a.helpMessage;
+        var _a = this.config, id = _a.id, options = _a.options, icon = _a.icon, value = _a.value, label = _a.label, labelWidth = _a.labelWidth, helpMessage = _a.helpMessage, required = _a.required;
         return dom_1.el(".dhx_form-group", {
-            class: helper_1.getFormItemCss(this.config, Boolean(validation)),
+            class: helper_1.getFormItemCss(this.config, helper_1.isVerify(this.config)),
         }, [
             (label || labelWidth || helpMessage) && this._drawLabel(),
             dom_1.el(".dhx_input__wrapper", {}, [
@@ -27412,6 +29678,7 @@ var Select = /** @class */ (function (_super) {
                         class: "dhx_select dhx_input",
                         onchange: this._handlers.onchange,
                         _ref: "select",
+                        required: required,
                     }, options.length &&
                         options.map(function (option) {
                             return dom_1.el("option", {
@@ -27442,7 +29709,7 @@ exports.Select = Select;
 
 
 /***/ }),
-/* 187 */
+/* 201 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27470,7 +29737,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var helper_1 = __webpack_require__(6);
-var input_1 = __webpack_require__(53);
+var input_1 = __webpack_require__(55);
 var types_1 = __webpack_require__(7);
 var core_1 = __webpack_require__(1);
 var Textarea = /** @class */ (function (_super) {
@@ -27616,7 +29883,7 @@ exports.Textarea = Textarea;
 
 
 /***/ }),
-/* 188 */
+/* 202 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27645,7 +29912,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var helper_1 = __webpack_require__(6);
-var input_1 = __webpack_require__(53);
+var input_1 = __webpack_require__(55);
 var types_1 = __webpack_require__(7);
 var Text = /** @class */ (function (_super) {
     __extends(Text, _super);
@@ -27751,7 +30018,7 @@ exports.Text = Text;
 
 
 /***/ }),
-/* 189 */
+/* 203 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -27780,7 +30047,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var helper_1 = __webpack_require__(6);
-var ts_combobox_1 = __webpack_require__(31);
+var ts_combobox_1 = __webpack_require__(29);
 var events_1 = __webpack_require__(2);
 var label_1 = __webpack_require__(11);
 var types_1 = __webpack_require__(7);
@@ -28045,7 +30312,7 @@ exports.Combo = Combo;
 
 
 /***/ }),
-/* 190 */
+/* 204 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28084,7 +30351,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
-var ts_slider_1 = __webpack_require__(43);
+var ts_slider_1 = __webpack_require__(39);
 var events_1 = __webpack_require__(2);
 var label_1 = __webpack_require__(11);
 var types_1 = __webpack_require__(7);
@@ -28257,7 +30524,7 @@ exports.SliderForm = SliderForm;
 
 
 /***/ }),
-/* 191 */
+/* 205 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28303,7 +30570,7 @@ var ts_data_1 = __webpack_require__(4);
 var ts_vault_1 = __webpack_require__(57);
 var ts_popup_1 = __webpack_require__(10);
 var helper_1 = __webpack_require__(6);
-var en_1 = __webpack_require__(81);
+var en_1 = __webpack_require__(85);
 var types_1 = __webpack_require__(7);
 var SimpleVault = /** @class */ (function (_super) {
     __extends(SimpleVault, _super);
@@ -28634,7 +30901,7 @@ exports.SimpleVault = SimpleVault;
 
 
 /***/ }),
-/* 192 */
+/* 206 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -28660,7 +30927,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_timepicker_1 = __webpack_require__(42);
+var ts_timepicker_1 = __webpack_require__(38);
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
 var label_1 = __webpack_require__(11);
@@ -28998,7 +31265,7 @@ exports.TimePicker = TimePicker;
 
 
 /***/ }),
-/* 193 */
+/* 207 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29024,7 +31291,7 @@ var __spreadArrays = (this && this.__spreadArrays) || function () {
     return r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_colorpicker_1 = __webpack_require__(44);
+var ts_colorpicker_1 = __webpack_require__(47);
 var events_1 = __webpack_require__(2);
 var dom_1 = __webpack_require__(0);
 var core_1 = __webpack_require__(1);
@@ -29323,7 +31590,7 @@ exports.ColorPicker = ColorPicker;
 
 
 /***/ }),
-/* 194 */
+/* 208 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -29423,2096 +31690,6 @@ exports.Spacer = Spacer;
 
 
 /***/ }),
-/* 195 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var main_1 = __webpack_require__(15);
-var ts_data_1 = __webpack_require__(4);
-var core_1 = __webpack_require__(1);
-function fillArray(arr, value) {
-    for (var i = 0; i < arr.length; i++) {
-        arr[i] = value;
-    }
-    return arr;
-}
-var Exporter = /** @class */ (function () {
-    function Exporter(_view) {
-        this._view = _view;
-    }
-    Exporter.prototype.xlsx = function (config) {
-        return this._export(config);
-    };
-    Exporter.prototype.csv = function (config) {
-        if (config === void 0) { config = {}; }
-        config = __assign({
-            asFile: true,
-            rowDelimiter: "\n",
-            columnDelimiter: ",",
-            skipHeader: 0,
-        }, config);
-        var csv;
-        if ("getRoot" in this._view.data && config.flat) {
-            csv = this.getFlatCSV(config);
-        }
-        else {
-            csv = this._getCSV(config);
-        }
-        var name = config.name || "grid_export";
-        if (config.asFile) {
-            core_1.downloadFile(csv, name + ".csv", "text/csv");
-        }
-        return csv;
-    };
-    Exporter.prototype._export = function (config) {
-        if (config === void 0) { config = {}; }
-        var configCols = this._view.config.columns.filter(function (i) { return !i.hidden; });
-        var rowsIndexMap = {};
-        var headers = main_1.transpose(configCols.map(function (col) { return col.header.map(function (level) { return level.text || " "; }); }));
-        var columns = [];
-        var uniqStyles = {
-            default: {
-                color: "#000000",
-                background: "#FFFFFF",
-                fontSize: 14,
-            },
-        };
-        var cells = [];
-        var columnsIndexMap = {};
-        var data = this._view.data.serialize().map(function (row, i) {
-            rowsIndexMap[row.id] = i;
-            var rowData = configCols.map(function (col, k) {
-                columnsIndexMap[col.id] = k;
-                return main_1.removeHTMLTags(row[col.id]);
-            });
-            return rowData;
-        });
-        var footer = [];
-        var content = this._view.content;
-        var _loop_1 = function (col) {
-            if (col.footer) {
-                var id_1 = col.id;
-                var columnData = this_1._view.data.serialize().reduce(function (items, item) {
-                    if (item[id_1] !== undefined && item[id_1] !== "" && !isNaN(item[id_1])) {
-                        items.push(parseFloat(item[id_1]));
-                    }
-                    return items;
-                }, []);
-                var roots = columnData;
-                if (this_1._view.config.type === "tree") {
-                    var datacollection_1 = this_1._view.data;
-                    var data_1 = datacollection_1.serialize();
-                    roots = data_1.reduce(function (total, item) {
-                        if (item.$level === 0) {
-                            if (item[id_1] !== undefined && item[id_1] !== "" && !isNaN(item[id_1])) {
-                                total.push(parseFloat(item[id_1]) || 0);
-                            }
-                            else {
-                                var value_1 = 0;
-                                datacollection_1.eachChild(item.id, function (cell) {
-                                    if (!datacollection_1.haveItems(cell.id)) {
-                                        value_1 += parseFloat(cell[id_1]);
-                                    }
-                                });
-                                total.push(value_1);
-                            }
-                        }
-                        return total;
-                    }, []);
-                }
-                if (col.footer[0].content) {
-                    var val = content[col.footer[0].content].calculate(columnData, roots);
-                    footer.push(val);
-                }
-                else {
-                    footer.push(col.footer[0].css || col.footer[0].text || " ");
-                }
-            }
-            columns.push({ width: col.width });
-            for (var key in col.$cellCss) {
-                var colStyle = col.$cellCss[key];
-                var colStyleHash = colStyle
-                    .split("")
-                    .reduce(function (h, letter) {
-                    var hh = (h << 5) - h + letter.charCodeAt(0);
-                    return Math.abs(hh & hh);
-                }, 0)
-                    .toString();
-                if (!uniqStyles[colStyleHash]) {
-                    var cont = document.body;
-                    var css = main_1.getStyleByClass(colStyle, cont, "dhx_grid-row", uniqStyles.default);
-                    if (css) {
-                        uniqStyles[colStyleHash] = css;
-                    }
-                }
-                if (uniqStyles[colStyleHash]) {
-                    cells.push([rowsIndexMap[key], configCols.indexOf(col), colStyleHash]);
-                }
-            }
-        };
-        var this_1 = this;
-        for (var _i = 0, configCols_1 = configCols; _i < configCols_1.length; _i++) {
-            var col = configCols_1[_i];
-            _loop_1(col);
-        }
-        if (footer.length) {
-            data.push(footer);
-        }
-        var exportData = {
-            name: config.name || "data",
-            columns: columns,
-            header: headers,
-            data: data,
-            styles: {
-                cells: cells,
-                css: uniqStyles,
-            },
-        };
-        if (config.url) {
-            var form_1 = document.createElement("form");
-            form_1.setAttribute("target", "_blank");
-            form_1.setAttribute("action", config.url);
-            form_1.setAttribute("method", "POST");
-            form_1.style.visibility = "hidden";
-            var input = document.createElement("textarea");
-            input.setAttribute("name", "data");
-            input.value = JSON.stringify(exportData);
-            form_1.appendChild(input);
-            document.body.appendChild(form_1);
-            form_1.submit();
-            setTimeout(function () {
-                form_1.parentNode.removeChild(form_1);
-            }, 100);
-        }
-        return exportData;
-    };
-    Exporter.prototype.getFlatCSV = function (config) {
-        var treeData = this._view.data;
-        var root = treeData.getRoot();
-        var firstCol = this._view.config.columns[0];
-        var maxLevel = treeData.getMaxLevel();
-        var getParentsChain = function (item, data) {
-            var parents = [];
-            for (var i = 0; i <= maxLevel; i++) {
-                if (item && item[firstCol.id]) {
-                    parents[item.$level] = item[firstCol.id];
-                    var parent_1 = data.getParent(item.id, true);
-                    if (parent_1 && parent_1.id) {
-                        item = parent_1;
-                    }
-                    else {
-                        item = null;
-                    }
-                }
-                else {
-                    parents[i] = "";
-                }
-            }
-            return parents;
-        };
-        var total = "";
-        treeData.eachChild(root, function (item) {
-            var parents = getParentsChain(item, treeData).join(config.columnDelimiter);
-            total +=
-                parents +
-                    Object.keys(item).reduce(function (values, key, i) {
-                        if (key !== "id" && key !== "parent" && !key.startsWith("$") && i !== 0) {
-                            return values + config.columnDelimiter + (item[key] === null ? "" : item[key]);
-                        }
-                        return values;
-                    }, "");
-            total += config.rowDelimiter;
-        });
-        var exportData = this._export(config);
-        // [dirty]
-        var emptyHeaders = fillArray(new Array(maxLevel + 1), "");
-        var headers = exportData.header.map(function (header) {
-            header.splice.apply(header, __spreadArrays([0, 1], emptyHeaders));
-            return header;
-        });
-        var head = new ts_data_1.CsvDriver(config).serialize(headers, true) + config.rowDelimiter;
-        return head + total;
-    };
-    Exporter.prototype._getCSV = function (config) {
-        var exportData = this._export(config);
-        var headers = exportData.header;
-        var driver = new ts_data_1.CsvDriver(config);
-        var head = driver.serialize(headers, true);
-        var readyData = driver.serialize(exportData.data, true);
-        return head + readyData;
-    };
-    return Exporter;
-}());
-exports.Exporter = Exporter;
-
-
-/***/ }),
-/* 196 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var core_1 = __webpack_require__(1);
-var ts_data_1 = __webpack_require__(4);
-var events_1 = __webpack_require__(2);
-var types_1 = __webpack_require__(9);
-var Selection = /** @class */ (function () {
-    function Selection(grid, config, events) {
-        var types = ["cell", "row", "complex"];
-        this._grid = grid;
-        this.config = config;
-        this._selectedCell = undefined;
-        this._oldSelectedCell = undefined;
-        this._selectedCells = [];
-        this._type = types.includes(this._grid.config.selection) ? this._grid.config.selection : "complex";
-        this._multiselection = grid.config.multiselection && this._type !== "complex";
-        this.events = events || new events_1.EventSystem(this);
-        this._init();
-    }
-    Selection.prototype.setCell = function (row, col, ctrlUp, shiftUp) {
-        var _this = this;
-        if (ctrlUp === void 0) { ctrlUp = false; }
-        if (shiftUp === void 0) { shiftUp = false; }
-        if (this.config.disabled ||
-            this._grid.config.$editable ||
-            (!this._multiselection &&
-                this._oldSelectedCell &&
-                this._oldSelectedCell.row.id === ((row && row.id) || row) &&
-                this._oldSelectedCell.column.id === ((col && col.id) || col)) ||
-            (this._multiselection &&
-                this._selectedCells.length === 1 &&
-                this._selectedCells[0].row.id === ((row && row.id) || row) &&
-                this._selectedCells[0].column.id === ((col && col.id) || col))) {
-            return;
-        }
-        if ((this._multiselection && !ctrlUp && !shiftUp) || !this._multiselection) {
-            this._selectedCells.length && this._removeCells();
-        }
-        if (this._multiselection &&
-            this._type === "cell" &&
-            this._selectedCells.find(function (item) {
-                return item.row.id === ((row && row.id) || row) && item.column.id === ((col && col.id) || col);
-            })) {
-            this.removeCell((row && row.id) || row, (col && col.id) || col);
-            return;
-        }
-        var oldSelectedCell = this._oldSelectedCell ? this._oldSelectedCell : undefined;
-        row = this._grid.data.getItem((row && row.id) || row);
-        var colums = this._grid.config.columns.filter(function (col) { return !col.hidden; });
-        if (!col) {
-            col = colums[0];
-        }
-        col = this._grid.getColumn(col.id || col);
-        if (!col || !row) {
-            return;
-        }
-        col = col.id ? col : this._grid.getColumn(col);
-        if (!this.events.fire(types_1.GridSelectionEvents.beforeSelect, [row, col]))
-            return;
-        this._selectedCell = { row: row, column: col };
-        this.events.fire(types_1.GridSelectionEvents.afterSelect, [row, col]);
-        if (this._multiselection && shiftUp && oldSelectedCell) {
-            this._oldSelectedCell = oldSelectedCell;
-        }
-        else {
-            this._oldSelectedCell = this._selectedCell;
-        }
-        if (this._multiselection) {
-            if (shiftUp && !ctrlUp && this._selectedCells.length > 0) {
-                var startRowIndex = this._grid.data.getIndex(this._oldSelectedCell.row.id);
-                var endRowIndex = this._grid.data.getIndex(row.id);
-                if (startRowIndex > endRowIndex) {
-                    var temp = startRowIndex;
-                    startRowIndex = endRowIndex;
-                    endRowIndex = temp;
-                }
-                this._selectedCells = [this._oldSelectedCell];
-                if (this._type === "cell") {
-                    var columnsIds = colums.map(function (e) { return e.id; });
-                    var startColIndex = columnsIds.indexOf(oldSelectedCell.column.id);
-                    var endColIndex = columnsIds.indexOf(col.id);
-                    if (startColIndex !== -1 && endColIndex !== -1) {
-                        if (startColIndex > endColIndex) {
-                            var temp = startColIndex;
-                            startColIndex = endColIndex;
-                            endColIndex = temp;
-                        }
-                        var columns_1 = colums.slice(startColIndex, endColIndex + 1);
-                        this._grid.data.mapRange(startRowIndex, endRowIndex, function (item) {
-                            columns_1.forEach(function (column) {
-                                var cell = { row: item, column: column };
-                                if (_this._findIndex(cell) === -1) {
-                                    _this._selectedCells.push(cell);
-                                }
-                            });
-                        });
-                    }
-                }
-                else {
-                    this._grid.data.mapRange(startRowIndex, endRowIndex, function (item) {
-                        var cell = { row: item, column: col };
-                        if (_this._findIndex(cell) === -1) {
-                            _this._selectedCells.push(cell);
-                        }
-                    });
-                }
-            }
-            else if (ctrlUp && !shiftUp) {
-                var cellIndex = this._findIndex();
-                if (cellIndex === -1) {
-                    this._selectedCells.push({
-                        row: this._selectedCell.row,
-                        column: this._selectedCell.column,
-                    });
-                }
-                else {
-                    this._selectedCells.length > 1 && this._selectedCells.splice(cellIndex, 1);
-                }
-            }
-            else {
-                this._selectedCells = [this._selectedCell];
-            }
-        }
-        else {
-            this._selectedCells = [this._selectedCell];
-        }
-        dom_1.awaitRedraw().then(function () {
-            _this._grid.paint();
-        });
-    };
-    Selection.prototype.getCell = function () {
-        return this._selectedCell;
-    };
-    Selection.prototype.getCells = function () {
-        return this._selectedCells;
-    };
-    Selection.prototype.toHTML = function () {
-        var _this = this;
-        if (this._isUnselected()) {
-            return;
-        }
-        if (this._multiselection) {
-            var selection_1 = [];
-            this._selectedCells.forEach(function (cell, index, array) {
-                selection_1.push(_this._toHTML(cell.row, cell.column, index === array.length - 1 || _this._type === "cell"));
-            });
-            return selection_1;
-        }
-        else {
-            return this._toHTML(this._selectedCell.row, this._selectedCell.column, true);
-        }
-    };
-    Selection.prototype.disable = function () {
-        this.removeCell();
-        this.config.disabled = true;
-        this._grid.paint();
-    };
-    Selection.prototype.enable = function () {
-        this.config.disabled = false;
-        this._grid.paint();
-    };
-    Selection.prototype.removeCell = function (rowId, colId) {
-        var _this = this;
-        if (rowId && colId && this._type === "cell") {
-            var cell = this._selectedCells.find(function (_a) {
-                var row = _a.row, column = _a.column;
-                return row.id === rowId && column.id === colId;
-            });
-            cell && this._removeCell(cell.row, cell.column);
-        }
-        else if (rowId) {
-            var cells = this._selectedCells.filter(function (_a) {
-                var row = _a.row;
-                return row.id === rowId;
-            });
-            cells.forEach(function (_a) {
-                var row = _a.row, column = _a.column;
-                _this._removeCell(row, column);
-            });
-        }
-        else {
-            this._removeCells();
-        }
-        dom_1.awaitRedraw().then(function () {
-            _this._grid.paint();
-        });
-    };
-    Selection.prototype._removeCell = function (row, col) {
-        if (!row || !col || !row.id || !col.id)
-            return;
-        if (!this.events.fire(types_1.GridSelectionEvents.beforeUnSelect, [row, col]))
-            return;
-        var index = this._selectedCells.findIndex(function (item) { return item.row.id === row.id && item.column.id === col.id; });
-        this._selectedCells.splice(index, 1);
-        if (this._selectedCell &&
-            col.id === this._selectedCell.column.id &&
-            row.id === this._selectedCell.row.id) {
-            this._selectedCell = this._selectedCells[this._selectedCells.length - 1] || undefined;
-        }
-        this.events.fire(types_1.GridSelectionEvents.afterUnSelect, [row, col]);
-    };
-    Selection.prototype._removeCells = function () {
-        var _this = this;
-        this._selectedCells.forEach(function (item) {
-            _this._removeCell(item && item.row, item && item.column);
-        });
-        this._selectedCells.length && this._removeCells();
-    };
-    Selection.prototype._init = function () {
-        var _this = this;
-        this._grid.events.on(types_1.GridEvents.cellClick, function (row, col, e) {
-            _this.setCell(row, col, e.ctrlKey || e.metaKey, e.shiftKey);
-        });
-        this._grid.data.events.on(ts_data_1.DataEvents.beforeRemove, function (item) {
-            if (item && _this._selectedCell && _this._selectedCell.row) {
-                var index = _this._grid.data.getIndex(String(_this._selectedCell.row.id));
-                var id = _this._grid.data.getId(index + 1);
-                if (id) {
-                    _this.setCell(id);
-                }
-                else {
-                    var newId = _this._grid.data.getId(index - 1);
-                    if (newId) {
-                        _this.setCell(newId);
-                    }
-                }
-                _this._grid.paint();
-            }
-        });
-    };
-    Selection.prototype._toHTML = function (row, column, last) {
-        if (last === void 0) { last = false; }
-        var colums = this._grid.config.columns.filter(function (col) { return !col.hidden; });
-        var fixedCols = this._grid.config.leftSplit ? colums.slice(0, this._grid.config.leftSplit) : [];
-        var fixedColsIds = fixedCols.map(function (col) { return col.id; });
-        var fixedCell;
-        var cellRect = this._grid.getCellRect(row.id, column.id);
-        if (fixedColsIds.includes(column.id) && last) {
-            var scrollState = this._grid.getScrollState();
-            fixedCell = dom_1.el(".dhx_grid-selected-cell", {
-                style: {
-                    width: this._grid.config.leftSplit === fixedColsIds.indexOf(column.id) + 1
-                        ? cellRect.width - 1
-                        : cellRect.width,
-                    height: cellRect.height,
-                    top: cellRect.y,
-                    left: cellRect.x + scrollState.x,
-                    position: "absolute",
-                    zIndex: 10,
-                },
-            });
-        }
-        var totalWidth = this._grid.config.$totalWidth;
-        return dom_1.el(".dhx_grid-selection", {
-            style: {
-                zIndex: fixedCell ? 20 : 10,
-            },
-        }, [
-            (this._type === "row" || this._type === "complex") &&
-                dom_1.el(".dhx_grid-selected-row", {
-                    style: {
-                        width: totalWidth,
-                        height: cellRect.height - 1,
-                        top: cellRect.y,
-                        left: 0,
-                        position: "absolute",
-                    },
-                }),
-            ((this._type === "cell" || this._type === "complex") && fixedCell) ||
-                ((this._type === "cell" || this._type === "complex") &&
-                    last &&
-                    dom_1.el(".dhx_grid-selected-cell", {
-                        style: {
-                            width: cellRect.width,
-                            height: cellRect.height - 1,
-                            top: cellRect.y,
-                            left: cellRect.x,
-                            position: "absolute",
-                        },
-                    })),
-        ]);
-    };
-    Selection.prototype._isUnselected = function () {
-        return (!this._selectedCell ||
-            !this._selectedCell.row ||
-            !this._selectedCell.column ||
-            this._selectedCells.length === 0);
-    };
-    Selection.prototype._findIndex = function (cell) {
-        var _this = this;
-        if (cell === void 0) { cell = this._selectedCell; }
-        var cellIndex = -1;
-        this._selectedCells.some(function (element, index) {
-            if (_this._type === "cell") {
-                if (core_1.compare(element.row, cell.row) && core_1.compare(element.column, cell.column)) {
-                    cellIndex = index;
-                    return true;
-                }
-            }
-            else if (_this._type === "row") {
-                if (core_1.compare(element.row, cell.row)) {
-                    cellIndex = index;
-                    return true;
-                }
-            }
-        });
-        return cellIndex;
-    };
-    return Selection;
-}());
-exports.Selection = Selection;
-
-
-/***/ }),
-/* 197 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(9);
-var InputEditor_1 = __webpack_require__(198);
-var SelectEditor_1 = __webpack_require__(199);
-var DateEditor_1 = __webpack_require__(200);
-var CheckboxEditor_1 = __webpack_require__(201);
-var ComboboxEditor_1 = __webpack_require__(202);
-var TextAreaEditor_1 = __webpack_require__(203);
-var lastEditor = {
-    cell: {
-        row: null,
-        col: null,
-    },
-    editor: null,
-    gridId: null,
-};
-var editHandler;
-function getEditor(row, col, conf) {
-    var type = col.type === "boolean" ? "checkbox" : conf.$editable.editorType;
-    if (typeof type === "undefined")
-        type = conf.autoHeight ? "textarea" : "input";
-    if (lastEditor.cell.row === row.id &&
-        lastEditor.cell.col === col.id &&
-        lastEditor.gridId === conf.gridId) {
-        return lastEditor.editor;
-    }
-    if (type !== "checkbox") {
-        lastEditor = {
-            cell: {
-                row: row.id,
-                col: col.id,
-            },
-            editor: lastEditor.editor,
-            gridId: conf.gridId,
-        };
-    }
-    if (!editHandler) {
-        editHandler = function () {
-            lastEditor = {
-                cell: {
-                    row: null,
-                    col: null,
-                },
-                editor: null,
-                gridId: null,
-            };
-        };
-        conf.events.on(types_1.GridEvents.afterEditEnd, editHandler);
-    }
-    switch (type) {
-        case "input":
-            return (lastEditor.editor = new InputEditor_1.InputEditor(row, col, conf));
-        case "textarea":
-            return (lastEditor.editor = new TextAreaEditor_1.TextAreaEditor(row, col, conf));
-        case "select":
-            return (lastEditor.editor = new SelectEditor_1.SelectEditor(row, col, conf));
-        case "datePicker":
-            return (lastEditor.editor = new DateEditor_1.DateEditor(row, col, conf));
-        case "checkbox":
-            return new CheckboxEditor_1.CheckboxEditor(row, col, conf);
-        case "combobox":
-            return (lastEditor.editor = new ComboboxEditor_1.ComboboxEditor(row, col, conf));
-        default:
-            return (lastEditor.editor = new InputEditor_1.InputEditor(row, col, conf));
-    }
-}
-exports.getEditor = getEditor;
-
-
-/***/ }),
-/* 198 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(9);
-var core_1 = __webpack_require__(1);
-var InputEditor = /** @class */ (function () {
-    function InputEditor(row, col, config) {
-        this._config = config;
-        this._cell = { row: row, col: col };
-        this._initHandlers();
-    }
-    InputEditor.prototype.endEdit = function (withoutSave) {
-        var value;
-        if (!withoutSave) {
-            value = this._input.value;
-        }
-        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
-            this._input.removeEventListener("blur", this._handlers.onBlur);
-            this._input.removeEventListener("change", this._handlers.onChange);
-            if (this._cell.col.type !== "string" && core_1.isNumeric(value)) {
-                value = parseFloat(value);
-            }
-            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
-            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
-        }
-        else {
-            this._input.focus();
-        }
-    };
-    InputEditor.prototype.toHTML = function () {
-        var content = this._cell.row[this._cell.col.id];
-        if (this._input) {
-            content = this._input.value;
-        }
-        this._config.$editable.editor = this;
-        return dom_1.el("input.dhx_cell-editor.dhx_cell-editor__input", {
-            _hooks: {
-                didInsert: this._handlers.didInsert,
-            },
-            _key: "cell_editor",
-            dhx_id: "cell_editor",
-            value: content,
-        });
-    };
-    InputEditor.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            onBlur: function () {
-                _this.endEdit();
-            },
-            onChange: function () {
-                _this.endEdit();
-            },
-            didInsert: function (node) {
-                var input = node.el;
-                _this._input = input;
-                input.focus();
-                input.setSelectionRange(0, input.value.length);
-                input.addEventListener("change", _this._handlers.onChange);
-                input.addEventListener("blur", _this._handlers.onBlur);
-            },
-        };
-    };
-    return InputEditor;
-}());
-exports.InputEditor = InputEditor;
-
-
-/***/ }),
-/* 199 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(9);
-var SelectEditor = /** @class */ (function () {
-    function SelectEditor(row, col, config) {
-        this._config = config;
-        this._cell = { row: row, col: col };
-        this._initHandlers();
-    }
-    SelectEditor.prototype.endEdit = function (withoutSave) {
-        var value;
-        if (!withoutSave) {
-            value = this._input.value;
-        }
-        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
-            this._input.removeEventListener("blur", this._handlers.onBlur);
-            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
-            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
-        }
-        else {
-            this._input.focus();
-        }
-    };
-    SelectEditor.prototype.toHTML = function () {
-        var content = this._cell.col.options || [];
-        var selected = this._cell.row[this._cell.col.id];
-        if (this._input) {
-            selected = this._input.options[this._input.selectedIndex].value;
-        }
-        var options = content.map(function (item) {
-            return dom_1.el("option", {
-                selected: item === selected,
-            }, item);
-        });
-        this._config.$editable.editor = this;
-        return dom_1.el("select.dhx_cell-editor.dhx_cell-editor__select", {
-            _hooks: {
-                didInsert: this._handlers.didInsert,
-            },
-            _key: "cell_editor",
-            dhx_id: "cell_editor",
-        }, options);
-    };
-    SelectEditor.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            onBlur: function () {
-                _this.endEdit();
-            },
-            didInsert: function (node) {
-                var input = node.el;
-                _this._input = input;
-                input.focus();
-                input.addEventListener("blur", _this._handlers.onBlur);
-            },
-        };
-    };
-    return SelectEditor;
-}());
-exports.SelectEditor = SelectEditor;
-
-
-/***/ }),
-/* 200 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(9);
-var ts_calendar_1 = __webpack_require__(41);
-var date_1 = __webpack_require__(22);
-var ts_popup_1 = __webpack_require__(10);
-var DateEditor = /** @class */ (function () {
-    function DateEditor(row, col, config) {
-        var _this = this;
-        this._config = config;
-        this._cell = { row: row, col: col };
-        this._calendar = new ts_calendar_1.Calendar(null, { dateFormat: col.format });
-        var value = this._cell.row[this._cell.col.id];
-        var format = this._calendar.config.dateFormat;
-        if (date_1.stringToDate(value, format, true) || value instanceof Date) {
-            this._calendar.setValue(value);
-            this._value = this._calendar.getValue();
-            this._cell.row[this._cell.col.id] = this._value;
-        }
-        this._popup = new ts_popup_1.Popup({ css: "dhx_widget--bordered" });
-        this._popup.attach(this._calendar);
-        this._calendar.events.on(ts_calendar_1.CalendarEvents.change, function () {
-            _this.endEdit(false, true);
-        });
-        this._popup.events.on(ts_popup_1.PopupEvents.afterHide, function () {
-            _this.endEdit();
-        });
-        this._initHandlers();
-    }
-    DateEditor.prototype.endEdit = function (withoutSave, calendarChange) {
-        if (!this._handlers) {
-            return;
-        }
-        var format = this._calendar.config.dateFormat;
-        var value = this._cell.row[this._cell.col.id];
-        if (!withoutSave) {
-            if (value instanceof Date || calendarChange) {
-                this._value = this._calendar.getValue();
-                this._input.value = this._value;
-                this._popup.hide();
-                return;
-            }
-            else if (date_1.stringToDate(this._input.value, format, true) &&
-                this._input.value.length === value.length) {
-                this._value = this._input.value;
-            }
-        }
-        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [this._value, this._cell.row, this._cell.col])) {
-            this._input.removeEventListener("focus", this._handlers.onFocus);
-            this._input.removeEventListener("change", this._handlers.onChange);
-            document.removeEventListener("mousedown", this._handlers.onOuterClick);
-            this._popup.destructor();
-            this._calendar.destructor();
-            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
-            this._config.events.fire(types_1.GridEvents.afterEditEnd, [this._value, this._cell.row, this._cell.col]);
-        }
-        else {
-            this._input.focus();
-        }
-    };
-    DateEditor.prototype.toHTML = function () {
-        var value = this._cell.row[this._cell.col.id];
-        this._config.$editable.editor = this;
-        document.addEventListener("mousedown", this._handlers.onOuterClick);
-        return dom_1.el("input.dhx_cell-editor.dhx_cell-editor__input.dhx_cell-editor__datepicker", {
-            _hooks: {
-                didInsert: this._handlers.didInsert,
-            },
-            _key: "cell_editor",
-            dhx_id: "cell_editor",
-            value: value,
-        });
-    };
-    DateEditor.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            onFocus: function () {
-                dom_1.awaitRedraw().then(function () {
-                    _this._popup.show(_this._input, {
-                        centering: true,
-                        mode: "bottom",
-                    });
-                });
-            },
-            onChange: function () {
-                _this.endEdit();
-            },
-            onOuterClick: function (e) {
-                if (e.target instanceof Node) {
-                    var isInput = _this._input && _this._input.contains(e.target);
-                    var isPopup = _this._popup &&
-                        _this._popup.getRootNode() &&
-                        _this._popup.getRootNode().contains(e.target);
-                    if (!(isInput || isPopup)) {
-                        _this._popup.hide();
-                    }
-                }
-            },
-            didInsert: function (node) {
-                var input = node.el;
-                _this._input = input;
-                _this._input.addEventListener("focus", _this._handlers.onFocus);
-                _this._input.addEventListener("change", _this._handlers.onChange);
-                input.focus();
-                input.setSelectionRange(input.value.length, input.value.length);
-            },
-        };
-    };
-    return DateEditor;
-}());
-exports.DateEditor = DateEditor;
-
-
-/***/ }),
-/* 201 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(9);
-var CheckboxEditor = /** @class */ (function () {
-    function CheckboxEditor(row, col, config) {
-        this._config = config;
-        this._cell = { row: row, col: col };
-        this._initHandlers();
-    }
-    CheckboxEditor.prototype.endEdit = function () {
-        var value = this._checked;
-        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
-            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
-            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
-        }
-        else {
-            this._input.checked = !value;
-        }
-    };
-    CheckboxEditor.prototype.toHTML = function () {
-        if (this._checked === undefined) {
-            this._checked = this._cell.row[this._cell.col.id];
-        }
-        return dom_1.el("label.dhx_checkbox.dhx_cell-editor__checkbox", [
-            dom_1.el("input.dhx_checkbox__input", {
-                type: "checkbox",
-                _hooks: {
-                    didInsert: this._handlers.didInsert,
-                },
-                _key: "cell_editor",
-                dhx_id: "cell_editor",
-                checked: this._checked,
-                style: {
-                    userSelect: "none",
-                },
-            }),
-            dom_1.el("span.dhx_checkbox__visual-input"),
-        ]);
-    };
-    CheckboxEditor.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            onChange: function (e) {
-                var value = e.target.checked;
-                if (_this._config.events.fire(types_1.GridEvents.beforeEditStart, [
-                    _this._cell.row,
-                    _this._cell.col,
-                    "checkbox",
-                ])) {
-                    _this._checked = value;
-                    _this._config.events.fire(types_1.GridEvents.afterEditStart, [
-                        _this._cell.row,
-                        _this._cell.col,
-                        "checkbox",
-                    ]);
-                    _this.endEdit();
-                }
-                else {
-                    _this._input.checked = !value;
-                }
-            },
-            didInsert: function (node) {
-                _this._checkbox = node.el.parentNode.lastChild;
-                _this._input = node.el.parentNode.firstChild;
-                _this._input.addEventListener("change", _this._handlers.onChange);
-            },
-        };
-    };
-    return CheckboxEditor;
-}());
-exports.CheckboxEditor = CheckboxEditor;
-
-
-/***/ }),
-/* 202 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(9);
-var ts_combobox_1 = __webpack_require__(31);
-var FocusManager_1 = __webpack_require__(20);
-var ComboboxEditor = /** @class */ (function () {
-    function ComboboxEditor(row, col, config) {
-        this._config = config;
-        this._cell = { row: row, col: col };
-        this._initHandlers();
-    }
-    ComboboxEditor.prototype.endEdit = function (withoutSave) {
-        var value;
-        if (!withoutSave) {
-            value = this._input.getValue();
-        }
-        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
-            this._input.popup.hide();
-            document.removeEventListener("mousedown", this._handlers.onOuterClick);
-            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
-            FocusManager_1.focusManager.setFocusId(this._config.gridId);
-            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
-        }
-        else {
-            this._input.focus();
-        }
-    };
-    ComboboxEditor.prototype.toHTML = function () {
-        var _this = this;
-        var content = this._cell.col.options.map(function (item) {
-            return { id: "" + item, value: item };
-        }) || [];
-        if (!this._input) {
-            this._input = new ts_combobox_1.Combobox(null, {
-                readOnly: true,
-                cellHeight: 37,
-                css: "dhx_cell-editor__combobox",
-            });
-            this._input.data.parse(content);
-            this._input.setValue(this._cell.row[this._cell.col.id]);
-        }
-        document.addEventListener("mousedown", this._handlers.onOuterClick);
-        this._config.$editable.editor = this;
-        dom_1.awaitRedraw().then(function () {
-            var holderNode = _this._input.getRootView().refs.holder.el;
-            _this._input.popup.getContainer().style.width = holderNode.offsetWidth + "px";
-            _this._input.popup.show(holderNode);
-        });
-        FocusManager_1.focusManager.setFocusId(this._input._uid);
-        return dom_1.inject(this._input.getRootView());
-    };
-    ComboboxEditor.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            onOuterClick: function (e) {
-                if (e.target instanceof Node) {
-                    var isInput = _this._input &&
-                        _this._input.getRootNode() &&
-                        _this._input.getRootNode().contains(e.target);
-                    var isPopup = _this._input.popup &&
-                        _this._input.popup.getRootNode() &&
-                        _this._input.popup.getRootNode().contains(e.target);
-                    if (!(isInput || isPopup)) {
-                        _this.endEdit();
-                    }
-                }
-            },
-        };
-    };
-    return ComboboxEditor;
-}());
-exports.ComboboxEditor = ComboboxEditor;
-
-
-/***/ }),
-/* 203 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var types_1 = __webpack_require__(9);
-var core_1 = __webpack_require__(1);
-var data_1 = __webpack_require__(21);
-var TextAreaEditor = /** @class */ (function () {
-    function TextAreaEditor(row, col, config) {
-        this._config = config;
-        this._cell = { row: row, col: col };
-        this._width = this._cell.col.$width;
-        var widthOffset = 0;
-        if (this._config.firstColId === this._cell.col.id && this._cell.row.hasOwnProperty("$level")) {
-            widthOffset = data_1.getTreeCellWidthOffset(this._cell.row);
-        }
-        this._width -= widthOffset - 4;
-        this._initHandlers();
-    }
-    TextAreaEditor.prototype.endEdit = function (withoutSave) {
-        var value;
-        if (!withoutSave) {
-            value = this._editor.value;
-        }
-        if (this._config.events.fire(types_1.GridEvents.beforeEditEnd, [value, this._cell.row, this._cell.col])) {
-            this._editor.removeEventListener("blur", this._handlers.onBlur);
-            this._editor.removeEventListener("change", this._handlers.onChange);
-            this._editor.removeEventListener("input", this._handlers.onInput);
-            if (this._cell.col.type !== "string" && core_1.isNumeric(value)) {
-                value = parseFloat(value);
-            }
-            this._cell.row = this._config.datacollection.getItem(this._cell.row.id);
-            this._config.events.fire(types_1.GridEvents.afterEditEnd, [value, this._cell.row, this._cell.col]);
-        }
-        else {
-            this._editor.focus();
-        }
-    };
-    TextAreaEditor.prototype.toHTML = function () {
-        var value = this._cell.row[this._cell.col.id];
-        if (this._editor) {
-            value = this._editor.value;
-        }
-        this._config.$editable.editor = this;
-        var css = typeof this._cell.row.height === "undefined" && !this._cell.col.htmlEnable
-            ? "dhx_cell-editor dhx_cell-editor__textarea"
-            : "dhx_cell-editor dhx_cell-editor__textarea_constant-height";
-        return dom_1.el("textarea", {
-            _hooks: {
-                didInsert: this._handlers.didInsert,
-            },
-            _ref: "textarea",
-            _key: "cell_editor",
-            dhx_id: "cell_editor",
-            value: value,
-            class: css,
-            style: {
-                width: this._width,
-            },
-        });
-    };
-    TextAreaEditor.prototype._initHandlers = function () {
-        var _this = this;
-        this._handlers = {
-            onBlur: function () {
-                _this.endEdit();
-            },
-            onChange: function () {
-                _this.endEdit();
-            },
-            onInput: function (event) {
-                var _a;
-                if (typeof _this._cell.row.height !== "undefined" || _this._cell.col.htmlEnable)
-                    return;
-                var currentHeight = _this._getCurrentHeight(_this._editor.value, {
-                    width: _this._cell.col.$width - 2,
-                    maxHeight: _this._config.rowHeight,
-                });
-                _this._cell.row[_this._cell.col.id] = _this._editor.value;
-                var totalHeight = data_1.getCalculatedRowHeight(data_1.getMaxRowHeight(_this._cell.row, _this._config.columns));
-                var currentRowHeight = data_1.getCalculatedRowHeight(data_1.getMaxRowHeight((_a = {}, _a[_this._cell.col.id] = _this._cell.row[_this._cell.col.id], _a), _this._config.columns));
-                _this._minHeight = totalHeight === currentRowHeight ? _this._config.rowHeight : totalHeight;
-                if (currentHeight >= _this._minHeight && currentHeight !== _this._prevHeight) {
-                    if (!_this._config.events.fire(types_1.GridEvents.beforeRowResize, [
-                        _this._cell.row,
-                        event,
-                        currentHeight,
-                    ])) {
-                        return;
-                    }
-                    _this._config.events.fire(types_1.GridEvents.afterRowResize, [
-                        _this._cell.row,
-                        event,
-                        currentHeight,
-                    ]);
-                }
-                _this._prevHeight = currentHeight;
-            },
-            didInsert: function (node) {
-                _this._editor = node.el;
-                _this._editor.focus();
-                _this._editor.setSelectionRange(0, _this._editor.value.length);
-                _this._editor.addEventListener("change", _this._handlers.onChange);
-                _this._editor.addEventListener("blur", _this._handlers.onBlur);
-                _this._editor.addEventListener("input", _this._handlers.onInput);
-            },
-        };
-    };
-    TextAreaEditor.prototype._getCurrentHeight = function (value, config) {
-        config = __assign({ width: 100, maxHeight: 40, lineHeight: 20 }, config);
-        var element = document.createElement("textarea");
-        element.className = "dhx_cell-editor dhx_cell-editor__textarea";
-        element.value = value;
-        element.style.width = config.width + "px";
-        element.style.lineHeight = config.lineHeight + "px";
-        element.style.maxHeight = config.maxHeight + "px";
-        element.style.boxSizing = "border-box";
-        document.body.appendChild(element);
-        var height = this._getElementHeight(element);
-        var currentRows = element.value.split("\n").length;
-        var calculateRows = Math.round(height / config.lineHeight);
-        var calculateHeight = height < config.maxHeight ? config.maxHeight : height;
-        document.body.removeChild(element);
-        return currentRows === 1 && currentRows === calculateRows ? config.maxHeight : calculateHeight;
-    };
-    TextAreaEditor.prototype._getElementHeight = function (element) {
-        return element.scrollHeight;
-    };
-    return TextAreaEditor;
-}());
-exports.TextAreaEditor = TextAreaEditor;
-
-
-/***/ }),
-/* 204 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var html_1 = __webpack_require__(3);
-var Cells_1 = __webpack_require__(55);
-var FixedRows_1 = __webpack_require__(84);
-var main_1 = __webpack_require__(15);
-function getFixedColsHeader(renderConfig, layout) {
-    if (typeof renderConfig.leftSplit !== "number") {
-        return;
-    }
-    var splitHidden = 0;
-    for (var index = 0; index < renderConfig.leftSplit; index++) {
-        if (renderConfig.columns[index].hidden)
-            splitHidden++;
-    }
-    if (splitHidden === renderConfig.leftSplit) {
-        return;
-    }
-    var columns = renderConfig.columns.slice(0, renderConfig.leftSplit - splitHidden);
-    var width = 0;
-    for (var _i = 0, columns_1 = columns; _i < columns_1.length; _i++) {
-        var col = columns_1[_i];
-        width += col.$width;
-    }
-    var frozenHeaderCols = renderConfig.leftSplit >= 0 &&
-        FixedRows_1.getFixedRows(__assign(__assign({}, renderConfig), { currentColumns: columns, $positions: __assign(__assign({}, renderConfig.$positions), { xStart: 0, xEnd: renderConfig.leftSplit }), scroll: { top: 0, left: 0 }, columns: columns }), __assign(__assign({}, layout), { name: "header", position: "top", shifts: { x: 0, y: 0 } }));
-    var headerRowsConfig = __assign(__assign({}, layout), { name: "header", position: "top" });
-    return (frozenHeaderCols &&
-        dom_1.el(".dhx_" + headerRowsConfig.name + "-fixed-cols", {
-            style: {
-                position: "absolute",
-                top: 0,
-                left: 0,
-                maxWidth: width,
-                overflow: "hidden",
-            },
-            role: "rowgroup",
-            "aria-rowcount": frozenHeaderCols.length,
-        }, frozenHeaderCols.body));
-}
-exports.getFixedColsHeader = getFixedColsHeader;
-function getFixedCols(renderConfig, layout) {
-    if (typeof renderConfig.leftSplit !== "number") {
-        return;
-    }
-    var splitHidden = 0;
-    for (var index = 0; index < renderConfig.leftSplit; index++) {
-        if (renderConfig.columns[index].hidden)
-            splitHidden++;
-    }
-    if (splitHidden === renderConfig.leftSplit) {
-        return;
-    }
-    var scrollBarWidth = renderConfig.$totalWidth <= layout.wrapper.width ? 0 : html_1.getScrollbarWidth();
-    var fixedContentHeight = renderConfig.$totalHeight + renderConfig.headerHeight + renderConfig.footerHeight;
-    var fixedColsHeight = fixedContentHeight - (fixedContentHeight > layout.gridBodyHeight ? scrollBarWidth : null);
-    var columns = renderConfig.columns.slice(0, renderConfig.leftSplit - splitHidden);
-    renderConfig.fixedColumnsWidth = main_1.getTotalWidth(columns);
-    var fixedCols = Cells_1.getCells(__assign(__assign({}, renderConfig), { columns: columns, $positions: __assign(__assign({}, renderConfig.$positions), { xStart: 0, xEnd: renderConfig.leftSplit }) }));
-    var isSticky = layout.sticky;
-    var footerRowsConfig = __assign(__assign({}, layout), { name: "footer", position: "bottom" });
-    var frozenFooterCols = renderConfig.leftSplit >= 0 &&
-        FixedRows_1.getRows(__assign(__assign({}, renderConfig), { currentColumns: columns, $positions: __assign(__assign({}, renderConfig.$positions), { xStart: 0, xEnd: renderConfig.leftSplit }) }), __assign(__assign({}, layout), { name: "footer", position: "bottom" }));
-    var frozenFooter = isSticky
-        ? frozenFooterCols &&
-            dom_1.el(".dhx_" + footerRowsConfig.name + "-fixed-cols", {
-                style: {
-                    position: "absolute",
-                    bottom: 0,
-                    left: 0,
-                },
-                role: "rowgroup",
-                "aria-rowcount": frozenFooterCols.length,
-            }, frozenFooterCols)
-        : null;
-    var pos = renderConfig.$positions;
-    var spans = Cells_1.getSpans(renderConfig, true);
-    return dom_1.el(".dhx_grid-fixed-cols-wrap", {
-        style: {
-            height: fixedColsHeight > layout.gridBodyHeight
-                ? (isSticky
-                    ? layout.gridBodyHeight
-                    : layout.gridBodyHeight + renderConfig.headerHeight) - scrollBarWidth
-                : fixedColsHeight,
-            paddingTop: renderConfig.headerHeight,
-            overflow: "hidden",
-            width: renderConfig.fixedColumnsWidth,
-        },
-        role: "presentation",
-        "aria-label": "Fixed column",
-    }, [
-        dom_1.el(".dhx_grid-fixed-cols", __assign(__assign({ style: {
-                top: -renderConfig.scroll.top + renderConfig.headerHeight - 1 + "px",
-                paddingTop: layout.shifts.y,
-                height: renderConfig.$totalHeight,
-                position: "absolute",
-            }, _flags: dom_1.KEYED_LIST }, Cells_1.getHandlers(pos.yStart, pos.xStart, renderConfig)), { role: "rowgroup", "aria-rowcount": renderConfig.data.length }), __spreadArrays([spans && dom_1.el(".dhx_span-spans", spans, { role: "presentation" })], fixedCols)),
-        renderConfig.$footer && frozenFooter,
-        dom_1.el(".dhx_frozen-cols-border", { role: "presentation" }),
-    ]);
-}
-exports.getFixedCols = getFixedCols;
-
-
-/***/ }),
-/* 205 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var dom_1 = __webpack_require__(0);
-var ts_combobox_1 = __webpack_require__(31);
-var ts_data_1 = __webpack_require__(4);
-var types_1 = __webpack_require__(9);
-var html_1 = __webpack_require__(3);
-var data_1 = __webpack_require__(21);
-var inputDelay;
-function onInput(eventSystem, colId, filter, filterObj, e) {
-    var inputHandler = function () {
-        var val = html_1.isIE() ? e.target.value : e.path ? e.path[0].value : e.explicitOriginalTarget.value;
-        filterObj.value[colId] = val;
-        eventSystem.fire(types_1.GridEvents.filterChange, [val, colId, filter]);
-        eventSystem.fire(types_1.GridEvents.headerInput, [val, colId, filter]); // TODO: remove sute_7.0
-    };
-    if (filter === "selectFilter") {
-        inputHandler();
-        return;
-    }
-    if (inputDelay) {
-        clearTimeout(inputDelay);
-    }
-    inputDelay = setTimeout(inputHandler, 250);
-}
-function applyMathMethod(column, config, method, validate) {
-    if (!column || !config || !method) {
-        return;
-    }
-    var id = column.id;
-    var columnData = validate
-        ? validate(id, config.data)
-        : config.data.reduce(function (items, item) {
-            if (item[id] !== undefined && item[id] !== "" && !isNaN(item[id])) {
-                items.push(parseFloat(item[id]));
-            }
-            return items;
-        }, []);
-    // [todo] move to treegrid
-    var roots = columnData;
-    if (config.type === "tree") {
-        roots = config.data.reduce(function (total, item) {
-            if (item.$level === 0) {
-                if (item[id] !== undefined && item[id] !== "" && !isNaN(item[id])) {
-                    total.push(parseFloat(item[id]) || 0);
-                }
-                else {
-                    var value_1 = 0;
-                    config.datacollection.eachChild(item.id, function (cell) {
-                        if (!config.datacollection.haveItems(cell.id)) {
-                            value_1 += parseFloat(cell[id]);
-                        }
-                    });
-                    total.push(value_1);
-                }
-            }
-            return total;
-        }, []);
-    }
-    return method(columnData, roots);
-}
-function getContent() {
-    var _this = this;
-    return {
-        inputFilter: {
-            element: {},
-            toHtml: function (column, config) {
-                var colId = column.id.toString();
-                this.element[colId] = dom_1.el("label.dhx_grid-filter__label.dxi.dxi-magnify", { "aria-label": "Type to search" }, [
-                    dom_1.el("input", {
-                        type: "text",
-                        class: "dhx_input dhx_grid-filter",
-                        oninput: [onInput, config.events, column.id, "inputFilter", this],
-                        _key: column.id,
-                        value: this.value[column.id] || "",
-                    }),
-                ]);
-                return this.element[colId];
-            },
-            match: function (value, match) {
-                var res = "";
-                for (var i = 0; i < match.length; i++) {
-                    var char = match.charCodeAt(i);
-                    if ((char > 32 && char < 48) || char === 63 || (char > 90 && char < 95) || char === 124) {
-                        res += "\\" + match[i];
-                    }
-                    else {
-                        res += match[i];
-                    }
-                }
-                return new RegExp("" + res, "i").test(value);
-            },
-            value: {},
-        },
-        selectFilter: {
-            element: {},
-            toHtml: function (column, config) {
-                var _this = this;
-                var colId = column.id.toString();
-                this.element[colId] = dom_1.el("label.dhx_grid-filter__label.dxi.dxi-menu-down", [
-                    dom_1.el("select.dxi.dxi-menu-down", {
-                        type: "text",
-                        class: "dhx_input dhx_grid-filter dhx_grid-filter--select",
-                        onchange: [onInput, config.events, column.id, "selectFilter", this],
-                        _key: column.id,
-                    }, __spreadArrays([
-                        dom_1.el("option", { value: "" }, "")
-                    ], column.$uniqueData.map(function (val) {
-                        return val &&
-                            dom_1.el("option", { value: val, selected: _this.value[column.id] === val.toString() }, val);
-                    }))),
-                ]);
-                return this.element[colId];
-            },
-            match: function (value, match) { return (match ? value.toString() == match : true); },
-            value: {},
-        },
-        comboFilter: {
-            element: {},
-            toHtml: function (column, config) {
-                var combo;
-                var colId = column.id.toString();
-                if (!this.element[colId]) {
-                    var conf = column.header.filter(function (item) { return item.filterConfig !== undefined; })[0];
-                    if (conf && conf.filterConfig) {
-                        combo = new ts_combobox_1.Combobox(null, JSON.parse(JSON.stringify(conf.filterConfig)));
-                    }
-                    else {
-                        combo = new ts_combobox_1.Combobox(null, {});
-                    }
-                    combo.data.parse(column.$uniqueData.map(function (value) { return ({ value: value }); }));
-                    config.events.on(ts_data_1.DataEvents.load, function () {
-                        combo.data.parse(column.$uniqueData.map(function (value) { return ({ value: value }); }));
-                    });
-                    this.element[colId] = combo;
-                    combo.events.on("change", function (id) {
-                        if (id) {
-                            var item = void 0;
-                            var value = void 0;
-                            if (combo.data.getItem(id)) {
-                                item = combo.list.selection.getItem();
-                                value = item.value;
-                                config.events.fire(types_1.GridEvents.filterChange, [value, colId, "comboFilter"]);
-                                config.events.fire(types_1.GridEvents.headerInput, [value, colId, "comboFilter"]); // TODO: remove suite_7.0
-                            }
-                            else {
-                                config.events.fire(types_1.GridEvents.filterChange, ["", colId, "comboFilter"]);
-                                config.events.fire(types_1.GridEvents.headerInput, ["", colId, "comboFilter"]); // TODO: remove suite_7.0
-                            }
-                        }
-                    });
-                    combo.popup.events.on("afterHide", function () {
-                        if (!combo.list.selection.getItem()) {
-                            combo.clear();
-                            config.events.fire(types_1.GridEvents.filterChange, ["", colId, "comboFilter"]);
-                            config.events.fire(types_1.GridEvents.headerInput, ["", colId, "comboFilter"]); // TODO: remove suite_7.0
-                        }
-                    });
-                }
-                else {
-                    combo = this.element[column.id];
-                }
-                return dom_1.inject(combo.getRootView());
-            },
-            match: function (value, match) { return (match ? value === match : true); },
-            destroy: function () {
-                if (_this.content && _this.content.comboFilter.element) {
-                    var comboFilters = _this.content.comboFilter.element;
-                    for (var combo in comboFilters) {
-                        comboFilters[combo].destructor();
-                        delete comboFilters[combo];
-                    }
-                }
-            },
-            value: {},
-        },
-        sum: {
-            calculate: function (col, roots) { return roots.reduce(function (sum, c) { return (sum += parseFloat(c) || 0); }, 0); },
-            toHtml: function (column, config) {
-                var value = applyMathMethod(column, config, this.calculate);
-                if (column.format || column.type === "percent") {
-                    return data_1.toFormat(value, column.type, column.format);
-                }
-                else {
-                    return value ? value.toFixed(3) : null;
-                }
-            },
-        },
-        avg: {
-            calculate: function (col, roots) {
-                return col.length ? roots.reduce(function (sum, c) { return (sum += c); }, 0) / col.length : null;
-            },
-            toHtml: function (column, config) {
-                var value = applyMathMethod(column, config, this.calculate);
-                if (column.format || column.type === "percent") {
-                    return data_1.toFormat(value, column.type, column.format);
-                }
-                else {
-                    return value ? value.toFixed(3) : null;
-                }
-            },
-        },
-        min: {
-            calculate: function (col) { return (col.length ? Math.min.apply(Math, col) : null); },
-            toHtml: function (column, config) {
-                var value = applyMathMethod(column, config, this.calculate);
-                if (column.format || column.type === "percent") {
-                    return data_1.toFormat(value, column.type, column.format);
-                }
-                else {
-                    return value ? value.toFixed(3) : null;
-                }
-            },
-        },
-        max: {
-            calculate: function (col) { return (col.length ? Math.max.apply(Math, col) : null); },
-            toHtml: function (column, config) {
-                var value = applyMathMethod(column, config, this.calculate);
-                if (column.format || column.type === "percent") {
-                    return data_1.toFormat(value, column.type, column.format);
-                }
-                else {
-                    return value ? value.toFixed(3) : null;
-                }
-            },
-        },
-        count: {
-            calculate: function (_col, roots) {
-                // [todo]
-                return roots.reduce(function (count, c) { return (count += c); }, 0);
-            },
-            validate: function (colId, data) {
-                return data.reduce(function (items, item) {
-                    if (item[colId] !== undefined && item[colId] !== "") {
-                        if (isNaN(item)) {
-                            items.push(1);
-                        }
-                        else {
-                            items.push(item);
-                        }
-                    }
-                    return items;
-                }, []);
-            },
-            toHtml: function (column, config) {
-                return applyMathMethod(column, config, this.calculate, this.validate);
-            },
-        },
-    };
-}
-exports.getContent = getContent;
-
-
-/***/ }),
-/* 206 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __spreadArrays = (this && this.__spreadArrays) || function () {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var core_1 = __webpack_require__(1);
-var types_1 = __webpack_require__(9);
-var html_1 = __webpack_require__(3);
-function startResize(grid, column, ev, cb) {
-    ev.targetTouches && ev.preventDefault();
-    var initX = ev.targetTouches ? ev.targetTouches[0].clientX : ev.clientX;
-    var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
-    var initWidth = 0;
-    grid.config.$resizing = column;
-    var moveHandler = function (e) {
-        var i = core_1.findIndex(columns, function (obj) {
-            return obj.id === column;
-        });
-        var currentX = e.targetTouches ? e.targetTouches[0].clientX : e.clientX;
-        var containerLeft = currentX - grid.getRootNode().getBoundingClientRect().left;
-        var scrollbarY = grid.config.$totalHeight > grid.config.height ? html_1.getScrollbarWidth() : 0;
-        if (grid.config.leftSplit === i + 1 && containerLeft >= grid.config.width - scrollbarY - 2) {
-            return;
-        }
-        initWidth = initWidth || columns[i].$width;
-        var minWidth = columns[i].minWidth || 40;
-        var maxWidth = columns[i].maxWidth;
-        var move = currentX - initX;
-        var cols = __spreadArrays(columns);
-        var size = initWidth + move;
-        var final;
-        if ((maxWidth && size >= maxWidth) || size <= minWidth) {
-            if (size <= minWidth) {
-                final = minWidth;
-            }
-            if (size >= maxWidth) {
-                final = maxWidth;
-            }
-        }
-        else {
-            final = size;
-        }
-        cols[i].$width = final;
-        cols[i].$fixed = true;
-        grid.events.fire(types_1.GridEvents.resize, [columns[i], e]);
-        grid.paint();
-    };
-    var upHandler = function () {
-        if (!ev.targetTouches) {
-            document.removeEventListener("mousemove", moveHandler);
-            document.removeEventListener("mouseup", upHandler);
-        }
-        else {
-            document.removeEventListener("touchmove", moveHandler);
-            document.removeEventListener("touchend", upHandler);
-        }
-        cb();
-    };
-    if (!ev.targetTouches) {
-        document.addEventListener("mousemove", moveHandler);
-        document.addEventListener("mouseup", upHandler);
-    }
-    else {
-        document.addEventListener("touchmove", moveHandler);
-        document.addEventListener("touchend", upHandler);
-    }
-    grid.paint();
-}
-exports.startResize = startResize;
-
-
-/***/ }),
-/* 207 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var types_1 = __webpack_require__(9);
-var html_1 = __webpack_require__(3);
-function selectionMove(e, grid, dir, range, toEnd, ctrlUp, shiftUp) {
-    if (toEnd === void 0) { toEnd = false; }
-    if (ctrlUp === void 0) { ctrlUp = false; }
-    if (shiftUp === void 0) { shiftUp = false; }
-    if (grid.config.$editable || !grid.config.selection || html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
-        return;
-    }
-    if (e) {
-        e.preventDefault();
-    }
-    var selected = grid.selection.getCell();
-    var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
-    grid.data.filter(function (row) { return !row.hidden; });
-    if (selected) {
-        if (dir === "vertical") {
-            if (toEnd) {
-                var newItem = range === 1
-                    ? grid.data.getItem(grid.data.getId(grid.data.getLength() - 1))
-                    : grid.data.getItem(grid.data.getId(0));
-                grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
-                grid.scrollTo(newItem.id, selected.column.id.toString());
-            }
-            else {
-                var index = grid.data.getIndex(selected.row.id.toString());
-                if (index + range >= 0 && index + range < grid.data.getLength()) {
-                    var newItem = grid.data.getItem(grid.data.getId(index + range));
-                    grid.selection.setCell(newItem.id, selected.column.id, ctrlUp, shiftUp);
-                    grid.scrollTo(newItem.id, selected.column.id.toString());
-                }
-            }
-        }
-        else {
-            if (toEnd) {
-                var newItem = range === 1 ? columns[columns.length - 1] : columns[0];
-                grid.selection.setCell(selected.row.id, newItem.id, ctrlUp, shiftUp);
-                grid.scrollTo(selected.row.id.toString(), newItem.id.toString());
-            }
-            else {
-                var index = columns.indexOf(selected.column);
-                if (index + range >= 0 && index + range < columns.length) {
-                    grid.scrollTo(selected.row.id.toString(), columns[index + range].id.toString());
-                    grid.selection.setCell(selected.row.id, columns[index + range].id, ctrlUp, shiftUp);
-                }
-            }
-        }
-    }
-}
-exports.selectionMove = selectionMove;
-function getKeysHandlers(grid) {
-    var cellSelection = grid.config.selection === "cell" ||
-        grid.config.selection === "complex" ||
-        grid.config.selection === true;
-    var gridBodyHandlers = {};
-    if (grid.getRootView()) {
-        var gridBody_1 = grid.getRootView().refs.grid_body.el;
-        gridBodyHandlers = {
-            pageUp: function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop -= gridBody_1.clientHeight;
-            },
-            pageDown: function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop += gridBody_1.clientHeight;
-            },
-            home: function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop = 0;
-            },
-            end: function (e) {
-                e.preventDefault();
-                gridBody_1.scrollTop += gridBody_1.scrollHeight;
-            },
-        };
-    }
-    return __assign({ enter: function () {
-            if (cellSelection) {
-                var selected = grid.selection.getCell();
-                if (selected &&
-                    ((selected.column.editable !== false && grid.config.editable) || selected.column.editable)) {
-                    if (!grid.config.$editable) {
-                        if (selected.column.type !== "boolean") {
-                            grid.editCell(selected.row.id, selected.column.id, selected.column.editorType);
-                        }
-                        else {
-                            grid.events.fire(types_1.GridEvents.afterEditEnd, [
-                                !selected.row[selected.column.id],
-                                selected.row,
-                                selected.column,
-                            ]);
-                        }
-                    }
-                    else {
-                        grid.editEnd();
-                    }
-                }
-            }
-            else {
-                if (grid.config.$editable) {
-                    grid.editEnd();
-                }
-            }
-        }, space: function (e) {
-            if (cellSelection && grid.config.editable && !grid.config.$editable) {
-                var selected = grid.selection.getCell();
-                if (selected && selected.column.type === "boolean") {
-                    e.preventDefault();
-                    grid.events.fire(types_1.GridEvents.afterEditEnd, [
-                        !selected.row[selected.column.id],
-                        selected.row,
-                        selected.column,
-                    ]);
-                }
-            }
-        }, escape: function () {
-            if (grid.config.$editable) {
-                grid.editEnd(true);
-            }
-        }, tab: function (e) {
-            if (grid.config.$editable ||
-                !grid.config.selection ||
-                html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
-                return;
-            }
-            if (e) {
-                e.preventDefault();
-            }
-            var selected = grid.selection.getCell();
-            var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
-            if (selected) {
-                var index = columns.indexOf(selected.column) + 1;
-                if (index >= 0 && index < columns.length) {
-                    grid.selection.setCell(selected.row.id, columns[index].id);
-                    grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
-                }
-                else if (index >= 0) {
-                    var newLineIndex = grid.data.getIndex(selected.row.id.toString()) + 1;
-                    if (newLineIndex < grid.data.getLength()) {
-                        grid.selection.setCell(grid.data.getId(newLineIndex), columns[0].id);
-                        grid.scrollTo(grid.data.getId(newLineIndex), columns[0].id.toString());
-                    }
-                }
-            }
-        }, "shift+tab": function (e) {
-            if (grid.config.$editable ||
-                !grid.config.selection ||
-                html_1.locateNodeByClassName(e, "dhx_grid-header-cell")) {
-                return;
-            }
-            if (e) {
-                e.preventDefault();
-            }
-            var selected = grid.selection.getCell();
-            var columns = grid.config.columns.filter(function (col) { return !col.hidden; });
-            if (selected) {
-                var index = columns.indexOf(selected.column) - 1;
-                if (index >= 0 && index < columns.length) {
-                    grid.selection.setCell(selected.row.id, columns[index].id);
-                    grid.scrollTo(selected.row.id.toString(), columns[index].id.toString());
-                }
-                else if (index < grid.data.getLength()) {
-                    var newLineIndex = grid.data.getIndex(selected.row.id.toString()) - 1;
-                    if (newLineIndex >= 0) {
-                        grid.selection.setCell(grid.data.getId(newLineIndex), columns[columns.length - 1].id);
-                        grid.scrollTo(grid.data.getId(newLineIndex), columns[columns.length - 1].id.toString());
-                    }
-                }
-            }
-        }, arrowUp: function (e) {
-            selectionMove(e, grid, "vertical", -1);
-        }, "ctrl+arrowUp": function (e) {
-            selectionMove(e, grid, "vertical", -1, true);
-        }, "shift+arrowUp": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "vertical", -1, false, false, true);
-            }
-        }, "ctrl+shift+arrowUp": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "vertical", -1, true, false, true);
-            }
-        }, arrowDown: function (e) {
-            selectionMove(e, grid, "vertical", 1);
-        }, "ctrl+arrowDown": function (e) {
-            selectionMove(e, grid, "vertical", 1, true);
-        }, "shift+arrowDown": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "vertical", 1, false, false, true);
-            }
-        }, "ctrl+shift+arrowDown": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "vertical", 1, true, false, true);
-            }
-        }, arrowRight: function (e) {
-            selectionMove(e, grid, "horizontal", 1);
-        }, "ctrl+arrowRight": function (e) {
-            selectionMove(e, grid, "horizontal", 1, true);
-        }, "shift+arrowRight": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "horizontal", 1, false, false, true);
-            }
-        }, "ctrl+shift+arrowRight": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "horizontal", 1, true, false, true);
-            }
-        }, arrowLeft: function (e) {
-            selectionMove(e, grid, "horizontal", -1);
-        }, "ctrl+arrowLeft": function (e) {
-            selectionMove(e, grid, "horizontal", -1, true);
-        }, "shift+arrowLeft": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "horizontal", -1, false, false, true);
-            }
-        }, "ctrl+shift+arrowLeft": function (e) {
-            if (grid.config.multiselection) {
-                selectionMove(e, grid, "horizontal", -1, true, false, true);
-            }
-        } }, gridBodyHandlers);
-}
-exports.getKeysHandlers = getKeysHandlers;
-
-
-/***/ }),
-/* 208 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __extends = (this && this.__extends) || (function () {
-    var extendStatics = function (d, b) {
-        extendStatics = Object.setPrototypeOf ||
-            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
-            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
-        return extendStatics(d, b);
-    };
-    return function (d, b) {
-        extendStatics(d, b);
-        function __() { this.constructor = d; }
-        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-    };
-})();
-var __assign = (this && this.__assign) || function () {
-    __assign = Object.assign || function(t) {
-        for (var s, i = 1, n = arguments.length; i < n; i++) {
-            s = arguments[i];
-            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
-                t[p] = s[p];
-        }
-        return t;
-    };
-    return __assign.apply(this, arguments);
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var Grid_1 = __webpack_require__(82);
-var types_1 = __webpack_require__(9);
-var ts_data_1 = __webpack_require__(4);
-var html_1 = __webpack_require__(3);
-var data_1 = __webpack_require__(21);
-var render_1 = __webpack_require__(83);
-var ProGrid = /** @class */ (function (_super) {
-    __extends(ProGrid, _super);
-    function ProGrid(container, config) {
-        return _super.call(this, container, __assign({ autoHeight: false }, config)) || this;
-    }
-    ProGrid.prototype._setEventHandlers = function () {
-        var _this = this;
-        _super.prototype._setEventHandlers.call(this);
-        this.events.on(types_1.GridEvents.headerCellMouseDown, function (col, e) {
-            if (!e.targetTouches) {
-                _this._dragStartColumn(e, col);
-            }
-            else {
-                _this._touch.timer = setTimeout(function () {
-                    _this._dragStartColumn(e, col);
-                }, _this._touch.duration);
-            }
-        });
-        this._events.on(types_1.GridSystemEvents.headerCellTouchMove, function (_col, e) {
-            _this._touch.start && e.preventDefault();
-            _this._clearTouchTimer();
-        });
-        this._events.on(types_1.GridSystemEvents.headerCellTouchEnd, function () {
-            _this._touch.start = false;
-            _this._clearTouchTimer();
-        });
-        this.events.on(types_1.GridEvents.resize, function () {
-            _this._parseColumns();
-            _this._checkFilters();
-        });
-        this.events.on(types_1.GridEvents.afterResizeEnd, function () {
-            if (_this.config.autoHeight) {
-                _this.config.data = _this.data.map(function (row) {
-                    var height = data_1.getMaxRowHeight(row, _this.config.columns);
-                    row.$height = data_1.getCalculatedRowHeight(height, {
-                        rowHeight: _this.config.rowHeight,
-                        padding: 8,
-                    });
-                    return row;
-                });
-            }
-        });
-        this.events.on(types_1.GridEvents.afterRowResize, function (row, _e, currentHeight) {
-            var _a = _this.data.getItem(row.id), id = _a.id, height = _a.height, $height = _a.$height;
-            if (height && height !== $height) {
-                _this.data.update(id, { height: currentHeight });
-            }
-            _this.data.update(id, { $height: currentHeight }, true);
-            _this.config.data = _this.data.map(function (row) { return row; });
-            _this.paint();
-        });
-        this.events.on(types_1.GridEvents.scroll, function () {
-            _this._lazyLoad();
-        });
-    };
-    ProGrid.prototype._prepareData = function (data) {
-        var _this = this;
-        this._adjustColumns();
-        return data.map(function (row) {
-            if (_this.config.autoHeight && typeof row.height === "undefined") {
-                var height = data_1.getMaxRowHeight(row, _this.config.columns);
-                row.$height =
-                    data_1.getCalculatedRowHeight(height, {
-                        rowHeight: _this.config.rowHeight,
-                        padding: 8,
-                    }) || _this.config.rowHeight;
-            }
-            else {
-                row.$height = row.height || _this.config.rowHeight;
-            }
-            return row;
-        });
-    };
-    ProGrid.prototype._prepareDataFromTo = function (data, from, to) {
-        var _this = this;
-        return data.mapRange(from, to, function (row) {
-            var height = data_1.getMaxRowHeight(row, _this.config.columns);
-            row.$height =
-                data_1.getCalculatedRowHeight(height, {
-                    rowHeight: _this.config.rowHeight,
-                    padding: 8,
-                }) || _this.config.rowHeight;
-            return row;
-        });
-    };
-    ProGrid.prototype._lazyLoad = function () {
-        var _this = this;
-        var _a, _b;
-        var proxy = this.data.dataProxy;
-        if (proxy && proxy.config) {
-            var data = this.data.getRawData(0, -1, null, 2);
-            var renderConfig = render_1.getRenderConfig(this, data, {
-                width: this.config.width,
-                height: this.config.height,
-            });
-            var from_1 = this.data.getIndex((_a = renderConfig.currentRows[0]) === null || _a === void 0 ? void 0 : _a.id.toString());
-            var to_1 = this.data.getIndex((_b = renderConfig.currentRows[renderConfig.currentRows.length - 1]) === null || _b === void 0 ? void 0 : _b.id.toString());
-            if (!this.data.isDataLoaded(from_1, to_1)) {
-                proxy.updateUrl(null, { from: from_1, limit: proxy.config.limit });
-                this.data.load(proxy).then(function () {
-                    _this.config.autoHeight && _this._prepareDataFromTo(_this.data, from_1, to_1);
-                });
-            }
-        }
-    };
-    ProGrid.prototype._getColumnGhost = function (col) {
-        var headerRow = this._container.querySelector(".dhx_header-row");
-        var colHeaderCell = headerRow.querySelector(".dhx_grid-header-cell[dhx_id=\"" + col.id + "\"]");
-        var headerCols = Array.from(headerRow.childNodes);
-        var n = headerCols.indexOf(colHeaderCell) + 1;
-        var colHeaderCells = this._container.querySelectorAll(".dhx_grid-header-cell[dhx_id=\"" + col.id + "\"]");
-        var ghostGridNodes = this._container.querySelectorAll(".dhx_grid_data .dhx_grid-cell:nth-child(" + n + ")");
-        var ghostContainer = document.createElement("div");
-        colHeaderCells.forEach(function (node) { return ghostContainer.appendChild(node.cloneNode(true)); });
-        ghostGridNodes.forEach(function (node) { return ghostContainer.appendChild(node.cloneNode(true)); });
-        return ghostContainer;
-    };
-    ProGrid.prototype._dragStartColumn = function (e, col) {
-        var target = e.target;
-        var testCustom = function (el) { return el.classList.contains("dhx_grid-custom-content-cell"); };
-        var isCustom = testCustom(target.parentElement) || testCustom(target.parentElement.parentElement);
-        if (!isCustom &&
-            (col.draggable || (this.config.dragItem === "column" && col.draggable !== false)) &&
-            !html_1.locateNodeByClassName(e, "dhx_resizer_grip_wrap")) {
-            if (e.targetTouches) {
-                this._touch.start = true;
-            }
-            ts_data_1.dragManager.onMouseDown(e, col.id, [this._getColumnGhost(col)]);
-        }
-    };
-    return ProGrid;
-}(Grid_1.Grid));
-exports.ProGrid = ProGrid;
-
-
-/***/ }),
 /* 209 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -31547,7 +31724,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var html_1 = __webpack_require__(3);
-var ts_navbar_1 = __webpack_require__(19);
+var ts_navbar_1 = __webpack_require__(21);
 var ContextMenu = /** @class */ (function (_super) {
     __extends(ContextMenu, _super);
     function ContextMenu() {
@@ -31625,7 +31802,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var ts_navbar_1 = __webpack_require__(19);
+var ts_navbar_1 = __webpack_require__(21);
 var Menu = /** @class */ (function (_super) {
     __extends(Menu, _super);
     function Menu(element, config) {
@@ -31691,10 +31868,10 @@ var __extends = (this && this.__extends) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
-var ts_navbar_1 = __webpack_require__(19);
+var ts_navbar_1 = __webpack_require__(21);
 var core_1 = __webpack_require__(1);
 var html_1 = __webpack_require__(3);
-var ts_message_1 = __webpack_require__(18);
+var ts_message_1 = __webpack_require__(20);
 var Ribbon = /** @class */ (function (_super) {
     __extends(Ribbon, _super);
     function Ribbon(element, config) {
@@ -31887,7 +32064,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(215));
-__export(__webpack_require__(85));
+__export(__webpack_require__(86));
 
 
 /***/ }),
@@ -31912,9 +32089,9 @@ var __extends = (this && this.__extends) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var dom_1 = __webpack_require__(0);
 var html_1 = __webpack_require__(3);
-var types_1 = __webpack_require__(85);
-var ts_message_1 = __webpack_require__(18);
-var ts_navbar_1 = __webpack_require__(19);
+var types_1 = __webpack_require__(86);
+var ts_message_1 = __webpack_require__(20);
+var ts_navbar_1 = __webpack_require__(21);
 var core_1 = __webpack_require__(1);
 var Sidebar = /** @class */ (function (_super) {
     __extends(Sidebar, _super);
@@ -32079,7 +32256,7 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(217));
-__export(__webpack_require__(86));
+__export(__webpack_require__(87));
 
 
 /***/ }),
@@ -32125,10 +32302,10 @@ var dom_1 = __webpack_require__(0);
 var events_1 = __webpack_require__(2);
 var html_1 = __webpack_require__(3);
 var KeyManager_1 = __webpack_require__(14);
-var FocusManager_1 = __webpack_require__(20);
+var FocusManager_1 = __webpack_require__(18);
 var CssManager_1 = __webpack_require__(32);
 var ts_layout_1 = __webpack_require__(13);
-var types_1 = __webpack_require__(86);
+var types_1 = __webpack_require__(87);
 var Tabbar = /** @class */ (function (_super) {
     __extends(Tabbar, _super);
     function Tabbar(container, config) {
@@ -32192,7 +32369,7 @@ var Tabbar = /** @class */ (function (_super) {
         }, this._tabsContainer ? __spreadArrays(this._drawTabs(), [activeView ? activeView.toVDOM() : null]) : []);
     };
     Tabbar.prototype.destructor = function () {
-        this._keyManager.destructor();
+        this._keyManager && this._keyManager.destructor();
         this._tabsContainer = this._beforeScrollSize = this._afterScrollSize = null;
         _super.prototype.destructor.call(this);
     };
@@ -32512,6 +32689,7 @@ var Tabbar = /** @class */ (function (_super) {
                             id: "tab-content-" + cell.id,
                             "aria-selected": "" + (activeView === cell.id),
                             _ref: cell.id.toString(),
+                            type: "button",
                         }, [dom_1.el("span.dhx_button__text", cell.config.tab)]),
                         (Array.isArray(closable) &&
                             closable.includes(cell.config.id) &&
@@ -32736,8 +32914,8 @@ function __export(m) {
 }
 Object.defineProperty(exports, "__esModule", { value: true });
 __export(__webpack_require__(219));
-__export(__webpack_require__(87));
 __export(__webpack_require__(88));
+__export(__webpack_require__(89));
 
 
 /***/ }),
@@ -32778,10 +32956,10 @@ var html_1 = __webpack_require__(3);
 var types_1 = __webpack_require__(24);
 var view_1 = __webpack_require__(5);
 var ts_data_1 = __webpack_require__(4);
-var Editor_1 = __webpack_require__(87);
+var Editor_1 = __webpack_require__(88);
 var KeyManager_1 = __webpack_require__(14);
-var FocusManager_1 = __webpack_require__(20);
-var types_2 = __webpack_require__(88);
+var FocusManager_1 = __webpack_require__(18);
+var types_2 = __webpack_require__(89);
 function getSelectionIndent(level) {
     return level * 20;
 }
@@ -32910,11 +33088,15 @@ var Tree = /** @class */ (function (_super) {
     Tree.prototype.toggle = function (id) {
         var item = this.data.getItem(id);
         if (item.$autoload) {
+            if (!this.events.fire(types_2.TreeEvents.beforeExpand, [id])) {
+                return;
+            }
             this.data.loadItems(id);
             this.data.update(id, {
                 $autoload: false,
                 opened: true,
             });
+            this.events.fire(types_2.TreeEvents.afterExpand, [id]);
         }
         else {
             if (item.opened) {
@@ -33514,12 +33696,12 @@ var core_1 = __webpack_require__(1);
 var dom_1 = __webpack_require__(0);
 var events_1 = __webpack_require__(2);
 var KeyManager_1 = __webpack_require__(14);
-var FocusManager_1 = __webpack_require__(20);
+var FocusManager_1 = __webpack_require__(18);
 var ts_layout_1 = __webpack_require__(13);
-var ts_toolbar_1 = __webpack_require__(30);
+var ts_toolbar_1 = __webpack_require__(31);
 var types_1 = __webpack_require__(222);
 var WindowController_1 = __webpack_require__(223);
-var ts_navbar_1 = __webpack_require__(19);
+var ts_navbar_1 = __webpack_require__(21);
 function detectDrag(e) {
     return new Promise(function (res) {
         var handleMouseUp = function () {
@@ -33755,7 +33937,7 @@ var Window = /** @class */ (function () {
         if (this.footer) {
             this.footer.destructor();
         }
-        this._keyManager.destructor();
+        this._keyManager && this._keyManager.destructor();
         this._layout.destructor();
         this._popup = null;
     };
@@ -34197,11 +34379,11 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var ts_grid_1 = __webpack_require__(54);
+var ts_grid_1 = __webpack_require__(56);
 var core_1 = __webpack_require__(1);
 var ts_data_1 = __webpack_require__(4);
-var TreeGridCollection_1 = __webpack_require__(90);
-var types_1 = __webpack_require__(91);
+var TreeGridCollection_1 = __webpack_require__(91);
+var types_1 = __webpack_require__(92);
 var defaultGroupTemplate = function (groupName, group) {
     return (groupName || "") + " (" + group.length + ")";
 };
@@ -34504,7 +34686,7 @@ var dom_1 = __webpack_require__(0);
 var events_1 = __webpack_require__(2);
 var ts_data_1 = __webpack_require__(4);
 var view_1 = __webpack_require__(5);
-var ts_toolbar_1 = __webpack_require__(30);
+var ts_toolbar_1 = __webpack_require__(31);
 var Pagination = /** @class */ (function (_super) {
     __extends(Pagination, _super);
     function Pagination(container, config) {

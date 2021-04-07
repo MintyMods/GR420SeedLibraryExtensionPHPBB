@@ -692,6 +692,7 @@ export interface ISelectProps extends IBaseLayoutItem {
 }
 export interface ISelectConfig extends IItem {
     validation?: ValidationSelectFn;
+    required?: boolean;
     type?: "select";
     options: IOption[];
     value?: string | number;

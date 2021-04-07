@@ -27,5 +27,5 @@ export default abstract class BaseSeria implements ISeria {
     protected _calckFinalPoints(_width: number, _height: number): void;
     protected _setDefaults(config: any): void;
     protected _defaultLocator(_: any): any[];
-    protected _getPointType(form: PointType, color: string, showTooltip: boolean): DrawPoint;
+    protected _getPointType(form: PointType, color: string): DrawPoint;
 }
