@@ -61,6 +61,10 @@ function getUploadedFilesList(form) {
   let url = SEED_FILES_URL + "?" + SEED_ID + "=" + seed_id + 
             "&" + BREEDER_ID + "=" + breeder_id;
   form.getItem(IMAGE_UPLOAD).data.load(url);
+  form.getItem(IMAGE_UPLOAD).events.on('load', function(){
+    let item = $('div[dhx_id="' + upload.id + '"]');
+    err("loaded");
+  });
 }
 
 function buildUploadEvents(form) {
@@ -95,7 +99,7 @@ function showUploadProgress(upload) {
     let item = $('div[dhx_id="' + upload.id + '"]');
     if (upload.status == "inprogress") {
       item.parent().addClass('minty_file_uploading');
-      item.prev().text(Math.round(upload.progress * 100) + "% Uploaded - " + upload.file.name);
+      item.prev().text("Uploading " + Math.round(upload.progress * 100) + "% " + upload.file.name);
     } else if (upload.status == "failed") {
       item.parent().addClass('minty_file_uploading_failed');
       item.prev().text('Failed to Upload ' + upload.file.name);
