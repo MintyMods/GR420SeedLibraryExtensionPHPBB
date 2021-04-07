@@ -164,7 +164,9 @@ class upload_controller {
 
 	function getBaseDir() {
 		$dir = $this->phpbb_root_path . self::UPLOAD_BASE;
-		mkdir($dir, 0777, true);
+		if (!file_exists ($dir)) {
+			mkdir($dir, 0777, true);
+		}
 		return $dir;		
 	}
 
@@ -174,7 +176,9 @@ class upload_controller {
 
 	function getTempDir() {
 		$tmp = $this->phpbb_root_path . self::UPLOAD_TEMP;
-		mkdir($tmp, 0777, true);
+		if (!file_exists ($tmp)) {
+			mkdir($tmp, 0777, true);
+		}
 		return $tmp;		
 	}
 

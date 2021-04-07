@@ -57,13 +57,25 @@ function getUploadedFilesList(form) {
   let breeder_id = form.getItem("breeder_id") ? form.getItem("breeder_id").getValue() : null;
   let url = SEED_FILES_URL + "?seed_id=" + seed_id + "&breeder_id=" + breeder_id;
   form.getItem("image_upload").data.load(url);
+  parseUploads();
+  
 }
 
-// form.getItem("uploader").data.events.on("BeforeAdd", function(file){
-//   if (form.getItem("uploader").data.getLength()>0)
-//   return false;
-//   return true;
-//   })
+function parseUploadControl() {
+}
+
+function parseUploads() {
+  seedForm.getItem("image_upload").data.events.on("change",function(id, mode, upload){
+    msg(mode + ' : ' + id + ' @ ' + upload.progress + upload.status);
+    if (upload && mode == 'add') {
+      let widget = seedForm.getItem("image_upload");
+      let what = widget.send();
+      debugger;
+    }
+    return false;
+  });
+
+}
 
 function showAddBreederWindow() {
   getUploadedFilesList(breederForm);
@@ -323,8 +335,7 @@ function showSeedGridRecord(row, readonly) {
       outdoor_yn : row.outdoor_yn,
     }
   }
-  let final = Object.assign(row, parsed);
-  seedForm.setValue(final);
+  seedForm.setValue(Object.assign(row, parsed));
   readonly ? seedForm.disable() : seedForm.enable();
   dhx.awaitRedraw().then(function () {
     showSeedWindow();
@@ -437,7 +448,7 @@ function buildSeedForm() {
       { name: EFFECTS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Effect", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: METATAGS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Tags", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { id: "upload_id", type: "input", hidden: true},
-      { id: "image_upload", mode:"grid", type: "simpleVault", target: SEED_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
+      { id: "image_upload", type: "simpleVault", singleRequest: false, target: SEED_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
     ]
   });
   loadComboSuggestions(BREEDER_ID, seedForm);
@@ -463,7 +474,7 @@ function buildSeedFormEvents() {
   seedForm.events.on("BeforeSend", function() {
     parseSeedFormServerReady();
   }); 
-  
+  parseUploadControl();
   capitalizeControlValue(seedForm, 'seed_name'); 
 }
 
@@ -620,9 +631,9 @@ function buildSeedWindowFooter() {
   seedWindow.footer.data.add([
     { type: "spacer" },
     { id: "cancel_button", type: "button", icon: "dxi dxi-close-circle", size: "medium", color: "secondary", value: "Cancel", circle:true, padding: "0px 5px", },
-    { hidden : Boolean(!canDeleteRecords()), id: "delete_button", type: "button", value: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px",},
-    { hidden:Boolean(!canAddRecords()), id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, circle:true, padding: "0px 5px", },
-    { hidden:Boolean(!canAddRecords()), id: "save_new_button", type: "button", value: "Save & New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
+    { hidden: Boolean(!canDeleteRecords()), id: "delete_button", type: "button", value: "Delete", size: "medium", view: "flat",  color: "danger", icon: "dxi dxi-delete", circle:true, padding: "0px 5px",},
+    { hidden: Boolean(!canAddRecords()), id: "save_button", type: "button", icon: "dxi dxi-checkbox-marked-circle", view: "flat", size: "medium", color: "primary", value: "Save", submit: true, circle:true, padding: "0px 5px", },
+    { hidden: Boolean(!canAddRecords()), id: "save_new_button", type: "button", value: "Save & New", size: "medium", view: "flat", color: "primary", icon: "dxi dxi-plus-circle", circle:true, padding: "0px 5px", },
   ], 0);
   seedWindow.footer.events.on("click", function (id) {
     if (id === "cancel_button") {
@@ -680,21 +691,27 @@ function parseHarvestMonth(value) {
 function canReadRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.READ;
 }
+
 function canAddRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.ADD;
 }
+
 function canEditRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.EDIT;
 }
+
 function canDeleteRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.DELETE;
 }
+
 function canAddBreederRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.ADD_BREEDER;
 }
+
 function canEditBreederRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.EDIT_BREEDER;
 }
+
 function canDeleteBreederRecords() {
   return MINTY_SEEDS.ADMIN || MINTY_SEEDS.DELETE_BREEDER;
 }
