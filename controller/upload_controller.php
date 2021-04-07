@@ -11,8 +11,9 @@ namespace minty\seeds\controller;
 
 class upload_controller {
 	
-	const UPLOAD_BASE = "minty/seeds/";
-	const UPLOAD_TEMP = "minty/uploads";
+	const ALLOWED_EXTENSIONS = array('jpg', 'jpeg', 'gif', 'png', 'webp');
+
+	const UPLOAD_TEMP = "minty/temp";
 	const TABLE_UPLOAD = "minty_sl_upload";
 	const TABLE_UPLOADS = "minty_sl_uploads";
 
@@ -60,7 +61,7 @@ class upload_controller {
 	public function handle($mode) {
 		require_once("./config." . $this->php_ext); 
 		$this->request->enable_super_globals();
-		$json = null;
+		$json[] = null;
 		if ($mode == 'breeder_upload') {
 			if ($this->canAddBreeder()) {
 				$json = $this->processFileUpload();		
@@ -75,35 +76,30 @@ class upload_controller {
 
 		$json_response = new \phpbb\json_response();
 		$json_response->send($json);
-		//header("HTTP/1.1 500 Internal Server Error");
 	}
 	
 	function getFileList() {
+		$json = [];
 		$seed_id = $this->request->variable('seed_id',0);
 		$breeder_id = $this->request->variable('breeder_id',0);
 		$sql =  ' SELECT * FROM ' . $this->getUploadsTable() . 
-				' WHERE upload_id IN (' .
-				' SELECT upload_id FROM ' . $this->getUploadTable() . 
 				' WHERE breeder_id = ' . $this->db->sql_escape($breeder_id) .
-				' AND seed_id = ' . $this->db->sql_escape($seed_id) . ')';
+				' AND seed_id = ' . $this->db->sql_escape($seed_id) . 
+				' AND breeder_id != 0';
 		$result = $this->db->sql_query($sql);
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$json[] = array(
 				'name' => $row['uploadname'],
 				'link' => '/minty/uploads/' . $row['realname'],
 				'path' => '/minty/uploads/' . $row['realname'],
-				'src' => '/minty/uploads/' . $row['realname'],
-				'preview' => '/minty/uploads/' . $row['realname'],
 				'status' => "uploaded",
 				'id'	=> $row['id'],
-				'size'	=> (int)$row['size'],
 				'file' => array(
-					'size'	=> (int)$row['size'],
+					'name'	=> $row['uploadname'],
 					'link' => '/minty/uploads/' . $row['realname'],
 					'path' => '/minty/uploads/' . $row['realname'],
-					'name'	=> $row['uploadname'],
 					'type'	=> $row['type'],
-					'status' => "uploaded",
+					'size'	=> (int)$row['size'],
 				)
 			);
 		}
@@ -115,19 +111,30 @@ class upload_controller {
 		$upload = $this->file_factory->get('files.upload');
 		$upload->set_allowed_extensions($this->getAllowedExtensions());
 		$filespec = $upload->handle_upload('files.types.form', 'upload');
-		$filespec->clean_filename();
+		$filespec->clean_filename('unique_ext');
 		$upload->common_checks($filespec);
-		$filespec->move_file($this->getTempDir());
-		$this->recordFileUpload($filespec);
+		if ($filespec->error) {
+			return $upload->error;
+		}
+		if ($this->moveTempFile($filespec)) {
+			return $this->recordFileUpload($filespec);
+		}
 	}
 	
+	function moveTempFile($filespec) {
+		$overwrite = true;
+		$skip_image_check = false;
+		$filespec->move_file($this->getTempDir(), $overwrite, $skip_image_check);
+		return (bool) $filespec->get('file_moved');	
+	}
+
 	function recordFileUpload($filespec) {
 		$id = $this->request->variable('upload_id','');
 		$sql_ary = array(
 			'upload_id'	=> $this->db->sql_escape($id),
-			'name'	=> $filespec->get('realname'),
-			'path'	=> $filespec->get('destination_path'),
+			'name'	=> $filespec->get('name'),
 			'size'	=> $filespec->get('filesize'),
+			'status' => 'uploaded',
 			'type'	=> $filespec->get('mimetype'),
 			'user_id' => $this->user->data['user_id'],
 			'filename'=> $filespec->get('destination_file'),
@@ -143,7 +150,7 @@ class upload_controller {
 			'link' =>  '/minty/uploads/' . $filespec->get('realname'),
 			'name' => $filespec->get('realname'),
 			'size' => $filespec->get('filesize'),
-			'status' => 'inprogress', // , "inprogress", "uploaded", or "failed")
+			'status' => 'uploaded', 
 			'path'	=> $filespec->get('filename'),
 		];
 		$this->db->sql_freeresult($result);
@@ -162,14 +169,6 @@ class upload_controller {
 		return $this->config['minty_seeds_db_prefix'];
 	}
 
-	function getBaseDir() {
-		$dir = $this->phpbb_root_path . self::UPLOAD_BASE;
-		if (!file_exists ($dir)) {
-			mkdir($dir, 0777, true);
-		}
-		return $dir;		
-	}
-
 	function getDownloadDirectory() {
 		return '/' . self::UPLOAD_TEMP + '/';
 	}
@@ -183,7 +182,7 @@ class upload_controller {
 	}
 
 	function getAllowedExtensions() {
-		return array('jpg', 'jpeg', 'gif', 'png', 'webp');		
+		return self::ALLOWED_EXTENSIONS;		
 	}
 
 	function isEnabled() {

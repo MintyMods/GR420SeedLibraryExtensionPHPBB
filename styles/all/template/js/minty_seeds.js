@@ -12,7 +12,9 @@ const SEED_FILES_URL = "upload/list_files";
 const BREEDER_POST_URL = "minty_sl_breeder";
 const BREEDER_UPLOAD_URL = "upload/breeder_upload";
 const BREEDER_SELECT_URL = "BREEDER_SELECT_RECORD";
+const SEED_ID = "seed_id";
 const BREEDER_ID = "breeder_id";
+const IMAGE_UPLOAD = "image_upload";
 const GENETICS = "minty_sl_genetics";
 const SMELLS = "minty_sl_smells";
 const EFFECTS = "minty_sl_effects";
@@ -42,6 +44,7 @@ var seedGrid, seedForm, seedWindow, breederForm, breederWindow;
 var focusedControl = null;
 var fullScreenWindow = false;
 
+
 function initMintySeedLibData() {
   buildSeedGrid();
   buildSeedButtons();
@@ -53,28 +56,54 @@ function initMintySeedLibData() {
 }
 
 function getUploadedFilesList(form) {
-  let seed_id = form.getItem("seed_id") ? form.getItem("seed_id").getValue() : null;
-  let breeder_id = form.getItem("breeder_id") ? form.getItem("breeder_id").getValue() : null;
-  let url = SEED_FILES_URL + "?seed_id=" + seed_id + "&breeder_id=" + breeder_id;
-  form.getItem("image_upload").data.load(url);
-  parseUploads();
-  
+  let seed_id = form.getItem(SEED_ID) ? form.getItem(SEED_ID).getValue() : null;
+  let breeder_id = form.getItem(BREEDER_ID) ? form.getItem(BREEDER_ID).getValue() : null;
+  let url = SEED_FILES_URL + "?" + SEED_ID + "=" + seed_id + 
+            "&" + BREEDER_ID + "=" + breeder_id;
+  form.getItem(IMAGE_UPLOAD).data.load(url);
 }
 
-function parseUploadControl() {
-}
-
-function parseUploads() {
-  seedForm.getItem("image_upload").data.events.on("change",function(id, mode, upload){
-    msg(mode + ' : ' + id + ' @ ' + upload.progress + upload.status);
-    if (upload && mode == 'add') {
-      let widget = seedForm.getItem("image_upload");
-      let what = widget.send();
-      debugger;
+function buildUploadEvents(form) {
+  let widget = form.getItem(IMAGE_UPLOAD);
+  widget.data.events.on("change",function(id, mode, upload){
+    if (upload) {
+      if (upload.status == "queue" && mode == 'add') {
+          window.setTimeout(function(){widget.send()},0);
+      } else if (upload.status == 'uploaded') {
+        if (mode == 'add') {
+          widget.data.forEach(function(file){
+            if (file.status == "queue") {
+              window.setTimeout(function(){widget.send()},0);        }
+          });
+        } else if (mode == 'update') {
+          dhx.awaitRedraw().then(function(){showUploadProgress(upload)});
+        } else if (mode == 'remove') {
+          msg('Removed : ' + upload.file.name);
+        } 
+      } else if (upload.status == 'inprogress') {
+        dhx.awaitRedraw().then(function(){showUploadProgress(upload)});
+      } else if (upload.status == 'failed') {
+        err('Upload Failed : ' + upload.file.name);
+      }
     }
     return false;
   });
+}
 
+function showUploadProgress(upload) {
+  if (upload) {
+    let item = $('div[dhx_id="' + upload.id + '"]');
+    if (upload.status == "inprogress") {
+      item.parent().addClass('minty_file_uploading');
+      item.prev().text(Math.round(upload.progress * 100) + "% Uploaded - " + upload.file.name);
+    } else if (upload.status == "failed") {
+      item.parent().addClass('minty_file_uploading_failed');
+      item.prev().text('Failed to Upload ' + upload.file.name);
+    } else {
+      item.parent().removeClass('minty_file_uploading');
+      item.prev().text(upload.file.name);
+    }
+  }
 }
 
 function showAddBreederWindow() {
@@ -126,7 +155,7 @@ function buildBreederForm() {
       { id: "breeder_name", type: "input", validation: validateBreeder, required: true, label: "Name", labelPosition, labelWidth, errorMessage: "Breeder name is a required field",  },
       { id: "breeder_desc", type: "textarea", label: "Description", labelPosition, labelWidth, },
       { id: "breeder_url", type: "input", label: "URL", labelPosition, labelWidth, },
-      { id: "image_upload", mode:"grid", type: "simpleVault", target: BREEDER_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
+      { id: IMAGE_UPLOAD, mode:"grid", type: "simpleVault", target: BREEDER_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
       { id: "sponsor_yn", type: "checkbox", label: "Sponsor",labelInline: true, labelPosition, labelWidth, },
     ]
   })
@@ -138,12 +167,12 @@ function buildBreederFormEvents() {
   breederForm.events.on("BeforeSend", function() {
     parseBreederFormServerReady();
   }); 
-
+  buildUploadEvents(breederForm);
 }
 
 function getParsedUploads(form) {
   let parsed = [];
-  let uploads = form.getItem("image_upload").getValue();
+  let uploads = form.getItem(IMAGE_UPLOAD).getValue();
   uploads.forEach(function(upload){
     parsed.push( upload.id );
   });
@@ -168,9 +197,9 @@ function breederFormSaved(response) {
 
 function clearForm(form) {
   form.clear();
-  form.getItem("image_upload").data.removeAll();
-  form.getItem("image_upload").clearValidate();
-  form.getItem("image_upload").clear();
+  form.getItem(IMAGE_UPLOAD).data.removeAll();
+  form.getItem(IMAGE_UPLOAD).clearValidate();
+  form.getItem(IMAGE_UPLOAD).clear();
 }
 
 function validateBreeder(value) {
@@ -418,7 +447,7 @@ function buildSeedForm() {
   seedForm = new dhx.Form("minty_seed_form", {
     css: "dhx_widget--bordered",
     rows: [
-      { name: "seed_id", type: "text", hidden: true, },
+      { name: SEED_ID, type: "text", hidden: true, },
       { name: "indoor_yn", type: "text", hidden: true, },
       { name: "outdoor_yn", type: "text", hidden: true, },
       { cols: [
@@ -426,11 +455,13 @@ function buildSeedForm() {
           { hidden: Boolean(!canAddBreederRecords()), name: "add_breeder_button", type: "button", text: "Add New Breeder", size: "medium", width: 160, view: "flat", icon: "dxi dxi-plus", color: "secondary", view: "link", circle:true, padding: "0px 5px",},]
       },
       { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Enter the full name of the plant", errorMessage: "Plant name is mandatory to save a new record", disabled: Boolean(!canAddRecords()), },
+      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { id: "upload_id", type: "input", hidden: true},
+      { id: IMAGE_UPLOAD, type: "simpleVault", singleRequest: false, target: SEED_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
+      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", disabled: Boolean(!canAddRecords()), },
       { name: "sex", type: "radioGroup", options: sex_options, required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth, labelPosition, disabled: Boolean(!canAddRecords()), },
       { name: "indoor_outdoor", type: "checkboxGroup", options: indoor_outdoor_options, label: "Environment", labelWidth, labelPosition, labelInline: true, disabled: Boolean(!canAddRecords()), },
-      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
-      { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: "flowering_time", type: "input", label: "Flowering Time", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: "height_indoors", type: "input", label: "Indoor Height", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()),  },
       { name: "yeild_indoors", type: "input", label: "Indoor Yeild", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
@@ -447,8 +478,6 @@ function buildSeedForm() {
       { name: TASTES, filter: fuzzySearch, type: "combo", multiselection: true, label: "Taste", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: EFFECTS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Effect", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: METATAGS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Tags", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
-      { id: "upload_id", type: "input", hidden: true},
-      { id: "image_upload", type: "simpleVault", singleRequest: false, target: SEED_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
     ]
   });
   loadComboSuggestions(BREEDER_ID, seedForm);
@@ -474,7 +503,7 @@ function buildSeedFormEvents() {
   seedForm.events.on("BeforeSend", function() {
     parseSeedFormServerReady();
   }); 
-  parseUploadControl();
+  buildUploadEvents(seedForm);
   capitalizeControlValue(seedForm, 'seed_name'); 
 }
 
@@ -685,7 +714,7 @@ function breederWindowClose() {
 }
 
 function parseHarvestMonth(value) {
-  return (value != '') ? value.substring(0, 3).toLowerCase() : value;
+  return (value && value != '') ? value.substring(0, 3).toLowerCase() : value;
 }
 
 function canReadRecords() {

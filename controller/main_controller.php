@@ -11,7 +11,12 @@
 namespace minty\seeds\controller;
 
 class main_controller {
-	
+
+	const ALLOWED_EXTENSIONS = array('jpg', 'jpeg', 'gif', 'png', 'webp');
+
+	const UPLOAD_BASE = "minty/seeds";
+	const UPLOAD_TEMP = "minty/temp";
+
 	const TABLE_SEEDS = "minty_sl_seeds";
 	const TABLE_BREEDER = "minty_sl_breeder";
 	const TABLE_GENETICS = "minty_sl_genetics";
@@ -26,7 +31,6 @@ class main_controller {
 	const TABLE_TASTE = "minty_sl_taste";
 	const TABLE_META_TAG = "minty_sl_meta_tag";
 	const TABLE_AWARD = "minty_sl_award";
-	const TABLE_UPLOAD = "minty_sl_upload";
 	const TABLE_UPLOADS = "minty_sl_uploads";
 
 	protected $auth;
@@ -143,30 +147,56 @@ class main_controller {
 	function processSeedFormPost() {
 		$seed_id = $this->request->variable('seed_id', 0);
 		$this->processComboPostedOptions($seed_id);	
-		$this->processUploads();
 		if ($this->seedRecordExists($seed_id)) {
 			$this->triggerAdvancedPointsSystemAction('UPDATE_SEED_RECORD', $seed_id);
-			return $this->updateSeedRecord($seed_id);
+			$result =  $this->updateSeedRecord($seed_id);
 		} else {
 			$this->triggerAdvancedPointsSystemAction('INSERT_SEED_RECORD', $seed_id);
-			return $this->insertNewSeedRecord();
+			$result =  $this->insertNewSeedRecord();
 		}
+		$this->processUploads($result['breeder_id'], $result['seed_id']);
+		return $result;
 	}
 	
-	function processUploads() {
-		$uploads = $this->request->variable('upload_id', '');
-		$uploads = explode( ",", $uploads);
-		foreach ($uploads as $upload) {
+	function processUploads($breeder_id, $seed_id) {
+		$uploads = explode(",", $this->request->variable('upload_id', ''));
+		$user_id = $this->getUserId();
+		foreach ($uploads as $id) {
+			if (substr($id, 0, 1) == 'u') {
+				$file_info = $this->getFileInfoFromId($id);
+				$upload = $this->file_factory->get('files.upload');
+				$upload->set_allowed_extensions($this->getAllowedExtensions());				
+				$file_name = $file_info['realname'];
+				$filespec = $upload->handle_upload('files.types.local', $this->getTempDir() . $file_name, $file_info);
+				$dest = $this->getBaseDir() . 'B' . $breeder_id . '/S' . $seed_id . '/U' . $user_id;
+				$path = '/' . $dest . '/' . $filespec->get('realname');
+				$filespec = $this->moveUploadedFile($filespec, $dest);
+			}
 			$sql_ary = array(
-				'upload_id'	 => $upload,
-				'seed_id'	 => $this->request->variable('seed_id', 0),
-				'breeder_id' => $this->request->variable('breeder_id', 0),
-				'user_id'	 => $this->getUserId(),
+				'seed_id'	 => $seed_id,
+				'breeder_id' => $breeder_id,
+				'user_id'	 => $user_id,
+				'path'	 => $path,
 			);		
-			$sql = ' INSERT INTO ' . $this->getUploadTable() . $this->db->sql_build_array('INSERT', $sql_ary);
-			$result = $this->db->sql_query($sql);
-			$this->db->sql_freeresult($result);		
+			$sql = 'UPDATE ' . $this->getUploadsTable() . ' SET ' . 
+			$this->db->sql_build_array('UPDATE', $sql_ary) .
+			' WHERE upload_id ="' . $id . '"';
+			$this->db->sql_query($sql);
 		}
+	}
+	function moveUploadedFile($filespec, $dest) {
+		if (!file_exists ($dest)) {
+			mkdir($dest, 0777, true);
+		}
+		return $filespec->move_file($dest, true, false);
+	}
+
+	function getFileInfoFromId($id) {
+		$sql = 'SELECT * FROM ' . $this->getUploadsTable() . ' WHERE upload_id = "' . $id . '"';
+	 	$result = $this->db->sql_query($sql);	
+		$file_info = $this->db->sql_fetchrow($result);
+		$this->db->sql_freeresult($result);	
+		return $file_info;
 	}
 
 	function getTablePrefixFromComboName($name) {
@@ -547,7 +577,6 @@ class main_controller {
 			$name = $this->request->variable('breeder_name', '');
 			$desc = $this->request->variable('breeder_desc', '');
 			$url = $this->request->variable('breeder_url', '');
-			// $logo = $this->request->variable('breeder_logo', array());
 			$sponsor = $this->request->variable('sponsor_yn', 'false') == 'true';
 			$sql_ary = array(
 				'breeder_name'	=> $this->db->sql_escape($name),
@@ -559,13 +588,13 @@ class main_controller {
 			$sql = ' INSERT INTO ' . $this->getBreederTable() . $this->db->sql_build_array('INSERT', $sql_ary);
 			$result = $this->db->sql_query($sql);
 			$this->triggerAdvancedPointsSystemAction('INSERT_BREEDER_RECORD', $breeder_id);
+			$breeder_id = $this->getBreederId($name);
 			$json = (object) [
 				'saved' => $result,
-				'id' => $this->getBreederId($name),
+				'id' => $breeder_id,
 				'data' => $sql_ary
 			];
-			$this->db->sql_freeresult($result);
-			$this->processUploads();
+			$this->processUploads($breeder_id, 0);
 			return $json;
 		}
 	}
@@ -623,16 +652,24 @@ class main_controller {
 		}
 	}
 
+	function getAllowedExtensions() {
+		return self::ALLOWED_EXTENSIONS;		
+	}
+
+	function getBaseDir() {
+		return self::UPLOAD_BASE . '/';
+	}
+
+	function getTempDir() {
+		return $this->phpbb_root_path . self::UPLOAD_TEMP . '/';
+	}
+
 	function getSeedsTable() {
 		return 	$this->getDbPrefix().self::TABLE_SEEDS;	
 	}
 
 	function getBreederTable() {
 		return $this->getDbPrefix().self::TABLE_BREEDER;
-	}
-
-	function getUploadTable() {
-		return $this->getDbPrefix().self::TABLE_UPLOAD;
 	}
 
 	function getUploadsTable() {
