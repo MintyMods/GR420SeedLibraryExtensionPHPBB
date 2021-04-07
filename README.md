@@ -128,6 +128,10 @@ Manual entry of this field is limited to picking other seeds:-
 
 ![/docs/images/image_upload.png](./docs/images/image_upload.png)
 
+![/docs/images/image_upload.png](./docs/images/drop_folders_of_images.png)
+![/docs/images/image_upload.png](./docs/images/multi-uploading.png)
+
+
 ## Points
 
 Support has been integrated for [APS - Advanced Points System](https://github.com/phpBB-Studio/AdvancedPointsSystem) to allow forum points to be automatically granted when creating/editing records etc:-
