@@ -10,12 +10,13 @@ Copy the extension to phpBB/ext/minty/seeds
 NOTE: You will need to manually create the directory 'minty' within the ext directory then create a sub directory called 'seeds' within that, then copy in the contents of the extension. 
 
 You should end up with the following directory structure:-
-
-![/docs/images/install_location.png](./docs/images/enable.png)
-
 ![/docs/images/install_location.png](./docs/images/install_location.png)
 
+
+
 Go to "ACP" > "Customise" > "Extensions" and enable the "Minty Seed Library" extension.
+
+![/docs/images/install_location.png](./docs/images/enable.png)
 
 ![/docs/images/install_location.png](./docs/images/confirm.png)
 
