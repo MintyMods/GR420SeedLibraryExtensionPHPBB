@@ -124,11 +124,16 @@ Manual entry of this field is limited to picking other seeds:-
 
 ## Image Upload
 
-@todo
+Single image upload by drag dropping or browsing to a directory location:-
 
 ![/docs/images/image_upload.png](./docs/images/image_upload.png)
 
+Complete folder can be dropped to add all images within the directory
+
 ![/docs/images/image_upload.png](./docs/images/drop_folders_of_images.png)
+
+Images are uploading individually and can be removed before the record is saved.
+
 ![/docs/images/image_upload.png](./docs/images/multi-uploading.png)
 
 
