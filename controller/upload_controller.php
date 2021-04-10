@@ -91,13 +91,11 @@ class upload_controller {
 			$json[] = array(
 				'name' => $row['uploadname'],
 				'link' => '/minty/uploads/' . $row['realname'],
-				'path' => '/minty/uploads/' . $row['realname'],
+				'path' => $row['path'],
 				'status' => "uploaded",
 				'id'	=> $row['id'],
 				'file' => array(
 					'name'	=> $row['uploadname'],
-					'link' => '/minty/uploads/' . $row['realname'],
-					'path' => '/minty/uploads/' . $row['realname'],
 					'type'	=> $row['type'],
 					'size'	=> (int)$row['size'],
 				)

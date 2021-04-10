@@ -58,8 +58,36 @@ function getUploadedFilesList(form) {
   let seed_id = form.getItem(SEED_ID) ? form.getItem(SEED_ID).getValue() : null;
   let breeder_id = form.getItem(BREEDER_ID) ? form.getItem(BREEDER_ID).getValue() : null;
   let url = SEED_FILES_URL + "?" + SEED_ID + "=" + seed_id + 
-            "&" + BREEDER_ID + "=" + breeder_id;
-  form.getItem(IMAGE_UPLOAD).data.load(url);
+           "&" + BREEDER_ID + "=" + breeder_id;
+  let widget = form.getItem(IMAGE_UPLOAD);
+  widget.data.load(url).then(function(items){
+    dhx.awaitRedraw().then(function(){
+      applyImageTooltips(items, widget);
+    }.bind(items, widget));
+  }.bind(widget));
+}
+
+function applyImageTooltips(items, widget) {
+  for (i=0; i < items["length"]; i++) {
+    applyImageViewer(items[i]);
+  }
+}
+
+function applyImageViewer(item) {
+  let span = $(".dhx_simplevault-files__item-name:contains(" + item.name + ")");
+  if (span.get(0)) {
+    var win = new dhx.Window({
+      title: item.name,
+      modal: true,
+      resizable: true,
+      movable: true,
+      closable:true
+    });
+    var html = "<img src='../.." + item.path + "'></img>"; 
+    win.attachHTML(html);
+    span.parent().on('click', function() { win.show(); });
+    span.parent().css('cursor','pointer');
+  }
 }
 
 function buildUploadEvents(form) {
@@ -490,8 +518,6 @@ function loadComboSuggestions(name, form) {
 
 function buildSeedFormEvents() {
   seedForm.getItem("add_breeder_button").events.on("Click", showAddBreederWindow);
-  // seedForm.getItem("seed_name").events.on("BeforeChangeProperties", cleanInputValues);
-  // seedForm.getItem("seed_desc").events.on("BeforeChangeProperties", cleanInputValues);
 
   seedForm.events.on("AfterValidate", function(name, value, isValid) {
      if (!isValid && !focusedControl) {
@@ -504,11 +530,6 @@ function buildSeedFormEvents() {
 
   buildUploadEvents(seedForm);
   capitalizeControlValue(seedForm, 'seed_name'); 
-}
-
-function cleanInputValues(properties) {
-  console.log(properties);
-  debugger;
 }
 
 function saveSeedFormRecord(callback) {
@@ -846,4 +867,25 @@ $(document).ready(function () {
   } else {
     err('Minty Seed Library Blocked - Insufficient Permissions' );    
   }
+});
+
+$(function() {
+  $('.image_tooltip').each(function() {
+      var image = $('<img src="' + $(this).data().image + '" style="display:none"></img>');
+      $('body').append(image);
+      $(image).css({
+          position: "absolute",
+          top: $(this).position().top + $(this).height(),
+          left: $(this).position().left + 10
+      });
+      for (var prop in $(this).data()) {
+          if (prop != "image") {
+              $(image).css(prop, $(this).data()[prop]);
+          }
+      };
+      $(this).hover(
+          function() { $(image).fadeIn(); },
+          function() { $(image).fadeOut(); }
+      );
+  });
 });

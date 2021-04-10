@@ -174,8 +174,8 @@ class main_controller {
 				$file_name = $file_info['realname'];
 				$filespec = $upload->handle_upload('files.types.local', $this->getTempDir() . $file_name, $file_info);
 				$dest = $this->getBaseDir() . 'B' . $breeder_id . '/S' . $seed_id . '/U' . $user_id;
+				$this->moveUploadedFile($filespec, $dest);
 				$path = '/' . $dest . '/' . $filespec->get('realname');
-				$filespec = $this->moveUploadedFile($filespec, $dest);
 			}
 			$sql_ary = array(
 				'seed_id'	 => $seed_id,
