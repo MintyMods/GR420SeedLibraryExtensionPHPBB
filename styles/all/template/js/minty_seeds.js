@@ -62,37 +62,31 @@ function getUploadedFilesList(form) {
   let widget = form.getItem(IMAGE_UPLOAD);
   widget.data.load(url).then(function(items){
     dhx.awaitRedraw().then(function(){
-      applyImageTooltips(items, widget);
+      buildImageViewer(items, widget);
     }.bind(items, widget));
   }.bind(widget));
 }
 
-function applyImageTooltips(items, widget) {
+function buildImageViewer(items, widget) {
+  var viewer = [];
   for (i=0; i < items["length"]; i++) {
-    applyImageViewer(items[i]);
-  }
-}
-
-function applyImageViewer(item) {
-  let span = $(".dhx_simplevault-files__item-name:contains(" + item.name + ")");
-  if (span.get(0)) {
-    var win = new dhx.Window({
-      title: item.name,
-      modal: true,
-      resizable: true,
-      movable: true,
-      closable:true
+    viewer.push({
+      src: '../..' + items[i].path,
+      title: items[i].name
     });
-    var html = "<img src='../.." + item.path + "'></img>"; 
-    win.attachHTML(html);
-    span.parent().on('click', function() { win.show(); });
-    span.parent().css('cursor','pointer');
   }
+  let spans = $(".dhx_simplevault-files__item-name");
+  spans.each(function(index, span){
+    $(span).on('click', function() { 
+      new PhotoViewer(viewer, { index }); 
+    }.bind(index));
+    $(span).css('cursor','pointer');
+  });
 }
 
 function buildUploadEvents(form) {
   let widget = form.getItem(IMAGE_UPLOAD);
-  widget.data.events.on("change",function(id, mode, upload){
+  widget.data.events.on("change",function(id, mode, upload, event){
     if (upload) {
       if (upload.status == "queue" && mode == 'add') {
           window.setTimeout(function(){widget.send()},0);

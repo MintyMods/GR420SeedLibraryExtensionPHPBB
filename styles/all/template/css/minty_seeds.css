@@ -13,6 +13,14 @@ select, textarea {
     list-style: none;
 }
 
+.dhx_window__overlay {
+
+  z-index :19;
+}
+.dhx_popup--window, .dhx_popup--window_modal {
+  z-index: 20;
+}
+
 .dhx_footer-wrapper, .dhx_header-wrapper {
     z-index: 1;
 }
