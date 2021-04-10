@@ -44,7 +44,6 @@ var seedGrid, seedForm, seedWindow, breederForm, breederWindow;
 var focusedControl = null;
 var fullScreenWindow = false;
 
-
 function initMintySeedLibData() {
   buildSeedGrid();
   buildSeedButtons();
@@ -61,10 +60,6 @@ function getUploadedFilesList(form) {
   let url = SEED_FILES_URL + "?" + SEED_ID + "=" + seed_id + 
             "&" + BREEDER_ID + "=" + breeder_id;
   form.getItem(IMAGE_UPLOAD).data.load(url);
-  form.getItem(IMAGE_UPLOAD).events.on('load', function(){
-    let item = $('div[dhx_id="' + upload.id + '"]');
-    err("loaded");
-  });
 }
 
 function buildUploadEvents(form) {
@@ -269,23 +264,23 @@ function buildSeedGrid() {
       { width: 0, id: BREEDER_ID, hidden: true, header: [{ text: "Breeder ID" }] },
       { width: 0, id: "forum_url", hidden: true,  header: [{ text: "URL" }] },
       { width: 150, id: "breeder_name", header: [{ text: "Breeder" }], type: "string"},
-      { width: 150, id: "seed_name", type: "string", header: [{ text: "Name" }], type: "string"},
+      { width: 150, id: "seed_name", type: "string", header: [{ text: "Name" }], type: "string" },
       { width: 40, id: "flowering_type", header: [{ text: "Type" }], type: "string" },
       { width: 40, id: "sex", header: [{ text: "Sex" }], type: "string" },
       { width: 50, id: "indoor_yn", type: "boolean", header: [{ text: "Indoor" }] },
       { width: 70, id: "outdoor_yn", type: "boolean", header: [{ text: "Outdoor" }] },
       { width: 110, id: "flowering_time", header: [{ text: "Flowering Time" }], type: "string"},
-      { width: 110, id: "height_indoors", type: "string", header: [{ text: "Indoor Height" } ], type: "string"},
-      { width: 110, id: "yeild_indoors", type: "string", header: [{ text: "Indoor Yeild" }], type: "string"},
-      { width: 110, id: "height_outdoors", type: "string", header: [{ text: "Outdoor Height" }], type: "string"},
-      { width: 110, id: "yeild_outdoors", type: "string", header: [{ text: "Outdoor Yeild" }], type: "string"},
+      { width: 110, id: "height_indoors", type: "string", header: [{ text: "Indoor Height" } ], type: "string" },
+      { width: 110, id: "yeild_indoors", type: "string", header: [{ text: "Indoor Yeild" }], type: "string" },
+      { width: 110, id: "height_outdoors", type: "string", header: [{ text: "Outdoor Height" }], type: "string" },
+      { width: 110, id: "yeild_outdoors", type: "string", header: [{ text: "Outdoor Yeild" }], type: "string" },
       { width: 110, id: "harvest_month", type: "date", dateFormat: "%M", header: [{ text: "Harvest Month" }], type: "string"},
       { width: 200, id: "seed_desc", header: [{ text: "Desc" }] },
-      { width: 110, id: "thc", type: "string", header: [{ text: "THC" }], type: "string"},
-      { width: 110, id: "cbd", type: "string", header: [{ text: "CBD" }], type: "string"},
+      { width: 110, id: "thc", type: "string", header: [{ text: "THC" }], type: "string" },
+      { width: 110, id: "cbd", type: "string", header: [{ text: "CBD" }], type: "string" },
       { width: 110, id: "indica", type: "string", header: [{ text: "Indica" }], type: "string" },
-      { width: 110, id: "sativa", type: "string", header: [{ text: "Sativa" }], type: "string"},
-      { width: 110, id: "ruderalis", type: "string", header: [{ text: "Ruderalis" }], type: "string"},
+      { width: 110, id: "sativa", type: "string", header: [{ text: "Sativa" }], type: "string" },
+      { width: 110, id: "ruderalis", type: "string", header: [{ text: "Ruderalis" }], type: "string" },
       { width: 120, id: GENETICS, template: gridDisplayComboValueAsTag, header: [{ text: "Genetics" }], type: "string"},
       { width: 120, id: SMELLS, template: gridDisplayComboValueAsTag, header: [{ text: "Smells" }], type: "string" },
       { width: 120, id: TASTES, template: gridDisplayComboValueAsTag, header: [{ text: "Tastes" }], type: "string" },
@@ -435,11 +430,7 @@ function parseUserTagForServer(control) {
   data.forEach(function(value){ 
     if (value.indexOf('TAG:') > -1) {
       let options = seedForm.getItem(control).getWidget().data;
-      options.forEach(function(option) {
-        if (option.id == value) {
-          parsed.push(option.tag); 
-        }
-      });
+      parsed.push(options.getItem(value).tag);
     } else {
       parsed.push(value); 
     }
@@ -499,6 +490,9 @@ function loadComboSuggestions(name, form) {
 
 function buildSeedFormEvents() {
   seedForm.getItem("add_breeder_button").events.on("Click", showAddBreederWindow);
+  // seedForm.getItem("seed_name").events.on("BeforeChangeProperties", cleanInputValues);
+  // seedForm.getItem("seed_desc").events.on("BeforeChangeProperties", cleanInputValues);
+
   seedForm.events.on("AfterValidate", function(name, value, isValid) {
      if (!isValid && !focusedControl) {
         focusedControl = name;
@@ -507,8 +501,14 @@ function buildSeedFormEvents() {
   seedForm.events.on("BeforeSend", function() {
     parseSeedFormServerReady();
   }); 
+
   buildUploadEvents(seedForm);
   capitalizeControlValue(seedForm, 'seed_name'); 
+}
+
+function cleanInputValues(properties) {
+  console.log(properties);
+  debugger;
 }
 
 function saveSeedFormRecord(callback) {

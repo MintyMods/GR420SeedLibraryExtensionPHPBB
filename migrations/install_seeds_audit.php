@@ -47,6 +47,21 @@ class update_seeds_audit extends \phpbb\db\migration\migration {
 				$this->table_prefix . 'minty_sl_awards'	=> array(
 					'user_id' => array('UINT'),
 				),
+				$this->table_prefix . 'minty_sl_smell'	=> array(
+					'user_id' => array('UINT'),
+				),
+				$this->table_prefix . 'minty_sl_taste'	=> array(
+					'user_id' => array('UINT'),
+				),
+				$this->table_prefix . 'minty_sl_effect'	=> array(
+					'user_id' => array('UINT'),
+				),
+				$this->table_prefix . 'minty_sl_meta_tag'	=> array(
+					'user_id' => array('UINT'),
+				),
+				$this->table_prefix . 'minty_sl_award'	=> array(
+					'user_id' => array('UINT'),
+				),
 			),
 		);
 	}

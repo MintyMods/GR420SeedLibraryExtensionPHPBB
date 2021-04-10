@@ -124,7 +124,11 @@ class main_controller {
 			return $this->helper->render('@minty_seeds/seeds_body.html', $name);
 		} 
 		$json_response = new \phpbb\json_response();
-		$json_response->send($json);
+		if ($json == null) {
+			$json_response->send([]);
+		} else {
+			$json_response->send($json);
+		}
 	}
 
 	function triggerAdvancedPointsSystemAction($action, $data) {
@@ -146,14 +150,15 @@ class main_controller {
 
 	function processSeedFormPost() {
 		$seed_id = $this->request->variable('seed_id', 0);
-		$this->processComboPostedOptions($seed_id);	
 		if ($this->seedRecordExists($seed_id)) {
 			$this->triggerAdvancedPointsSystemAction('UPDATE_SEED_RECORD', $seed_id);
 			$result =  $this->updateSeedRecord($seed_id);
 		} else {
 			$this->triggerAdvancedPointsSystemAction('INSERT_SEED_RECORD', $seed_id);
 			$result =  $this->insertNewSeedRecord();
+			$seed_id = $result["seed_id"];
 		}
+		$this->processComboPostedOptions($seed_id);	
 		$this->processUploads($result['breeder_id'], $result['seed_id']);
 		return $result;
 	}
@@ -324,22 +329,22 @@ class main_controller {
 		$sql_ary = array(
 			'seed_name'			=> $seed_name,
 			'breeder_id'		=> $breeder_id,
-			'flowering_type'	=> $this->db->sql_escape($this->request->variable('flowering_type', '')),
-			'sex'				=> $this->db->sql_escape($this->request->variable('sex', '')),
-			'indoor_yn'			=> $this->db->sql_escape((int)($this->request->variable('indoor_yn','') == 'true')),
-			'outdoor_yn'		=> $this->db->sql_escape((int)($this->request->variable('outdoor_yn', '') == 'true')),
-			'thc'				=> $this->db->sql_escape($this->request->variable('thc', '')),
-			'cbd'				=> $this->db->sql_escape($this->request->variable('cbd', '')),
-			'indica'			=> $this->db->sql_escape($this->request->variable('indica', '')),
-			'sativa'			=> $this->db->sql_escape($this->request->variable('sativa', '')),
-			'ruderalis'			=> $this->db->sql_escape($this->request->variable('ruderalis', '')),
-			'yeild_indoors'		=> $this->db->sql_escape($this->request->variable('yeild_indoors', '')),
-			'yeild_outdoors'	=> $this->db->sql_escape($this->request->variable('yeild_outdoors', '')),
-			'height_indoors'	=> $this->db->sql_escape($this->request->variable('height_indoors', '')),
-			'height_outdoors'	=> $this->db->sql_escape($this->request->variable('height_outdoors', '')),
-			'flowering_time'	=> $this->db->sql_escape($this->request->variable('flowering_time', '')),
-			'harvest_month'		=> $this->db->sql_escape($this->request->variable('harvest_month', '')),
-			'seed_desc'			=> $this->db->sql_escape($this->request->variable('seed_desc', '')),
+			'flowering_type'	=> $this->request->variable('flowering_type', ''),
+			'sex'				=> $this->request->variable('sex', ''),
+			'indoor_yn'			=> (int)($this->request->variable('indoor_yn','') == 'true'),
+			'outdoor_yn'		=> (int)($this->request->variable('outdoor_yn', '') == 'true'),
+			'thc'				=> $this->request->variable('thc', ''),
+			'cbd'				=> $this->request->variable('cbd', ''),
+			'indica'			=> $this->request->variable('indica', ''),
+			'sativa'			=> $this->request->variable('sativa', ''),
+			'ruderalis'			=> $this->request->variable('ruderalis', ''),
+			'yeild_indoors'		=> $this->request->variable('yeild_indoors', ''),
+			'yeild_outdoors'	=> $this->request->variable('yeild_outdoors', ''),
+			'height_indoors'	=> $this->request->variable('height_indoors', ''),
+			'height_outdoors'	=> $this->request->variable('height_outdoors', ''),
+			'flowering_time'	=> $this->request->variable('flowering_time', ''),
+			'harvest_month'		=> $this->request->variable('harvest_month', ''),
+			'seed_desc'			=> $this->request->variable('seed_desc', ''),
 			'user_id'	 		=> $this->getUserId()
 		);	
 		return $sql_ary;	

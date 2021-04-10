@@ -23,9 +23,6 @@ class install_acp_module extends \phpbb\db\migration\migration
 
 	public function update_data() {
 		return array(
-			array('config.add', array('minty_seeds_enabled', 0)),
-			array('config.add', array('minty_seeds_aps_enabled', 0)),
-
 			array('module.add', array(
 				'acp',
 				'ACP_CAT_DOT_MODS',
