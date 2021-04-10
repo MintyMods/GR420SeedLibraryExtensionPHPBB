@@ -68,19 +68,12 @@ function getUploadedFilesList(form) {
 }
 
 function buildImageViewer(items, widget) {
-  var viewer = [];
-  for (i=0; i < items["length"]; i++) {
-    viewer.push({
-      src: '../..' + items[i].path,
-      title: items[i].name
-    });
-  }
   let spans = $(".dhx_simplevault-files__item-name");
   spans.each(function(index, span){
     $(span).on('click', function() { 
-      new PhotoViewer(viewer, { index }); 
+      new PhotoViewer(items, { index }); 
     }.bind(index));
-    $(span).css('cursor','pointer');
+    $(span).addClass('minty_image_viewer_link');
   });
 }
 
@@ -473,9 +466,6 @@ function buildSeedForm() {
       },
       { name: "seed_name", type: "input", label: "Name", labelPosition, labelWidth, required: true, placeholder: "Enter the full name of the plant", errorMessage: "Plant name is mandatory to save a new record", disabled: Boolean(!canAddRecords()), },
       { name: GENETICS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Genetics", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
-      { id: "upload_id", type: "input", hidden: true},
-      { id: IMAGE_UPLOAD, type: "simpleVault", singleRequest: false, target: SEED_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
-      { name: "seed_desc", type: "textarea", label: "Description", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: "flowering_type", type: "radioGroup", options: flowering_type_options, required: true, label: "Type", labelWidth, labelPosition, errorMessage: "Flowering type is a required field", disabled: Boolean(!canAddRecords()), },
       { name: "sex", type: "radioGroup", options: sex_options, required: true, label: "Sex", errorMessage: "Sex is a required field", labelWidth, labelPosition, disabled: Boolean(!canAddRecords()), },
       { name: "indoor_outdoor", type: "checkboxGroup", options: indoor_outdoor_options, label: "Environment", labelWidth, labelPosition, labelInline: true, disabled: Boolean(!canAddRecords()), },
@@ -495,6 +485,10 @@ function buildSeedForm() {
       { name: TASTES, filter: fuzzySearch, type: "combo", multiselection: true, label: "Taste", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: EFFECTS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Effect", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
       { name: METATAGS, filter: fuzzySearch, type: "combo", multiselection: true, label: "Tags", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { name: "seed_desc", type: "textarea", height:300, label: "Description", labelPosition, labelWidth, disabled: Boolean(!canAddRecords()), },
+      { id: "upload_id", type: "input", hidden: true},
+      { id: IMAGE_UPLOAD, type: "simpleVault", singleRequest: false, target: SEED_UPLOAD_URL, fieldName: "upload", label: "Images", labelInline: true, labelPosition, labelWidth, },
+
     ]
   });
   loadComboSuggestions(BREEDER_ID, seedForm);

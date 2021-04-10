@@ -30,6 +30,15 @@ select, textarea {
     width:auto;
 }
 
+.minty_image_viewer_link {
+  cursor:pointer;
+}
+
+.minty_image_viewer_link:hover {
+  cursor:pointer;
+  color: #0288d1;
+}
+
 #minty_grid_wrapper {
     width:100%;
     height:100%;

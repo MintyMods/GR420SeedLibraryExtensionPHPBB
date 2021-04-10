@@ -90,7 +90,8 @@ class upload_controller {
 		while ($row = $this->db->sql_fetchrow($result))	{
 			$json[] = array(
 				'name' => $row['uploadname'],
-				'link' => '/minty/uploads/' . $row['realname'],
+				'title' => $row['uploadname'],
+				'src' => '../..' . $row['path'],
 				'path' => $row['path'],
 				'status' => "uploaded",
 				'id'	=> $row['id'],
