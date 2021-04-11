@@ -20,6 +20,8 @@ class main_controller {
 	const TABLE_SEEDS = "minty_sl_seeds";
 	const TABLE_BREEDER = "minty_sl_breeder";
 	const TABLE_GENETICS = "minty_sl_genetics";
+	const TABLE_PARENT = "minty_sl_parent";
+	const TABLE_PARENTS = "minty_sl_parents";
 	const TABLE_SMELLS = "minty_sl_smells";
 	const TABLE_EFFECTS = "minty_sl_effects";
 	const TABLE_TASTES = "minty_sl_tastes";
@@ -95,6 +97,8 @@ class main_controller {
 			$json = $this->processGridDelete();	
 		} else if ($name == 'minty_sl_genetics') {
 			$json = $this->getGeneticOptions();	
+		} else if ($name == 'minty_sl_parents') {
+			$json = $this->getParentsOptions();	
 		} else if ($name == 'minty_sl_smells') {
 			$json = $this->getSmellsOptions();	
 		} else if ($name == 'minty_sl_effects') {
@@ -213,6 +217,7 @@ class main_controller {
 	function processComboPostedOptions($seed_id) {		
 		if ($this->canEdit() || $this->canAdd()) {
 			$this->processComboOptions('minty_sl_genetics', $seed_id);
+			$this->processComboOptions('minty_sl_parents', $seed_id);
 			$this->processComboOptions('minty_sl_awards', $seed_id);
 			$this->processComboOptions('minty_sl_smells', $seed_id);
 			$this->processComboOptions('minty_sl_tastes', $seed_id);
@@ -257,7 +262,6 @@ class main_controller {
 	function addNewUserTag($table, $seed_id, $tag, $prefix) {
 		if ($this->canAdd()) {
 			$parsed = substr($tag, 4, (strlen($tag) -5));
-			$parsed = $this->db->sql_escape($parsed);
 			$sql_ary = array(
 				$prefix . '_name'	=> $parsed,
 				$prefix . '_desc'	=> '** added dynamically by seed id ' . $seed_id . ' **',
@@ -345,6 +349,7 @@ class main_controller {
 			'flowering_time'	=> $this->request->variable('flowering_time', ''),
 			'harvest_month'		=> $this->request->variable('harvest_month', ''),
 			'seed_desc'			=> $this->request->variable('seed_desc', ''),
+			'forum_url'			=> $this->request->variable('forum_url', ''),
 			'user_id'	 		=> $this->getUserId()
 		);	
 		return $sql_ary;	
@@ -363,84 +368,83 @@ class main_controller {
 		}
 	}
 
+	function getParentsOptions() {
+		if ($this->canRead()) {
+			$sql = ' SELECT parent_name as value, parent_id as id' . 
+				   ' FROM ' . $this->getParentTable() . 
+				   ' GROUP BY parent_name ORDER BY parent_name';
+			$rs = $this->db->sql_query($sql);
+			$rows = $this->db->sql_fetchrowset($rs);
+			$this->db->sql_freeresult($rs);
+		}
+		return $rows;
+	}
+
 	function getSmellsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getSmellTable();
-			$result = $this->db->sql_query($sql);
-			while ($row = $this->db->sql_fetchrow($result))	{
-				$result_list[] = array(
-					'id'	=> $row['smell_id'],
-					'value'	=> $row['smell_name'],
-				);
-			}
-			$this->db->sql_freeresult($result);
+			$sql = ' SELECT smell_name as value, smell_id as id' . 
+				   ' FROM ' . $this->getParentTable() . 
+				   ' GROUP BY smell_name ORDER BY smell_name';
+			$rs = $this->db->sql_query($sql);
+			$rows = $this->db->sql_fetchrowset($rs);
+			$this->db->sql_freeresult($rs);
 		}
-		return $result_list;
+		return $rows;
 	}
 
 	function geEffectsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getEffectTable();
-			$result = $this->db->sql_query($sql);
-			while ($row = $this->db->sql_fetchrow($result))	{
-				$result_list[] = array(
-					'id'	=> $row['effect_id'],
-					'value'	=> $row['effect_name'],
-				);
-			}
-			$this->db->sql_freeresult($result);
+			$sql = ' SELECT effect_name as value, effect_id as id' . 
+				   ' FROM ' . $this->getParentTable() . 
+				   ' GROUP BY effect_name ORDER BY effect_name';
+			$rs = $this->db->sql_query($sql);
+			$rows = $this->db->sql_fetchrowset($rs);
+			$this->db->sql_freeresult($rs);
 		}
-		return $result_list;
+		return $rows;
 	}
 
 	function getTastesOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getTasteTable();
-			$result = $this->db->sql_query($sql);
-			while ($row = $this->db->sql_fetchrow($result))	{
-				$result_list[] = array(
-					'id'	=> $row['taste_id'],
-					'value'	=> $row['taste_name'],
-				);
-			}
-			$this->db->sql_freeresult($result);
+			$sql = ' SELECT taste_name as value, taste_id as id' . 
+				   ' FROM ' . $this->getParentTable() . 
+				   ' GROUP BY taste_name ORDER BY taste_name';
+			$rs = $this->db->sql_query($sql);
+			$rows = $this->db->sql_fetchrowset($rs);
+			$this->db->sql_freeresult($rs);
 		}
-		return $result_list;
+		return $rows;
 	}
 
 	function getMetaTagsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getMetaTagTable();	
-			$result = $this->db->sql_query($sql);
-			while ($row = $this->db->sql_fetchrow($result))	{
-				$result_list[] = array(
-					'id'	=> $row['meta_tag_id'],
-					'value'	=> $row['meta_tag_name'],
-				);
-			}
-			$this->db->sql_freeresult($result);
+			$sql = ' SELECT meta_tag_name as value, meta_tag_id as id' . 
+				   ' FROM ' . $this->getParentTable() . 
+				   ' GROUP BY meta_tag_name ORDER BY meta_tag_name';
+			$rs = $this->db->sql_query($sql);
+			$rows = $this->db->sql_fetchrowset($rs);
+			$this->db->sql_freeresult($rs);			
 		}
-		return $result_list;
+		return $rows;
 	}
 
 	function getAwardsOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT * FROM ' . $this->getAwardTable();
-			$result = $this->db->sql_query($sql);
-			while ($row = $this->db->sql_fetchrow($result))	{
-				$result_list[] = array(
-					'id'	=> $row['award_id'],
-					'value'	=> $row['award_name'],
-				);
-			}
-			$this->db->sql_freeresult($result);
+			$sql = ' SELECT award_name as value, award_id as id' . 
+				   ' FROM ' . $this->getParentTable() . 
+				   ' GROUP BY award_name ORDER BY award_name';
+			$rs = $this->db->sql_query($sql);
+			$rows = $this->db->sql_fetchrowset($rs);
+			$this->db->sql_freeresult($rs);	
 		}
-		return $result_list;
+		return $rows;
 	}
 
 	function getBreederOptions() {
 		if ($this->canRead()) {
-			$sql = ' SELECT breeder_id AS id, breeder_name AS value FROM ' . $this->getBreederTable();
+			$sql = ' SELECT breeder_id AS id, breeder_name AS value FROM ' . 
+					$this->getBreederTable() . ' GROUP BY breeder_name ' .
+					' ORDER BY breeder_name';
 			$result = $this->db->sql_query($sql);
 			while ($row = $this->db->sql_fetchrow($result))	{
 				$result_list[] = array(
@@ -497,6 +501,7 @@ class main_controller {
 					'seed_desc' 			=> $row['seed_desc'],
 					'forum_url' 			=> $row['forum_url'],
 					self::TABLE_GENETICS			=> $this->getComboGeneticOptions($seed_id),
+					self::TABLE_PARENTS			=> $this->getComboOptions(self::TABLE_PARENTS, $seed_id),
 					self::TABLE_SMELLS			=> $this->getComboOptions(self::TABLE_SMELLS, $seed_id),
 					self::TABLE_EFFECTS			=> $this->getComboOptions(self::TABLE_EFFECTS, $seed_id),
 					self::TABLE_TASTES			=> $this->getComboOptions(self::TABLE_TASTES, $seed_id),
@@ -584,9 +589,9 @@ class main_controller {
 			$url = $this->request->variable('breeder_url', '');
 			$sponsor = $this->request->variable('sponsor_yn', 'false') == 'true';
 			$sql_ary = array(
-				'breeder_name'	=> $this->db->sql_escape($name),
-				'breeder_desc'	=> $this->db->sql_escape($desc),
-				'breeder_url'	=> $this->db->sql_escape($url),
+				'breeder_name'	=> $name,
+				'breeder_desc'	=> $desc,
+				'breeder_url'	=> $url,
 				'sponsor_yn'	=> $sponsor,
 				'user_id'	 => $this->getUserId()
 			);
@@ -699,6 +704,10 @@ class main_controller {
 
 	function getMetaTagTable() {
 		return $this->getDbPrefix().self::TABLE_META_TAG;
+	}
+
+	function getParentTable() {
+		return $this->getDbPrefix().self::TABLE_PARENT;
 	}
 
 	function getSmellTable() {
