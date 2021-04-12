@@ -11,7 +11,7 @@ namespace minty\seeds\controller;
 
 class upload_controller {
 	
-	const ALLOWED_EXTENSIONS = array('jpg', 'jpeg', 'gif', 'png', 'webp');
+	const ALLOWED_EXTENSIONS = array('jpg', 'jpeg', 'gif', 'png', 'webp', 'svg');
 
 	const UPLOAD_TEMP = "minty/temp";
 	const TABLE_UPLOAD = "minty_sl_upload";

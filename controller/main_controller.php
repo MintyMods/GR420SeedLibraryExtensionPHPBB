@@ -12,7 +12,7 @@ namespace minty\seeds\controller;
 
 class main_controller {
 
-	const ALLOWED_EXTENSIONS = array('jpg', 'jpeg', 'gif', 'png', 'webp');
+	const ALLOWED_EXTENSIONS = array('jpg', 'jpeg', 'gif', 'png', 'webp', 'svg');
 
 	const UPLOAD_BASE = "minty/seeds";
 	const UPLOAD_TEMP = "minty/temp";
@@ -383,7 +383,7 @@ class main_controller {
 	function getSmellsOptions() {
 		if ($this->canRead()) {
 			$sql = ' SELECT smell_name as value, smell_id as id' . 
-				   ' FROM ' . $this->getParentTable() . 
+				   ' FROM ' . $this->getSmellTable() . 
 				   ' GROUP BY smell_name ORDER BY smell_name';
 			$rs = $this->db->sql_query($sql);
 			$rows = $this->db->sql_fetchrowset($rs);
@@ -395,7 +395,7 @@ class main_controller {
 	function geEffectsOptions() {
 		if ($this->canRead()) {
 			$sql = ' SELECT effect_name as value, effect_id as id' . 
-				   ' FROM ' . $this->getParentTable() . 
+				   ' FROM ' . $this->getEffectTable() . 
 				   ' GROUP BY effect_name ORDER BY effect_name';
 			$rs = $this->db->sql_query($sql);
 			$rows = $this->db->sql_fetchrowset($rs);
@@ -407,7 +407,7 @@ class main_controller {
 	function getTastesOptions() {
 		if ($this->canRead()) {
 			$sql = ' SELECT taste_name as value, taste_id as id' . 
-				   ' FROM ' . $this->getParentTable() . 
+				   ' FROM ' . $this->getTasteTable() . 
 				   ' GROUP BY taste_name ORDER BY taste_name';
 			$rs = $this->db->sql_query($sql);
 			$rows = $this->db->sql_fetchrowset($rs);
@@ -419,7 +419,7 @@ class main_controller {
 	function getMetaTagsOptions() {
 		if ($this->canRead()) {
 			$sql = ' SELECT meta_tag_name as value, meta_tag_id as id' . 
-				   ' FROM ' . $this->getParentTable() . 
+				   ' FROM ' . $this->getMetaTagTable() . 
 				   ' GROUP BY meta_tag_name ORDER BY meta_tag_name';
 			$rs = $this->db->sql_query($sql);
 			$rows = $this->db->sql_fetchrowset($rs);
@@ -431,7 +431,7 @@ class main_controller {
 	function getAwardsOptions() {
 		if ($this->canRead()) {
 			$sql = ' SELECT award_name as value, award_id as id' . 
-				   ' FROM ' . $this->getParentTable() . 
+				   ' FROM ' . $this->getAwardTable() . 
 				   ' GROUP BY award_name ORDER BY award_name';
 			$rs = $this->db->sql_query($sql);
 			$rows = $this->db->sql_fetchrowset($rs);
